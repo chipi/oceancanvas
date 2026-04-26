@@ -1,153 +1,169 @@
-# RFC-001: Recipe YAML Schema
+# RFC-001 — Recipe YAML schema
 
-- **Status**: Draft
-- **Related PRDs**: `docs/prd/PRD-003-recipe-system.md`, `docs/prd/PRD-006-recipe-editor-studio.md`
-- **Related ADRs**: `docs/adr/ADR-004-no-database-v1.md`
+> **Status** · Draft v0.2 · April 2026 · revised against prototype mockup (OC-02 Fig 5)
+> **TA anchor** · §contracts/recipe-yaml · §components/pipeline · §components/render-system
+> **Related** · PRD-001 Recipe · PRD-003 Recipe Editor · UXS-003 Recipe Editor · RFC-002 Render payload format · RFC-005 YAML round-tripping
+> **Closes into** · ADR (pending)
+> **Why this is an RFC** · The recipe YAML is the durable artefact of authorship. Its shape determines whether recipes feel like authored works or like configurations, and whether the editor's creative-parameters surface can round-trip cleanly. Multiple plausible schemas exist; the deliberation is genuine.
 
-## Abstract
+---
 
-This RFC defines the formal YAML schema for OceanCanvas recipes — the configuration files that define how ocean data becomes daily generative art. The schema must be human-readable, machine-parseable, and expressive enough to capture all creative and technical parameters without being intimidating to a non-developer user.
+## The question
 
-**Architecture Alignment:** Recipes are YAML files in `recipes/` committed to git (ADR-004). The schema defined here is what the pipeline reads (PRD-001), the recipe editor writes (PRD-006), and self-hosters edit directly.
+A recipe is a YAML file in `recipes/`. Every day the pipeline reads it, fetches data, builds a payload, and produces a render. The Recipe Editor authors it through a creative-control surface (mood preset, energy×presence, colour character, temporal weight) and through a YAML view where amber-highlighted lines are the parameters set by creative work and dim teal lines are structural.
 
-## Problem Statement
+The question: what is the schema? Specifically, how do we structure the file so that:
 
-The recipe is the core creative artifact of OceanCanvas. Its YAML format is the contract between the recipe editor (which writes it), the pipeline (which reads it), and the user (who may edit it directly). Without a formal schema, different parts of the system will interpret the format differently, leading to silent failures and difficult debugging.
+1. The creative parameters (the artistic intent) are visually and semantically distinct from the structural fields, supporting the editor's amber/teal colour-coding (per UXS-003).
+2. Power users editing YAML directly can round-trip cleanly back to creative controls (RFC-005 depends on this).
+3. The pipeline (RFC-002) can read the file and produce a render payload without ambiguity.
+4. Recipes remain readable by humans years after authoring — version-control diffs should be legible.
+
+The schema is the contract between the editor, the pipeline, and the artist. Getting it wrong contaminates all three.
+
+## Use cases
+
+1. **Authoring a new recipe in the editor.** User picks a mood preset, drags energy×presence, selects colour character. The editor serialises this into YAML and writes the file. The schema must capture the creative state in a form the editor can re-read.
+2. **Editing the YAML directly.** A power user opens the file in their editor of choice. They tweak `colormap` from `thermal` to `thermal-soft`. The editor reads the change and snaps the colour-character control to the closest match (or marks it as "custom" — see RFC-005).
+3. **Extending a recipe with a sketch override.** A user wants to push beyond what the render type system allows. They write a custom p5.js sketch. The recipe references it by path. The pipeline loads the override sketch instead of the template.
+4. **Reviewing a year-old recipe.** The artist returns to a recipe they wrote a year ago. The YAML must be self-describing enough that they understand what they made without consulting the editor.
 
 ## Goals
 
-1. **Define all required and optional fields** with types, defaults, and validation rules
-2. **Support all six render types** with their specific parameter sets
-3. **Enable creative control round-tripping** — the recipe editor generates YAML from creative controls and parses YAML back to controls without information loss
-4. **Be readable without documentation** — a human should understand what a recipe does by reading it
+- Creative and structural sections are visually separated in the file (supporting the editor's amber/teal rendering).
+- Round-trip from creative controls → YAML → creative controls is lossless when no manual YAML edits have been made.
+- The schema supports all six render types (field, particles, contour, pulse, scatter, composite) without conditional fields per type bleeding into the top level.
+- A reasonable default exists for every technical parameter, so a minimal recipe has only creative fields and a source.
+- The file is human-editable in any text editor without tooling.
+- Schema is **flat** — no `creative:` / `technical:` nested blocks — and the editor's amber/teal distinction is communicated by a comment marker, not by document structure.
 
-## Design & Implementation
+## Constraints
 
-### 1. Top-level structure
+- *File-based storage in v1* — recipes are flat files under version control (TA §constraints).
+- *Determinism* — same recipe + same data = same render (TA §constraints). The schema cannot contain implicit time-dependent fields.
+- *Shared payload format* — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA §constraints).
+
+## Proposed approach
+
+A **flat schema with a comment-marker delimiter**. All keys live at the top level. A single line comment — `# ⊓ creative controls ⊓` — divides the file into two sections: above it, structural fields (the recipe's identity, region, sources, schedule); below it, creative state and the technical parameters derived from creative state. The editor renders lines below the marker in `editor-creative` (amber) and lines above in `editor-structure` (teal).
 
 ```yaml
-name: north_atlantic_sst          # required — must match filename without .yaml
-version: "1.0"                    # required — schema version
-active: true                      # optional — default true; false pauses rendering
+# recipe: north_atlantic_sst
+name: north_atlantic_sst
+created: 2026-04-25
+author: chipi
 
 region:
-  lat: [25, 65]                   # required — [south, north] in decimal degrees
-  lon: [-80, 0]                   # required — [west, east] in decimal degrees
+  lat: [25, 65]
+  lon: [-80, 0]
 
 sources:
-  primary: oisst                  # required — source_id from the sources catalog
-  context: gebco                  # optional — default gebco (bathymetry context)
-  audio: openmeteo                # optional — source_id for audio scalar
+  primary: oisst
+  context: gebco
+  audio: openmeteo
 
-schedule: daily                   # required — daily | weekly | monthly
+schedule: daily
 
-render:
-  type: field                     # required — field | particles | contour | pulse | scatter | composite
-  mood: Becalmed                  # optional — named preset; sets defaults for all style params below
-  colormap: thermal               # optional — colormap name; overrides mood default
-  opacity: 0.71                   # optional — 0.0–1.0; overrides mood default
-  smooth: true                    # optional — boolean; overrides mood default
-  clamp_percentile: [2, 98]       # optional — [low, high]; clips outliers
-  energy: 0.14                    # optional — 0.0–1.0; maps to X axis of energy×presence
-  presence: 0.28                  # optional — 0.0–1.0; maps to Y axis of energy×presence
-  colour_character: 0.22          # optional — 0.0–1.0; Arctic cold → Thermal → Otherworldly
-  temporal_weight: 0.28           # optional — 0.0–1.0; moment → epoch
+# ⊓ creative controls ⊓
+mood: Becalmed
+energy_x: 0.30
+energy_y: 0.42
+colour_character: thermal
+temporal_weight: lingering
 
-audio:
-  pitch: wave_height              # optional — scalar field from audio source
-  tempo: wave_period              # optional — scalar field from audio source
-  range: [60, 90]                 # optional — MIDI note range for pitch mapping
-```
-
-### 2. Per render type parameters
-
-**field** (additional params):
-```yaml
 render:
   type: field
-  overlay_contour: false          # optional — draw contour lines over the field
-  overlay_levels: 8               # optional — number of contour levels if overlay_contour true
+  colormap: thermal
+  opacity: 0.71
+  smooth: true
+  clamp_percentile: [2, 98]
+  overlay:
+    levels: 5
+    weight: 0.29
+
+audio:
+  feature: wave_height
+  intensity_mapping: anomaly
+  smoothing: 3
+
+# optional escape hatch
+sketch_override: null
 ```
 
-**particles** (additional params):
+**The marker comment.** The recognised pattern is a YAML comment line starting with `# ` followed by `creative controls` (case-insensitive), optionally bracketed by decorative characters (the `⊓` glyphs in the prototype are box-drawing characters used as visual horizontal-rule decoration). The editor matches against the regex `^# .*creative controls.*$`. Any line matching this is the marker; everything below it (until end of file) is the creative section.
+
+**Above the marker** — structural fields. Identity (`name`, `created`, `author`), spatial bounds (`region`), data sources (`sources`), schedule (`schedule`). The pipeline reads these to know *what* to fetch and *when*. The editor renders these in teal.
+
+**Below the marker** — creative state and derived technical params. The five creative-control values (`mood`, `energy_x`, `energy_y`, `colour_character`, `temporal_weight`) live as top-level keys. The technical blocks (`render`, `audio`) sit below them as the parameters those creative values drive. The editor renders all of this in amber.
+
+**The `sketch_override` field.** Optional. Path to a custom p5.js sketch file. When present, the pipeline loads that sketch instead of the render-type template. The technical block is preserved but unused by the renderer when override is active.
+
+**Rendering and round-tripping.** RFC-002 specifies how the pipeline turns this YAML into a render payload — only the lines below the marker (plus `region` and `sources` from above) are needed for rendering. RFC-005 specifies how the editor detects creative-state divergence: it computes `creative_to_technical(mood, energy_x, energy_y, colour_character, temporal_weight)` and compares against the actual `render` and `audio` blocks to decide if the recipe is matched, partially-custom, or custom.
+
+## Alternatives considered
+
+### Alternative: two-tier schema (`creative:` / `technical:` blocks)
+
+The original v0.1 proposal: nested blocks with `creative:` holding the five creative-control values and `technical:` holding the render/audio params.
+
 ```yaml
-render:
-  type: particles
-  particle_count: 800             # optional — generated from energy; exposed for power users
-  speed: 1.2                      # optional — generated from energy
-  tail_length: 25                 # optional — generated from temporal_weight
+creative:
+  mood: Becalmed
+  energy: [0.3, 0.42]
+  ...
+technical:
+  colormap: thermal
+  opacity: 0.71
+  ...
 ```
 
-**contour** (additional params):
-```yaml
-render:
-  type: contour
-  levels: 12                      # optional — generated from energy
-  weight: 0.45                    # optional — generated from presence
-```
+Rejected because the prototype shows the design uses a flat schema with a comment marker, not nested blocks. The flat approach is cleaner: power users edit any line without nesting; the file reads more like a recipe and less like a configuration object. The two-tier shape also forced an artificial split of `audio:` (does it go in creative or technical?) — flat avoids that.
 
-**pulse** (scalar source required):
-```yaml
-render:
-  type: pulse
-  ring_count: 8                   # optional — generated from energy
-  amplitude: 1.4                  # optional — generated from energy
-  decay: 0.82                     # optional — generated from presence
-```
+### Alternative: flat schema, no marker
 
-**scatter** (point source required):
-```yaml
-render:
-  type: scatter
-  dot_size: 4                     # optional — generated from presence
-  dot_opacity: 0.7                # optional — generated from presence
-```
+All keys at top-level, no marker comment, no visual delimiter. The editor would identify creative-controlled lines by hard-coded list (e.g., "lines starting with `mood`, `energy_x`, … and lines under `render:` or `audio:`").
 
-### 3. Validation rules
+Rejected because the editor needs to know which lines to render in amber. A hard-coded list works *initially* but couples the editor to the schema — any new creative-driven field requires updating both the schema and the editor's list. The marker comment is content-driven: any line below the marker is creative, no list needed.
 
-- `name` must match the filename without `.yaml` (validated at pipeline start, not at save time)
-- `region.lat[0]` must be less than `region.lat[1]`; same for `lon`
-- `region` must fit within the processing region configured for `sources.primary`
-- `render.type` must be one of the six valid types
-- All float values in the `render` block must be within their documented ranges
-- If `render.type` is `pulse`, `sources.primary` must be a scalar source (openmeteo, nsidc-extent, gmsl)
+### Alternative: creative-only schema with technical fields inferred at runtime
 
-### 4. Creative control round-tripping
+The recipe stores only the five creative-control values. The pipeline computes `render` and `audio` parameters from creative state at render time using a deterministic mapping function.
 
-The recipe editor generates the `render.mood`, `render.energy`, `render.presence`, `render.colour_character`, and `render.temporal_weight` fields. When loading an existing recipe, the editor uses these fields to set the editorial controls. The generated technical parameters (colormap, opacity, particle_count, etc.) are derived from these creative fields — they do not need to be stored in the YAML unless the user has overridden them in YAML mode.
+Rejected because power users lose the ability to override individual technical parameters. This was a real consideration — the simplicity is appealing — but it eliminates the YAML-mode escape valve that PRD-003's "sharpest threat" argument depends on.
 
-Priority: explicit technical parameter > generated from creative field > mood preset default > system default.
+### Alternative: marker delimiters as paired tokens (`# CREATIVE_BEGIN` / `# CREATIVE_END`)
 
-## Key Decisions
+Use bracketing comment markers to delimit the creative section, allowing structural content to appear *after* the creative section.
 
-1. **Store both creative fields and technical parameters**
-   - **Decision**: Store the creative fields (mood, energy, presence, colour_character, temporal_weight) in the YAML alongside the generated technical parameters
-   - **Rationale**: This enables full round-tripping — the editor can reload any recipe and restore the exact creative control state. It also makes YAML mode educational: the user sees the relationship between creative choices and technical values.
+Rejected because it adds complexity for no clear benefit. The single-marker convention places creative content at the bottom of the file by convention; structural content goes at the top. This matches how recipes are *read* (start with what it is, end with how it looks) and how they're *authored* in the editor (mood/energy first, render details below).
 
-2. **mood field is optional**
-   - **Decision**: `render.mood` is optional — if absent, the editor uses the creative field values directly
-   - **Rationale**: Power users who edit YAML directly may not want a mood preset. The creative fields are sufficient to reconstruct the editor state.
+## Trade-offs
 
-## Alternatives Considered
+- **The mapping from creative state to technical params lives in the editor, not in the file.** This means the meaning of `mood: Becalmed` could drift across editor versions. Mitigation: version the preset definitions (`creative_mapping_version: 1` could be added to the marker line in a future revision; deferred).
+- **Per-render-type technical fields means the `render:` block has variable shape.** A schema validator needs to know the render type before it can validate the block. Acceptable; the render type is the first key inside `render:`.
+- **The marker comment is parser-relevant.** YAML treats comments as ignorable, so the pipeline doesn't care about the marker. But the editor *must* preserve it on save. Documentation must be explicit that the marker is meaningful.
+- **A user who deletes the marker by accident loses the editor's amber highlighting.** The editor falls back to "all lines look the same" — no functional harm, but the visual cue is gone. The editor should restore the marker on save if it's missing.
 
-1. **Store only technical parameters (no creative fields)**
-   - **Pros**: Simpler schema, no redundancy
-   - **Cons**: Editor cannot restore creative control state from an existing recipe. YAML mode loses its educational value.
-   - **Why Rejected**: Round-tripping is a core requirement of the recipe editor.
+## Open questions
 
-2. **Store only creative fields (no technical parameters)**
-   - **Pros**: Cleaner, no parameter duplication
-   - **Cons**: Pipeline would need to run the creative-to-technical translation at render time, adding complexity and a potential source of drift.
-   - **Why Rejected**: Technical parameters in the YAML make the pipeline simpler and the output predictable.
+1. Should the `region` block accept a named region (e.g., `region: north-atlantic`) as well as explicit lat/lon bounds? Cleaner for common cases; adds a region registry as another contract.
+2. Should `created` and `author` be optional metadata or required? Required nudges good hygiene; optional keeps the minimal recipe minimal.
+3. The `id` field is currently freeform (must be filesystem-safe). Should it be derived from `name` automatically, or stay as a separate field that humans pick? Auto-derivation is cleaner; manual gives more control over URLs.
+4. Should the marker carry preset metadata (e.g., `# ⊓ creative controls ⊓ mood: Becalmed`) for redundancy, or is the `mood:` YAML key enough? The prototype shows the marker carries the mood — could be either decorative or load-bearing. v0.2 treats it as decorative (the `mood:` YAML key is the truth); a future revision could promote it to load-bearing if useful.
+5. How are mood-preset definitions versioned? See trade-off above.
 
-## Open Questions
+## How this closes
 
-1. Should `version` be a schema version (for migration) or a recipe version (for change tracking)?
-2. Should the recipe support multiple regions (e.g. North Atlantic + Mediterranean composite)?
-3. What is the maximum allowed region size before the processing step refuses to process it?
+- **ADR-NNN — Recipe YAML schema v1.** Locks the flat-with-marker shape, the field set per render type, the marker convention, and the structural-vs-creative section semantics.
 
-## References
+## Links
 
-- OC-04 Technical Architecture: Recipe YAML schema section
-- PRD-003: Recipe system
-- PRD-006: Recipe editor studio
+- **TA** — §contracts/recipe-yaml · §components/pipeline · §components/render-system · §constraints
+- **Related PRDs** — PRD-001 Recipe · PRD-003 Recipe Editor
+- **Related UXS** — UXS-003 Recipe Editor (visual contract for the YAML mode this schema feeds)
+- **Related RFCs** — RFC-002 Render payload format · RFC-005 YAML round-tripping
+
+## Changelog
+
+- **v0.2 · April 2026** — Revised against prototype mockup (OC-02 Fig 5). Replaced the two-tier (`creative:` / `technical:`) proposal with a flat schema delimited by a comment marker (`# ⊓ creative controls ⊓`). Updated rationale, alternatives, trade-offs, and open questions to match. Added explicit marker-detection regex.
+- **v0.1 · April 2026** — Initial draft, proposing a two-tier schema with separate `creative:` and `technical:` blocks. Superseded by v0.2.

@@ -1,111 +1,115 @@
-# UXS-NNN: [Surface Name]
+# UXS-NNN — [Surface name]
 
-- **Status**: Draft | Active | Superseded by [UXS-NNN](UXS-NNN-slug.md)
-- **Related PRD**: `docs/prd/PRD-NNN-slug.md`
-- **Related RFC**: `docs/rfc/RFC-NNN-slug.md` *(for behavioural rules — those live in RFC, not here)*
-- **Related IA**: `docs/uxs/OC_IA.md`
-- **Related UXS**: `docs/uxs/UXS-NNN-slug.md`
+> **Status** · Draft v0.1 · [date]
+> **IA anchor** · §surfaces/[…] · §shell-regions/[…] · §shared-tokens
+> **Related PRD** · PRD-NNN
+> **Related ADRs** · ADR-NNN, ADR-NNN
+> **Related RFC** · RFC-NNN (for behavioural rules — animation, debounce, keyboard)
 
-## Summary
+---
 
-[2–4 sentences: what surface this covers and what problem the visual contract solves.]
+## Why this UXS exists
+
+[1–2 sentences. What is this surface and why does it warrant its own visual contract. If the answer is "it's just like UXS-NNN," consider extending that one instead.]
 
 ## Principles
 
-[3–5 design convictions for this surface. The 'why' behind the token choices.]
+[The design convictions for this surface. 3–5 bullets. These explain the *why* behind the token choices.]
 
-- **[Principle 1]**: [description]
-- **[Principle 2]**: [description]
+- [Principle 1]
+- [Principle 2]
+- [Principle 3]
 
 ## Scope
 
-**In scope:**
-- [Specific panels, components, or states this UXS covers]
+**In scope** · [the panels, components, and views this UXS covers]
 
-**Non-goals:**
-- [Explicitly excluded]
+**Non-goals** · [explicitly what this UXS does *not* cover — usually deferred surfaces or surfaces with their own UXS]
 
-**Boundary note:** Behavioural rules (animation timing, debounce, keyboard shortcuts, resize logic) belong in the related RFC, not here.
+**Boundary note** · Behaviour (animation timing, debounce, keyboard shortcuts, scroll behaviour, focus management transitions) belongs in [RFC-NNN], not here. If you find yourself writing "when the user clicks X, Y animates to Z" in this doc, that sentence belongs in the RFC.
 
-## Theme Support
+## Theme
 
-- **Dark only** / Light only / Both
-- Primary palette: [palette name from OC_IA.md]
+Dark only. (OceanCanvas is dark-only by design — see `OC_IA.md §shared-tokens`.)
 
-## Semantic Colour Tokens
+## Tokens
 
-### Surface tokens
+### Inherited from IA
 
-| Token | Value | Usage |
-|---|---|---|
-| `canvas` | `#030B10` | Base background — all surfaces |
-| `surface` | `#050E1A` | Raised panels, cards |
-| `elevated` | `#091525` | Modals, dropdowns |
-| `overlay` | `rgba(3,11,16,0.85)` | Stats overlays on maps |
-| `border` | `rgba(255,255,255,0.07)` | All dividers |
-| `border-subtle` | `rgba(255,255,255,0.04)` | Internal component dividers |
+[Reference the shared tokens this UXS uses. Don't restate values — just reference.]
 
-### Text tokens
+- **Surface** · `canvas`, `surface`, `overlay`, `border` (`OC_IA.md §shared-tokens/surface-tokens`)
+- **Text** · `text`, `text-secondary`, `text-muted` (`OC_IA.md §shared-tokens/text-tokens`)
+- **Intent** · `intent-alert`, `intent-info` (`OC_IA.md §shared-tokens/intent-tokens`)
+- **Typography** · `type-hero`, `type-display`, `type-data`, `type-body`, `type-axis`, `type-label`
+- **Spacing** · base unit 4px
+
+### Defined here (surface-specific)
+
+[Tokens that are unique to this surface or source. Per [ADR-017], domain tokens for sources go here in the per-source UXS.]
 
 | Token | Value | Usage |
 |---|---|---|
-| `text-primary` | `rgba(255,255,255,1.0)` | Hero numbers, active labels |
-| `text-secondary` | `rgba(255,255,255,0.7)` | Body text, values |
-| `text-tertiary` | `rgba(255,255,255,0.4)` | Labels, metadata |
-| `text-muted` | `rgba(255,255,255,0.25)` | Section labels (spaced caps) |
-| `text-disabled` | `rgba(255,255,255,0.15)` | Inactive elements |
+| `domain-{x}-base` | `#hex` | Primary identity for the source |
+| `domain-{x}-accent` | `#hex` | Highlights, active states |
+| `domain-{x}-fill` | gradient or stops | Heatmap / chart fills |
 
-### Domain tokens *(source identity — not generic UI feedback)*
+## Layout
 
-| Token | Accent | Usage |
+### [View name]
+
+[Layout description. Use ASCII diagrams or component lists. Identify the major regions and their behaviour. Reference IA shell-regions where they appear.]
+
+```
+┌─────────────────────────────────────────────────┐
+│ [Topbar] (42px, IA shell)                       │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  [Main content region — describe]               │
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+| Region | Width / Height | Purpose |
 |---|---|---|
-| `domain-sst` | `#EF9F27` | SST source identity |
-| `domain-seaice` | `#AFA9EC` | Sea ice source identity |
-| `domain-salinity` | `#5DCAA5` | Salinity source identity |
-| `domain-sealevel` | `#5DCAA5` | Sea level source identity |
-| `domain-chlorophyll` | `#97C459` | Chlorophyll source identity |
-| `domain-argo` | `#AFA9EC` | Argo float source identity |
+| [region] | [size] | [description] |
 
-### Intent tokens
+## Component states
 
-| Token | Value | Usage |
-|---|---|---|
-| `intent-alert` | `#F09595` | Anomaly positive, warming, acceleration |
-| `intent-success` | `#5DCAA5` | Confirmed, active, complete |
-| `intent-warning` | `#EF9F27` | Caution, pending |
+[Static visual states only. Hover, active, focus, disabled, loading, empty, error. Do NOT include timing or transitions — those are RFC territory.]
 
-## Typography
+| Component | Default | Hover | Active | Focus | Disabled | Loading | Empty | Error |
+|---|---|---|---|---|---|---|---|---|
+| [component] | [token / description] | [...] | [...] | [...] | [...] | [...] | [...] | [...] |
 
-| Scale | Size | Weight | Usage |
-|---|---|---|---|
-| `display` | 72–80px | 500 | Hero data points (14.2°C, +20.4cm) |
-| `hero` | 48–56px | 500 | Large stats, section leaders |
-| `xl` | 28–32px | 500 | Sub-hero numbers |
-| `lg` | 18–22px | 500 | Secondary stats |
-| `base` | 14–16px | 400 | Body, descriptions |
-| `sm` | 11–12px | 400 | Supporting text |
-| `label` | 9–10px | 500 | Section labels — SPACED CAPS, `letter-spacing: 0.14em` |
-| `mono` | 10px | 400 | Coordinate displays, YAML, code |
+## Accessibility
 
-## Layout and Spacing
+- **Contrast** · all foreground/background pairings meet WCAG AA at minimum (4.5:1 for body text, 3:1 for large text). Hero numbers at `type-hero` against `canvas` confirmed compliant.
+- **Focus** · focus rings use `border-strong` token; visible on all interactive elements; never hidden via `outline: none` without an alternative.
+- **Keyboard** · all interactive elements reachable in tab order. Tab-order rules are RFC territory; this UXS only confirms reachability.
+- **Reduced motion** · per-RFC behaviour rules respect `prefers-reduced-motion`; this UXS specifies static appearance only.
 
-- **Base unit**: 4px
-- **Max content width**: [surface-specific]
-- **Major regions**: [describe the layout zones for this surface]
-
-## Key States
-
-| Component | Hover | Active | Focus | Disabled | Loading | Empty | Error |
-|---|---|---|---|---|---|---|---|
-| [Component] | [description] | [description] | [description] | [description] | [description] | [description] | [description] |
-
-## Acceptance Criteria
+## Acceptance criteria
 
 - [ ] All colours use semantic tokens — no one-off hex values
-- [ ] All foreground/background pairings use matching token pairs from this spec
-- [ ] Key states (hover, active, focus, disabled) match spec for all interactive elements
-- [ ] No chart borders anywhere on this surface
-- [ ] No white or light-mode backgrounds
-- [ ] Domain token used for source identity elements — intent tokens not used for source identity
-- [ ] Numbers at correct scale per typography table
-- [ ] Section labels in SPACED CAPS at `text-muted` colour
+- [ ] All foreground/background pairings use matching token pairs from this spec or IA's `§shared-tokens`
+- [ ] Domain tokens used only for source identity — intent tokens are not used to indicate sources
+- [ ] No chart borders, no boxed numbers, no light-mode backgrounds
+- [ ] Numbers at correct typography token per the layout tables
+- [ ] Section labels in spaced caps at `text-muted`
+- [ ] Focus visible on all interactive elements
+- [ ] Keyboard reachability confirmed for all interactive elements
+
+---
+
+## Notes on writing UXS in this format
+
+**The boundary is sharp.** UXS = static visual contract. Tokens, layout, component appearance, accessibility targets. Behaviour (when X clicked, Y animates) belongs in an RFC. If a UXS section starts to read like a sequence of events, it's probably an RFC paragraph in disguise.
+
+**Inherit from IA.** Shared tokens (canvas, surface, text, intent, typography, spacing) live in IA. Reference them by token name. Don't restate values — restating creates two sources of truth that drift.
+
+**Define what's distinctive.** Domain tokens, source-specific layouts, component states unique to this surface live in the UXS. The test: would a second surface (or second source) want a different value? If yes, it's per-UXS.
+
+**Voice.** UXS is the most functional document in the system. State the contract; don't argue for it. The argument lives in the related PRD (the surface's reason to exist) or the related ADR (the design decisions). UXS is the implementation contract.
+
+**Length.** Two to four pages. Long enough to cover layout + tokens + states; short enough to be reviewable in one pass.

@@ -1,79 +1,58 @@
-# PRD-NNN: [Feature Name]
+# PRD-NNN — [Feature Name]
 
-- **Status**: Draft | Partial (vX.Y) | Implemented (vX.Y)
-- **Related RFCs**: `docs/rfc/RFC-NNN-slug.md`
-- **Related ADRs**: `docs/adr/ADR-NNN-slug.md`
-- **Related UXS**: `docs/uxs/UXS-NNN-slug.md`
-- **Source**: OC-02 Section N
+> **Status** · Draft v0.1 · [date]
+> **Sources** · OC-02 §[section] · OC-05 §[section]
+> **Audiences** · [audience-1], [audience-2] (PA §audiences)
+> **Promises** · *[promise-1]*, *[promise-2]* (PA §promises)
+> **Principles** · *[principle-1]*, *[principle-2]* (PA §principles)
+> **Why this is a PRD** · [One sentence: what user-value question is argued here. If this sentence is hard to write, it is not a PRD — it is an RFC or an ADR.]
 
-## Summary
+---
 
-[One paragraph: what this feature does and why it matters.]
+[Opening paragraph. A vivid, present-tense moment that puts the reader inside the experience. This is the magazine lede. No "the user can…" — a specific person doing a specific thing. The rest of the document is the case for why this should exist.]
 
-## Background & Context
+## The problem
 
-[2–3 paragraphs: what problem this solves, why now, how it relates to existing features. Reference the relevant OC-02 section.]
+[1–2 paragraphs. What is broken or absent in someone's experience. Cite something real — a moment, a frustration, a referenced OC-02 section. Evidence, not assertion.]
 
-## Goals
+## The experience
 
-- [Goal 1: clear outcome]
-- [Goal 2: user benefit or system improvement]
+[Present-tense narrative of using the thing. A real person doing specific things. This single section replaces personas, user stories, and half of what functional requirements used to hold. If you find yourself writing "the user can…", rewrite it as "she scrubs the timeline back to March 2014…".]
 
-## Non-Goals
+## Why now
 
-- [Out of scope item 1]
-- [Future consideration not in this PRD]
+[Why this earns being built in this phase. What it unlocks downstream. What it costs to defer. Short.]
 
-## Personas
+## Success looks like
 
-- **[Persona Name]**: [role/description]
-  - [What they need]
-  - [How this feature helps them]
+[2–4 markers. Mostly qualitative for OceanCanvas — the project's measures are aesthetic and experiential. Each marker should be specific enough that you would recognise it when you saw it. Vague aspirations do not count.]
 
-## User Stories
+## Out of scope
 
-- *As [persona], I can [action] so that [benefit].*
+[Ruthless. Specific. The line you are not crossing in this PRD, and where the work that crosses it lives instead (other PRDs, RFCs, later phases).]
 
-## Functional Requirements
+## The sharpest threat
 
-### FR1: [Feature Area]
+[One assumption underneath this PRD that, if wrong, breaks the whole frame. Not a build risk ("the API might be slow") — a product risk ("the concept might not land"). Write the strongest case against the work. This is impact-level reasoning that nothing else in the doc system holds.]
 
-- **FR1.1**: [Specific requirement with clear acceptance criteria]
-- **FR1.2**: [Specific requirement with clear acceptance criteria]
+## Open threads
 
-### FR2: [Another Feature Area]
+[Where this PRD hands off. RFCs to be written, ADRs to be closed, UXS to be drafted. Each thread is a one-line pointer, not a section. If this list is empty, the PRD is either self-contained or incomplete.]
 
-- **FR2.1**: [Specific requirement]
+## Links
 
-## Success Metrics
+[Source OC docs, related PRDs, PA sections referenced.]
 
-- [Metric 1: specific and measurable]
+---
 
-## Dependencies
+## Notes on writing PRDs in this format
 
-- PRD-NNN: [related PRD]
-- RFC-NNN: [RFC for open technical questions this PRD raises]
+**Bar.** Not every feature needs a PRD. A PRD is for work where the *user-value argument* needs to be made. Pipeline plumbing, data formats, infrastructure — those are RFCs and ADRs. If the "Why this is a PRD" sentence in the header is hard to write, the work belongs elsewhere.
 
-## Constraints & Assumptions
+**Voice.** The PRD should sound like OceanCanvas — present-tense, declarative, slightly editorial. If a sentence could appear in any tech company's docs, rewrite it.
 
-**Constraints:**
-- [Hardware, performance, or compatibility constraints]
+**Length.** One to two pages. If the argument does not fit, the argument is not sharp enough yet.
 
-**Assumptions:**
-- [Assumption 1]
+**Doshi level test.** Every paragraph should answer "what changes for the person?" If it answers "what we are building" or "how we are building it," it belongs in an RFC, not here.
 
-## Design Considerations
-
-### [Decision Topic]
-
-- **Option A**: [description] — Pros: [x] · Cons: [y]
-- **Option B**: [description] — Pros: [x] · Cons: [y]
-- **Decision**: [chosen option and why]
-
-## Release Checklist
-
-- [ ] PRD reviewed
-- [ ] RFC-NNN created for open technical questions
-- [ ] Implementation complete
-- [ ] Tests cover key scenarios
-- [ ] Documentation updated
+**PA anchoring.** Every PRD references audiences, promises, and principles from `OC_PA.md`. If a PRD does not reference any PA section, it is either (a) not aligned with the product's commitments, or (b) restating PA-level reasoning instead of using it.

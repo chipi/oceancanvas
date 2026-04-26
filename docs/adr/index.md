@@ -1,35 +1,52 @@
 # ADR Index
 
-Architecture Decision Records for OceanCanvas. Permanent record of significant technical decisions.
+Architectural Decision Records for OceanCanvas. Each ADR is a single decision, locked, with rationale.
 
-ADRs are never deleted. Superseded ADRs are updated to status Superseded and link forward to the ADR that replaced them.
+The reference document for this folder is [`OC_TA.md`](OC_TA.md) — Technical Architecture. Every ADR locks a piece of TA. ADRs and TA live together because they are both *settled* — TA captures what is true now, ADRs capture how it became true.
 
-## Stream A — Pre-extracted from OC-04 (concept phase decisions)
+For exploration of open technical questions that haven't yet closed into ADRs, see [`../rfc/`](../rfc/index.md).
 
-| ADR | Title | Status |
-|---|---|---|
-| [ADR-001](ADR-001-prefect-as-orchestration.md) | Prefect as pipeline orchestration | Accepted |
-| [ADR-002](ADR-002-dlt-tabular-ingestion.md) | dlt for tabular and REST source ingestion | Accepted |
-| [ADR-003](ADR-003-xarray-netcdf-processing.md) | xarray + requests for NetCDF binary sources | Accepted |
-| [ADR-004](ADR-004-no-database-v1.md) | No database in v1 — file-based architecture | Accepted |
-| [ADR-005](ADR-005-docker-compose-deployment.md) | Docker Compose for deployment | Accepted |
-| [ADR-006](ADR-006-static-file-serving.md) | Static file serving — no runtime API server | Accepted |
-| [ADR-007](ADR-007-github-actions-ci-only.md) | GitHub Actions for CI only | Accepted |
-| [ADR-008](ADR-008-p5js-puppeteer-rendering.md) | p5.js + Puppeteer for generative art rendering | Accepted |
-| [ADR-009](ADR-009-deckgl-maplibre-dashboard.md) | deck.gl + MapLibre GL for dashboard spatial rendering | Accepted |
-| [ADR-010](ADR-010-observable-plot-charts.md) | Observable Plot for time series and analytical charts | Accepted |
-| [ADR-011](ADR-011-ffmpeg-video-assembly.md) | ffmpeg for video frame assembly and audio muxing | Accepted |
-| [ADR-012](ADR-012-generative-music-api.md) | Generative music API for audio generation | Accepted |
-| [ADR-013](ADR-013-cloudflare-r2-image-serving.md) | Cloudflare R2 for production image serving | Accepted |
-| [ADR-014](ADR-014-no-auth-sources-only-v1.md) | No-authentication data sources only for v1 | Accepted |
-| [ADR-015](ADR-015-editorial-design-philosophy.md) | Editorial design philosophy — dark canvas, data as hero | Accepted |
+## What gets an ADR
 
-## Stream B — Post-RFC decisions
+A single architectural decision, locked. ADRs commit. They are short. They are written *after* a decision is made, not as part of making it. ADRs are append-only — superseded by new ADRs, never edited in place.
 
-| ADR | Title | Status | Origin RFC |
+If the decision needs deliberation first, write an [RFC](../rfc/index.md). If the work is "set up the thing", neither — it's a config file and a commit.
+
+## Reference
+
+| Doc | Purpose |
+|---|---|
+| [OC_TA.md](OC_TA.md) | Components, contracts, constraints, stack, RFC/ADR state map. The reference doc this folder anchors to. |
+| [ADR_TEMPLATE.md](ADR_TEMPLATE.md) | ADR template. Read the "Notes on writing ADRs" section before starting. |
+
+## ADRs
+
+| ADR | Title | Status | TA anchor |
 |---|---|---|---|
-| — | *(none yet — populated as RFCs close)* | | |
+| [ADR-001](ADR-001-prefect-orchestration.md) | Prefect as orchestration | Accepted | §components/pipeline · §stack |
+| [ADR-002](ADR-002-dlt-rest-ingestion.md) | dlt for REST/JSON ingestion | Accepted | §components/pipeline · §stack |
+| [ADR-003](ADR-003-xarray-netcdf.md) | xarray + requests for NetCDF sources | Accepted | §components/pipeline · §stack |
+| [ADR-004](ADR-004-three-layer-data-store.md) | Three-layer data store | Accepted | §components/data-store |
+| [ADR-005](ADR-005-no-database-v1.md) | No database in v1 | Accepted | §constraints |
+| [ADR-006](ADR-006-p5js-sketch-language.md) | p5.js as sketch language | Accepted | §components/render-system · §stack |
+| [ADR-007](ADR-007-puppeteer-renderer.md) | Puppeteer for server-side rendering | Accepted | §components/render-system · §stack |
+| [ADR-008](ADR-008-shared-payload-format.md) | Shared payload format for preview and pipeline | Accepted | §contracts/render-payload · §constraints |
+| [ADR-009](ADR-009-deck-gl-maplibre.md) | deck.gl + MapLibre for spatial rendering | Accepted | §components/web-frontend · §stack |
+| [ADR-010](ADR-010-observable-plot.md) | Observable Plot for time series | Accepted | §components/web-frontend · §stack |
+| [ADR-011](ADR-011-docker-compose.md) | Docker Compose deployment | Accepted | §components/service-layer · §stack |
+| [ADR-012](ADR-012-caddy-static-server.md) | Caddy as static file server | Accepted | §components/service-layer · §stack |
+| [ADR-013](ADR-013-github-actions-code-only.md) | GitHub Actions for code CI only | Accepted | §components/ci · §stack |
+| [ADR-014](ADR-014-synthetic-e2e-gate.md) | Synthetic-data e2e test as CI gate | Accepted | §components/ci |
+| [ADR-015](ADR-015-processed-json-format.md) | Processed JSON format with multi-band handling | Accepted | §contracts/processed-data |
+| [ADR-016](ADR-016-single-author-phase-1.md) | Single-author recipes in Phase 1 | Accepted | §components/data-store · §constraints |
+| [ADR-017](ADR-017-one-layout-per-source.md) | One editorial layout per source | Accepted | §components/web-frontend |
 
-## Template
+## State map
 
-New ADRs: copy [`ADR_TEMPLATE.md`](ADR_TEMPLATE.md) and number sequentially.
+The live state of all RFCs and ADRs lives in [`OC_TA.md §map`](OC_TA.md#map). This index mirrors the ADR portion. RFCs in deliberation are tracked in [`../rfc/index.md`](../rfc/index.md).
+
+When an RFC closes into a new ADR, three things update together:
+
+1. The new ADR file is added here.
+2. The RFC's status flips to *Decided* in `../rfc/index.md` and in TA §map.
+3. The new ADR is added to TA §map's ADRs table. If it locks a piece of §stack, the §stack table also updates with the ADR pointer.
