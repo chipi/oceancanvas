@@ -24,37 +24,42 @@
 ## Goals
 
 1. **[Goal 1]**: [technical objective]
+2. **[Goal 2]**: [technical objective]
 
 ## Constraints & Assumptions
 
 **Constraints:**
-- [constraint]
+- [Technical, performance, or compatibility constraints]
 
 **Assumptions:**
-- [assumption]
+- [Assumption 1]
 
 ## Design & Implementation
 
 ### 1. [Component or Phase]
 
-[Description.]
+[Description of design and implementation approach.]
 
 ```python
-# Example
+# Example code or structure
 ```
+
+### 2. [Integration Points]
+
+- **[Integration Point 1]**: [how it integrates]
 
 ## Key Decisions
 
-1. **[Decision]**
-   - **Decision**: [what]
+1. **[Decision Topic]**
+   - **Decision**: [what was decided]
    - **Rationale**: [why]
 
 ## Alternatives Considered
 
 1. **[Alternative]**
-   - **Description**: [what]
-   - **Pros**: [x]
-   - **Cons**: [y]
+   - **Description**: [what this was]
+   - **Pros**: [benefits]
+   - **Cons**: [drawbacks]
    - **Why Rejected**: [reason]
 
 ## Testing Strategy
@@ -65,7 +70,7 @@
 
 ## Open Questions
 
-1. [Question]
+1. [Question remaining after this RFC]
 
 ## References
 
