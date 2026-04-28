@@ -35,7 +35,7 @@ restart: down up ## Restart all services
 # ── Pipeline (Python) ─────────────────────────────
 
 pipeline-install: ## Install pipeline Python dependencies
-	cd pipeline && uv sync
+	cd pipeline && uv sync --extra dev
 
 pipeline-lint: ## Lint pipeline code
 	cd pipeline && uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/

@@ -10,12 +10,12 @@ from pathlib import Path
 
 from prefect import flow, get_run_logger
 
+from oceancanvas.tasks.build_payload import build_payload
 from oceancanvas.tasks.discover import discover
 from oceancanvas.tasks.fetch import fetch
-from oceancanvas.tasks.process import process
-from oceancanvas.tasks.build_payload import build_payload
-from oceancanvas.tasks.render import render
 from oceancanvas.tasks.index import index
+from oceancanvas.tasks.process import process
+from oceancanvas.tasks.render import render
 
 
 @flow(name="daily_ocean_pipeline", log_prints=True)

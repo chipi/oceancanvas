@@ -8,7 +8,6 @@ Manual trigger: make pipeline-run (via prefect deployment run)
 """
 
 import os
-import sys
 
 import sentry_sdk
 
