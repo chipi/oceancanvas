@@ -2,7 +2,8 @@
         pipeline-install pipeline-lint pipeline-test pipeline-test-int pipeline-run pipeline-shell \
         gallery-install gallery-lint gallery-test gallery-dev gallery-build \
         render-test build build-pipeline build-gallery \
-        ci e2e clean format lint docs-check \
+        ci e2e clean format lint \
+        docs-install docs-serve docs-build docs-deploy \
         gebco-download backup restore
 
 help: ## Show this help
@@ -93,6 +94,20 @@ ci: lint pipeline-test gallery-test render-test build e2e ## Run full CI locally
 e2e: ## Run end-to-end tests via Docker Compose
 	docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from e2e
 	docker compose -f docker-compose.test.yml down
+
+# ── Docs (MkDocs) ────────────────────────────────
+
+docs-install: ## Install docs dependencies
+	pip install -r docs/requirements.txt
+
+docs-serve: ## Serve docs locally (port 8000)
+	mkdocs serve
+
+docs-build: ## Build docs site to site/
+	mkdocs build --strict
+
+docs-deploy: ## Deploy docs to GitHub Pages
+	mkdocs gh-deploy --force
 
 # ── Utilities ─────────────────────────────────────
 

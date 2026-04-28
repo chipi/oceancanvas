@@ -27,6 +27,7 @@ dist/
 Thumbs.db
 
 # Build
+site/
 *.egg-info/
 pipeline/src/oceancanvas/renderer/node_modules/
 
