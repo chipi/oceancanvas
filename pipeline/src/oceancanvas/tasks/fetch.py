@@ -1,20 +1,89 @@
 """Task 02 — Fetch.
 
-Downloads raw files to data/sources/.
-OISST and GEBCO fetched as NetCDF via ERDDAP griddap URLs.
-Open-Meteo is a JSON API call. dlt handles incremental state for REST sources.
+Downloads raw source data to data/sources/.
+OISST fetched as NetCDF via ERDDAP griddap URL (xarray + requests per ADR-003).
 """
 
+from __future__ import annotations
+
+import os
 from pathlib import Path
 
-from prefect import get_run_logger, task
+import requests
+from prefect import task
+
+from oceancanvas.log import get_logger
+
+ERDDAP_URL = os.environ.get("OISST_ERDDAP_URL", "https://coastwatch.pfeg.noaa.gov/erddap")
+OISST_DATASET_ID = os.environ.get("OISST_DATASET_ID", "ncdcOisst21Agg_LonPM180")
+
+# Processing region — North Atlantic, wider than any single recipe
+PROCESSING_REGION = {
+    "lat_min": 20.0,
+    "lat_max": 75.0,
+    "lon_min": -90.0,
+    "lon_max": 10.0,
+}
 
 
-@task(name="fetch")
-def fetch(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> None:
-    """Fetch raw data to data/sources/."""
-    logger = get_run_logger()
-    logger.info("Fetching raw source data")
-    # TODO: fetch OISST NetCDF from ERDDAP
-    # TODO: fetch Argo daily index JSON
-    # TODO: verify GEBCO subset exists
+def _build_oisst_url(date: str) -> str:
+    """Build ERDDAP griddap URL for one day of OISST, cropped to processing region."""
+    r = PROCESSING_REGION
+    return (
+        f"{ERDDAP_URL}/griddap/{OISST_DATASET_ID}.nc?"
+        f"sst[({date}T12:00:00Z):1:({date}T12:00:00Z)]"
+        f"[(0.0):1:(0.0)]"
+        f"[({r['lat_min']}):1:({r['lat_max']})]"
+        f"[({r['lon_min']}):1:({r['lon_max']})]"
+    )
+
+
+def _fetch_oisst(date: str, output_path: Path) -> None:
+    """Download one day of OISST NetCDF from ERDDAP."""
+    url = _build_oisst_url(date)
+    resp = requests.get(url, timeout=120, stream=True)
+    resp.raise_for_status()
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = output_path.with_suffix(".tmp")
+    with tmp.open("wb") as f:
+        for chunk in resp.iter_content(chunk_size=8192):
+            f.write(chunk)
+    tmp.rename(output_path)
+
+
+@task(name="fetch", retries=3, retry_delay_seconds=60)
+def fetch(
+    data_dir: Path,
+    recipes_dir: Path,
+    renders_dir: Path,
+    dates_to_fetch: dict[str, str] | None = None,
+) -> dict[str, Path]:
+    """Fetch raw data for each source date discovered.
+
+    Returns a dict of {source_id: Path} for fetched files.
+    """
+    logger = get_logger()
+    sources_dir = data_dir / "sources"
+
+    if not dates_to_fetch:
+        logger.info("Nothing to fetch")
+        return {}
+
+    fetched: dict[str, Path] = {}
+
+    # OISST
+    if "oisst" in dates_to_fetch:
+        date = dates_to_fetch["oisst"]
+        output_path = sources_dir / "oisst" / f"{date}.nc"
+
+        if output_path.exists():
+            logger.info("OISST %s already on disk, skipping", date)
+        else:
+            logger.info("Fetching OISST %s from ERDDAP...", date)
+            _fetch_oisst(date, output_path)
+            logger.info("OISST %s saved (%d bytes)", date, output_path.stat().st_size)
+
+        fetched["oisst"] = output_path
+
+    return fetched

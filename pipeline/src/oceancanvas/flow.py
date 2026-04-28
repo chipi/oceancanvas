@@ -28,9 +28,10 @@ def daily_ocean_pipeline(test_mode: bool = False) -> None:
 
     if test_mode:
         logger.info("Test mode: skipping discover and fetch")
+        dates_to_fetch = {}
     else:
-        discover(data_dir, recipes_dir, renders_dir)
-        fetch(data_dir, recipes_dir, renders_dir)
+        dates_to_fetch = discover(data_dir, recipes_dir, renders_dir)
+        fetch(data_dir, recipes_dir, renders_dir, dates_to_fetch=dates_to_fetch)
 
     process(data_dir, recipes_dir, renders_dir)
     build_payload(data_dir, recipes_dir, renders_dir)
