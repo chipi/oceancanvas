@@ -1,0 +1,20 @@
+name: Bug
+description: Something isn't working
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+      description: Describe the bug clearly
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behaviour
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+  - type: input
+    attributes:
+      label: Slice / surface affected
+      placeholder: "e.g., Slice 1 / Pipeline / Gallery"

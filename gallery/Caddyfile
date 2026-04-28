@@ -1,0 +1,22 @@
+:8080 {
+    root * /srv
+    file_server
+
+    # SPA fallback
+    try_files {path} /index.html
+
+    # Data files served as static assets
+    handle /data/* {
+        root * /
+        file_server
+    }
+    handle /renders/* {
+        root * /
+        file_server
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}

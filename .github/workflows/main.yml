@@ -1,0 +1,18 @@
+name: Main
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker images
+        run: docker compose build
+      # TODO: push to GHCR when ready for deployment
+      # - name: Push to GHCR
+      #   run: |
+      #     echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      #     docker push ghcr.io/chipi/oceancanvas-pipeline:latest
+      #     docker push ghcr.io/chipi/oceancanvas-gallery:latest

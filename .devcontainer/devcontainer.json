@@ -1,0 +1,26 @@
+{
+  "name": "OceanCanvas",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "postCreateCommand": "pip install uv ruff && make setup",
+  "forwardPorts": [5173, 8080, 4200],
+  "portsAttributes": {
+    "5173": { "label": "Vite (gallery dev)" },
+    "8080": { "label": "Caddy (gallery)" },
+    "4200": { "label": "Prefect UI" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "esbenp.prettier-vscode",
+        "ms-python.python"
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+/* OceanCanvas design tokens — from IA shared-tokens section */
+:root {
+  /* Surface */
+  --canvas: #030B10;
+  --surface: #050E1A;
+  --elevated: #0A1828;
+  --overlay: rgba(3, 11, 16, 0.85);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Text */
+  --text: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --text-disabled: rgba(255, 255, 255, 0.20);
+
+  /* Intent */
+  --intent-alert: #F09595;
+  --intent-info: #5DCAA5;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--canvas);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}

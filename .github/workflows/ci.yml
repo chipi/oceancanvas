@@ -1,0 +1,48 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Lint pipeline
+        run: cd pipeline && uv sync && uv run ruff check src/ tests/ && uv run ruff format --check src/ tests/
+      - name: Lint gallery
+        run: cd gallery && npm ci && npm run lint
+
+  test-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - name: Unit + integration tests
+        run: cd pipeline && uv sync && uv run pytest tests/unit/ tests/integration/ -v
+
+  test-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: cd gallery && npm ci && npm test
+
+  test-renderer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: cd pipeline/src/oceancanvas/renderer && npm ci && npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [lint, test-pipeline, test-gallery, test-renderer]
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from e2e

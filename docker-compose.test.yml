@@ -1,0 +1,39 @@
+services:
+  pipeline:
+    build: ./pipeline
+    volumes:
+      - ./pipeline/tests/fixtures/oisst:/data/sources/oisst
+      - ./pipeline/tests/fixtures/argo:/data/sources/argo
+      - ./pipeline/tests/fixtures/gebco:/data/gebco
+      - ./pipeline/tests/fixtures/recipes:/recipes
+      - test-processed:/data/processed
+      - test-renders:/renders
+      - ./sketches:/sketches:ro
+    command: python -m oceancanvas.flow --test-mode
+
+  gallery:
+    build: ./gallery
+    ports:
+      - "8080:8080"
+    volumes:
+      - test-processed:/data/processed:ro
+      - test-renders:/renders:ro
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  e2e:
+    build: ./e2e
+    depends_on:
+      gallery:
+        condition: service_healthy
+    command: npx playwright test
+
+volumes:
+  test-processed:
+  test-renders:

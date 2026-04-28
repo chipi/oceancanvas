@@ -1,0 +1,18 @@
+# north-atlantic-sst — the first OceanCanvas recipe
+name: north-atlantic-sst
+region:
+  lat: [25, 65]
+  lon: [-80, 0]
+  name: North Atlantic
+sources:
+  primary: oisst
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: field
+  colormap: thermal
+  opacity: 0.71
+  smooth: true
+  seed: 42

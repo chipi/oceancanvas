@@ -1,27 +1,26 @@
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
-.env
-
-# Node
-node_modules/
-
-# Pipeline data — regenerable, not committed
+# Runtime data (regenerable)
 data/sources/
 data/processed/
-data/state.json
+data/gebco/
+renders/
 
-# Docker
-*.log
+# Environment
+.env
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
 
-# Editor
+# IDE
 .idea/
 .vscode/
 *.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+*.egg-info/
+pipeline/src/oceancanvas/renderer/node_modules/

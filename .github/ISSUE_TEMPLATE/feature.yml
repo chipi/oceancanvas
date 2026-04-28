@@ -1,0 +1,14 @@
+name: Feature
+description: A new feature or enhancement
+labels: [enhancement]
+body:
+  - type: textarea
+    attributes:
+      label: What and why
+      description: What should exist and why it matters
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Related doc
+      placeholder: "e.g., PRD-002, RFC-001, ADR-007"
