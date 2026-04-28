@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OceanCanvas — field.js test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <style>body { margin: 0; background: #030B10; }</style>
+</head>
+<body>
+<script>
+// Synthetic 10x10 SST payload — gradient from 10°C (north) to 25°C (south)
+const rows = 20, cols = 30;
+const data = [];
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    // South-to-north gradient with some east-west variation
+    const lat_frac = r / (rows - 1); // 0=south, 1=north
+    const lon_frac = c / (cols - 1);
+    let sst = 25 - 15 * lat_frac; // 25°C south → 10°C north
+    sst += Math.sin(lon_frac * Math.PI * 2) * 2; // east-west wave
+    // Add a NaN hole in the middle (simulating land)
+    if (r >= 8 && r <= 12 && c >= 12 && c <= 16) sst = -999.0;
+    data.push(Math.round(sst * 100) / 100);
+  }
+}
+
+window.OCEAN_PAYLOAD = {
+  version: 1,
+  recipe: {
+    id: "test-field",
+    name: "test-field",
+    render: { type: "field", colormap: "thermal", opacity: 0.9, smooth: true, seed: 42 },
+    render_date: "2026-04-28"
+  },
+  region: { lat_min: 25, lat_max: 65, lon_min: -80, lon_max: 0 },
+  output: { width: 960, height: 640 },
+  data: {
+    primary: {
+      data: data,
+      shape: [rows, cols],
+      min: 8,
+      max: 27,
+      lat_range: [25, 65],
+      lon_range: [-80, 0],
+      source_id: "oisst",
+      date: "2026-04-28"
+    }
+  }
+};
+</script>
+<script src="field.js"></script>
+</body>
+</html>
