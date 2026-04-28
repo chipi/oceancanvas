@@ -135,5 +135,8 @@ def process(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> None:
             logger.info("OISST %s already processed, skipping", date)
             continue
         logger.info("Processing OISST %s", date)
-        _process_oisst(nc_file, oisst_output, date)
-        logger.info("OISST %s → 3 files in %s", date, oisst_output)
+        try:
+            _process_oisst(nc_file, oisst_output, date)
+            logger.info("OISST %s → 3 files in %s", date, oisst_output)
+        except Exception as e:
+            logger.error("Failed to process OISST %s: %s", date, e)

@@ -41,14 +41,54 @@ def _load_recipe(recipe_path: Path) -> dict:
 
 
 def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[float]) -> dict:
-    """Crop processed data array to the recipe's region.
+    """Crop processed data array to the recipe's lat/lon region.
 
-    For now, if the processed data already covers the recipe region
-    (which it does — processing region is wider than any recipe),
-    return the full array. Proper sub-cropping is a refinement.
+    The processed data covers the full processing region (wider than any recipe).
+    This function slices to the recipe's bounds using linear interpolation of
+    lat/lon coordinates from the processed metadata.
     """
-    # TODO: actual sub-crop when recipe region is smaller than processing region
-    return processed
+    import numpy as np
+
+    data_lat = processed["lat_range"]  # [min, max]
+    data_lon = processed["lon_range"]  # [min, max]
+    shape = processed["shape"]  # [lat_count, lon_count]
+    flat = processed["data"]
+
+    lat_count, lon_count = shape
+
+    # If recipe region matches or exceeds processed region, return as-is
+    if (
+        lat_range[0] <= data_lat[0]
+        and lat_range[1] >= data_lat[1]
+        and lon_range[0] <= data_lon[0]
+        and lon_range[1] >= data_lon[1]
+    ):
+        return processed
+
+    # Compute pixel indices for the crop bounds
+    def _idx(val: float, vmin: float, vmax: float, n: int) -> int:
+        frac = (val - vmin) / (vmax - vmin) if vmax != vmin else 0.0
+        return max(0, min(n - 1, int(round(frac * (n - 1)))))
+
+    lat_i0 = _idx(lat_range[0], data_lat[0], data_lat[1], lat_count)
+    lat_i1 = _idx(lat_range[1], data_lat[0], data_lat[1], lat_count) + 1
+    lon_i0 = _idx(lon_range[0], data_lon[0], data_lon[1], lon_count)
+    lon_i1 = _idx(lon_range[1], data_lon[0], data_lon[1], lon_count) + 1
+
+    arr = np.array(flat, dtype=np.float32).reshape(lat_count, lon_count)
+    cropped = arr[lat_i0:lat_i1, lon_i0:lon_i1]
+
+    valid = cropped[cropped != -999.0]
+    return {
+        "data": cropped.flatten().tolist(),
+        "shape": list(cropped.shape),
+        "min": round(float(valid.min()), 4) if valid.size > 0 else 0.0,
+        "max": round(float(valid.max()), 4) if valid.size > 0 else 0.0,
+        "lat_range": [lat_range[0], lat_range[1]],
+        "lon_range": [lon_range[0], lon_range[1]],
+        "source_id": processed.get("source_id", ""),
+        "date": processed.get("date", ""),
+    }
 
 
 def _find_latest_date(processed_dir: Path, source_id: str) -> str | None:

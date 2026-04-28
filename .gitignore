@@ -4,6 +4,7 @@ data/processed/
 data/gebco/
 data/state.json
 data/payloads/
+data/.pipeline.lock
 renders/*
 !renders/.gitkeep
 manifest.json

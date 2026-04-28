@@ -67,13 +67,40 @@ class TestFindLatestDate:
 
 
 class TestCropToRegion:
-    def test_returns_data_unchanged_for_now(self):
-        """Stub implementation returns input unchanged."""
+    def test_returns_unchanged_when_region_covers_data(self):
+        """If recipe region >= processed region, return as-is."""
         from oceancanvas.tasks.build_payload import _crop_to_region
 
-        data = {"data": [1, 2, 3], "shape": [1, 3]}
-        result = _crop_to_region(data, [25, 65], [-80, 0])
+        data = {
+            "data": [1, 2, 3, 4],
+            "shape": [2, 2],
+            "lat_range": [30, 60],
+            "lon_range": [-50, -10],
+            "source_id": "oisst",
+            "date": "2026-01-15",
+        }
+        result = _crop_to_region(data, [20, 70], [-60, 0])
         assert result is data
+
+    def test_crops_to_smaller_region(self):
+        """Cropping a 4x4 grid to a subregion produces smaller output."""
+        from oceancanvas.tasks.build_payload import _crop_to_region
+
+        # 4x4 grid, lat 20-80, lon -80-0
+        data = {
+            "data": list(range(16)),
+            "shape": [4, 4],
+            "lat_range": [20.0, 80.0],
+            "lon_range": [-80.0, 0.0],
+            "source_id": "oisst",
+            "date": "2026-01-15",
+        }
+        result = _crop_to_region(data, [35, 65], [-60, -20])
+        assert result["shape"][0] <= 4
+        assert result["shape"][1] <= 4
+        assert len(result["data"]) == result["shape"][0] * result["shape"][1]
+        assert result["lat_range"] == [35, 65]
+        assert result["lon_range"] == [-60, -20]
 
 
 class TestBuildOnePayload:

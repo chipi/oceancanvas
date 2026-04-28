@@ -1,8 +1,28 @@
 """Tests for the pipeline flow wiring."""
 
+import os
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from oceancanvas.flow import daily_ocean_pipeline
+
+
+@pytest.fixture(autouse=True)
+def _flow_env(tmp_path):
+    """Set DATA_DIR so the lock file goes to a temp directory."""
+    with patch.dict(
+        os.environ,
+        {
+            "DATA_DIR": str(tmp_path / "data"),
+            "RECIPES_DIR": str(tmp_path / "recipes"),
+            "RENDERS_DIR": str(tmp_path / "renders"),
+        },
+    ):
+        (tmp_path / "data").mkdir()
+        (tmp_path / "recipes").mkdir()
+        (tmp_path / "renders").mkdir()
+        yield
 
 
 @patch("oceancanvas.flow.index")
@@ -17,7 +37,6 @@ def test_flow_calls_all_tasks_in_order(
     """All six tasks are called in the correct sequence."""
     mock_discover.return_value = {"oisst": "2026-01-15"}
 
-    # Track call order via a shared manager
     manager = MagicMock()
     manager.attach_mock(mock_discover, "discover")
     manager.attach_mock(mock_fetch, "fetch")
@@ -28,7 +47,6 @@ def test_flow_calls_all_tasks_in_order(
 
     daily_ocean_pipeline.fn(test_mode=False)
 
-    # Extract the method names in call order
     call_names = [c[0] for c in manager.method_calls]
     assert call_names == ["discover", "fetch", "process", "build_payload", "render", "index"]
 

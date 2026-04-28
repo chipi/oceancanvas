@@ -107,6 +107,38 @@ class TestProcessOisst:
         assert meta["shape"] == [10, 10]
 
 
+class TestProcessOisstErrors:
+    def test_handles_truncated_file(self, tmp_path: Path):
+        """A truncated/corrupt file should raise, not hang."""
+        bad_nc = tmp_path / "bad.nc"
+        bad_nc.write_bytes(b"not a netcdf file at all")
+        output = tmp_path / "output"
+
+        try:
+            _process_oisst(bad_nc, output, "2026-01-15")
+            assert False, "Should have raised an exception"
+        except Exception:
+            pass
+
+        # No partial output should be left
+        assert not (output / "2026-01-15.json").exists()
+
+    def test_handles_missing_sst_variable(self, tmp_path: Path):
+        """A NetCDF without 'sst' variable should raise KeyError."""
+        import xarray as xr
+
+        ds = xr.Dataset({"temperature": (["time", "lat"], [[1.0, 2.0]])})
+        nc_path = tmp_path / "no_sst.nc"
+        ds.to_netcdf(nc_path)
+        output = tmp_path / "output"
+
+        try:
+            _process_oisst(nc_path, output, "2026-01-15")
+            assert False, "Should have raised KeyError"
+        except KeyError:
+            pass
+
+
 class TestProcess:
     def test_processes_oisst_files(self, tmp_data_dir: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
@@ -155,3 +187,16 @@ class TestProcess:
     def test_noop_when_no_source_data(self, tmp_data_dir: Path):
         """No crash when data/sources/oisst doesn't exist."""
         process.fn(tmp_data_dir / "data", tmp_data_dir / "recipes", tmp_data_dir / "renders")
+
+    def test_continues_on_corrupt_file(self, tmp_data_dir: Path):
+        """A corrupt .nc file should be logged and skipped, not crash the task."""
+        src_dir = tmp_data_dir / "data" / "sources" / "oisst"
+        src_dir.mkdir(parents=True)
+        (src_dir / "2026-01-15.nc").write_bytes(b"corrupt data")
+
+        # Should not raise — error is logged and skipped
+        process.fn(tmp_data_dir / "data", tmp_data_dir / "recipes", tmp_data_dir / "renders")
+
+        # No output should have been created
+        processed = tmp_data_dir / "data" / "processed" / "oisst"
+        assert not (processed / "2026-01-15.json").exists()
