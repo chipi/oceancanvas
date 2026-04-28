@@ -11,6 +11,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": true,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
