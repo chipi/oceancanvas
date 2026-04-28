@@ -1,6 +1,6 @@
 # RFC-002 — Render payload format
 
-> **Status** · Draft v0.1 · April 2026
+> **Status** · Draft v0.2 · April 2026 (revised to match Slice 1 implementation)
 > **TA anchor** · §contracts/render-payload · §components/render-system · §constraints (shared payload)
 > **Related** · RFC-001 Recipe YAML schema · RFC-004 Live preview architecture · ADR-008 Shared payload format
 > **Closes into** · ADR (pending — schema details, distinct from ADR-008 which locks the principle)
@@ -46,53 +46,48 @@ The same sketch reads this payload in the editor preview (live) and in the pipel
 A single JSON file per render (or per preview) with a fixed top-level schema. Numeric arrays serialised as plain JSON arrays of float32 values. One file, loaded with a single `fetch`, parsed with `JSON.parse`. No separate context loading.
 
 ```javascript
-// window.OCEAN_PAYLOAD shape
+// window.OCEAN_PAYLOAD shape (v0.2 — matches Slice 1 implementation)
 
 {
   "version": 1,
   "recipe": {
-    "id": "north-atlantic-drift",
-    "name": "North Atlantic Drift",
-    "render_type": "particles",
+    "id": "north-atlantic-sst",
+    "name": "north-atlantic-sst",
+    "render": {                    // the recipe's render block, passed through
+      "type": "field",
+      "colormap": "thermal",
+      "opacity": 0.71,
+      "smooth": true,
+      "seed": 42
+    },
     "render_date": "2026-04-25"
   },
   "region": {
-    "lat_min": 30, "lat_max": 60,
-    "lon_min": -50, "lon_max": -10
+    "lat_min": 25, "lat_max": 65,
+    "lon_min": -80, "lon_max": 0
   },
-  "canvas": {
-    "width": 1200,
-    "height": 900
+  "output": {                      // was "canvas" in v0.1
+    "width": 1920,
+    "height": 1080
   },
-  "primary": {
-    "source_id": "oisst",
-    "data": [/* flat Float32Array, length = lat_count * lon_count */],
-    "shape": [lat_count, lon_count],
-    "min": 4.2,
-    "max": 21.8,
-    "lat_range": [30.0, 60.0],
-    "lon_range": [-50.0, -10.0],
-    "nan_value": -999.0,
-    "fetched_at": "2026-04-25T06:14:22Z"
-  },
-  "context": {
-    "bathymetry": { /* same shape as primary */ }
-  },
-  "audio_scalars": {
-    "wave_height_mean": 2.4,
-    "current_speed_mean": 0.31
-  },
-  "creative": {
-    "mood_preset": "storm-surge",
-    "colour_character": "thermal",
-    "temporal_weight": "lingering"
-  },
-  "technical": {
-    "colormap": "thermal-warm",
-    "particle_count": 4000
+  "data": {
+    "primary": {                   // the processed JSON from data/processed/
+      "data": [/* flat float32 array, NaN as -999.0 */],
+      "shape": [lat_count, lon_count],
+      "min": 10.0,
+      "max": 25.0,
+      "lat_range": [25.0, 65.0],
+      "lon_range": [-80.0, 0.0],
+      "source_id": "oisst",
+      "date": "2026-04-25"
+    }
+    // "context": { ... }          // GEBCO bathymetry — added when issue #15 lands
+    // "audio_scalars": { ... }    // added in Slice 3 (Video Editor)
   }
 }
 ```
+
+**Changes from v0.1:** `"canvas"` renamed to `"output"`. Primary data nested under `"data"` object (allows adding `"context"`, `"audio_scalars"` as siblings without restructuring). `"creative"` and `"technical"` blocks removed — the sketch reads `recipe.render` directly. The recipe's full render block is passed through rather than split into creative/technical halves.
 
 Numeric arrays as plain JSON arrays of float32 values. Yes, this is verbose. Modern JSON.parse handles a 100k-element float array in under 30ms in Chrome — well within the 100ms goal. The verbosity is the price of debuggability and zero binary-library dependency.
 

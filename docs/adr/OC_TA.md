@@ -135,7 +135,7 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | RFC | Title | Status | Closes into |
 |---|---|---|---|
 | [RFC-001](../rfc/RFC-001-recipe-yaml-schema.md) | Recipe YAML schema | Draft v0.2 | ADR (pending) |
-| [RFC-002](../rfc/RFC-002-render-payload-format.md) | Render payload format | Draft v0.1 | ADR-008 (locked principle) + ADR (pending, schema) |
+| [RFC-002](../rfc/RFC-002-render-payload-format.md) | Render payload format | Draft v0.2 | ADR-008 (locked principle) + ADR (pending, schema) |
 | [RFC-003](../rfc/RFC-003-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Draft v0.1 | ADR (pending) |
 | [RFC-004](../rfc/RFC-004-live-preview-architecture.md) | Live preview architecture | Draft v0.1 | ADR (pending) |
 | [RFC-005](../rfc/RFC-005-yaml-round-tripping.md) | YAML round-tripping | Draft v0.2 | ADR (pending) |

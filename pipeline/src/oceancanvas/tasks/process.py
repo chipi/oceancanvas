@@ -18,6 +18,7 @@ import xarray as xr
 from PIL import Image
 from prefect import task
 
+from oceancanvas.io import atomic_write_bytes, atomic_write_text
 from oceancanvas.log import get_logger
 
 # Thermal colormap stops — navy → teal → green → amber → coral → dark red
@@ -54,60 +55,64 @@ def _apply_thermal_colormap(data: np.ndarray, vmin: float, vmax: float) -> np.nd
 def _process_oisst(nc_path: Path, output_dir: Path, date: str) -> None:
     """Process one OISST NetCDF into .json + .png + .meta.json."""
     ds = xr.open_dataset(nc_path)
-    sst = ds["sst"].isel(time=0, zlev=0)  # squeeze to 2D (lat, lon)
+    try:
+        sst = ds["sst"].isel(time=0, zlev=0)  # squeeze to 2D (lat, lon)
 
-    values = sst.values.astype(np.float32)
-    lat = sst.latitude.values
-    lon = sst.longitude.values
+        values = sst.values.astype(np.float32)
+        lat = sst.latitude.values
+        lon = sst.longitude.values
 
-    nan_count = int(np.isnan(values).sum())
-    total = values.size
-    valid = values[~np.isnan(values)]
+        nan_count = int(np.isnan(values).sum())
+        total = values.size
+        valid = values[~np.isnan(values)]
 
-    vmin = float(valid.min()) if valid.size > 0 else 0.0
-    vmax = float(valid.max()) if valid.size > 0 else 0.0
-    vmean = float(valid.mean()) if valid.size > 0 else 0.0
+        vmin = float(valid.min()) if valid.size > 0 else 0.0
+        vmax = float(valid.max()) if valid.size > 0 else 0.0
+        vmean = float(valid.mean()) if valid.size > 0 else 0.0
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-    # .json — flat float32 array with NaN as -999.0
-    json_data = np.where(np.isnan(values), -999.0, values)
-    payload = {
-        "data": json_data.flatten().tolist(),
-        "shape": list(values.shape),
-        "min": round(vmin, 4),
-        "max": round(vmax, 4),
-        "lat_range": [round(float(lat.min()), 4), round(float(lat.max()), 4)],
-        "lon_range": [round(float(lon.min()), 4), round(float(lon.max()), 4)],
-        "source_id": "oisst",
-        "date": date,
-    }
-    json_path = output_dir / f"{date}.json"
-    json_path.write_text(json.dumps(payload))
+        # .json — flat float32 array with NaN as -999.0
+        json_data = np.where(np.isnan(values), -999.0, values)
+        payload = {
+            "data": json_data.flatten().tolist(),
+            "shape": list(values.shape),
+            "min": round(vmin, 4),
+            "max": round(vmax, 4),
+            "lat_range": [round(float(lat.min()), 4), round(float(lat.max()), 4)],
+            "lon_range": [round(float(lon.min()), 4), round(float(lon.max()), 4)],
+            "source_id": "oisst",
+            "date": date,
+        }
+        json_path = output_dir / f"{date}.json"
+        atomic_write_text(json_path, json.dumps(payload))
 
-    # .png — colourised tile
-    rgb = _apply_thermal_colormap(values, vmin, vmax)
-    # Flip vertically so north is at top
-    img = Image.fromarray(np.flipud(rgb))
-    png_path = output_dir / f"{date}.png"
-    img.save(png_path)
+        # .png — colourised tile
+        rgb = _apply_thermal_colormap(values, vmin, vmax)
+        img = Image.fromarray(np.flipud(rgb))
+        import io as _io
 
-    # .meta.json — statistics sidecar
-    meta = {
-        "date": date,
-        "source_id": "oisst",
-        "shape": list(values.shape),
-        "min": round(vmin, 4),
-        "max": round(vmax, 4),
-        "mean": round(vmean, 4),
-        "nan_pct": round(nan_count / total * 100, 2) if total > 0 else 0.0,
-        "lat_range": payload["lat_range"],
-        "lon_range": payload["lon_range"],
-    }
-    meta_path = output_dir / f"{date}.meta.json"
-    meta_path.write_text(json.dumps(meta, indent=2))
+        buf = _io.BytesIO()
+        img.save(buf, format="PNG")
+        png_path = output_dir / f"{date}.png"
+        atomic_write_bytes(png_path, buf.getvalue())
 
-    ds.close()
+        # .meta.json — statistics sidecar
+        meta = {
+            "date": date,
+            "source_id": "oisst",
+            "shape": list(values.shape),
+            "min": round(vmin, 4),
+            "max": round(vmax, 4),
+            "mean": round(vmean, 4),
+            "nan_pct": round(nan_count / total * 100, 2) if total > 0 else 0.0,
+            "lat_range": payload["lat_range"],
+            "lon_range": payload["lon_range"],
+        }
+        meta_path = output_dir / f"{date}.meta.json"
+        atomic_write_text(meta_path, json.dumps(meta, indent=2))
+    finally:
+        ds.close()
 
 
 @task(name="process")

@@ -3,6 +3,8 @@
 from pathlib import Path
 from unittest.mock import patch
 
+import requests
+
 from oceancanvas.tasks.discover import _oisst_latest_date, discover
 
 MOCK_ERDDAP_RESPONSE = {
@@ -34,6 +36,26 @@ class TestOisstLatestDate:
                 assert False, "Should have raised ValueError"
             except ValueError as e:
                 assert "time_coverage_end" in str(e)
+
+    def test_raises_on_http_500(self):
+        with patch("oceancanvas.tasks.discover.requests.get") as mock_get:
+            mock_get.return_value.raise_for_status.side_effect = requests.HTTPError(
+                "500 Server Error"
+            )
+            try:
+                _oisst_latest_date()
+                assert False, "Should have raised HTTPError"
+            except requests.HTTPError:
+                pass
+
+    def test_raises_on_timeout(self):
+        with patch("oceancanvas.tasks.discover.requests.get") as mock_get:
+            mock_get.side_effect = requests.Timeout("Connection timed out")
+            try:
+                _oisst_latest_date()
+                assert False, "Should have raised Timeout"
+            except requests.Timeout:
+                pass
 
 
 class TestDiscover:

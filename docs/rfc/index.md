@@ -24,7 +24,7 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 | RFC | Title | Status | Closes into | TA anchor |
 |---|---|---|---|---|
 | [RFC-001](RFC-001-recipe-yaml-schema.md) | Recipe YAML schema | Draft v0.2 | ADR (pending) | §contracts/recipe-yaml |
-| [RFC-002](RFC-002-render-payload-format.md) | Render payload format | Draft v0.1 | ADR-008 + ADR (pending) | §contracts/render-payload |
+| [RFC-002](RFC-002-render-payload-format.md) | Render payload format | Draft v0.2 | ADR-008 + ADR (pending) | §contracts/render-payload |
 | [RFC-003](RFC-003-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Draft v0.1 | ADR (pending) | §components/pipeline · §constraints |
 | [RFC-004](RFC-004-live-preview-architecture.md) | Live preview architecture | Draft v0.1 | ADR (pending) | §components/render-system · §components/web-frontend |
 | [RFC-005](RFC-005-yaml-round-tripping.md) | YAML round-tripping | Draft v0.2 | ADR (pending) | §contracts/recipe-yaml |

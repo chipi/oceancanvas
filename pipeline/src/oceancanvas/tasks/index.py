@@ -16,6 +16,7 @@ from pathlib import Path
 import yaml
 from prefect import task
 
+from oceancanvas.io import atomic_write_text
 from oceancanvas.log import get_logger
 
 
@@ -87,6 +88,9 @@ def index(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> Path:
         meta = _read_recipe_metadata(recipes_dir, name)
         entry.update(meta)
 
+    # generated_at is operational metadata, not render output.
+    # Determinism (TA §constraints) applies to PNGs — the manifest
+    # records when the scan ran and is expected to change on re-run.
     manifest = {
         "generated_at": datetime.now(UTC).isoformat(),
         "recipe_count": len(recipes),
@@ -94,7 +98,7 @@ def index(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> Path:
     }
 
     manifest_path = renders_dir / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2))
+    atomic_write_text(manifest_path, json.dumps(manifest, indent=2))
     logger.info("Manifest rebuilt: %d recipes, written to %s", len(recipes), manifest_path)
 
     # Cleanup temp payloads

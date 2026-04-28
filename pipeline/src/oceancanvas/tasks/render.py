@@ -15,6 +15,7 @@ from pathlib import Path
 
 from prefect import task
 
+from oceancanvas.io import atomic_write_bytes
 from oceancanvas.log import get_logger
 
 RENDERER_PATH = Path(__file__).parent.parent / "renderer" / "render.mjs"
@@ -47,8 +48,7 @@ def _render_one(payload_path: Path, output_path: Path) -> None:
         msg = f"Renderer produced invalid output ({len(png_bytes)} bytes, not PNG)"
         raise RuntimeError(msg)
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_bytes(png_bytes)
+    atomic_write_bytes(output_path, png_bytes)
 
 
 @task(name="render")

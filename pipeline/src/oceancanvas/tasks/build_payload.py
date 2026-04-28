@@ -16,6 +16,7 @@ import jsonschema
 import yaml
 from prefect import task
 
+from oceancanvas.io import atomic_write_text
 from oceancanvas.log import get_logger
 
 SCHEMA_PATH = Path(__file__).parent.parent / "schemas" / "recipe-schema.json"
@@ -100,8 +101,7 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
         },
     }
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(payload))
+    atomic_write_text(output_path, json.dumps(payload))
 
 
 @task(name="build_payload")

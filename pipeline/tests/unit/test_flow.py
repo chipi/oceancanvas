@@ -17,18 +17,7 @@ def test_flow_calls_all_tasks_in_order(
     """All six tasks are called in the correct sequence."""
     mock_discover.return_value = {"oisst": "2026-01-15"}
 
-    daily_ocean_pipeline.fn(test_mode=False)
-
-    mock_discover.assert_called_once()
-    mock_fetch.assert_called_once()
-    mock_process.assert_called_once()
-    mock_build.assert_called_once()
-    mock_render.assert_called_once()
-    mock_index.assert_called_once()
-
-    # Verify order: discover before fetch, fetch before process, etc.
-    assert mock_discover.call_args_list[0] < mock_index.call_args_list[0] or True
-    # More precisely, check call order via mock's call tracking
+    # Track call order via a shared manager
     manager = MagicMock()
     manager.attach_mock(mock_discover, "discover")
     manager.attach_mock(mock_fetch, "fetch")
@@ -36,6 +25,12 @@ def test_flow_calls_all_tasks_in_order(
     manager.attach_mock(mock_build, "build_payload")
     manager.attach_mock(mock_render, "render")
     manager.attach_mock(mock_index, "index")
+
+    daily_ocean_pipeline.fn(test_mode=False)
+
+    # Extract the method names in call order
+    call_names = [c[0] for c in manager.method_calls]
+    assert call_names == ["discover", "fetch", "process", "build_payload", "render", "index"]
 
 
 @patch("oceancanvas.flow.index")
@@ -52,7 +47,6 @@ def test_flow_passes_discover_dates_to_fetch(
 
     daily_ocean_pipeline.fn(test_mode=False)
 
-    # fetch should receive the dates dict from discover
     fetch_call = mock_fetch.call_args
     assert fetch_call.kwargs["dates_to_fetch"] == {"oisst": "2026-04-13"}
 

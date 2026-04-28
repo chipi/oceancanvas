@@ -3,6 +3,8 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import requests
+
 from oceancanvas.tasks.fetch import _build_oisst_url, _fetch_oisst, fetch
 
 
@@ -45,6 +47,34 @@ class TestFetchOisst:
 
         assert not output.exists()
         assert not output.with_suffix(".tmp").exists()
+
+    def test_raises_on_http_error(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-04-13.nc"
+
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.side_effect = requests.HTTPError("404 Not Found")
+
+        with patch("oceancanvas.tasks.fetch.requests.get", return_value=mock_resp):
+            try:
+                _fetch_oisst("2026-04-13", output)
+                assert False, "Should have raised HTTPError"
+            except requests.HTTPError:
+                pass
+
+        assert not output.exists()
+
+    def test_raises_on_timeout(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-04-13.nc"
+
+        with patch("oceancanvas.tasks.fetch.requests.get") as mock_get:
+            mock_get.side_effect = requests.Timeout("Connection timed out")
+            try:
+                _fetch_oisst("2026-04-13", output)
+                assert False, "Should have raised Timeout"
+            except requests.Timeout:
+                pass
+
+        assert not output.exists()
 
 
 class TestFetch:
