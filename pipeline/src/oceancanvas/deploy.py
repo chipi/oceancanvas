@@ -1,26 +1,32 @@
-"""Register the daily pipeline flow with Prefect Server.
+"""Start the OceanCanvas pipeline as a Prefect 3 served deployment.
 
-Run once on container startup to set up the CronSchedule.
-Idempotent — safe to run multiple times.
+Prefect 3 uses flow.serve() which blocks and handles scheduling in-process.
+No separate worker needed — this process IS the worker.
+
+The Docker container runs this as its main command.
+Manual trigger: make pipeline-run (via prefect deployment run)
 """
 
-from prefect.deployments import Deployment
-from prefect.server.schemas.schedules import CronSchedule
+import os
+import sys
+
+import sentry_sdk
 
 from oceancanvas.flow import daily_ocean_pipeline
 
+# Initialise Sentry if DSN is set
+dsn = os.environ.get("SENTRY_DSN")
+if dsn:
+    sentry_sdk.init(dsn=dsn, environment=os.environ.get("SENTRY_ENVIRONMENT", "development"))
 
-def deploy() -> None:
-    """Create or update the deployment with daily 06:00 UTC schedule."""
-    deployment = Deployment.build_from_flow(
-        flow=daily_ocean_pipeline,
+
+def main() -> None:
+    """Serve the pipeline flow with daily 06:00 UTC schedule."""
+    daily_ocean_pipeline.serve(
         name="daily-06utc",
-        schedule=CronSchedule(cron="0 6 * * *", timezone="UTC"),
-        work_pool_name="default-agent-pool",
+        cron="0 6 * * *",
     )
-    deployment.apply()
-    print("Deployment registered: daily_ocean_pipeline/daily-06utc @ 06:00 UTC")
 
 
 if __name__ == "__main__":
-    deploy()
+    main()

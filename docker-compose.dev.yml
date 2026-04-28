@@ -1,15 +1,16 @@
 # Dev overrides: mount source code for hot reload
 services:
   pipeline:
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
     volumes:
       - ./pipeline/src:/app/src
       - ./data:/data
       - ./recipes:/recipes:ro
       - ./renders:/renders
       - ./sketches:/sketches:ro
-    command: >
-      sh -c "python -m oceancanvas.deploy &&
-             prefect worker start --pool default-agent-pool"
+    command: python -m oceancanvas.deploy
 
   gallery:
     # In dev, use Vite dev server instead of Caddy

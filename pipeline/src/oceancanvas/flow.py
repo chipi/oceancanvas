@@ -1,15 +1,13 @@
 """OceanCanvas daily pipeline flow.
 
 Wires the six canonical tasks into a single Prefect flow.
-Run manually: python -m oceancanvas.flow
-Run with --test-mode to skip discover+fetch (synthetic data already present).
+Run via serve (deploy.py) or directly: python -m oceancanvas.flow
 """
 
 import os
 import sys
 from pathlib import Path
 
-import sentry_sdk
 from prefect import flow, get_run_logger
 
 from oceancanvas.tasks.discover import discover
@@ -19,15 +17,10 @@ from oceancanvas.tasks.build_payload import build_payload
 from oceancanvas.tasks.render import render
 from oceancanvas.tasks.index import index
 
-# Initialise Sentry if DSN is set
-dsn = os.environ.get("SENTRY_DSN")
-if dsn:
-    sentry_sdk.init(dsn=dsn, environment=os.environ.get("SENTRY_ENVIRONMENT", "development"))
-
 
 @flow(name="daily_ocean_pipeline", log_prints=True)
 def daily_ocean_pipeline(test_mode: bool = False) -> None:
-    """Daily pipeline: discover → fetch → process → build_payload → render → index."""
+    """Daily pipeline: discover, fetch, process, build_payload, render, index."""
     logger = get_run_logger()
     data_dir = Path(os.environ.get("DATA_DIR", "/data"))
     recipes_dir = Path(os.environ.get("RECIPES_DIR", "/recipes"))

@@ -13,16 +13,17 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 # Python deps
-COPY pyproject.toml ./
+COPY pipeline/pyproject.toml ./
 RUN pip install uv && uv sync --frozen 2>/dev/null || pip install -e ".[dev]"
 
 # Node renderer deps
-COPY src/oceancanvas/renderer/package.json src/oceancanvas/renderer/package-lock.json* \
+COPY pipeline/src/oceancanvas/renderer/package.json \
+     pipeline/src/oceancanvas/renderer/package-lock.json* \
      ./src/oceancanvas/renderer/
 RUN cd src/oceancanvas/renderer && npm ci --omit=dev 2>/dev/null || npm install
 
 # Application code
-COPY src/ ./src/
+COPY pipeline/src/ ./src/
 
-# Sketches (shared, from repo root)
-COPY --from=context sketches/ /sketches/ 2>/dev/null || true
+# Sketches (shared, from repo root — accessible because build context is repo root)
+COPY sketches/ /sketches/

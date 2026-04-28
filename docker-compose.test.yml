@@ -1,6 +1,8 @@
 services:
   pipeline:
-    build: ./pipeline
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
     volumes:
       - ./pipeline/tests/fixtures/oisst:/data/sources/oisst
       - ./pipeline/tests/fixtures/argo:/data/sources/argo
