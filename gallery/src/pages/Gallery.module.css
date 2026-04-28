@@ -1,0 +1,186 @@
+/* Gallery page — dark canvas, editorial typography */
+
+.page {
+  min-height: 100vh;
+  background: var(--canvas);
+}
+
+/* Topbar */
+.topbar {
+  height: 42px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.filter:hover {
+  color: var(--text-secondary);
+}
+
+.filterActive {
+  color: var(--text);
+  background: var(--elevated);
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.heroOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background: linear-gradient(transparent, var(--overlay));
+}
+
+.heroName {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.heroMeta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* 14-day strip */
+.strip {
+  display: flex;
+  gap: 4px;
+  padding: 16px 24px;
+  overflow-x: auto;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.stripThumb {
+  width: 80px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 2px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.stripThumb:hover {
+  opacity: 1;
+}
+
+.stripLabel {
+  padding: 8px 24px 0;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface);
+}
+
+/* Recipe grid */
+.gridLabel {
+  padding: 16px 24px 8px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 0 24px 24px;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  background: linear-gradient(transparent, rgba(3, 11, 16, 0.8));
+}
+
+.cardName {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.cardDate {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+/* States */
+.loading,
+.error,
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.error {
+  color: var(--intent-alert);
+}

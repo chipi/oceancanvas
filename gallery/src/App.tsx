@@ -1,19 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-function Gallery() {
-  return <div>OceanCanvas Gallery — scaffold</div>;
-}
+import { Gallery } from './pages/Gallery';
 
 function Dashboard() {
-  return <div>Dashboard — scaffold</div>;
+  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Dashboard — coming in Slice 2</div>;
 }
 
 function RecipeEditor() {
-  return <div>Recipe Editor — scaffold</div>;
+  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Recipe Editor — coming in Slice 2</div>;
 }
 
 function VideoEditor() {
-  return <div>Video Editor — scaffold</div>;
+  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Video Editor — coming in Slice 3</div>;
 }
 
 export function App() {
