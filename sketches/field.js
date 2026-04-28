@@ -4,7 +4,7 @@
  * Renders gridded data (e.g., SST) as a coloured heatmap.
  * Reads window.OCEAN_PAYLOAD for data and recipe parameters.
  *
- * Rules (ADR-021):
+ * Determinism rules (TA §constraints/deterministic-rendering):
  *   - Always call randomSeed() in setup
  *   - Never use Date.now(), millis(), or clock-dependent APIs
  *   - Signal completion via window.__RENDER_COMPLETE = true

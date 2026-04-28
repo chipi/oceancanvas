@@ -62,7 +62,7 @@ MISSING=0
 
 # Python 3.12+
 if command -v python3 &>/dev/null; then
-    PY_VER=$(python3 --version 2>&1 | grep -oP '\d+\.\d+')
+    PY_VER=$(python3 --version 2>&1 | sed 's/[^0-9.]//g' | cut -d. -f1-2)
     PY_MAJOR=$(echo "$PY_VER" | cut -d. -f1)
     PY_MINOR=$(echo "$PY_VER" | cut -d. -f2)
     if [ "$PY_MAJOR" -ge 3 ] && [ "$PY_MINOR" -ge 12 ]; then
@@ -78,7 +78,7 @@ fi
 
 # Node 20+
 if command -v node &>/dev/null; then
-    NODE_VER=$(node --version | grep -oP '\d+' | head -1)
+    NODE_VER=$(node --version | sed 's/[^0-9.]//g' | cut -d. -f1)
     if [ "$NODE_VER" -ge 20 ]; then
         ok "Node.js $(node --version)"
     else
@@ -100,7 +100,7 @@ fi
 
 # Docker
 if command -v docker &>/dev/null; then
-    ok "Docker $(docker --version | grep -oP '\d+\.\d+\.\d+' | head -1)"
+    ok "Docker $(docker --version | sed 's/[^0-9.]//g' | cut -d. -f1-3)"
 else
     fail "Docker not found — needed for make up"
     MISSING=1
@@ -115,7 +115,7 @@ fi
 
 # uv (Python package manager)
 if command -v uv &>/dev/null; then
-    ok "uv $(uv --version 2>&1 | grep -oP '\d+\.\d+\.\d+' || echo 'available')"
+    ok "uv $(uv --version 2>&1 | sed 's/[^0-9.]//g' || echo 'available')"
 else
     warn "uv not found — installing..."
     if command -v pip &>/dev/null; then
@@ -132,7 +132,7 @@ fi
 
 # gh CLI (optional — needed for GEBCO download and render backup)
 if command -v gh &>/dev/null; then
-    ok "GitHub CLI $(gh --version | head -1 | grep -oP '\d+\.\d+\.\d+')"
+    ok "GitHub CLI $(gh --version | head -1 | sed 's/[^0-9.]//g')"
 else
     warn "GitHub CLI not found — optional but needed for: make gebco-download, make backup/restore"
     warn "  Install: https://cli.github.com"
@@ -241,7 +241,7 @@ fi
 cd ..
 
 # Renderer node_modules present
-if [ -d "pipeline/src/oceancanvas/renderer/node_modules/puppeteer" ]; then
+if [ -d "pipeline/src/oceancanvas/renderer/node_modules/puppeteer-core" ]; then
     ok "Renderer Puppeteer installed"
 else
     fail "Renderer node_modules missing"

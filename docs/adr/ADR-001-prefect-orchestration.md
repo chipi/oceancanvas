@@ -40,4 +40,4 @@ Prefect's `@task` / `@flow` decorator model maps cleanly onto Python fetcher fun
 
 - Pipeline source code in `pipeline/`.
 - Prefect Server container in `docker-compose.yml`.
-- Daily schedule defined in `pipeline/run.py`.
+- Daily schedule defined in `pipeline/src/oceancanvas/deploy.py` (uses `flow.serve()` with cron).

@@ -28,7 +28,7 @@ Three-layer file-based storage. `data/sources/` holds raw fetched files in their
 
 ### render-system
 
-The p5.js + Puppeteer rendering subsystem. Browser-side: the same sketch runs in the Recipe Editor preview and in the Puppeteer headless render. Server-side: Node.js subprocess launches Chromium, injects the render payload, waits for `render:complete`, screenshots the canvas. Owns: deterministic image production from a recipe + a payload.
+The p5.js + Puppeteer rendering subsystem. Browser-side: the same sketch runs in the Recipe Editor preview and in the Puppeteer headless render. Server-side: Node.js subprocess launches Chromium, injects the render payload, waits for `window.__RENDER_COMPLETE`, screenshots the canvas. Owns: deterministic image production from a recipe + a payload.
 
 ### web-frontend
 
@@ -36,7 +36,7 @@ Static React app served from `gallery/`. deck.gl + MapLibre for spatial renderin
 
 ### service-layer
 
-Docker Compose stack. Three containers: `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving the built React app), `prefect-server` (Prefect Server + Postgres for flow state). Volumes mount `data/`, `recipes/`, `renders/` from the host. Owns: deployment, container orchestration, the runnable system.
+Docker Compose stack. Four containers: `postgres` (Prefect state DB), `prefect-server` (Prefect Server), `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving the built React app). Volumes mount `data/`, `recipes/`, `renders/` from the host. Owns: deployment, container orchestration, the runnable system.
 
 ### ci
 

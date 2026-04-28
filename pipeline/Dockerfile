@@ -12,9 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
-# Python deps
-COPY pipeline/pyproject.toml ./
-RUN pip install uv && uv sync --frozen 2>/dev/null || pip install -e ".[dev]"
+# Python deps — copy full source so pip install works
+COPY pipeline/pyproject.toml ./pyproject.toml
+COPY pipeline/src/ ./src/
+RUN pip install --no-cache-dir .
 
 # Node renderer deps
 COPY pipeline/src/oceancanvas/renderer/package.json \
@@ -22,8 +23,5 @@ COPY pipeline/src/oceancanvas/renderer/package.json \
      ./src/oceancanvas/renderer/
 RUN cd src/oceancanvas/renderer && npm ci --omit=dev 2>/dev/null || npm install
 
-# Application code
-COPY pipeline/src/ ./src/
-
-# Sketches (shared, from repo root — accessible because build context is repo root)
+# Sketches (shared, from repo root — build context is repo root)
 COPY sketches/ /sketches/

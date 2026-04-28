@@ -1,0 +1,22 @@
+# gulf-stream-thermal — particles tracing SST gradient along the Gulf Stream
+name: gulf-stream-thermal
+created: 2026-04-28
+author: chipi
+region:
+  lat: [25, 50]
+  lon: [-80, -30]
+  name: Gulf Stream
+sources:
+  primary: oisst
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  colormap: thermal
+  opacity: 0.85
+  particle_count: 3000
+  tail_length: 12
+  speed_scale: 1.0
+  seed: 42

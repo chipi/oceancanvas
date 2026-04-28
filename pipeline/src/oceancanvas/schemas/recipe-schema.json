@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "oceancanvas-recipe-v0.2",
+  "title": "OceanCanvas Recipe",
+  "description": "Schema for recipe YAML files per RFC-001 v0.2",
+  "type": "object",
+  "required": ["name", "region", "sources", "schedule", "render"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Kebab-case slug — filesystem-safe, stable after creation"
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date the recipe was first authored"
+    },
+    "author": {
+      "type": "string",
+      "description": "Single author name (ADR-016: single-author in Phase 1)"
+    },
+    "region": {
+      "type": "object",
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "lon": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "name": { "type": "string" }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "primary": { "type": "string" },
+        "context": { "type": "string" }
+      }
+    },
+    "schedule": {
+      "type": "string",
+      "enum": ["daily"]
+    },
+    "render": {
+      "type": "object",
+      "required": ["type", "seed"],
+      "properties": {
+        "type": { "type": "string", "enum": ["field", "particles", "contour", "pulse", "scatter", "composite"] },
+        "colormap": { "type": "string" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "smooth": { "type": "boolean" },
+        "seed": { "type": "integer" },
+        "particle_count": { "type": "integer" },
+        "tail_length": { "type": "number" },
+        "speed_scale": { "type": "number" },
+        "marker_size": { "type": "number" },
+        "marker_opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

@@ -81,7 +81,7 @@ build: ## Build all Docker images
 	docker compose build
 
 build-pipeline: ## Build pipeline image only
-	docker build -t oceancanvas-pipeline pipeline/
+	docker build -t oceancanvas-pipeline -f pipeline/Dockerfile .
 
 build-gallery: ## Build gallery image only
 	docker build -t oceancanvas-gallery gallery/

@@ -36,6 +36,6 @@ The Prefect `@task` wrapper provides the same orchestration benefits we get from
 
 ## Implementation notes
 
-- NetCDF fetchers in `pipeline/fetchers/`.
-- One fetcher per source (`oisst.py`, `gebco.py`, etc.).
-- Each wrapped in `@task` with retry policy.
+- NetCDF fetching logic inside `pipeline/src/oceancanvas/tasks/fetch.py`.
+- Per-source fetcher functions called from the `fetch` task.
+- Wrapped in the Prefect `@task` for retry and logging.

@@ -24,7 +24,7 @@ All PRDs anchor to a shared reference document that holds audiences, promises, a
 | [PRD-002](PRD-002-dashboard.md) | Dashboard | Draft v0.1 | scientist-adjacent, curious-person |
 | [PRD-003](PRD-003-recipe-editor.md) | Recipe Editor | Draft v0.1 | artist |
 | [PRD-004](PRD-004-gallery.md) | Gallery | Draft v0.2 | curious-person, climate-communicator |
-| [PRD-005](PRD-005-video-editor.md) | Video Editor | Draft v0.1 | climate-communicator, artist |
+| [PRD-005](PRD-005-video-editor.md) | Video Editor | Draft v0.3 | climate-communicator, artist |
 
 ## Numbering
 

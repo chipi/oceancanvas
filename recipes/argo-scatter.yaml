@@ -1,0 +1,20 @@
+# argo-scatter — Argo float positions as a point cloud
+name: argo-scatter
+created: 2026-04-28
+author: chipi
+region:
+  lat: [20, 65]
+  lon: [-80, 0]
+  name: North Atlantic
+sources:
+  primary: argo
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: argo
+  marker_size: 4
+  marker_opacity: 0.75
+  seed: 42

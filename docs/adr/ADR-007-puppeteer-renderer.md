@@ -12,7 +12,7 @@ We need a way to run a real browser, headlessly, programmatically, in a Docker c
 
 ## Decision
 
-Use Puppeteer with bundled headless Chromium for server-side rendering. The pipeline's Task 05 (Render) launches a Node.js subprocess that spawns Puppeteer, loads the sketch HTML, injects the render payload, waits for the `render:complete` DOM event, screenshots the canvas, and saves the PNG.
+Use Puppeteer with bundled headless Chromium for server-side rendering. The pipeline's Task 05 (Render) launches a Node.js subprocess that spawns Puppeteer, loads the sketch HTML, injects the render payload, waits for `window.__RENDER_COMPLETE`, screenshots the canvas, and saves the PNG.
 
 ## Rationale
 
@@ -40,7 +40,7 @@ The "same browser" guarantee matters: the editor preview runs in the user's Chro
 
 ## Implementation notes
 
-- Renderer in `pipeline/render.js` (Node.js subprocess called from Python).
-- Pipeline container includes `node:20`, Chromium, and Puppeteer's bundled binary.
-- Sketch HTML loader is `sketches/_loader.html`.
-- Each render call: `node render.js {recipe_id} {date} {payload_path}`.
+- Renderer in `pipeline/src/oceancanvas/renderer/render.mjs` (Node.js subprocess, receives payload via stdin, outputs PNG via stdout).
+- Pipeline container includes Node.js 20, system Chromium, and `puppeteer-core`.
+- Sketch HTML is constructed inline by the renderer — no separate loader file.
+- Sketch files in `sketches/` (one per render type, mounted at `/sketches` in Docker).

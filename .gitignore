@@ -2,7 +2,10 @@
 data/sources/
 data/processed/
 data/gebco/
-renders/
+data/state.json
+renders/*
+!renders/.gitkeep
+manifest.json
 
 # Environment
 .env

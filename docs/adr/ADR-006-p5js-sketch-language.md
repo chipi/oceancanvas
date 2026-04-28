@@ -39,6 +39,6 @@ Critically, p5.js runs in any browser the same way. The same sketch in the edito
 ## Implementation notes
 
 - Sketch templates in `sketches/` (one per render type).
-- Sketch HTML loader in `sketches/_loader.html` — same loader used by browser preview and Puppeteer.
-- Sketches read `window.OCEAN_PAYLOAD` and call `p5.setup()` / `p5.draw()`.
-- A `render:complete` DOM event fires when the sketch finishes drawing — Puppeteer waits on this.
+- Renderer (`pipeline/src/oceancanvas/renderer/render.mjs`) constructs sketch HTML inline and injects `window.OCEAN_PAYLOAD`.
+- Sketches read `window.OCEAN_PAYLOAD` and use p5.js global-mode `setup()` / `draw()`.
+- Sketches signal completion by setting `window.__RENDER_COMPLETE = true` — Puppeteer polls for this property.

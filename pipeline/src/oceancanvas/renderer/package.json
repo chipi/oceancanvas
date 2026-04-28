@@ -1,0 +1,12 @@
+{
+  "name": "oceancanvas-renderer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "puppeteer-core": "^22.0.0"
+  }
+}

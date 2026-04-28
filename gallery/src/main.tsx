@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react';
 import { App } from './App';
 import './tokens.css';
 
+// Sentry is opt-in observability — no ADR; disabled unless VITE_SENTRY_DSN is set
 const dsn = import.meta.env.VITE_SENTRY_DSN;
 if (dsn) {
   Sentry.init({ dsn, environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || 'development' });

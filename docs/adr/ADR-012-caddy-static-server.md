@@ -42,7 +42,7 @@ Use Caddy as the static file server inside the `gallery` container. Caddy serves
 - `gallery/Caddyfile` defines the routing.
 - Routes:
   - `/` → built React app from `gallery/dist/`
-  - `/renders/*` → `renders/` directory
+  - `/renders/*` → `renders/` directory (includes `manifest.json`)
   - `/data/processed/*` → `data/processed/` directory
-  - `/manifest.json` → repo root manifest
+  - `/manifest.json` → convenience alias rewriting to `/renders/manifest.json`
 - HTTPS in production requires a public domain and ports 80/443 open.

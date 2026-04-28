@@ -36,6 +36,6 @@ dlt's `@dlt.resource` generator model is natural for paginated/incremental REST 
 
 ## Implementation notes
 
-- dlt resources defined in `pipeline/fetchers/`.
-- One resource per source.
-- Wrapped in Prefect `@task` for retry and logging.
+- dlt resources defined inside `pipeline/src/oceancanvas/tasks/fetch.py`.
+- One dlt resource per REST/JSON source.
+- Wrapped in the `fetch` Prefect `@task` for retry and logging.

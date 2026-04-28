@@ -1,5 +1,7 @@
 # north-atlantic-sst — the first OceanCanvas recipe
 name: north-atlantic-sst
+created: 2026-04-25
+author: chipi
 region:
   lat: [25, 65]
   lon: [-80, 0]

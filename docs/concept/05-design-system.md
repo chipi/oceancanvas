@@ -37,7 +37,7 @@ The primary entry point. A full-bleed ocean data visualization with source navig
 | Region | Size | Description |
 |---|---|---|
 | **Topbar** | 42px | Wordmark · active source name · UTC timestamp · mode controls |
-| **Left rail** | 96px | Source navigation as minimal type labels. Active source marked with 2px colour-coded left border. |
+| **Left rail** | 96px | Source navigation as minimal type labels. Active source marked with source-accent text colour (no border, no background fill). |
 | **Map canvas** | Full bleed | Ocean data rendered as GPU-accelerated color field via deck.gl BitmapLayer. Grid lines at 10° intervals at 8% opacity. |
 | **Stats overlay** | Floating | Three floating stat cards with dark translucent backdrop. Numbers at 22px, labels at 9px spaced caps. |
 | **Legend strip** | 10px wide | Thin colour bar with 4 value labels. No border, no box. |
@@ -141,7 +141,7 @@ The video editor is assembly and enrichment — the creative decisions are alrea
 |---|---|---|
 | `canvas` | `#030B10` | Base background — all surfaces |
 | `surface` | `#050E1A` | Raised panels, topbar |
-| `elevated` | `#091525` | Modals, dropdowns |
+| `elevated` | `#0A1828` | Modals, dropdowns |
 | `overlay` | `rgba(3,11,16,0.85)` | Stats overlays on maps |
 
 ### Source domain palettes

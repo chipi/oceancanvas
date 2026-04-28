@@ -15,6 +15,13 @@
         file_server
     }
 
+    # manifest.json lives in renders/ — convenience alias at root
+    handle /manifest.json {
+        rewrite * /renders/manifest.json
+        root * /
+        file_server
+    }
+
     log {
         output stdout
         format json

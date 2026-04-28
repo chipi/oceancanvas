@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: pipeline/Dockerfile
+    environment:
+      PREFECT_API_URL: ""
     volumes:
       - ./pipeline/tests/fixtures/oisst:/data/sources/oisst
       - ./pipeline/tests/fixtures/argo:/data/sources/argo

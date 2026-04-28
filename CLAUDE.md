@@ -10,7 +10,7 @@ This file is the orientation document for any AI assistant working on the codeba
 
 ## Where things live
 
-**Concept package (project root).** OC-00 through OC-05 — the founding narrative documents. Read once or twice; rarely updated. The `why`.
+**Concept package (`docs/concept/`).** OC-00 through OC-05 — the founding narrative documents (`00-package-introduction.md` through `05-design-system.md`). Read once or twice; rarely updated. The `why`.
 
 **Definition tree (`docs/`).**
 
@@ -26,7 +26,7 @@ This file is the orientation document for any AI assistant working on the codeba
 - `recipes/` — YAML files; the authored works.
 - `data/` — Three-layer store. `data/sources/` (raw), `data/processed/` (browser-friendly), not committed to git.
 - `renders/` — Daily PNG outputs per recipe. Not committed to git.
-- `docker-compose.yml` — Three containers: pipeline, gallery, prefect-server.
+- `docker-compose.yml` — Four containers: pipeline, gallery, prefect-server, postgres (Prefect state DB).
 
 ---
 
@@ -98,7 +98,7 @@ Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
 - Format: `prettier`. Lint: `eslint`.
 - Puppeteer launches headless Chromium with `--no-sandbox` (Docker context is trusted).
 - Renderer subprocess pattern: parent Python process spawns Node, streams payload via stdin, receives PNG bytes via stdout, errors via stderr.
-- Sketch files live in `pipeline/renderer/sketches/{render_type}.js`. One file per render type.
+- Sketch files live in `sketches/{render_type}.js` at the repo root. One file per render type. Mounted at `/sketches` in Docker.
 
 ### React (frontend)
 
@@ -245,7 +245,7 @@ Anything outside Phase 1 scope, when it comes up, becomes a Phase 2 PRD or stays
 
 ## References
 
-- **Concept package** — OC-00 through OC-05 at the project root
+- **Concept package** — OC-00 through OC-05 in `docs/concept/`
 - **Reference docs** — `docs/prd/OC_PA.md`, `docs/uxs/OC_IA.md`, `docs/adr/OC_TA.md`
 - **Templates** — `PRD_TEMPLATE.md`, `UXS_TEMPLATE.md`, `RFC_TEMPLATE.md`, `ADR_TEMPLATE.md` in their respective folders
 - **Implementation kickoff** — `IMPLEMENTATION.md` at the project root

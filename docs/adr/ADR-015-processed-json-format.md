@@ -42,7 +42,7 @@ The `.json` schema is fixed regardless of band count: `{ data: [float32 array], 
 
 ## Implementation notes
 
-- Process step in `pipeline/process.py`.
+- Process step in `pipeline/src/oceancanvas/tasks/process.py`.
 - Naming convention: `{source}/{date}.json` for single-band, `{source}/{date}.{band}.json` for multi-band.
 - The render-payload builder (Task 04) addresses bands explicitly: a recipe specifies `source: sst-cci` and `band: analysed_sst`.
 - For sources without explicit bands, omit the band suffix.

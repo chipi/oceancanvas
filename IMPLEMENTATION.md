@@ -49,7 +49,7 @@ GEBCO bathymetry is one-time static data, fetched once and reused — not a dail
 - `renders/{recipe-id}/{date}.png` — daily PNG per recipe
 - `manifest.json` — the gallery index, rebuilt by Task 06 each run
 
-**The renderer.** Node 20 + Puppeteer + p5.js, with three sketch files in `pipeline/renderer/sketches/`:
+**The renderer.** Node 20 + Puppeteer + p5.js, with three sketch files in `sketches/` (repo root, mounted at `/sketches` in Docker):
 
 - `field.js` — bitmap colour-mapped raster
 - `particles.js` — flow particles seeded from data, with bathymetry context
@@ -73,7 +73,7 @@ The grid and strip alone are enough to verify the accumulation promise. The hero
 - Build the pipeline Docker image
 - Run a synthetic-data e2e test of the full pipeline (discover → render → manifest) using fixture data
 
-**The deployment.** `docker compose up` brings up three containers per ADR-011: pipeline, prefect-server, gallery (Caddy). Volumes mount `data/`, `recipes/`, `renders/` from the host.
+**The deployment.** `docker compose up` brings up four containers per ADR-011: pipeline, prefect-server, postgres (Prefect state DB), gallery (Caddy). Volumes mount `data/`, `recipes/`, `renders/` from the host.
 
 ### What this proves
 
@@ -228,10 +228,15 @@ The first commit on the implementation branch is small and concrete: the bare re
 ```
 pipeline/
   pyproject.toml
-  prefect.yaml
+  src/oceancanvas/
+    __init__.py
+    flow.py
+    deploy.py
 gallery/
   package.json
   vite.config.ts
+sketches/
+  field.js
 recipes/
   .gitkeep
 data/

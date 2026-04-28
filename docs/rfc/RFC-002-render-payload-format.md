@@ -23,7 +23,7 @@ The same sketch reads this payload in the editor preview (live) and in the pipel
 ## Use cases
 
 1. **Editor live preview.** User adjusts the energy×presence point. The editor reassembles the payload and re-injects it into the preview iframe. The sketch redraws. This happens many times per second during interactive use.
-2. **Pipeline render.** Daily, for each active recipe, the pipeline reads `data/processed/`, builds a payload for the recipe's region, and writes it to a temp file. Puppeteer launches Chromium, loads the sketch HTML, sets `window.OCEAN_PAYLOAD` from the temp file, waits for `render:complete`, screenshots.
+2. **Pipeline render.** Daily, for each active recipe, the pipeline reads `data/processed/`, builds a payload for the recipe's region, and writes it to a temp file. Puppeteer launches Chromium, loads the sketch HTML, sets `window.OCEAN_PAYLOAD` from the temp file, waits for `window.__RENDER_COMPLETE`, screenshots.
 3. **Sketch-override authoring.** A power user writes a custom p5.js sketch. They need to know what fields are guaranteed to exist on `window.OCEAN_PAYLOAD`. The schema is the documentation.
 4. **Debugging a misrendered frame.** A render looks wrong. The artist opens the payload file in their editor. The schema must be human-readable enough that they can check whether the data is wrong or the sketch is wrong.
 

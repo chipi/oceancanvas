@@ -25,7 +25,7 @@ The OceanCanvas pipeline is a daily Prefect flow that fetches ocean data from pu
 | **Task 02 — Fetch** | Download raw files to `data/sources/`. OISST and GEBCO fetched as NetCDF via ERDDAP griddap URLs. Open-Meteo is a JSON API call. dlt handles incremental state for tabular/REST sources. Prefect retries on network failure. |
 | **Task 03 — Process** | Opens raw files with xarray, crops to processing region, validates, computes statistics, exports three outputs per source per date to `data/processed/`. Runs once per source per date — not per recipe. |
 | **Task 04 — Build payload** | Per recipe: reads `data/processed/` for each source the recipe needs. Crops further to the recipe's specific lat/lon region. Assembles a flat `render_payload.json` that the p5.js sketch will consume. |
-| **Task 05 — Render** | Per recipe: Node.js subprocess launches Puppeteer, loads the p5.js sketch HTML, injects the render payload, waits for `render:complete` DOM event, screenshots the canvas. Writes PNG to `renders/{recipe}/{date}.png`. |
+| **Task 05 — Render** | Per recipe: Node.js subprocess launches Puppeteer, loads the p5.js sketch HTML, injects the render payload, waits for `window.__RENDER_COMPLETE`, screenshots the canvas. Writes PNG to `renders/{recipe}/{date}.png`. |
 | **Task 06 — Index** | Walks the `renders/` directory, collects all PNGs, rebuilds `manifest.json` from scratch. Cleans up temp payload files. |
 
 ---
@@ -121,7 +121,7 @@ There is no data API server at runtime. Everything the browser needs is served a
 | Context | Description |
 |---|---|
 | **GitHub** | Code repository. Pipeline source, recipes, gallery React source, Dockerfile, docker-compose.yml. **Not** data/sources/, data/processed/, renders/. |
-| **Docker Compose** | Three services: `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving React), `prefect-server` (Prefect Server + Postgres). |
+| **Docker Compose** | Four services: `postgres` (Prefect state DB), `prefect-server` (Prefect Server), `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving React). |
 | **Where it runs** | M4 Pro for dev (current prod). Hetzner CAX21 (4 vCPU ARM, 8GB RAM, ~€6/month) for VPS. |
 
 ---
@@ -204,15 +204,20 @@ The e2e test validates the entire pipeline with a synthetic 10×10 grid dataset.
 
 ## Open questions — requiring RFC in Phase 2
 
-| Question | RFC |
+*Note: RFC numbering was revised after Phase 2 definition. Three original RFCs (Processed JSON, Docker Compose stack, GitHub Actions CI) closed directly into ADRs (ADR-015, ADR-011, ADR-013/014). Three new RFCs were added from PRD open threads. See `docs/rfc/index.md` for the current list.*
+
+| Question | Current RFC / ADR |
 |---|---|
 | Recipe YAML schema — all fields, types, defaults, required vs optional | RFC-001 |
 | Render payload format — `window.OCEAN_PAYLOAD` complete specification | RFC-002 |
-| Processed JSON format — formal specification | RFC-003 |
-| Docker Compose stack specification — full service definitions | RFC-004 |
-| Audio system technical design — API selection, stem mixing approach | RFC-005 |
-| Key moment detection algorithm — formal specification | RFC-006 |
-| GitHub Actions CI design — jobs, triggers, e2e structure | RFC-007 |
+| Recipe lifecycle on source unavailability | RFC-003 |
+| Live preview architecture | RFC-004 |
+| YAML round-tripping | RFC-005 |
+| Audio system technical design — API selection, stem mixing approach | RFC-006 |
+| Key moment detection algorithm — formal specification | RFC-007 |
+| Processed JSON format — formal specification | ADR-015 (closed) |
+| Docker Compose stack specification | ADR-011 (closed) |
+| GitHub Actions CI design | ADR-013 + ADR-014 (closed) |
 
 ---
 

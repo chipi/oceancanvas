@@ -10,17 +10,17 @@ OceanCanvas runs as a service: scheduled pipeline, a static web frontend, the Pr
 
 ## Decision
 
-Docker Compose is the deployment model. One `docker-compose.yml` defines the full stack: `pipeline`, `gallery`, `prefect-server` containers. Volumes mount `data/`, `recipes/`, `renders/` from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.
+Docker Compose is the deployment model. One `docker-compose.yml` defines the full stack: `pipeline`, `gallery`, `prefect-server`, and `postgres` (Prefect's state database) containers. Volumes mount `data/`, `recipes/`, `renders/` from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.
 
 ## Rationale
 
 - *Self-hostable* — `git clone && docker compose up` is the spell. No service dependencies, no credentials to set up, no orchestrator to install. Anyone with Docker can run the system.
 - *Portable* — laptop and VPS run identical stacks. Tested locally is tested in production (in terms of stack composition).
-- *Simple* — three containers. No service mesh. No load balancer. Compose is sized exactly for this.
+- *Simple* — four containers (pipeline, gallery, prefect-server, postgres). No service mesh. No load balancer. Compose is sized exactly for this.
 
 ## Alternatives considered
 
-- **Kubernetes** — over-engineered for three containers running on one machine. The operational overhead of Kubernetes is more than the value at this scale. Revisit when (if) OceanCanvas multi-tenants.
+- **Kubernetes** — over-engineered for four containers running on one machine. The operational overhead of Kubernetes is more than the value at this scale. Revisit when (if) OceanCanvas multi-tenants.
 - **Plain systemd / docker run scripts** — works, but `docker-compose.yml` is more declarative and self-documenting than a collection of shell scripts.
 - **Nomad** — capable but adds an orchestrator most contributors don't know.
 - **Fly.io / Railway / managed PaaS** — works for hosted instances but breaks the self-hostable property.
@@ -39,7 +39,7 @@ Docker Compose is the deployment model. One `docker-compose.yml` defines the ful
 ## Implementation notes
 
 - `docker-compose.yml` in repo root.
-- Three services: `pipeline`, `gallery`, `prefect-server`.
+- Four services: `postgres`, `prefect-server`, `pipeline`, `gallery`.
 - Volumes: `./data`, `./recipes`, `./renders`.
 - Production uses the same file with environment-specific overrides via `docker-compose.prod.yml`.
 - Nginx (or Caddy directly, see ADR-012) in front of the gallery for HTTPS in production.

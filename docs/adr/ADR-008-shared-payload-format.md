@@ -39,7 +39,7 @@ The schema details — what specific fields the payload contains — are deliber
 ## Implementation notes
 
 - Schema details defined in RFC-002 → ADR (pending, separate from this one).
-- Editor payload builder in `gallery/src/editor/payload.ts`.
-- Pipeline payload builder in `pipeline/payload.py`.
+- Editor payload builder in `gallery/src/preview/` (to be created).
+- Pipeline payload builder in `pipeline/src/oceancanvas/tasks/build_payload.py`.
 - Both produce identical schemas; only the data values differ (downsampling in editor, full resolution in pipeline).
 - Sketches access via `window.OCEAN_PAYLOAD` exclusively. No fallback paths.
