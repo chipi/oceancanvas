@@ -1,19 +1,134 @@
 """Task 03 — Process.
 
-Opens raw files with xarray, crops to processing region, validates,
-computes statistics, exports three outputs per source per date to
-data/processed/. Runs once per source per date — not per recipe.
+Opens raw OISST NetCDF with xarray, squeezes the zlev dimension,
+computes statistics, and exports three files per date to data/processed/:
+
+  {date}.json     — flat float32 array + shape + min/max + lat/lon range
+  {date}.png      — colourised PNG tile (thermal colormap)
+  {date}.meta.json — statistics sidecar
 """
 
+from __future__ import annotations
+
+import json
 from pathlib import Path
 
-from prefect import get_run_logger, task
+import numpy as np
+import xarray as xr
+from PIL import Image
+from prefect import task
+
+from oceancanvas.log import get_logger
+
+# Thermal colormap stops — navy → teal → green → amber → coral → dark red
+# Matches domain-sst-* tokens from UXS-001
+THERMAL_STOPS = np.array(
+    [
+        [4, 44, 83],  # domain-sst-cold  #042C53
+        [15, 110, 86],  # domain-sst-mid-low  #0F6E56
+        [99, 153, 34],  # domain-sst-mid  #639922
+        [186, 117, 23],  # domain-sst-mid-high  #BA7517
+        [216, 90, 48],  # domain-sst-warm  #D85A30
+        [121, 31, 31],  # domain-sst-hot  #791F1F
+    ],
+    dtype=np.uint8,
+)
+
+
+def _apply_thermal_colormap(data: np.ndarray, vmin: float, vmax: float) -> np.ndarray:
+    """Map float values to RGB using the thermal colormap. Returns (H, W, 3) uint8."""
+    normalised = np.clip((data - vmin) / (vmax - vmin), 0, 1)
+    n_stops = len(THERMAL_STOPS)
+    indices = normalised * (n_stops - 1)
+    lower = np.floor(indices).astype(int)
+    upper = np.minimum(lower + 1, n_stops - 1)
+    frac = (indices - lower)[..., np.newaxis]
+
+    rgb = (1 - frac) * THERMAL_STOPS[lower] + frac * THERMAL_STOPS[upper]
+    # NaN pixels → canvas background colour
+    nan_mask = np.isnan(data)
+    rgb[nan_mask] = [3, 11, 16]  # canvas #030B10
+    return rgb.astype(np.uint8)
+
+
+def _process_oisst(nc_path: Path, output_dir: Path, date: str) -> None:
+    """Process one OISST NetCDF into .json + .png + .meta.json."""
+    ds = xr.open_dataset(nc_path)
+    sst = ds["sst"].isel(time=0, zlev=0)  # squeeze to 2D (lat, lon)
+
+    values = sst.values.astype(np.float32)
+    lat = sst.latitude.values
+    lon = sst.longitude.values
+
+    nan_count = int(np.isnan(values).sum())
+    total = values.size
+    valid = values[~np.isnan(values)]
+
+    vmin = float(valid.min()) if valid.size > 0 else 0.0
+    vmax = float(valid.max()) if valid.size > 0 else 0.0
+    vmean = float(valid.mean()) if valid.size > 0 else 0.0
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # .json — flat float32 array with NaN as -999.0
+    json_data = np.where(np.isnan(values), -999.0, values)
+    payload = {
+        "data": json_data.flatten().tolist(),
+        "shape": list(values.shape),
+        "min": round(vmin, 4),
+        "max": round(vmax, 4),
+        "lat_range": [round(float(lat.min()), 4), round(float(lat.max()), 4)],
+        "lon_range": [round(float(lon.min()), 4), round(float(lon.max()), 4)],
+        "source_id": "oisst",
+        "date": date,
+    }
+    json_path = output_dir / f"{date}.json"
+    json_path.write_text(json.dumps(payload))
+
+    # .png — colourised tile
+    rgb = _apply_thermal_colormap(values, vmin, vmax)
+    # Flip vertically so north is at top
+    img = Image.fromarray(np.flipud(rgb))
+    png_path = output_dir / f"{date}.png"
+    img.save(png_path)
+
+    # .meta.json — statistics sidecar
+    meta = {
+        "date": date,
+        "source_id": "oisst",
+        "shape": list(values.shape),
+        "min": round(vmin, 4),
+        "max": round(vmax, 4),
+        "mean": round(vmean, 4),
+        "nan_pct": round(nan_count / total * 100, 2) if total > 0 else 0.0,
+        "lat_range": payload["lat_range"],
+        "lon_range": payload["lon_range"],
+    }
+    meta_path = output_dir / f"{date}.meta.json"
+    meta_path.write_text(json.dumps(meta, indent=2))
+
+    ds.close()
 
 
 @task(name="process")
 def process(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> None:
-    """Process raw data into browser-friendly formats."""
-    logger = get_run_logger()
-    logger.info("Processing source data")
-    # TODO: open NetCDF with xarray, crop, compute stats
-    # TODO: write .json (flat array), .png (colourised tile), .meta.json (sidecar)
+    """Process raw source data into browser-friendly formats."""
+    logger = get_logger()
+    sources_dir = data_dir / "sources"
+    processed_dir = data_dir / "processed"
+
+    # Process OISST
+    oisst_source = sources_dir / "oisst"
+    if not oisst_source.exists():
+        logger.info("No OISST source data found, skipping process")
+        return
+
+    oisst_output = processed_dir / "oisst"
+    for nc_file in sorted(oisst_source.glob("*.nc")):
+        date = nc_file.stem  # e.g. "2026-04-13"
+        if (oisst_output / f"{date}.json").exists():
+            logger.info("OISST %s already processed, skipping", date)
+            continue
+        logger.info("Processing OISST %s", date)
+        _process_oisst(nc_file, oisst_output, date)
+        logger.info("OISST %s → 3 files in %s", date, oisst_output)
