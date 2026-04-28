@@ -9,13 +9,15 @@ The gallery serves this file via Caddy at /renders/manifest.json
 
 from pathlib import Path
 
-from prefect import get_run_logger, task
+from prefect import task
+
+from oceancanvas.log import get_logger
 
 
 @task(name="index")
 def index(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> None:
     """Rebuild manifest.json from renders/."""
-    logger = get_run_logger()
+    logger = get_logger()
     manifest_path = renders_dir / "manifest.json"
     logger.info("Rebuilding %s", manifest_path)
     # TODO: walk renders/, build manifest, write to manifest_path

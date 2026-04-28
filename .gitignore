@@ -3,6 +3,7 @@ data/sources/
 data/processed/
 data/gebco/
 data/state.json
+data/payloads/
 renders/*
 !renders/.gitkeep
 manifest.json

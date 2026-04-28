@@ -8,8 +8,9 @@ import os
 import sys
 from pathlib import Path
 
-from prefect import flow, get_run_logger
+from prefect import flow
 
+from oceancanvas.log import get_logger
 from oceancanvas.tasks.build_payload import build_payload
 from oceancanvas.tasks.discover import discover
 from oceancanvas.tasks.fetch import fetch
@@ -21,7 +22,7 @@ from oceancanvas.tasks.render import render
 @flow(name="daily_ocean_pipeline", log_prints=True)
 def daily_ocean_pipeline(test_mode: bool = False) -> None:
     """Daily pipeline: discover, fetch, process, build_payload, render, index."""
-    logger = get_run_logger()
+    logger = get_logger()
     data_dir = Path(os.environ.get("DATA_DIR", "/data"))
     recipes_dir = Path(os.environ.get("RECIPES_DIR", "/recipes"))
     renders_dir = Path(os.environ.get("RENDERS_DIR", "/renders"))
