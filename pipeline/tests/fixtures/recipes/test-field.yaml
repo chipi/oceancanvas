@@ -1,0 +1,18 @@
+name: test-field
+created: 2026-01-15
+author: test
+region:
+  lat: [25, 65]
+  lon: [-80, 0]
+  name: Test Region
+sources:
+  primary: oisst
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: field
+  colormap: thermal
+  opacity: 0.8
+  smooth: true
+  seed: 42
