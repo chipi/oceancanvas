@@ -33,6 +33,14 @@ class TestApplyThermalColormap:
         rgb = _apply_thermal_colormap(data, 10.0, 25.0)
         assert list(rgb[0, 0]) == [121, 31, 31]  # domain-sst-hot
 
+    def test_all_nan_array(self):
+        """All-NaN data should produce all canvas-coloured pixels."""
+        data = np.array([[np.nan, np.nan], [np.nan, np.nan]], dtype=np.float32)
+        rgb = _apply_thermal_colormap(data, 0.0, 1.0)
+        for r in range(2):
+            for c in range(2):
+                assert list(rgb[r, c]) == [3, 11, 16]
+
 
 class TestProcessOisst:
     def test_produces_three_files(self, tmp_path: Path):

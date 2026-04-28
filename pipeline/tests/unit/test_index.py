@@ -117,12 +117,30 @@ class TestIndex:
         renders.mkdir(exist_ok=True)
 
         payloads = tmp_data_dir / "data" / "payloads"
-        payloads.mkdir(parents=True)
+        payloads.mkdir(parents=True, exist_ok=True)
         (payloads / "recipe_2026-01-15.json").write_text("{}")
 
         index.fn(tmp_data_dir / "data", tmp_data_dir / "recipes", renders)
 
         assert list(payloads.glob("*.json")) == []
+
+    def test_overwrites_stale_manifest(self, tmp_data_dir: Path):
+        """Running index replaces an existing manifest with fresh data."""
+        renders = tmp_data_dir / "renders"
+        recipe_dir = renders / "test-recipe"
+        recipe_dir.mkdir(parents=True)
+        (recipe_dir / "2026-01-15.png").write_bytes(b"\x89PNG")
+
+        # Write a stale manifest with wrong data
+        stale = {"recipe_count": 99, "recipes": {"old": {}}}
+        (renders / "manifest.json").write_text(json.dumps(stale))
+
+        index.fn(tmp_data_dir / "data", tmp_data_dir / "recipes", renders)
+
+        manifest = json.loads((renders / "manifest.json").read_text())
+        assert manifest["recipe_count"] == 1
+        assert "test-recipe" in manifest["recipes"]
+        assert "old" not in manifest["recipes"]
 
     def test_empty_renders(self, tmp_data_dir: Path):
         renders = tmp_data_dir / "renders"

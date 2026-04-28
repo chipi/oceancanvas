@@ -55,6 +55,26 @@ class TestFindLatestDate:
         date = _find_latest_date(processed_data, "oisst")
         assert "meta" not in date
 
+    def test_picks_latest_among_multiple_dates(self, tmp_path: Path):
+        """When multiple dates exist, the latest (lexicographically) is returned."""
+        source_dir = tmp_path / "oisst"
+        source_dir.mkdir(parents=True)
+        for d in ["2026-01-09", "2026-01-15", "2026-01-12"]:
+            (source_dir / f"{d}.json").write_text("{}")
+            (source_dir / f"{d}.meta.json").write_text("{}")
+        date = _find_latest_date(tmp_path, "oisst")
+        assert date == "2026-01-15"
+
+
+class TestCropToRegion:
+    def test_returns_data_unchanged_for_now(self):
+        """Stub implementation returns input unchanged."""
+        from oceancanvas.tasks.build_payload import _crop_to_region
+
+        data = {"data": [1, 2, 3], "shape": [1, 3]}
+        result = _crop_to_region(data, [25, 65], [-80, 0])
+        assert result is data
+
 
 class TestBuildOnePayload:
     def test_produces_valid_payload(self, processed_data: Path, tmp_path: Path):

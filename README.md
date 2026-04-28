@@ -78,8 +78,6 @@ Read what you need when you need it. Reference docs (PA / IA / TA) are linked in
 
 ## How to run it
 
-*Until the pipeline ships, this section is forward-looking.*
-
 ```bash
 git clone https://github.com/chipi/oceancanvas.git
 cd oceancanvas

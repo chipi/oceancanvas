@@ -89,7 +89,7 @@ Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
 - `pyproject.toml` for dependencies. No `requirements.txt`.
 - Prefect task functions are decorated with `@task`; flow functions with `@flow`. Task names match the canonical six: `discover`, `fetch`, `process`, `build_payload`, `render`, `index`.
 - File I/O always via `pathlib.Path`, never string concatenation.
-- Logging via Prefect's logger (`get_run_logger()`); no `print` in pipeline code.
+- Logging via `oceancanvas.log.get_logger()` — returns Prefect's `get_run_logger()` inside a flow/task context, falls back to stdlib `logging` in tests and standalone scripts. No `print` in pipeline code.
 - Tests in `tests/` mirroring the package structure. Pytest. Each pipeline task has a unit test against synthetic data.
 
 ### Node.js (renderer)

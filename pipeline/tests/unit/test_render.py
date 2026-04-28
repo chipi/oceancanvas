@@ -104,6 +104,24 @@ class TestRender:
         assert result[0].parent.name == "test-recipe"
         assert result[0].exists()
 
+    def test_handles_hyphenated_recipe_name(self, tmp_data_dir: Path):
+        """Recipe names with hyphens like north-atlantic-sst parse correctly."""
+        _make_payload_file(tmp_data_dir / "data", "north-atlantic-sst", "2026-01-15")
+
+        mock_result = MagicMock()
+        mock_result.returncode = 0
+        mock_result.stdout = FAKE_PNG
+        mock_result.stderr = b""
+
+        with patch("oceancanvas.tasks.render.subprocess.run", return_value=mock_result):
+            result = render.fn(
+                tmp_data_dir / "data", tmp_data_dir / "recipes", tmp_data_dir / "renders"
+            )
+
+        assert len(result) == 1
+        assert result[0].parent.name == "north-atlantic-sst"
+        assert result[0].name == "2026-01-15.png"
+
     def test_skips_existing_renders(self, tmp_data_dir: Path):
         _make_payload_file(tmp_data_dir / "data", "test-recipe", "2026-01-15")
 
