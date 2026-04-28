@@ -60,11 +60,9 @@ GEBCO bathymetry is one-time static data, fetched once and reused — not a dail
 - ✅ The grid — 3 columns, one card per active recipe
 - ✅ The 14-day strip — accumulated history of the focal recipe
 - ✅ The source filter pills in the topbar
-- ❌ The full-bleed hero — deferred to Slice 2
+- ✅ The full-bleed hero — today's featured render with overlay
 - ❌ Recipe and timelapse handoff actions on cards — deferred to Slices 2 and 3 (no editor or video editor exists yet to receive them)
 - ❌ Click-into-recipe-page — deferred (no recipe page yet)
-
-The grid and strip alone are enough to verify the accumulation promise. The hero is editorial polish that earns its place once there's something downstream to link from.
 
 **The CI gate.** GitHub Actions workflow per ADR-013 + ADR-014:
 

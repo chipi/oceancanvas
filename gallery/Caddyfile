@@ -15,7 +15,8 @@
         file_server
     }
 
-    # manifest.json lives in renders/ — convenience alias at root
+    # manifest.json lives in renders/ — convenience alias for direct browser access
+    # Gallery app fetches /renders/manifest.json directly
     handle /manifest.json {
         rewrite * /renders/manifest.json
         root * /

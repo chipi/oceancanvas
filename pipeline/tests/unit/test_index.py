@@ -48,6 +48,33 @@ class TestScanRenders:
         assert recipes["test-recipe"]["count"] == 1
 
 
+class TestReadRecipeMetadata:
+    def test_reads_valid_recipe(self, tmp_path: Path):
+        from oceancanvas.tasks.index import _read_recipe_metadata
+
+        recipes = tmp_path / "recipes"
+        recipes.mkdir()
+        (recipes / "test.yaml").write_text(
+            "name: test\nsources:\n  primary: oisst\nrender:\n  type: field\n  seed: 42\n"
+        )
+        meta = _read_recipe_metadata(recipes, "test")
+        assert meta["render_type"] == "field"
+        assert meta["source"] == "oisst"
+
+    def test_returns_empty_for_missing_recipe(self, tmp_path: Path):
+        from oceancanvas.tasks.index import _read_recipe_metadata
+
+        assert _read_recipe_metadata(tmp_path, "nonexistent") == {}
+
+    def test_returns_empty_for_corrupt_yaml(self, tmp_path: Path):
+        from oceancanvas.tasks.index import _read_recipe_metadata
+
+        recipes = tmp_path / "recipes"
+        recipes.mkdir()
+        (recipes / "bad.yaml").write_text(": : : invalid yaml [[[")
+        assert _read_recipe_metadata(recipes, "bad") == {}
+
+
 class TestCleanupPayloads:
     def test_removes_payload_files(self, tmp_path: Path):
         payloads = tmp_path / "payloads"

@@ -18,7 +18,9 @@ const SKETCHES_DIR = process.env.SKETCHES_DIR || '/sketches';
 
 async function render(payload) {
   const sketchType = payload.recipe?.render?.type || 'field';
+  const sharedPath = join(SKETCHES_DIR, 'shared.js');
   const sketchPath = join(SKETCHES_DIR, `${sketchType}.js`);
+  const sharedCode = readFileSync(sharedPath, 'utf-8');
   const sketchCode = readFileSync(sketchPath, 'utf-8');
 
   const width = payload.output?.width || 1920;
@@ -39,6 +41,7 @@ async function render(payload) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 </head><body style="margin:0">
 <script>window.OCEAN_PAYLOAD = ${JSON.stringify(payload)};</script>
+<script>${sharedCode}</script>
 <script>${sketchCode}</script>
 </body></html>`;
 

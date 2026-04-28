@@ -24,7 +24,7 @@ def _make_payload_file(tmp_path: Path, recipe_name: str, date: str) -> Path:
     }
     payloads_dir = tmp_path / "payloads"
     payloads_dir.mkdir(exist_ok=True)
-    path = payloads_dir / f"{recipe_name}_{date}.json"
+    path = payloads_dir / f"{recipe_name}__{date}.json"
     path.write_text(json.dumps(payload))
     return path
 

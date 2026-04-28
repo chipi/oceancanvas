@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import jsonschema
+import numpy as np
 import yaml
 from prefect import task
 
@@ -37,6 +38,12 @@ def _load_recipe(recipe_path: Path) -> dict:
         recipe["created"] = recipe["created"].isoformat()
     schema = _load_schema()
     jsonschema.validate(recipe, schema)
+    # Ensure lat/lon are [min, max] order
+    region = recipe.get("region", {})
+    for axis in ("lat", "lon"):
+        vals = region.get(axis, [])
+        if len(vals) == 2 and vals[0] > vals[1]:
+            region[axis] = [vals[1], vals[0]]
     return recipe
 
 
@@ -47,7 +54,6 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
     This function slices to the recipe's bounds using linear interpolation of
     lat/lon coordinates from the processed metadata.
     """
-    import numpy as np
 
     data_lat = processed["lat_range"]  # [min, max]
     data_lon = processed["lon_range"]  # [min, max]
@@ -184,7 +190,7 @@ def build_payload(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> list[
             logger.info("Render already exists for %s/%s, skipping payload", recipe["name"], date)
             continue
 
-        output = payloads_dir / f"{recipe['name']}_{date}.json"
+        output = payloads_dir / f"{recipe['name']}__{date}.json"
         if output.exists():
             logger.info("Payload already built for %s/%s", recipe["name"], date)
             payload_paths.append(output)

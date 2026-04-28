@@ -107,6 +107,27 @@ class TestProcessOisst:
         assert meta["shape"] == [10, 10]
 
 
+class TestProcessOisstWithNaN:
+    def test_nan_fixture_produces_valid_output(self, tmp_path: Path):
+        """50% NaN land mask fixture should produce valid output with correct nan_pct."""
+        nc_path = FIXTURES_DIR / "oisst" / "2026-01-17.nc"
+        if not nc_path.exists():
+            import pytest
+
+            pytest.skip("NaN fixture not generated")
+
+        output = tmp_path / "oisst"
+        _process_oisst(nc_path, output, "2026-01-17")
+
+        meta = json.loads((output / "2026-01-17.meta.json").read_text())
+        assert meta["nan_pct"] > 0, "Should have non-zero NaN percentage"
+        assert meta["nan_pct"] < 100, "Should not be all NaN"
+
+        data = json.loads((output / "2026-01-17.json").read_text())
+        nan_count = sum(1 for v in data["data"] if v == -999.0)
+        assert nan_count > 0, "Should have -999.0 NaN placeholders in data"
+
+
 class TestProcessOisstErrors:
     def test_handles_truncated_file(self, tmp_path: Path):
         """A truncated/corrupt file should raise, not hang."""

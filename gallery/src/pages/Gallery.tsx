@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { type SyntheticEvent, useState } from 'react';
 import { useManifest } from '../hooks/useManifest';
 import styles from './Gallery.module.css';
+
+function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
+  e.currentTarget.style.display = 'none';
+}
 
 function renderUrl(recipe: string, date: string): string {
   return `/renders/${recipe}/${date}.png`;
@@ -56,6 +60,7 @@ export function Gallery() {
             className={styles.heroImage}
             src={renderUrl(hero.name, hero.latest)}
             alt={`${hero.name} — ${hero.latest}`}
+            onError={handleImgError}
           />
           <div className={styles.heroOverlay}>
             <div className={styles.heroName}>{hero.name}</div>
@@ -80,6 +85,7 @@ export function Gallery() {
                 src={renderUrl(hero.name, date)}
                 alt={date}
                 title={date}
+                onError={handleImgError}
               />
             ))}
           </div>
@@ -97,6 +103,7 @@ export function Gallery() {
               className={styles.cardImage}
               src={renderUrl(recipe.name, recipe.latest)}
               alt={recipe.name}
+              onError={handleImgError}
             />
             <div className={styles.cardOverlay}>
               <div className={styles.cardName}>{recipe.name}</div>

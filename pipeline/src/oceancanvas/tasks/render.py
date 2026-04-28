@@ -73,13 +73,12 @@ def render(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> list[Path]:
     rendered: list[Path] = []
 
     for payload_path in payload_files:
-        # Parse recipe name and date from filename: {recipe}_{date}.json
+        # Parse recipe name and date from filename: {recipe}__{date}.json
         stem = payload_path.stem
-        parts = stem.rsplit("_", 1)
-        if len(parts) != 2:
-            logger.warning("Unexpected payload filename: %s", payload_path.name)
+        if "__" not in stem:
+            logger.warning("Unexpected payload filename (no __ separator): %s", payload_path.name)
             continue
-        recipe_name, date = parts
+        recipe_name, date = stem.split("__", 1)
 
         output_path = renders_dir / recipe_name / f"{date}.png"
         if output_path.exists():

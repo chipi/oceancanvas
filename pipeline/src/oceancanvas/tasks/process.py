@@ -10,6 +10,7 @@ computes statistics, and exports three files per date to data/processed/:
 
 from __future__ import annotations
 
+import io
 import json
 from pathlib import Path
 
@@ -90,9 +91,7 @@ def _process_oisst(nc_path: Path, output_dir: Path, date: str) -> None:
         # .png — colourised tile
         rgb = _apply_thermal_colormap(values, vmin, vmax)
         img = Image.fromarray(np.flipud(rgb))
-        import io as _io
-
-        buf = _io.BytesIO()
+        buf = io.BytesIO()
         img.save(buf, format="PNG")
         png_path = output_dir / f"{date}.png"
         atomic_write_bytes(png_path, buf.getvalue())

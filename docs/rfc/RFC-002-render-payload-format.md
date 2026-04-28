@@ -89,6 +89,10 @@ A single JSON file per render (or per preview) with a fixed top-level schema. Nu
 
 **Changes from v0.1:** `"canvas"` renamed to `"output"`. Primary data nested under `"data"` object (allows adding `"context"`, `"audio_scalars"` as siblings without restructuring). `"creative"` and `"technical"` blocks removed — the sketch reads `recipe.render` directly. The recipe's full render block is passed through rather than split into creative/technical halves.
 
+**NaN convention:** Missing or invalid data values are represented as `-999.0` in the flat data array. Sketches must check for this value and render it as canvas background (`#030B10`). This convention is shared between `process.py` (which writes `-999.0` for NaN) and all sketch files (which check `val === NAN_VALUE`). The constant is defined in `sketches/shared.js` as `NAN_VALUE = -999.0`.
+
+**Data layout:** Arrays are row-major. Row 0 is the southernmost latitude. Sketches that render to screen must flip vertically (row 0 → bottom of canvas, row N → top). Shape is `[lat_count, lon_count]`.
+
 Numeric arrays as plain JSON arrays of float32 values. Yes, this is verbose. Modern JSON.parse handles a 100k-element float array in under 30ms in Chrome — well within the 100ms goal. The verbosity is the price of debuggability and zero binary-library dependency.
 
 The `creative` and `technical` blocks mirror RFC-001's recipe schema, allowing the sketch to read either creative-state-driven or technical-parameter-driven decisions without duplicating logic.

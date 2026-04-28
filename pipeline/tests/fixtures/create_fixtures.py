@@ -40,12 +40,32 @@ def create_oisst_fixture(date: str = "2026-01-15") -> None:
     print(f"Created {out} ({out.stat().st_size} bytes)")
 
 
-def create_oisst_fixture_next_day() -> None:
-    """Second day, values shifted +0.1°C for testing multi-day."""
-    create_oisst_fixture("2026-01-16")
+def create_oisst_fixture_with_nan(date: str = "2026-01-17") -> None:
+    """Create OISST fixture with NaN land mask (50% missing data)."""
+    lat = np.linspace(25.0, 65.0, 10, dtype=np.float32)
+    lon = np.linspace(-80.0, 0.0, 10, dtype=np.float32)
+    time = np.array([np.datetime64(f"{date}T12:00:00")])
+    zlev = np.array([0.0], dtype=np.float32)
+
+    sst_values = np.linspace(25.0, 10.0, 10).reshape(1, 1, 10, 1) * np.ones((1, 1, 1, 10))
+    sst = sst_values.astype(np.float32)
+    # Set ~50% of cells to NaN (simulating land)
+    sst[0, 0, :5, :5] = np.nan
+
+    ds = xr.Dataset(
+        {"sst": (["time", "zlev", "latitude", "longitude"], sst)},
+        coords={"time": time, "zlev": zlev, "latitude": lat, "longitude": lon},
+    )
+    ds["sst"].attrs["units"] = "degC"
+
+    out = FIXTURES_DIR / "oisst" / f"{date}.nc"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    ds.to_netcdf(out)
+    print(f"Created {out} with NaN mask ({out.stat().st_size} bytes)")
 
 
 if __name__ == "__main__":
     create_oisst_fixture("2026-01-15")
     create_oisst_fixture("2026-01-16")
+    create_oisst_fixture_with_nan("2026-01-17")
     print("Done.")
