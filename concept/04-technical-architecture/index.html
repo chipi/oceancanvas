@@ -1,0 +1,3487 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative ocean art that the data performs daily">
+      
+      
+      
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/concept/04-technical-architecture/">
+      
+      
+        <link rel="prev" href="../03-data-catalog/">
+      
+      
+        <link rel="next" href="../05-design-system/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>OC-04: Technical Architecture - OceanCanvas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#oc-04-technical-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OceanCanvas" class="md-header__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OceanCanvas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OC-04: Technical Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OceanCanvas" class="md-nav__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OceanCanvas
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project-readme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions (CLAUDE.md)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concept Package
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concept Package
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-package-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-00: Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-01: Vision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-project-concept/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-02: Project Concept
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-data-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-03: Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-04: Technical Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-04: Technical Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-six-pipeline-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The six pipeline tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-03-the-processing-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 03 — The processing step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task 03 — The processing step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#three-outputs-per-source-per-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three outputs per source per date
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processing-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Processing region
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefect-caching-makes-the-step-idempotent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefect caching makes the step idempotent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-folder-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete folder structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-tech-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core tech stack
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core tech stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#all-decisions-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        All decisions — locked
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-is-served-to-the-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How data is served to the UI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-six-render-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The six render types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recipe-editor-studio-the-creative-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe editor studio — the creative interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recipe editor studio — the creative interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-flip-one-preview-two-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The flip — one preview, two modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creative-mode-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creative mode controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAML mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video-editor-timelapse-assembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video editor — timelapse assembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Video editor — timelapse assembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#three-enrichment-tracks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three enrichment tracks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-actions-e2e-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions — e2e test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-requiring-rfc-in-phase-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open questions — requiring RFC in Phase 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation sequence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-pipeline-skeleton-v1-3-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Pipeline skeleton (v1, 3 sources)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-dashboard-recipe-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Dashboard + recipe editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-expand-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Expand sources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-design-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-05: Design System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../prd/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/OC_PA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Architecture (PA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-001-recipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-001: Recipe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-002-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-002: Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-003: Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-004: Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-005: Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../uxs/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UX
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/OC_IA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Information Architecture (IA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-001-dashboard-sst/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-001: Dashboard SST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-002-dashboard-sealevel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-002: Dashboard Sea Level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-003: Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-004: Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-005: Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../adr/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/OC_TA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Architecture (TA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADRs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADRs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-001-prefect-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-001: Prefect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-002-dlt-rest-ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-002: dlt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-003-xarray-netcdf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-003: xarray
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-004-three-layer-data-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-004: Three-layer store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-005-no-database-v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-005: No database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-006-p5js-sketch-language/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-006: p5.js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-007-puppeteer-renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-007: Puppeteer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-008-shared-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-008: Shared payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-009-deck-gl-maplibre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-009: deck.gl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-010-observable-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-010: Observable Plot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-011-docker-compose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-011: Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-012-caddy-static-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-012: Caddy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-013-github-actions-code-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-013: GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-014-synthetic-e2e-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-014: Synthetic e2e
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-015-processed-json-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-015: Processed JSON
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-016-single-author-phase-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-016: Single author
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-017-one-layout-per-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-017: One layout per source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFCs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RFCs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-001-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-001: Recipe YAML schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-002-render-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-002: Render payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-003-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-003: Recipe lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-004-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-004: Live preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-005-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-005: YAML round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-006-audio-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-006: Audio system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-007-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-007: Key moment detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-six-pipeline-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The six pipeline tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-03-the-processing-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 03 — The processing step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task 03 — The processing step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#three-outputs-per-source-per-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three outputs per source per date
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processing-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Processing region
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefect-caching-makes-the-step-idempotent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefect caching makes the step idempotent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-folder-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete folder structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-tech-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core tech stack
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core tech stack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#all-decisions-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        All decisions — locked
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-is-served-to-the-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How data is served to the UI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-six-render-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The six render types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recipe-editor-studio-the-creative-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe editor studio — the creative interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recipe editor studio — the creative interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-flip-one-preview-two-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The flip — one preview, two modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creative-mode-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creative mode controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAML mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video-editor-timelapse-assembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video editor — timelapse assembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Video editor — timelapse assembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#three-enrichment-tracks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three enrichment tracks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-actions-e2e-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions — e2e test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions-requiring-rfc-in-phase-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open questions — requiring RFC in Phase 2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation sequence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-pipeline-skeleton-v1-3-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Pipeline skeleton (v1, 3 sources)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-dashboard-recipe-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Dashboard + recipe editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-expand-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — Expand sources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="oc-04-technical-architecture">OC-04 — Technical Architecture<a class="headerlink" href="#oc-04-technical-architecture" title="Permanent link">&para;</a></h1>
+<p><strong>OceanCanvas — Pipeline Architecture &amp; Technical Design</strong></p>
+<p><em>April 2026 · v1.0</em></p>
+<p>This document is the definitive technical reference for the OceanCanvas data pipeline, processing layer, and rendering architecture. All decisions are consolidated here.</p>
+<hr />
+<h2 id="architecture-overview">Architecture overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h2>
+<p>The OceanCanvas pipeline is a daily Prefect flow that fetches ocean data from public APIs, processes it into browser-friendly formats, renders generative art from recipes, and indexes the results. It runs as a service on your hardware (laptop for development, VPS for production) inside Docker Compose.</p>
+<p><img alt="Pipeline architecture" src="../images/pipeline-architecture.png" />
+<em>Fig 1. Complete Prefect pipeline flow — 6 tasks, daily schedule, source-driven fetch + recipe-driven render.</em></p>
+<hr />
+<h2 id="the-six-pipeline-tasks">The six pipeline tasks<a class="headerlink" href="#the-six-pipeline-tasks" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Task 01 — Discover</strong></td>
+<td>For each source, query the latest available date. ERDDAP sources use <code>/info/{datasetID}/index.json</code>. Open-Meteo is always today. GEBCO never changes. Prevents requesting data that does not yet exist.</td>
+</tr>
+<tr>
+<td><strong>Task 02 — Fetch</strong></td>
+<td>Download raw files to <code>data/sources/</code>. OISST and GEBCO fetched as NetCDF via ERDDAP griddap URLs. Open-Meteo is a JSON API call. dlt handles incremental state for tabular/REST sources. Prefect retries on network failure.</td>
+</tr>
+<tr>
+<td><strong>Task 03 — Process</strong></td>
+<td>Opens raw files with xarray, crops to processing region, validates, computes statistics, exports three outputs per source per date to <code>data/processed/</code>. Runs once per source per date — not per recipe.</td>
+</tr>
+<tr>
+<td><strong>Task 04 — Build payload</strong></td>
+<td>Per recipe: reads <code>data/processed/</code> for each source the recipe needs. Crops further to the recipe's specific lat/lon region. Assembles a flat <code>render_payload.json</code> that the p5.js sketch will consume.</td>
+</tr>
+<tr>
+<td><strong>Task 05 — Render</strong></td>
+<td>Per recipe: Node.js subprocess launches Puppeteer, loads the p5.js sketch HTML, injects the render payload, waits for <code>window.__RENDER_COMPLETE</code>, screenshots the canvas. Writes PNG to <code>renders/{recipe}/{date}.png</code>.</td>
+</tr>
+<tr>
+<td><strong>Task 06 — Index</strong></td>
+<td>Walks the <code>renders/</code> directory, collects all PNGs, rebuilds <code>manifest.json</code> from scratch. Cleans up temp payload files.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="task-03-the-processing-step">Task 03 — The processing step<a class="headerlink" href="#task-03-the-processing-step" title="Permanent link">&para;</a></h2>
+<p>The processing step is the bridge between raw source data and what the dashboard and renderer actually need. It runs once per source per date and produces three outputs.</p>
+<p><img alt="Processing step detail" src="../images/processing-step-detail.png" />
+<em>Fig 2. Task 03 detail — sub-steps from opening the raw file to writing the meta sidecar.</em></p>
+<h3 id="three-outputs-per-source-per-date">Three outputs per source per date<a class="headerlink" href="#three-outputs-per-source-per-date" title="Permanent link">&para;</a></h3>
+<p>Written to <code>data/processed/{source_id}/{YYYY-MM-DD}.*</code>:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Contents</th>
+<th>Consumer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.json</code></td>
+<td>Flat float32 array + shape [lat_count, lon_count] + min + max + lat_range + lon_range + date + source_id</td>
+<td>Dashboard hover interaction, render payload builder</td>
+</tr>
+<tr>
+<td><code>.png</code></td>
+<td>Colourised PNG tile at processing region resolution (matplotlib colormap applied server-side)</td>
+<td>Dashboard heatmap fast path via deck.gl BitmapLayer</td>
+</tr>
+<tr>
+<td><code>.meta.json</code></td>
+<td>Statistics sidecar: date, source_id, shape, min, max, nan_pct, processing_region, processing_timestamp</td>
+<td>Dashboard stats panel (loaded first — small and fast)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="processing-region">Processing region<a class="headerlink" href="#processing-region" title="Permanent link">&para;</a></h3>
+<p>The processing region is configured per source — for example, North Atlantic (20°N–75°N, 90°W–10°E) covers all recipes that target the North Atlantic basin. It is wider than any individual recipe region but not global.</p>
+<h3 id="prefect-caching-makes-the-step-idempotent">Prefect caching makes the step idempotent<a class="headerlink" href="#prefect-caching-makes-the-step-idempotent" title="Permanent link">&para;</a></h3>
+<p>If <code>data/processed/oisst/2026-04-25.json</code> already exists, the task is a cache hit and is skipped. Running the pipeline twice in one day does not re-process.</p>
+<hr />
+<h2 id="complete-folder-structure">Complete folder structure<a class="headerlink" href="#complete-folder-structure" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data/sources/</code></td>
+<td>Raw fetched files in native format — NetCDF for OISST/GEBCO/ESA CCI, JSON for Open-Meteo. <strong>gitignored, regenerable.</strong></td>
+</tr>
+<tr>
+<td><code>data/processed/</code></td>
+<td>Browser-ready outputs: flat JSON arrays, colourised PNG tiles, meta sidecars. <strong>gitignored, generated by Task 03.</strong></td>
+</tr>
+<tr>
+<td><code>data/state.json</code></td>
+<td>Prefect result cache index. Updated atomically after each successful task. <strong>gitignored.</strong></td>
+</tr>
+<tr>
+<td><code>recipes/</code></td>
+<td>YAML configuration files — one per art piece. <strong>Committed to repo.</strong></td>
+</tr>
+<tr>
+<td><code>renders/</code></td>
+<td>Pipeline output PNGs — one per recipe per day. <strong>Committed to repo or pushed to Cloudflare R2.</strong></td>
+</tr>
+<tr>
+<td><code>manifest.json</code></td>
+<td>Gallery index. Rebuilt from scratch by Task 06 on every run.</td>
+</tr>
+<tr>
+<td><code>pipeline/</code></td>
+<td>Python + Node.js source code. <strong>Committed to repo.</strong></td>
+</tr>
+<tr>
+<td><code>gallery/</code></td>
+<td>React application source. <strong>Committed to repo.</strong></td>
+</tr>
+<tr>
+<td><code>docker-compose.yml</code></td>
+<td>Container definitions. <strong>Committed to repo.</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="core-tech-stack">Core tech stack<a class="headerlink" href="#core-tech-stack" title="Permanent link">&para;</a></h2>
+<p><img alt="Tech stack and deployment" src="../images/tech-stack-deployment.png" />
+<em>Fig 3. Core tech stack (6 tools, separated by concern) and deployment model (3 contexts: GitHub repo, Docker Compose service, GitHub Actions CI).</em></p>
+<h3 id="all-decisions-locked">All decisions — locked<a class="headerlink" href="#all-decisions-locked" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Orchestration</strong></td>
+<td>Prefect (@task/@flow)</td>
+<td>Retry, caching, scheduling, observability. Lighter than Airflow, richer than cron. Self-hosted.</td>
+</tr>
+<tr>
+<td><strong>Tabular ingestion</strong></td>
+<td>dlt (inside Prefect tasks)</td>
+<td>Incremental cursor state built-in. Replaces hand-written state.json for REST/JSON sources.</td>
+</tr>
+<tr>
+<td><strong>NetCDF fetchers</strong></td>
+<td>xarray + requests (plain Python)</td>
+<td>No framework fits binary gridded data. Wrapped in Prefect @tasks for retries/logging.</td>
+</tr>
+<tr>
+<td><strong>Processing step</strong></td>
+<td>data/sources/ → data/processed/</td>
+<td>Fills the gap between raw NetCDF and dashboard/renderer. Runs once per source per date.</td>
+</tr>
+<tr>
+<td><strong>Dashboard maps</strong></td>
+<td>deck.gl + MapLibre GL</td>
+<td>WebGL, 60fps, handles ocean-scale grids. BitmapLayer for PNG tiles, custom layers for hover.</td>
+</tr>
+<tr>
+<td><strong>Dashboard charts</strong></td>
+<td>Observable Plot</td>
+<td>Clean API, SVG output, designed for analytical data exploration.</td>
+</tr>
+<tr>
+<td><strong>Art rendering</strong></td>
+<td>p5.js + Puppeteer</td>
+<td>Creative coding library + headless screenshot. Separate from dashboard renderer.</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Docker Compose (self-hosted)</td>
+<td>Same stack on laptop and VPS. One-command self-hosting.</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>GitHub Actions (code validation only)</td>
+<td>Lint + test + build image + e2e with synthetic data. Never runs the data pipeline.</td>
+</tr>
+<tr>
+<td><strong>Storage — raw data</strong></td>
+<td>Files (data/sources/)</td>
+<td>Native format per source. Not committed to git. Regenerable.</td>
+</tr>
+<tr>
+<td><strong>Storage — processed</strong></td>
+<td>Files (data/processed/)</td>
+<td>Browser-friendly JSON + PNG + meta. Not committed to git.</td>
+</tr>
+<tr>
+<td><strong>Storage — renders</strong></td>
+<td>Files (renders/)</td>
+<td>Gallery PNGs. Committed to repo or Cloudflare R2. Served by Caddy.</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>None (v1)</td>
+<td>Everything is file-shaped. SQLite if manifest grows.</td>
+</tr>
+<tr>
+<td><strong>Image serving (prod)</strong></td>
+<td>Local disk → Cloudflare R2</td>
+<td>Zero egress. Start local, move to R2 when going public.</td>
+</tr>
+<tr>
+<td><strong>Video assembly</strong></td>
+<td>ffmpeg</td>
+<td>Frame assembly, overlay compositing, audio muxing in one command.</td>
+</tr>
+<tr>
+<td><strong>Audio generation</strong></td>
+<td>Generative music API (Mubert/Beatoven)</td>
+<td>Professional-quality licensed music. Stem-based mixing for data-driven evolution.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="how-data-is-served-to-the-ui">How data is served to the UI<a class="headerlink" href="#how-data-is-served-to-the-ui" title="Permanent link">&para;</a></h2>
+<p>There is no data API server at runtime. Everything the browser needs is served as static files by Caddy.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Path</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gallery images</strong></td>
+<td><code>renders/{recipe}/{date}.png</code></td>
+<td>Static files. React gallery reads manifest.json to know what exists.</td>
+</tr>
+<tr>
+<td><strong>Dashboard heatmap (fast path)</strong></td>
+<td><code>data/processed/{source}/{date}.png</code></td>
+<td>deck.gl BitmapLayer displays instantly as geographic overlay.</td>
+</tr>
+<tr>
+<td><strong>Dashboard interactive hover</strong></td>
+<td><code>data/processed/{source}/{date}.json</code></td>
+<td>JavaScript indexes the flat array by lat/lon. Loaded once per source per date.</td>
+</tr>
+<tr>
+<td><strong>Dashboard time series</strong></td>
+<td><code>data/processed/{source}/timeseries.json</code></td>
+<td>Observable Plot reads this for the trend chart.</td>
+</tr>
+<tr>
+<td><strong>Dashboard stats panel</strong></td>
+<td><code>data/processed/{source}/{date}.meta.json</code></td>
+<td>Tiny sidecar loaded first; full JSON array loads asynchronously.</td>
+</tr>
+<tr>
+<td><strong>Gallery index</strong></td>
+<td><code>manifest.json</code></td>
+<td>React app reads once on load.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="deployment-model">Deployment model<a class="headerlink" href="#deployment-model" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub</strong></td>
+<td>Code repository. Pipeline source, recipes, gallery React source, Dockerfile, docker-compose.yml. <strong>Not</strong> data/sources/, data/processed/, renders/.</td>
+</tr>
+<tr>
+<td><strong>Docker Compose</strong></td>
+<td>Four services: <code>postgres</code> (Prefect state DB), <code>prefect-server</code> (Prefect Server), <code>pipeline</code> (Python 3.12 + Node.js 20 + Chromium), <code>gallery</code> (Caddy serving React).</td>
+</tr>
+<tr>
+<td><strong>Where it runs</strong></td>
+<td>M4 Pro for dev (current prod). Hetzner CAX21 (4 vCPU ARM, 8GB RAM, ~€6/month) for VPS.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-six-render-types">The six render types<a class="headerlink" href="#the-six-render-types" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Natural fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Field</strong></td>
+<td>Maps the 2D spatial grid to a colour field. Every cell becomes a pixel, colormap applied.</td>
+<td>OISST, SST-CCI, salinity, sea level, chlorophyll, sea ice</td>
+</tr>
+<tr>
+<td><strong>Particles</strong></td>
+<td>Animated particles move through the data field, velocity derived from current data or spatial gradient.</td>
+<td>OSCAR currents, WW3 waves, OISST gradient</td>
+</tr>
+<tr>
+<td><strong>Contour</strong></td>
+<td>Isolines drawn through the field using marching squares.</td>
+<td>Any gridded source. Particularly effective for SST anomaly.</td>
+</tr>
+<tr>
+<td><strong>Pulse</strong></td>
+<td>Scalar time series drives concentric rings, oscillations, waveforms.</td>
+<td>Open-Meteo wave height, NSIDC ice extent, GMSL</td>
+</tr>
+<tr>
+<td><strong>Scatter</strong></td>
+<td>Point cloud from discrete observation data.</td>
+<td>Argo profiles, NDBC buoys, SOCAT ship tracks</td>
+</tr>
+<tr>
+<td><strong>Composite</strong></td>
+<td>Ordered layer stack combining multiple render types.</td>
+<td>Complex multi-source pieces</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="recipe-editor-studio-the-creative-interface">Recipe editor studio — the creative interface<a class="headerlink" href="#recipe-editor-studio-the-creative-interface" title="Permanent link">&para;</a></h2>
+<p>The recipe editor operates at the level of artistic intent, not technical parameters.</p>
+<blockquote>
+<p><strong>Design principle:</strong> A 1-1 knob mapping (colormap, particle_count, opacity) is the wrong abstraction for a creative user. Someone thinking 'I want this to feel like a storm' should never need to think about particle_count: 4000. The creative control surface lives at the level of intent. Technical parameters are generated output, not user input.</p>
+</blockquote>
+<h3 id="the-flip-one-preview-two-modes">The flip — one preview, two modes<a class="headerlink" href="#the-flip-one-preview-two-modes" title="Permanent link">&para;</a></h3>
+<p>The editor has a single preview canvas that never moves, and a control surface below it that flips between two modes.</p>
+<p><img alt="Recipe editor — creative mode" src="../images/editor-creative-mode.png" />
+<em>Fig 4a. Creative mode — mood presets, energy×presence 2D space, colour character spectrum, temporal weight.</em></p>
+<p><img alt="Recipe editor — YAML mode" src="../images/editor-yaml-mode.png" />
+<em>Fig 4b. YAML mode — same preview, recipe YAML with amber lines showing creative choices.</em></p>
+<h3 id="creative-mode-controls">Creative mode controls<a class="headerlink" href="#creative-mode-controls" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Maps to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mood presets</td>
+<td>Full parameter space simultaneously</td>
+</tr>
+<tr>
+<td>Energy (X axis)</td>
+<td>Field variation, particle speed, contour density</td>
+</tr>
+<tr>
+<td>Presence (Y axis)</td>
+<td>Opacity, particle count, line weight</td>
+</tr>
+<tr>
+<td>Colour character</td>
+<td>Colormap selection</td>
+</tr>
+<tr>
+<td>Temporal weight</td>
+<td>Tail length, ring decay, layer accumulation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="yaml-mode">YAML mode<a class="headerlink" href="#yaml-mode" title="Permanent link">&para;</a></h3>
+<p>Amber highlighted lines = the creative choices. Blue lines = structure and source definitions. The YAML is editable — changes snap the creative controls to the closest matching position. Bidirectional sync.</p>
+<hr />
+<h2 id="video-editor-timelapse-assembly">Video editor — timelapse assembly<a class="headerlink" href="#video-editor-timelapse-assembly" title="Permanent link">&para;</a></h2>
+<p><img alt="Video editor" src="../images/video-editor-enriched.png" />
+<em>Fig 5. Video editor with audio and overlay enrichment tracks. Sequence · Audio · Overlays in the right panel.</em></p>
+<p>The video editor is assembly only — it reads existing PNGs from <code>renders/{recipe}/</code>. Export time for 365 frames is seconds, not minutes (ffmpeg I/O only, no re-rendering).</p>
+<h3 id="three-enrichment-tracks">Three enrichment tracks<a class="headerlink" href="#three-enrichment-tracks" title="Permanent link">&para;</a></h3>
+<p>All three share the same key moment detection algorithm — statistical peaks, record highs, threshold crossings, inflection points. Audio and overlays respond to the same detected frames.</p>
+<p><strong>Track 1 — Visual</strong>: date range sliders, frame rate (6/12/24fps), recipe selector</p>
+<p><strong>Track 2 — Audio</strong>: theme (Ambient/Ocean/Dramatic/etc.), energy arc, sensitivity, key moment intensity. API generates stems at multiple intensities; Python crossfades between them as data scalar changes.</p>
+<p><strong>Track 3 — Overlays</strong>: primary counter, anomaly indicator, event labels, record flash, sparkline, timeline ribbon, date stamp, source attribution (essential, on by default). Pull quote, cumulative stat, projection ghost, comparative split (optional).</p>
+<hr />
+<h2 id="github-actions-e2e-test">GitHub Actions — e2e test<a class="headerlink" href="#github-actions-e2e-test" title="Permanent link">&para;</a></h2>
+<p>The e2e test validates the entire pipeline with a synthetic 10×10 grid dataset. Does not hit real NOAA or ESA APIs. Validates:
+- Task order is correct
+- Processing step produces all three outputs
+- Render payload is assembled correctly
+- Puppeteer render produces a valid PNG
+- <code>manifest.json</code> is rebuilt correctly
+- Prefect flow completes without errors</p>
+<hr />
+<h2 id="open-questions-requiring-rfc-in-phase-2">Open questions — requiring RFC in Phase 2<a class="headerlink" href="#open-questions-requiring-rfc-in-phase-2" title="Permanent link">&para;</a></h2>
+<p><em>Note: RFC numbering was revised after Phase 2 definition. Three original RFCs (Processed JSON, Docker Compose stack, GitHub Actions CI) closed directly into ADRs (ADR-015, ADR-011, ADR-013/014). Three new RFCs were added from PRD open threads. See <code>docs/rfc/index.md</code> for the current list.</em></p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Current RFC / ADR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recipe YAML schema — all fields, types, defaults, required vs optional</td>
+<td>RFC-001</td>
+</tr>
+<tr>
+<td>Render payload format — <code>window.OCEAN_PAYLOAD</code> complete specification</td>
+<td>RFC-002</td>
+</tr>
+<tr>
+<td>Recipe lifecycle on source unavailability</td>
+<td>RFC-003</td>
+</tr>
+<tr>
+<td>Live preview architecture</td>
+<td>RFC-004</td>
+</tr>
+<tr>
+<td>YAML round-tripping</td>
+<td>RFC-005</td>
+</tr>
+<tr>
+<td>Audio system technical design — API selection, stem mixing approach</td>
+<td>RFC-006</td>
+</tr>
+<tr>
+<td>Key moment detection algorithm — formal specification</td>
+<td>RFC-007</td>
+</tr>
+<tr>
+<td>Processed JSON format — formal specification</td>
+<td>ADR-015 (closed)</td>
+</tr>
+<tr>
+<td>Docker Compose stack specification</td>
+<td>ADR-011 (closed)</td>
+</tr>
+<tr>
+<td>GitHub Actions CI design</td>
+<td>ADR-013 + ADR-014 (closed)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="implementation-sequence">Implementation sequence<a class="headerlink" href="#implementation-sequence" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-pipeline-skeleton-v1-3-sources">Phase 1 — Pipeline skeleton (v1, 3 sources)<a class="headerlink" href="#phase-1-pipeline-skeleton-v1-3-sources" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Set up Prefect Server in Docker Compose + prefect worker container</li>
+<li>Implement the Prefect flow with 6 tasks, wired but empty</li>
+<li>Implement Task 01–06 for OISST, Open-Meteo, and GEBCO</li>
+<li>Write e2e test with 10×10 synthetic OISST data</li>
+</ul>
+<h3 id="phase-2-dashboard-recipe-editor">Phase 2 — Dashboard + recipe editor<a class="headerlink" href="#phase-2-dashboard-recipe-editor" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Set up React + deck.gl + MapLibre skeleton</li>
+<li>Load <code>data/processed/oisst/{date}.png</code> as a BitmapLayer</li>
+<li>Implement source switching, region selector, editorial spreads</li>
+<li>Build recipe editor studio: flip, creative controls, YAML mode, sketch editor</li>
+</ul>
+<h3 id="phase-3-expand-sources">Phase 3 — Expand sources<a class="headerlink" href="#phase-3-expand-sources" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Add remaining ERDDAP sources, ESA CCI sources, dlt tabular sources</li>
+<li>Add processing tasks and editorial spreads for each new source</li>
+</ul>
+<hr />
+<p><em>OceanCanvas · OC-04 Technical Architecture · v1.0 · April 2026</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

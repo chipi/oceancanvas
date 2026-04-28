@@ -1,0 +1,3858 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative ocean art that the data performs daily">
+      
+      
+      
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/uxs/OC_IA/">
+      
+      
+        <link rel="prev" href="../../prd/PRD_TEMPLATE/">
+      
+      
+        <link rel="next" href="../">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Information Architecture (IA) - OceanCanvas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#oc_ia-information-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OceanCanvas" class="md-header__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OceanCanvas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Information Architecture (IA)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OceanCanvas" class="md-nav__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OceanCanvas
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project-readme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions (CLAUDE.md)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concept Package
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concept Package
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/00-package-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-00: Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/01-vision/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-01: Vision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/02-project-concept/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-02: Project Concept
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/03-data-catalog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-03: Data Catalog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/04-technical-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-04: Technical Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/05-design-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OC-05: Design System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../prd/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/OC_PA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Architecture (PA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-001-recipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-001: Recipe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-002-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-002: Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-003: Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-004: Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD-005: Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/PRD_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PRD Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UX
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    UX
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Information Architecture (IA)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Information Architecture (IA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#surfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §surfaces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§surfaces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recipe-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sketch-editor-mode-not-a-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sketch Editor (mode, not a surface)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topbar-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §topbar-patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§topbar-patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-main-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard — main view
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-editorial-spread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard — editorial spread
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recipe-editor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallery_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-editor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patterns-across-topbars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns across topbars
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §navigation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§navigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cross-surface-transitions-state-passing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-surface transitions (state-passing)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-users-return-to-gallery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How users return to Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-users-reach-the-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How users reach the Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#url-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §url-structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shell-regions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §shell-regions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§shell-regions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topbar-42px" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topbar (42px)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-rail-dashboard-main-view-only-96px-wide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source rail (Dashboard main view only, ~96px wide)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation-footer-dashboard-recipe-editor-video-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation footer (Dashboard, Recipe Editor, Video Editor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §shared-tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§shared-tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surface-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surface tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intent-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intent tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typography-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typography scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spacing-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spacing scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §state-persistence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entry-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §entry-points
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#surface-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §surface-map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-uxs-documents-reference-this-doc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How UXS documents reference this doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-doc-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this doc is not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open threads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changelog
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS-001-dashboard-sst/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-001: Dashboard SST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS-002-dashboard-sealevel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-002: Dashboard Sea Level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-003: Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-004: Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS-005: Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../UXS_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UXS Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../adr/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/OC_TA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Architecture (TA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADRs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADRs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-001-prefect-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-001: Prefect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-002-dlt-rest-ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-002: dlt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-003-xarray-netcdf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-003: xarray
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-004-three-layer-data-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-004: Three-layer store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-005-no-database-v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-005: No database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-006-p5js-sketch-language/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-006: p5.js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-007-puppeteer-renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-007: Puppeteer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-008-shared-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-008: Shared payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-009-deck-gl-maplibre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-009: deck.gl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-010-observable-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-010: Observable Plot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-011-docker-compose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-011: Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-012-caddy-static-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-012: Caddy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-013-github-actions-code-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-013: GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-014-synthetic-e2e-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-014: Synthetic e2e
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-015-processed-json-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-015: Processed JSON
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-016-single-author-phase-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-016: Single author
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-017-one-layout-per-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-017: One layout per source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFCs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RFCs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-001-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-001: Recipe YAML schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-002-render-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-002: Render payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-003-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-003: Recipe lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-004-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-004: Live preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-005-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-005: YAML round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-006-audio-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-006: Audio system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC-007-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC-007: Key moment detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rfc/RFC_TEMPLATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFC Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#surfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §surfaces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§surfaces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recipe-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sketch-editor-mode-not-a-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sketch Editor (mode, not a surface)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#topbar-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §topbar-patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§topbar-patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-main-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard — main view
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-editorial-spread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard — editorial spread
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recipe-editor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallery_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-editor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Video Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patterns-across-topbars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns across topbars
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §navigation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§navigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cross-surface-transitions-state-passing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-surface transitions (state-passing)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-users-return-to-gallery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How users return to Gallery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-users-reach-the-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How users reach the Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#url-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §url-structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shell-regions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §shell-regions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§shell-regions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topbar-42px" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Topbar (42px)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-rail-dashboard-main-view-only-96px-wide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source rail (Dashboard main view only, ~96px wide)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation-footer-dashboard-recipe-editor-video-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation footer (Dashboard, Recipe Editor, Video Editor)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §shared-tokens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="§shared-tokens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surface-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surface tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intent-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intent tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typography-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typography scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spacing-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spacing scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §state-persistence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entry-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §entry-points
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#surface-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        §surface-map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-uxs-documents-reference-this-doc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How UXS documents reference this doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-doc-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this doc is not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open threads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changelog
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="oc_ia-information-architecture">OC_IA — Information Architecture<a class="headerlink" href="#oc_ia-information-architecture" title="Permanent link">&para;</a></h1>
+<ul>
+<li><strong>Status</strong> · v0.2 · April 2026 · revised against prototype mockups (OC-02 Figs 1–7)</li>
+<li><strong>Type</strong> · Reference document — structured for linking-into, not reading end-to-end</li>
+<li><strong>Lives at</strong> · <code>docs/uxs/OC_IA.md</code></li>
+<li><strong>Parallel to</strong> · <code>docs/prd/OC_PA.md</code> · <code>docs/adr/OC_TA.md</code></li>
+<li><strong>Derived from</strong> · OC-02 Project Concept · OC-05 Design System · prototype mockups (OC-02 Figs 1–7)</li>
+</ul>
+<p>This document holds the structural map of OceanCanvas — the surfaces the product is composed of, how they connect, what URLs address them, what chrome persists across them, and what design tokens they share. Individual UXS documents link into specific sections rather than restating navigation or shared tokens per surface.</p>
+<p>IA holds <em>what is true across the UX</em>. Per-surface visual contracts live in UXS documents. Behavioural rules (animation timing, debounce intervals, keyboard shortcuts) belong in RFCs in the tech plane, not here.</p>
+<p>The §surface-map at the bottom is the visual reference for how surfaces relate. The §url-structure section is the canonical address space for the product.</p>
+<hr />
+<h2 id="overview">§overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>OceanCanvas has <strong>four primary surfaces</strong> plus one <strong>mode</strong> that opens within a primary surface. All surfaces share a dark canvas, editorial typography, and a common state model (region selection, active recipe, active source) that persists across navigation.</p>
+<p>Surface navigation in OceanCanvas is <strong>not via a persistent global nav bar.</strong> Each surface has its own topbar pattern (see §topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have <code>recipe ↗</code> and <code>timelapse ↗</code> actions that jump to the editor or the video editor for that specific recipe.</p>
+<p>The product's information architecture reflects its central activity: the creative loop. Dashboard exploration leads to recipe authoring; recipe rendering leads to gallery accumulation; gallery viewing leads to video assembly; video patterns prompt new recipes. The four surfaces are the four points on this loop.</p>
+<hr />
+<h2 id="surfaces">§surfaces<a class="headerlink" href="#surfaces" title="Permanent link">&para;</a></h2>
+<p>The four primary surfaces and one mode. Each is a destination with its own URL, its own purpose, its own UXS document(s).</p>
+<h3 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h3>
+<p>The data exploration surface. Two views: a <strong>main view</strong> with full-bleed source heatmap (today's data over the world map) and per-source <strong>editorial spreads</strong> that read like magazine pages. Per <a href="../../adr/ADR-017-one-layout-per-source/">ADR-017</a>, each source has its own editorial layout — SST has its thermal heatmap and 41-year trend, sea level has its full-width rise curve. The dashboard is <em>the entry point to the recipe editor</em> — drawing a region on a source's map passes the bounds directly to the editor.</p>
+<ul>
+<li><strong>PRD</strong> · <a href="../../prd/PRD-002-dashboard/">PRD-002 Dashboard</a></li>
+<li><strong>UXS</strong> · UXS-001 (SST main view + spread); one additional UXS per source spread</li>
+<li><strong>URL</strong> · <code>/dashboard</code>, <code>/dashboard/{source}</code>, <code>/dashboard/{source}/explorer</code> (editorial spread mode)</li>
+</ul>
+<h3 id="recipe-editor">Recipe Editor<a class="headerlink" href="#recipe-editor" title="Permanent link">&para;</a></h3>
+<p>The creative surface where data becomes art. A single preview canvas above a flip toggle; below the toggle, the controls flip between Creative mode (mood preset, energy×presence, colour character, temporal weight) and YAML mode (the recipe file with creative-driven lines highlighted in amber). A "sketch editor ↗" link opens the raw p5.js sketch.</p>
+<ul>
+<li><strong>PRD</strong> · <a href="../../prd/PRD-003-recipe-editor/">PRD-003 Recipe Editor</a></li>
+<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>URL</strong> · <code>/recipes/{id}</code> for an existing recipe; <code>/recipes/new</code> for authoring</li>
+</ul>
+<h3 id="gallery">Gallery<a class="headerlink" href="#gallery" title="Permanent link">&para;</a></h3>
+<p>The public face. A living archive of accumulated daily renders. Hero (today's featured recipe at full bleed with <code>timelapse ↗</code> · <code>recipe ↗</code> · <code>download</code> actions) + 14-day strip (the same recipe's recent history) + grid (every active recipe rendered today). Updates automatically when the pipeline runs — no manual curation. The default landing surface.</p>
+<ul>
+<li><strong>PRD</strong> · <a href="../../prd/PRD-004-gallery/">PRD-004 Gallery</a></li>
+<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>URL</strong> · <code>/</code> (default landing), <code>/gallery/{recipe}</code> for a specific recipe page, <code>/gallery/{recipe}/{date}</code> for a specific render</li>
+</ul>
+<h3 id="video-editor">Video Editor<a class="headerlink" href="#video-editor" title="Permanent link">&para;</a></h3>
+<p>The timelapse studio. Assembles a recipe's accumulated PNG renders into an MP4 with optional audio (RFC-006) and overlay annotations. Frames already exist as stored renders; the editor is assembly and enrichment, not creation. Right-side panel has Sequence · Audio · Overlays sections.</p>
+<ul>
+<li><strong>PRD</strong> · <a href="../../prd/PRD-005-video-editor/">PRD-005 Video Editor</a></li>
+<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>URL</strong> · <code>/timelapse/{recipe}</code></li>
+</ul>
+<h3 id="sketch-editor-mode-not-a-surface">Sketch Editor (mode, not a surface)<a class="headerlink" href="#sketch-editor-mode-not-a-surface" title="Permanent link">&para;</a></h3>
+<p>A full-screen mode that opens from within the Recipe Editor for power users writing custom p5.js sketches. Not a primary navigation destination; not addressable by a top-level URL.</p>
+<ul>
+<li>Opens via "sketch editor ↗" in the Recipe Editor's flip bar.</li>
+<li>Returns to the Recipe Editor with the modified sketch on save.</li>
+</ul>
+<hr />
+<h2 id="topbar-patterns">§topbar-patterns<a class="headerlink" href="#topbar-patterns" title="Permanent link">&para;</a></h2>
+<p>The topbar varies per surface — it is contextual chrome (breadcrumb + actions), not persistent global navigation. Each surface defines its topbar in its UXS, but the patterns rhyme. All topbars are 42px tall, against <code>surface</code> background, with the wordmark on the left.</p>
+<h3 id="dashboard-main-view">Dashboard — main view<a class="headerlink" href="#dashboard-main-view" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[OCEANCANVAS]    /sea surface temperature ⊓ NOAA OISST                  25 APR 2026 / 06:00 UTC
+</code></pre></div>
+<ul>
+<li>Wordmark · path showing source name + provider · UTC timestamp on right</li>
+<li>The path uses <code>text-secondary</code>; the timestamp <code>text-muted</code></li>
+</ul>
+<h3 id="dashboard-editorial-spread">Dashboard — editorial spread<a class="headerlink" href="#dashboard-editorial-spread" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[OCEANCANVAS]    /DATA EXPLORER                                  [all sources ⊓ SST ⊓ NOAA OISST] ▾
+</code></pre></div>
+<ul>
+<li>Wordmark · <code>/DATA EXPLORER</code> page label · source-switcher chip on right (a dropdown styled as a chip)</li>
+</ul>
+<h3 id="recipe-editor_1">Recipe Editor<a class="headerlink" href="#recipe-editor_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[OCEANCANVAS]    /north_atlantic_sst                       live · OISST    25 Apr 2026    field
+</code></pre></div>
+<ul>
+<li>Wordmark · recipe id as path · status badges on right showing data source freshness, date, and active render type</li>
+<li>The status badges use <code>text-secondary</code> and <code>text-muted</code> for definition</li>
+</ul>
+<h3 id="gallery_1">Gallery<a class="headerlink" href="#gallery_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>[OCEANCANVAS]                                              [all] [SST] [salinity] [sea level] [ice]
+</code></pre></div>
+<ul>
+<li>Wordmark · source-type filter pills on the right</li>
+<li>Active filter is highlighted (white text on <code>elevated</code> background); others in <code>text-muted</code> on transparent</li>
+</ul>
+<h3 id="video-editor_1">Video Editor<a class="headerlink" href="#video-editor_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>[OCEANCANVAS]    /timelapse editor / gulf_stream_thermal                                  export MP4
+</code></pre></div>
+<ul>
+<li>Wordmark · two-segment path (surface + recipe) · primary action on right (<code>export MP4</code> in <code>intent-info</code> teal)</li>
+</ul>
+<h3 id="patterns-across-topbars">Patterns across topbars<a class="headerlink" href="#patterns-across-topbars" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Wordmark</strong> is always the leftmost element, clickable, returns to Gallery (<code>/</code>).</li>
+<li><strong>Path or filter</strong> in the centre-left or right depends on surface logic.</li>
+<li><strong>Right-side region</strong> is either context (date/time, status badges) or action (export, source switcher).</li>
+<li><strong>No persistent four-surface nav menu.</strong> Surface switching is via direct URLs (which users bookmark or share) and via in-context links from one surface to another.</li>
+</ul>
+<hr />
+<h2 id="navigation">§navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h2>
+<p>How surfaces connect. Without a global nav, navigation is <em>contextual</em> — each surface offers paths to other surfaces relevant to its own work.</p>
+<h3 id="cross-surface-transitions-state-passing">Cross-surface transitions (state-passing)<a class="headerlink" href="#cross-surface-transitions-state-passing" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Trigger</th>
+<th>State passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard (main view)</td>
+<td>Recipe Editor</td>
+<td>"Select region" mode → draw bounding box</td>
+<td>Lat/lon bounds, active source</td>
+</tr>
+<tr>
+<td>Gallery hero</td>
+<td>Recipe Editor</td>
+<td><code>recipe ↗</code> action on hero</td>
+<td>Recipe id</td>
+</tr>
+<tr>
+<td>Gallery hero</td>
+<td>Video Editor</td>
+<td><code>timelapse ↗</code> action on hero</td>
+<td>Recipe id</td>
+</tr>
+<tr>
+<td>Gallery card</td>
+<td>Recipe Editor</td>
+<td>Click recipe card → <code>recipe ↗</code></td>
+<td>Recipe id</td>
+</tr>
+<tr>
+<td>Gallery card</td>
+<td>Video Editor</td>
+<td>Click recipe card → <code>timelapse ↗</code></td>
+<td>Recipe id</td>
+</tr>
+<tr>
+<td>Recipe Editor</td>
+<td>Sketch Editor (mode)</td>
+<td><code>sketch editor ↗</code> in flip bar</td>
+<td>Current recipe state, payload</td>
+</tr>
+<tr>
+<td>Recipe Editor</td>
+<td>Gallery</td>
+<td><code>save recipe</code> after authoring</td>
+<td>Recipe id (newly created or saved)</td>
+</tr>
+<tr>
+<td>Dashboard (main view)</td>
+<td>Dashboard (editorial spread)</td>
+<td>Click source rail entry or "go deeper"</td>
+<td>Active source</td>
+</tr>
+</tbody>
+</table>
+<p>State transitions are explicit — no surface silently inherits state from another. The receiving surface either gets state passed via URL query param or starts with its own default.</p>
+<h3 id="how-users-return-to-gallery">How users return to Gallery<a class="headerlink" href="#how-users-return-to-gallery" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Click the wordmark in the topbar (any surface).</li>
+<li>Direct URL <code>/</code>.</li>
+</ul>
+<h3 id="how-users-reach-the-dashboard">How users reach the Dashboard<a class="headerlink" href="#how-users-reach-the-dashboard" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Direct URL <code>/dashboard</code> or <code>/dashboard/{source}</code>.</li>
+<li><em>No link from Gallery to Dashboard exists in v1.</em> This is intentional — the Gallery is for browsing renders; the Dashboard is for exploring data. They are different activities. Users who want to author a recipe go from Gallery → existing recipe → editor, or from Dashboard via region selection.</li>
+</ul>
+<hr />
+<h2 id="url-structure">§url-structure<a class="headerlink" href="#url-structure" title="Permanent link">&para;</a></h2>
+<p>The canonical address space. Every surface is addressable by URL. Every meaningful sub-state has its own URL when it makes sense to share or bookmark.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Surface</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>Gallery (default)</td>
+<td>Opening the project URL goes here.</td>
+</tr>
+<tr>
+<td><code>/gallery</code></td>
+<td>Gallery</td>
+<td>Explicit alias.</td>
+</tr>
+<tr>
+<td><code>/gallery/{recipe}</code></td>
+<td>Gallery — recipe page</td>
+<td>The recipe's full archive view.</td>
+</tr>
+<tr>
+<td><code>/gallery/{recipe}/{date}</code></td>
+<td>Gallery — specific render</td>
+<td>Single render full-screen. Shareable.</td>
+</tr>
+<tr>
+<td><code>/dashboard</code></td>
+<td>Dashboard main view</td>
+<td>Defaults to the SST source.</td>
+</tr>
+<tr>
+<td><code>/dashboard/{source}</code></td>
+<td>Dashboard main view</td>
+<td>E.g., <code>/dashboard/sea-level</code>.</td>
+</tr>
+<tr>
+<td><code>/dashboard/{source}/explorer</code></td>
+<td>Dashboard editorial spread</td>
+<td>The "data explorer" deep view per source.</td>
+</tr>
+<tr>
+<td><code>/recipes</code></td>
+<td>Recipe list</td>
+<td>Index of all recipes.</td>
+</tr>
+<tr>
+<td><code>/recipes/new</code></td>
+<td>Recipe Editor — new recipe</td>
+<td>Empty editor with optional <code>?region=...&amp;source=...</code> query params.</td>
+</tr>
+<tr>
+<td><code>/recipes/{id}</code></td>
+<td>Recipe Editor — existing recipe</td>
+<td>Loads the recipe; flip mode defaults to Creative.</td>
+</tr>
+<tr>
+<td><code>/timelapse/{recipe}</code></td>
+<td>Video Editor</td>
+<td>Loads the recipe's accumulated renders.</td>
+</tr>
+</tbody>
+</table>
+<p>URL design conventions:</p>
+<ul>
+<li><strong>Stable IDs.</strong> Recipe ids are filesystem-safe slugs (per <a href="../../rfc/RFC-001-recipe-yaml-schema/">RFC-001</a>). They never change after creation.</li>
+<li><strong>Date format.</strong> <code>YYYY-MM-DD</code> everywhere. ISO 8601, no other formats.</li>
+<li><strong>Source slugs.</strong> Match the source-id in the OC-03 catalog: <code>sst</code>, <code>sea-level</code>, <code>salinity</code>, <code>sea-ice</code>, <code>chlorophyll</code>, etc.</li>
+</ul>
+<hr />
+<h2 id="shell-regions">§shell-regions<a class="headerlink" href="#shell-regions" title="Permanent link">&para;</a></h2>
+<p>The persistent chrome. UXS documents inherit these.</p>
+<h3 id="topbar-42px">Topbar (42px)<a class="headerlink" href="#topbar-42px" title="Permanent link">&para;</a></h3>
+<p>See §topbar-patterns above for the per-surface variations.</p>
+<h3 id="source-rail-dashboard-main-view-only-96px-wide">Source rail (Dashboard main view only, ~96px wide)<a class="headerlink" href="#source-rail-dashboard-main-view-only-96px-wide" title="Permanent link">&para;</a></h3>
+<p>The Dashboard's main view has a left-side rail listing available data sources. Active source has its label rendered in the source's accent token (e.g., <code>domain-sst-accent</code> for SST); other sources in <code>text-muted</code>. <em>No left border, no background fill — purely text-colour treatment.</em> The rail does not appear in editorial spreads or in any other surface.</p>
+<h3 id="citation-footer-dashboard-recipe-editor-video-editor">Citation footer (Dashboard, Recipe Editor, Video Editor)<a class="headerlink" href="#citation-footer-dashboard-recipe-editor-video-editor" title="Permanent link">&para;</a></h3>
+<p>A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the <em>attribution-baked-in</em> constraint (TA §constraints, PA §promises/citation-travels). Format: <code>[source] · [resolution] · [cadence] · [date range] · OceanCanvas</code>. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.</p>
+<hr />
+<h2 id="shared-tokens">§shared-tokens<a class="headerlink" href="#shared-tokens" title="Permanent link">&para;</a></h2>
+<p>Design tokens that genuinely apply across all surfaces. Per-surface and per-source tokens live in the relevant UXS.</p>
+<h3 id="surface-tokens">Surface tokens<a class="headerlink" href="#surface-tokens" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>canvas</code></td>
+<td><code>#030B10</code></td>
+<td>Page background, map background — the deep ocean dark</td>
+</tr>
+<tr>
+<td><code>surface</code></td>
+<td><code>#050E1A</code></td>
+<td>Topbar, panel backgrounds, stats card backdrops</td>
+</tr>
+<tr>
+<td><code>elevated</code></td>
+<td><code>#0A1828</code></td>
+<td>Stats overlay cards, dropdown chips, modal overlays</td>
+</tr>
+<tr>
+<td><code>overlay</code></td>
+<td><code>rgba(3,11,16,0.85)</code></td>
+<td>Translucent overlays floating over maps</td>
+</tr>
+<tr>
+<td><code>border</code></td>
+<td><code>rgba(255,255,255,0.07)</code></td>
+<td>Hairline dividers, source-rail separators</td>
+</tr>
+<tr>
+<td><code>border-strong</code></td>
+<td><code>rgba(255,255,255,0.15)</code></td>
+<td>Active borders, focus rings</td>
+</tr>
+</tbody>
+</table>
+<h3 id="text-tokens">Text tokens<a class="headerlink" href="#text-tokens" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td><code>rgba(255,255,255,0.92)</code></td>
+<td>Primary body text, main numerals (where not source-coloured)</td>
+</tr>
+<tr>
+<td><code>text-secondary</code></td>
+<td><code>rgba(255,255,255,0.65)</code></td>
+<td>Secondary content, descriptions</td>
+</tr>
+<tr>
+<td><code>text-muted</code></td>
+<td><code>rgba(255,255,255,0.35)</code></td>
+<td>Section labels (SPACED CAPS), axis labels</td>
+</tr>
+<tr>
+<td><code>text-disabled</code></td>
+<td><code>rgba(255,255,255,0.20)</code></td>
+<td>Disabled controls, deferred features</td>
+</tr>
+</tbody>
+</table>
+<h3 id="intent-tokens">Intent tokens<a class="headerlink" href="#intent-tokens" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent-alert</code></td>
+<td><code>#F09595</code></td>
+<td>Positive anomalies, warming, accelerating trends</td>
+</tr>
+<tr>
+<td><code>intent-info</code></td>
+<td><code>#5DCAA5</code></td>
+<td>Negative anomalies, cooling, primary actions (e.g. <code>export MP4</code>, <code>save recipe</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Intent tokens are <em>physical-meaning</em> indicators (warming vs. cooling) and primary-action indicators. UI-state feedback (success/error/warning) is rare in OceanCanvas — most surfaces are exploratory, not transactional.</p>
+<h3 id="typography-scale">Typography scale<a class="headerlink" href="#typography-scale" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Approximate range</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type-hero</code></td>
+<td>48–72px</td>
+<td>Hero numbers (the editorial headline statistic)</td>
+</tr>
+<tr>
+<td><code>type-display</code></td>
+<td>22–32px</td>
+<td>Sub-hero values, large stat cards</td>
+</tr>
+<tr>
+<td><code>type-data</code></td>
+<td>14–18px</td>
+<td>Secondary data values, side panel values</td>
+</tr>
+<tr>
+<td><code>type-body</code></td>
+<td>11–13px</td>
+<td>Prose, descriptions</td>
+</tr>
+<tr>
+<td><code>type-axis</code></td>
+<td>8–9px monospace</td>
+<td>Axis labels, coordinates, fine annotations</td>
+</tr>
+<tr>
+<td><code>type-label</code></td>
+<td>9–10px spaced caps</td>
+<td>Section labels — never bold</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spacing-scale">Spacing scale<a class="headerlink" href="#spacing-scale" title="Permanent link">&para;</a></h3>
+<p>Base unit: 4px. All spacing in surfaces uses multiples: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64.</p>
+<hr />
+<h2 id="state-persistence">§state-persistence<a class="headerlink" href="#state-persistence" title="Permanent link">&para;</a></h2>
+<p>What carries across surface transitions. State that doesn't appear here resets at each surface load.</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Persists across</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Region selection</strong></td>
+<td>Dashboard → Recipe Editor</td>
+<td>URL query param (<code>?region=...</code>)</td>
+</tr>
+<tr>
+<td><strong>Active source</strong></td>
+<td>Dashboard tabs, Recipe Editor pre-fill</td>
+<td>URL path segment</td>
+</tr>
+<tr>
+<td><strong>Active recipe</strong></td>
+<td>Gallery → Editor → Video Editor</td>
+<td>URL path segment</td>
+</tr>
+<tr>
+<td><strong>Date selection</strong></td>
+<td>Dashboard timeline scrubber</td>
+<td>URL query param (<code>?date=...</code>) — bookmarkable</td>
+</tr>
+<tr>
+<td><strong>Editor flip mode</strong></td>
+<td>Within Recipe Editor session only</td>
+<td>Local state, not persisted</td>
+</tr>
+<tr>
+<td><strong>Gallery source filter</strong></td>
+<td>Within Gallery only</td>
+<td>URL query param (<code>?filter=sst</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Phase 1 has no auth, no user accounts, no per-user state. State persistence is via URLs and URL query parameters — never via localStorage or cookies (per the artifact constraints in TA).</p>
+<hr />
+<h2 id="entry-points">§entry-points<a class="headerlink" href="#entry-points" title="Permanent link">&para;</a></h2>
+<p>How a person first reaches each surface.</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Direct URL</th>
+<th>From another surface</th>
+<th>External link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gallery</td>
+<td>✓ (default <code>/</code>)</td>
+<td>Editor "save recipe"; topbar wordmark from anywhere</td>
+<td>✓ (shareable render URLs)</td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>✓ (<code>/dashboard</code>)</td>
+<td>None in v1 (deliberate — see §navigation)</td>
+<td>✓ (shareable spread URLs)</td>
+</tr>
+<tr>
+<td>Recipe Editor</td>
+<td>✓ (<code>/recipes/{id}</code>)</td>
+<td>Dashboard "select region"; Gallery <code>recipe ↗</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Video Editor</td>
+<td>✓ (<code>/timelapse/{recipe}</code>)</td>
+<td>Gallery <code>timelapse ↗</code></td>
+<td>✓ (shareable timelapse URLs once exported)</td>
+</tr>
+<tr>
+<td>Sketch Editor (mode)</td>
+<td>—</td>
+<td>Recipe Editor only</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="surface-map">§surface-map<a class="headerlink" href="#surface-map" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>                     ┌──────────────────────────┐
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                     │    Wordmark (clickable)  │  ← always returns to Gallery
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                     │     OCEANCANVAS          │
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                     └──────────────────────────┘
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>     each surface has its own topbar pattern (see §topbar-patterns)
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>   ┌──────────┐    ┌──────────────┐    ┌──────────┐    ┌──────────────┐
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>   │ Dashboard│    │Recipe Editor │    │ Gallery  │    │ Video Editor │
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>   │          │    │              │    │          │    │              │
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>   │ main +   │    │ ┌──────────┐ │    │ Hero     │    │ Frame strip  │
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>   │ editorial│    │ │ Preview  │ │    │ +        │    │ + audio      │
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>   │ spread   │    │ └──────────┘ │    │ 14-day   │    │ + overlays   │
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>   │          │    │ ┌──────────┐ │    │ +        │    │              │
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>   │          │    │ │ Creative │ │    │ Grid     │    │              │
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>   │          │    │ │ ↔ YAML   │ │    │          │    │              │
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>   │          │    │ └──────────┘ │    │          │    │              │
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>   └─────┬────┘    └──────┬───────┘    └────┬─────┘    └──────────────┘
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>         │                │                 │
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>         │                │ &quot;sketch ↗&quot;      │
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>         │                ▼                 │
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>         │          (Sketch mode)           │
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>         │          full-screen             │
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>         │                                  │
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>         │                                  │  recipe ↗ / timelapse ↗
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>         │                                  │  ────────────────────►
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>         │                                  │
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>         └─────────  region select  ────────┘
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>                          │
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>                          ▼  passes lat/lon to editor
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>         The creative loop:
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>         Dashboard → Editor → Pipeline → Gallery → Video Editor
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>                                              │
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>                                              └─► (insight prompts new recipes)
+</code></pre></div>
+<hr />
+<h2 id="how-uxs-documents-reference-this-doc">How UXS documents reference this doc<a class="headerlink" href="#how-uxs-documents-reference-this-doc" title="Permanent link">&para;</a></h2>
+<p>UXS documents anchor to IA sections. The conventions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>IA anchor · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §shared-tokens
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Tokens inherited · §shared-tokens (canvas, surface, text, intent)
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Domain tokens defined here · domain-sst-* (per-source palette)
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Behaviour reference · RFC-NNN (animation, debounce — not in UXS)
+</code></pre></div>
+<p>A UXS document that doesn't reference IA is a smell. UXS documents <em>define</em> per-surface and per-source design tokens. IA does not — IA holds only what is genuinely shared.</p>
+<hr />
+<h2 id="what-this-doc-is-not">What this doc is not<a class="headerlink" href="#what-this-doc-is-not" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Doc</th>
+<th>Mode</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OC-02 Project Concept</strong></td>
+<td>Narrative</td>
+<td>The product as an idea — what surfaces exist and why, end-to-end. Read once.</td>
+</tr>
+<tr>
+<td><strong>OC-05 Design System &amp; Creative Direction</strong></td>
+<td>Narrative</td>
+<td>The design philosophy and visual character. Read once.</td>
+</tr>
+<tr>
+<td><strong>OC_IA</strong> (this doc)</td>
+<td>Reference, structural</td>
+<td>Surfaces, navigation, URLs, shell, shared tokens. Linked to.</td>
+</tr>
+<tr>
+<td><strong>UXS</strong></td>
+<td>Per-surface visual contract</td>
+<td>Tokens, layout, component states for one surface.</td>
+</tr>
+</tbody>
+</table>
+<p>IA does not hold per-surface visual contracts, behaviour rules, or implementation specs. If a section here drifts toward any of those, it belongs in the corresponding doc, not here.</p>
+<hr />
+<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>UXS coverage.</strong> Phase 1 ships UXS-001 (Dashboard SST main view + spread). Other surfaces (Recipe Editor, Gallery, Video Editor) and other source spreads (Sea Level, Salinity, etc.) are deferred until needed for implementation. With prototypes now available, drafting them is straightforward.</li>
+<li><strong>Sketch editor mode contract.</strong> Currently no UXS — full-screen code editor with payload pre-loaded. Warrants a UXS once visual conventions are firmed up.</li>
+<li><strong>Mobile / narrow-viewport.</strong> All prototypes are desktop-first. Mobile behaviour deferred — when revisited, may be a new RFC (responsive strategy) rather than IA changes.</li>
+<li><strong>Source switcher chip in Dashboard editorial spread.</strong> Behaviour (whether it triggers a hard navigation or an in-place transition) belongs in an RFC for Dashboard interactions; how it looks belongs in UXS-001.</li>
+</ul>
+<hr />
+<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>v0.2 · April 2026</strong> — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added §topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated §url-structure to add <code>/dashboard/{source}/explorer</code> for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.</li>
+<li><strong>v0.1 · April 2026</strong> — Initial draft, written before prototype access. Superseded by v0.2.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

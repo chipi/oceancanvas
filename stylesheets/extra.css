@@ -1,0 +1,12 @@
+/* OceanCanvas docs theme — matches the product's dark canvas aesthetic */
+
+:root {
+  --md-primary-fg-color: #050E1A;
+  --md-primary-bg-color: #E0E0E0;
+  --md-accent-fg-color: #5DCAA5;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0a0f16;
+  --md-default-fg-color--light: rgba(255, 255, 255, 0.65);
+}
