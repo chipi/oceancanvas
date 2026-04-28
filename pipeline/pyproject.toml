@@ -40,3 +40,5 @@ select = ["E", "F", "I", "N", "W", "UP"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = ["slow: hits real APIs (deselect with -m 'not slow')"]
+addopts = "-m 'not slow'"

@@ -43,8 +43,8 @@ pipeline-lint: ## Lint pipeline code
 pipeline-test: ## Run pipeline unit tests
 	cd pipeline && uv run pytest tests/unit/ -v
 
-pipeline-test-int: ## Run pipeline integration tests
-	cd pipeline && uv run pytest tests/integration/ -v
+pipeline-test-int: ## Run pipeline integration tests (hits real APIs)
+	cd pipeline && uv run pytest tests/integration/ -v -m slow
 
 pipeline-run: ## Trigger a manual pipeline run
 	docker compose exec pipeline python -m oceancanvas.flow
