@@ -60,6 +60,10 @@ The pipeline's intermediate format. Three files per source per date: `.json` (fl
 
 The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by **RFC-002 → ADR (pending)**.
 
+### creative state → technical parameters
+
+Maps mood presets and creative controls (energy×presence, colour character, temporal weight) to render parameters (colormap, opacity, particle_count, etc.). Implemented identically in TypeScript (`gallery/src/lib/creativeMapping.ts`) and Python (`pipeline/src/oceancanvas/creative_mapping.py`). Both must produce identical outputs — divergence is a bug. Used by the Recipe Editor to translate artistic intent into p5.js render config, and by the pipeline when processing recipes authored via the editor.
+
 ### manifest.json
 
 The gallery index. Lists all recipes, all render dates, dimensions and metadata for each. Rebuilt from scratch by pipeline Task 06 (Index). Read by the React gallery and the video editor. No partial updates — full rebuild each day.

@@ -58,6 +58,8 @@ services:
     volumes:
       - ./data/processed:/data/processed:ro
       - ./renders:/renders:ro
+      - ./recipes:/recipes:ro
+      - ./sketches:/sketches:ro
     depends_on:
       pipeline:
         condition: service_started
@@ -66,6 +68,19 @@ services:
       interval: 15s
       timeout: 5s
       retries: 3
+
+  recipe-server:
+    image: node:20-slim
+    working_dir: /app
+    command: node server/save-recipe.mjs
+    environment:
+      RECIPES_DIR: /recipes
+      SAVE_PORT: "3001"
+    volumes:
+      - ./gallery/server:/app/server:ro
+      - ./recipes:/recipes
+    ports:
+      - "3001:3001"
 
 volumes:
   pgdata:

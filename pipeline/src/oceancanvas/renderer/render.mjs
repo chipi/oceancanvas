@@ -57,10 +57,17 @@ async function render(payload) {
   }
 }
 
-// Read payload from stdin
+// Read payload from stdin (10MB limit)
+const MAX_STDIN = 10 * 1024 * 1024;
 let input = '';
 process.stdin.setEncoding('utf-8');
-process.stdin.on('data', (chunk) => { input += chunk; });
+process.stdin.on('data', (chunk) => {
+  input += chunk;
+  if (input.length > MAX_STDIN) {
+    process.stderr.write('Render error: payload too large\n');
+    process.exit(1);
+  }
+});
 process.stdin.on('end', async () => {
   try {
     const payload = JSON.parse(input);

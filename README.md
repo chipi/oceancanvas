@@ -84,9 +84,16 @@ cd oceancanvas
 docker compose up
 ```
 
-The pipeline runs daily at 06:00 UTC. Manual runs trigger via the Prefect UI at `localhost:4200`. The gallery is at `localhost:8080`. Recipes live in `recipes/`; renders accumulate in `renders/`. No accounts. No API keys. No cloud dependencies.
+The pipeline runs daily at 06:00 UTC. Manual runs trigger via the Prefect UI at `localhost:4200`. The gallery is at `localhost:8080`. The recipe save server runs on `localhost:3001`. Recipes live in `recipes/`; renders accumulate in `renders/`. No accounts. No API keys. No cloud dependencies.
 
-Adding a new recipe: drop a YAML file in `recipes/` matching the schema in `RFC-001` (`docs/rfc/`). The next pipeline run picks it up.
+Adding a new recipe: use the Recipe Editor at `localhost:8080/recipes/new`, or drop a YAML file in `recipes/` matching the schema in `RFC-001` (`docs/rfc/`). The next pipeline run picks it up.
+
+For local development (without Docker):
+
+```bash
+python3 -m http.server 8080 &    # serves data, renders, sketches, recipes
+make gallery-dev                   # starts Vite (5173) + save server (3001)
+```
 
 ---
 

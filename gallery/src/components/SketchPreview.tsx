@@ -82,7 +82,7 @@ window.OCEAN_PAYLOAD = ${JSON.stringify(debouncedPayload)};
     <div className={`${styles.container} ${className ?? ''}`}>
       {srcdoc ? (
         <iframe
-          key={srcdoc.length}
+          key={srcdoc}
           className={styles.iframe}
           style={{ aspectRatio: `${width} / ${height}` }}
           srcDoc={srcdoc}

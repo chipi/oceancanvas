@@ -102,6 +102,38 @@ class TestCropToRegion:
         assert result["lat_range"] == [35, 65]
         assert result["lon_range"] == [-60, -20]
 
+    def test_caps_point_data_at_500(self):
+        """Argo-style point data over 500 is deterministically subsampled."""
+        from oceancanvas.tasks.build_payload import _crop_to_region
+
+        points = [{"lat": 30 + i * 0.01, "lon": -50 + i * 0.01} for i in range(1000)]
+        data = {
+            "data": points,
+            "shape": [1000],
+            "lat_range": [30, 40],
+            "lon_range": [-50, -40],
+            "source_id": "argo",
+            "date": "2026-01-15",
+        }
+        result = _crop_to_region(data, [20, 75], [-90, 10])
+        assert result["shape"] == [500]
+        assert len(result["data"]) == 500
+
+    def test_empty_point_data_returns_as_is(self):
+        """Empty point array should not crash."""
+        from oceancanvas.tasks.build_payload import _crop_to_region
+
+        data = {
+            "data": [],
+            "shape": [0],
+            "lat_range": [0, 0],
+            "lon_range": [0, 0],
+            "source_id": "argo",
+            "date": "2026-01-15",
+        }
+        result = _crop_to_region(data, [20, 75], [-90, 10])
+        assert result["data"] == []
+
 
 class TestBuildOnePayload:
     def test_produces_valid_payload(self, processed_data: Path, tmp_path: Path):
