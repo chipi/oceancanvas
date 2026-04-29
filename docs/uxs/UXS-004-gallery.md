@@ -93,40 +93,49 @@ The gallery is a single-page masonry grid. No hero section, no strip on this pag
 
 ## Layout — Detail view (/gallery/{recipe})
 
-Full-screen focused view of a single recipe's latest render.
+Focused view of a single recipe's latest render. The render sits on the left; the context panel on the right provides editorial context about the data source — attribution, explanation, and educational value. The 14-day strip runs along the bottom.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │ OCEANCANVAS                                  timelapse ↗  recipe ↗│  ← topbar (42px)
 │                                              download              │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│                                                                    │
-│                                                                    │
-│              FULL-SCREEN RENDER                                    │
-│              (latest render for this recipe)                       │
-│                                                                    │
-│                                                                    │
-│                                                                    │
-│  recipe-name · type · source                              25 Apr  │  ← overlay at bottom
-│  NOAA/NCEI OISST · noaa.gov                                2026   │
-│                                                                    │
-├────────────────────────────────────────────────────────────────────┤
+├────────────────────────────────────┬───────────────────────────────┤
+│                                    │                               │
+│  recipe-name                       │  ABOUT THIS DATA              │
+│  render-type · N renders           │                               │
+│                                    │  NOAA/NCEI Optimum            │
+│                                    │  Interpolation SST (OISST)    │
+│     RENDER IMAGE                   │                               │
+│     (object-fit: contain)          │  Global sea surface           │
+│                                    │  temperature at 0.25°         │
+│                                    │  resolution. Daily since      │
+│                                    │  September 1981. Derived from │
+│                                    │  satellite and in-situ obs.   │
+│                                    │                               │
+│                                    │  RECIPE                       │
+│                                    │  region · render type · date  │
+│                                    │                               │
+│  oisst · recipe · date · OC       │  noaa.gov/oisst               │
+│  (baked into PNG)                  │                               │
+├────────────────────────────────────┴───────────────────────────────┤
 │ LAST 14 DAYS                                                       │
-│ ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐        │  ← 14-day strip
+│ ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐        │
 │ └──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘        │
-│ 12 Apr ... 25 Apr                                                  │
 └────────────────────────────────────────────────────────────────────┘
 ```
+
+The context panel serves the *editorial-dignity* promise (PA §promises) and the *citation-travels* promise. The render is the art; the panel is the reading. Together they communicate that the art is grounded in real measurement.
 
 ### Detail view elements
 
 | Element | Position | Tokens | Notes |
 |---|---|---|---|
 | **Topbar** | 42px, `surface` | Wordmark (returns to grid), actions on right | `text-secondary` for timelapse/recipe, `intent-info` for download |
-| **Render image** | Full viewport minus topbar and strip | Edge-to-edge, no border | Object-fit: contain (show full image without crop) |
-| **Overlay** | Bottom-left over gradient | `gallery-overlay-gradient`, `text` for name, `text-secondary` for source | Two lines: recipe info + source attribution with URL |
-| **Date** | Bottom-right over gradient | `text` `type-display` for day, `text-secondary` for year | |
+| **Render image** | Left ~65% of body area | Object-fit: contain, no border | Recipe name + type overlay at top-left |
+| **Context panel** | Right ~35%, `surface` background | `text` for headings, `text-secondary` for body, `text-muted` for labels | Three sections: About This Data, Recipe, Source Link |
+| **About This Data** | Top of context panel | `type-label` for heading, `type-body` for description | Dataset name, what it measures, resolution, coverage, how it's produced |
+| **Recipe section** | Middle of context panel | `type-label` heading, `type-data` values | Region, render type, authored date, render count |
+| **Source link** | Bottom of context panel | `intent-info` for URL | Links to the data source (e.g., noaa.gov/oisst) |
 | **14-day strip** | Bottom, full width, ~80px | `surface` background, render thumbnails, date labels | Today's thumbnail has `border-strong` ring |
 
 ### Navigation

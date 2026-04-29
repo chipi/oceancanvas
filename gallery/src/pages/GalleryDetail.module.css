@@ -47,14 +47,22 @@
   text-decoration: none;
 }
 
-/* Full-screen render */
-.renderArea {
+/* Two-panel body: render left, context right */
+.body {
   flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Render area — left ~65% */
+.renderArea {
+  flex: 2;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: var(--canvas);
 }
 
 .renderImage {
@@ -80,6 +88,68 @@
   font-size: 11px;
   color: var(--text-secondary);
   margin-top: 2px;
+}
+
+/* Context panel — right ~35% */
+.context {
+  flex: 1;
+  max-width: 340px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contextSection {}
+
+.contextLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.contextTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.contextAgency {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.contextBody {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.contextValue {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.contextDetail {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.contextLink {
+  font-size: 12px;
+  color: var(--intent-info);
+  text-decoration: none;
+}
+
+.contextLink:hover {
+  text-decoration: underline;
 }
 
 /* Strip */
