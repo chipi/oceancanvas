@@ -82,7 +82,7 @@ export function RecipeEditor() {
   const technical = useMemo(() => creativeToTechnical(creativeState), [creativeState]);
 
   // Don't build payload until recipe is loaded (for existing recipes)
-  const recipeReady = isNew || loadedParams !== null;
+  const recipeReady = isNew || loadedParams !== null || userEdited;
 
   const payload = useMemo<OceanPayload | null>(() => {
     if (!processedData || !recipeReady) return null;

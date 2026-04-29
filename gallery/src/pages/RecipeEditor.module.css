@@ -102,7 +102,7 @@
 /* Controls panel — right, replaces context panel */
 .controls {
   flex: 1;
-  max-width: 360px;
+  max-width: 340px;
   background: var(--surface);
   border-left: 1px solid var(--border);
   display: flex;
