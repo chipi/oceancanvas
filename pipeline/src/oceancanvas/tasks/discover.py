@@ -53,4 +53,15 @@ def discover(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> dict[str, 
         logger.info("OISST latest available: %s", latest)
         dates_to_fetch["oisst"] = latest
 
+    # Argo — always today
+    from oceancanvas.tasks.argo import discover_argo
+
+    argo_date = discover_argo()
+    argo_path = sources_dir / "argo" / f"{argo_date}.json"
+    if argo_path.exists():
+        logger.info("Argo %s already fetched, skipping", argo_date)
+    else:
+        logger.info("Argo date: %s", argo_date)
+        dates_to_fetch["argo"] = argo_date
+
     return dates_to_fetch

@@ -86,4 +86,20 @@ def fetch(
 
         fetched["oisst"] = output_path
 
+    # Argo
+    if "argo" in dates_to_fetch:
+        from oceancanvas.tasks.argo import fetch_argo
+
+        date = dates_to_fetch["argo"]
+        output_path = sources_dir / "argo" / f"{date}.json"
+
+        if output_path.exists():
+            logger.info("Argo %s already on disk, skipping", date)
+        else:
+            logger.info("Fetching Argo profiles for %s...", date)
+            count = fetch_argo(date, output_path)
+            logger.info("Argo %s: %d profiles saved", date, count)
+
+        fetched["argo"] = output_path
+
     return fetched

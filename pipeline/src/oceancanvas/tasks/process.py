@@ -226,3 +226,21 @@ def process(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> None:
             logger.error("Failed to process GEBCO: %s", e)
     elif not gebco_path.exists():
         logger.info("No GEBCO data found at %s, skipping", gebco_path)
+
+    # Process Argo (daily, point data)
+    argo_source = sources_dir / "argo"
+    if argo_source.exists():
+        from oceancanvas.tasks.argo import process_argo
+
+        argo_output = processed_dir / "argo"
+        for json_file in sorted(argo_source.glob("*.json")):
+            date = json_file.stem
+            if (argo_output / f"{date}.json").exists():
+                logger.info("Argo %s already processed, skipping", date)
+                continue
+            logger.info("Processing Argo %s", date)
+            try:
+                process_argo(json_file, argo_output, date)
+                logger.info("Argo %s → processed in %s", date, argo_output)
+            except Exception as e:
+                logger.error("Failed to process Argo %s: %s", date, e)

@@ -66,13 +66,21 @@ class TestDiscover:
                 tmp_data_dir / "recipes",
                 tmp_data_dir / "renders",
             )
-        assert result == {"oisst": "2026-04-13"}
+        assert "oisst" in result
+        assert result["oisst"] == "2026-04-13"
+        assert "argo" in result  # Argo always returns today
 
     def test_skips_when_already_fetched(self, tmp_data_dir: Path):
-        # Create the file so discover thinks it's already fetched
+        # Create files so discover thinks both are already fetched
         oisst_dir = tmp_data_dir / "data" / "sources" / "oisst"
         oisst_dir.mkdir(parents=True)
         (oisst_dir / "2026-04-13.nc").touch()
+
+        argo_dir = tmp_data_dir / "data" / "sources" / "argo"
+        argo_dir.mkdir(parents=True)
+        from oceancanvas.tasks.argo import discover_argo
+
+        (argo_dir / f"{discover_argo()}.json").touch()
 
         with patch("oceancanvas.tasks.discover._oisst_latest_date", return_value="2026-04-13"):
             result = discover.fn(
