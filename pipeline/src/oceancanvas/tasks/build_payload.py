@@ -147,6 +147,14 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
         },
     }
 
+    # Load context data (e.g., GEBCO bathymetry) if specified
+    context_id = recipe.get("sources", {}).get("context")
+    if context_id:
+        context_path = processed_dir / context_id / "static.json"
+        if context_path.exists():
+            context_data = json.loads(context_path.read_text())
+            payload["data"]["context"] = _crop_to_region(context_data, region["lat"], region["lon"])
+
     atomic_write_text(output_path, json.dumps(payload))
 
 

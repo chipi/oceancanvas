@@ -64,8 +64,31 @@ def create_oisst_fixture_with_nan(date: str = "2026-01-17") -> None:
     print(f"Created {out} with NaN mask ({out.stat().st_size} bytes)")
 
 
+def create_gebco_fixture() -> None:
+    """Create a 10x10 GEBCO-shaped bathymetry NetCDF."""
+    lat = np.linspace(25.0, 65.0, 10, dtype=np.float64)
+    lon = np.linspace(-80.0, 0.0, 10, dtype=np.float64)
+
+    # Depth gradient: -5000m (deep ocean) to 0m (coast)
+    elev = np.linspace(-5000.0, 0.0, 10).reshape(10, 1) * np.ones((1, 10))
+    elev = elev.astype(np.float32)
+
+    ds = xr.Dataset(
+        {"elevation": (["lat", "lon"], elev)},
+        coords={"lat": lat, "lon": lon},
+    )
+    ds["elevation"].attrs["units"] = "m"
+    ds["elevation"].attrs["long_name"] = "Elevation relative to sea level"
+
+    out = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    ds.to_netcdf(out)
+    print(f"Created {out} ({out.stat().st_size} bytes)")
+
+
 if __name__ == "__main__":
     create_oisst_fixture("2026-01-15")
     create_oisst_fixture("2026-01-16")
     create_oisst_fixture_with_nan("2026-01-17")
+    create_gebco_fixture()
     print("Done.")

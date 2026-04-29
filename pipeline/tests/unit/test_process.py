@@ -6,7 +6,12 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from oceancanvas.tasks.process import _apply_thermal_colormap, _process_oisst, process
+from oceancanvas.tasks.process import (
+    _apply_thermal_colormap,
+    _process_gebco,
+    _process_oisst,
+    process,
+)
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 
@@ -160,6 +165,53 @@ class TestProcessOisstErrors:
             pass
 
 
+class TestProcessGebco:
+    def test_produces_three_files(self, tmp_path: Path):
+        nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
+        if not nc_path.exists():
+            import pytest
+
+            pytest.skip("GEBCO fixture not generated")
+
+        output = tmp_path / "gebco"
+        _process_gebco(nc_path, output)
+
+        assert (output / "static.json").exists()
+        assert (output / "static.png").exists()
+        assert (output / "static.meta.json").exists()
+
+    def test_json_has_correct_shape(self, tmp_path: Path):
+        nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
+        if not nc_path.exists():
+            import pytest
+
+            pytest.skip("GEBCO fixture not generated")
+
+        output = tmp_path / "gebco"
+        _process_gebco(nc_path, output)
+
+        data = json.loads((output / "static.json").read_text())
+        assert data["shape"] == [10, 10]
+        assert data["source_id"] == "gebco"
+        assert data["date"] == "static"
+        assert data["min"] < 0  # bathymetry is negative
+
+    def test_meta_has_stats(self, tmp_path: Path):
+        nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
+        if not nc_path.exists():
+            import pytest
+
+            pytest.skip("GEBCO fixture not generated")
+
+        output = tmp_path / "gebco"
+        _process_gebco(nc_path, output)
+
+        meta = json.loads((output / "static.meta.json").read_text())
+        assert meta["source_id"] == "gebco"
+        assert meta["min"] == -5000.0
+        assert meta["max"] == 0.0
+
+
 class TestProcess:
     def test_processes_oisst_files(self, tmp_data_dir: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
@@ -221,3 +273,24 @@ class TestProcess:
         # No output should have been created
         processed = tmp_data_dir / "data" / "processed" / "oisst"
         assert not (processed / "2026-01-15.json").exists()
+
+    def test_processes_gebco_when_present(self, tmp_data_dir: Path):
+        """GEBCO static file is processed when present in data/gebco/."""
+        gebco_fixture = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
+        if not gebco_fixture.exists():
+            import pytest
+
+            pytest.skip("GEBCO fixture not generated")
+
+        import shutil
+
+        gebco_dir = tmp_data_dir / "data" / "gebco"
+        gebco_dir.mkdir(parents=True)
+        shutil.copy(gebco_fixture, gebco_dir / "gebco_subset.nc")
+
+        process.fn(tmp_data_dir / "data", tmp_data_dir / "recipes", tmp_data_dir / "renders")
+
+        processed = tmp_data_dir / "data" / "processed" / "gebco"
+        assert (processed / "static.json").exists()
+        assert (processed / "static.png").exists()
+        assert (processed / "static.meta.json").exists()
