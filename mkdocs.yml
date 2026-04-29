@@ -14,12 +14,11 @@ theme:
     text: Inter
     code: JetBrains Mono
   features:
-    - navigation.sections
     - navigation.indexes
     - navigation.top
-    - navigation.tabs
     - search.highlight
     - content.code.copy
+    - toc.integrate
   icon:
     repo: fontawesome/brands/github
 
