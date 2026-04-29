@@ -64,6 +64,8 @@ def creative_to_technical(
 
     Pure function — same inputs always produce same outputs.
     Must match creativeToTechnical() in gallery/src/lib/creativeMapping.ts.
+    Accepts individual args for backward compat; use creative_state_to_technical()
+    for dict input matching the TS signature.
     """
     if colour_character < 0.33:
         colormap = "arctic"
@@ -90,3 +92,13 @@ def creative_to_technical(
         "marker_size": marker_size,
         "marker_opacity": round(marker_opacity * 100) / 100,
     }
+
+
+def creative_state_to_technical(state: dict) -> dict:
+    """Dict-input wrapper matching the TS creativeToTechnical(state) signature."""
+    return creative_to_technical(
+        energy_x=state["energy_x"],
+        energy_y=state["energy_y"],
+        colour_character=state["colour_character"],
+        temporal_weight=state["temporal_weight"],
+    )

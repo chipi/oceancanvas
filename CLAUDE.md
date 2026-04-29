@@ -22,7 +22,7 @@ This file is the orientation document for any AI assistant working on the codeba
 **Code (added during Phase 3, structure to be confirmed as built).**
 
 - `pipeline/` — Python 3.12 + Prefect + dlt + xarray. Six tasks: discover, fetch, process, build payload, render, index.
-- `gallery/` — React + Vite. deck.gl + MapLibre + Observable Plot. Static build served by Caddy.
+- `gallery/` — React + Vite. deck.gl + MapLibre + Observable Plot. Static build served by Caddy. `gallery/server/` has the Node.js recipe save endpoint.
 - `recipes/` — YAML files; the authored works.
 - `data/` — Three-layer store. `data/sources/` (raw), `data/processed/` (browser-friendly), not committed to git.
 - `renders/` — Daily PNG outputs per recipe. Not committed to git.

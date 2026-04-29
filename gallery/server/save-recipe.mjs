@@ -35,8 +35,20 @@ const server = createServer((req, res) => {
   }
 
   const id = match[1];
+  const MAX_BODY = 100_000; // 100KB limit
   let body = '';
-  req.on('data', (chunk) => { body += chunk; });
+  req.on('error', (err) => {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: `Request error: ${err.message}` }));
+  });
+  req.on('data', (chunk) => {
+    body += chunk;
+    if (body.length > MAX_BODY) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Request body too large' }));
+      req.destroy();
+    }
+  });
   req.on('end', () => {
     // Basic YAML syntax check — must contain 'name:' at minimum
     if (!body.includes('name:')) {

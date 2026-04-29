@@ -12,6 +12,9 @@ interface SketchPreviewProps {
  *
  * Loads shared.js + {render_type}.js from /sketches/, injects the payload
  * as window.OCEAN_PAYLOAD. Re-renders on payload change with 200ms debounce.
+ *
+ * Completion detection: the sketch sets window.__RENDER_COMPLETE = true,
+ * then the injected observer script posts a message to the parent.
  */
 export function SketchPreview({ payload, className }: SketchPreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -19,13 +22,23 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
+  // Listen for completion message from iframe
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (e.data === 'OCEAN_RENDER_COMPLETE') {
+        setStatus('ready');
+      }
+    }
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   useEffect(() => {
     if (!payload) {
       setStatus('loading');
       return;
     }
 
-    // Debounce re-renders during rapid control changes
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       renderSketch(payload);
@@ -45,18 +58,35 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
 
     const renderType = p.recipe.render.type || 'field';
 
+    // Observer script: watches for __RENDER_COMPLETE and posts message to parent
+    const observer = `
+      (function() {
+        var checks = 0;
+        var iv = setInterval(function() {
+          checks++;
+          if (window.__RENDER_COMPLETE) {
+            clearInterval(iv);
+            parent.postMessage('OCEAN_RENDER_COMPLETE', '*');
+          } else if (checks > 600) {
+            clearInterval(iv);
+            parent.postMessage('OCEAN_RENDER_TIMEOUT', '*');
+          }
+        }, 100);
+      })();
+    `;
+
     const html = `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
-<style>body { margin: 0; overflow: hidden; background: #030B10; }</style>
+<style>body { margin: 0; overflow: hidden; background: var(--canvas, #030B10); }</style>
 <script src="/sketches/shared.js"><\/script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"><\/script>
 </head><body>
 <script>window.OCEAN_PAYLOAD = ${JSON.stringify(p)};<\/script>
 <script src="/sketches/${renderType}.js"><\/script>
+<script>${observer}<\/script>
 </body></html>`;
 
-    // Write to iframe
     const doc = iframe.contentDocument;
     if (doc) {
       doc.open();
@@ -64,25 +94,13 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
       doc.close();
     }
 
-    // Poll for completion
-    let checks = 0;
-    const maxChecks = 150; // 15 seconds at 100ms intervals
-    const poll = setInterval(() => {
-      checks++;
-      try {
-        const win = iframe.contentWindow as Window & { __RENDER_COMPLETE?: boolean };
-        if (win?.__RENDER_COMPLETE) {
-          clearInterval(poll);
-          setStatus('ready');
-        } else if (checks >= maxChecks) {
-          clearInterval(poll);
-          setStatus('error');
-          setErrorMsg('Render timed out');
-        }
-      } catch {
-        // Cross-origin error — iframe not ready yet
+    // Timeout fallback
+    setTimeout(() => {
+      if (status === 'loading') {
+        setStatus('error');
+        setErrorMsg('Render timed out');
       }
-    }, 100);
+    }, 60000);
   }
 
   const width = payload?.output.width ?? 960;

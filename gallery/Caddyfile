@@ -23,6 +23,23 @@
         file_server
     }
 
+    # Recipe save API — proxies to Node.js save server
+    handle /api/* {
+        reverse_proxy localhost:3001
+    }
+
+    # Serve recipe YAML files as static assets (for editor loading)
+    handle /recipes/* {
+        root * /
+        file_server
+    }
+
+    # Serve sketches for editor preview iframe
+    handle /sketches/* {
+        root * /
+        file_server
+    }
+
     log {
         output stdout
         format json

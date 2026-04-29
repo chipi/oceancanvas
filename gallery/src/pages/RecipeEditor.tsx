@@ -37,14 +37,16 @@ export function RecipeEditor() {
     ] as [number, number],
   }), [searchParams]);
 
-  // Load processed data for preview
+  // Load processed data for preview — find the latest available OISST date
   useEffect(() => {
     fetch('/renders/manifest.json')
       .then((r) => r.json())
       .then((manifest) => {
-        const recipe = manifest.recipes?.['north-atlantic-sst'];
-        if (recipe?.latest) {
-          return fetch(`/data/processed/oisst/${recipe.latest}.json`);
+        // Find any recipe using OISST to get the latest date
+        const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
+        const oisstRecipe = recipes.find((r) => r.source === 'oisst');
+        if (oisstRecipe?.latest) {
+          return fetch(`/data/processed/oisst/${oisstRecipe.latest}.json`);
         }
         return null;
       })

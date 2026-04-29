@@ -8,6 +8,8 @@ interface SstMeta {
   max: number;
   mean: number;
   nan_pct: number;
+  lat_range?: [number, number];
+  lon_range?: [number, number];
 }
 
 function useSstData() {
@@ -44,7 +46,9 @@ export function Dashboard() {
     return <div className={styles.page}><div className={styles.error}>Data unavailable: {error}</div></div>;
   }
 
-  const anomaly = meta ? Math.round((meta.mean - 14.0) * 10) / 10 : null; // rough climatology baseline
+  // 1981–2010 OISST climatological mean for North Atlantic (approximate)
+  const CLIMATOLOGY_MEAN = 13.8;
+  const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
 
   return (
     <div className={styles.page}>
@@ -76,11 +80,14 @@ export function Dashboard() {
               src={`/data/processed/oisst/${latestDate}.png`}
               alt="SST heatmap"
               onMouseMove={(e) => {
+                // Coords from processed metadata lat/lon range
+                const latRange = meta?.lat_range ?? [20, 75];
+                const lonRange = meta?.lon_range ?? [-90, 10];
                 const rect = e.currentTarget.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width);
-                const y = ((e.clientY - rect.top) / rect.height);
-                const lat = (75 - y * 55).toFixed(1);
-                const lon = (-90 + x * 100).toFixed(1);
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                const lat = (latRange[1] - y * (latRange[1] - latRange[0])).toFixed(1);
+                const lon = (lonRange[0] + x * (lonRange[1] - lonRange[0])).toFixed(1);
                 setHoverCoords(`${lat}°N  ${lon}°W`);
               }}
               onMouseLeave={() => setHoverCoords(null)}

@@ -64,6 +64,8 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
     # Point data (1D shape like [1947]) — filter by lat/lon bounds, cap at 500
     max_points = 500
     if len(shape) == 1:
+        if not flat:
+            return processed
         if isinstance(flat[0], dict):
             filtered = [
                 p
