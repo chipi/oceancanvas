@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { CreativeControls } from '../components/CreativeControls';
 import { SketchPreview } from '../components/SketchPreview';
 import type { CreativeState } from '../lib/creativeMapping';
-import { MOOD_PRESETS, creativeToTechnical } from '../lib/creativeMapping';
+import { MOOD_PRESETS, creativeToTechnical, technicalToCreative } from '../lib/creativeMapping';
 import type { OceanPayload, ProcessedData } from '../lib/payloadBuilder';
 import { buildPreviewPayload } from '../lib/payloadBuilder';
 import { CREATIVE_MARKER, detectState, extractRenderParams, parseRecipeYaml, type RecipeState } from '../lib/yamlParser';
@@ -73,7 +73,10 @@ export function RecipeEditor() {
           if (typeMatch) setRenderType(typeMatch[1]);
           // Extract actual render params so preview matches the pipeline render
           const params = extractRenderParams(text);
-          if (Object.keys(params).length > 0) setLoadedParams(params);
+          if (Object.keys(params).length > 0) {
+            setLoadedParams(params);
+            setCreativeState(technicalToCreative(params));
+          }
         })
         .catch(() => {});
     }
@@ -238,8 +241,25 @@ export function RecipeEditor() {
             <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
               {saving ? 'Saving...' : 'Save recipe'}
             </button>
-            <button className={styles.discardBtn} onClick={() => setCreativeState({ ...DEFAULT_STATE })}>
-              Discard
+            <button className={styles.discardBtn} onClick={() => {
+              setUserEdited(false);
+              // Reload original params
+              if (!isNew && id) {
+                fetch(`/recipes/${id}.yaml`)
+                  .then((r) => r.text())
+                  .then((text) => {
+                    const params = extractRenderParams(text);
+                    if (Object.keys(params).length > 0) {
+                      setLoadedParams(params);
+                      setCreativeState(technicalToCreative(params));
+                    }
+                  })
+                  .catch(() => {});
+              } else {
+                setCreativeState({ ...DEFAULT_STATE });
+              }
+            }}>
+              Reset to original
             </button>
             {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
           </div>

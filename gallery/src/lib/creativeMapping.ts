@@ -129,3 +129,56 @@ export function isMatched(state: CreativeState, technical: TechnicalParams): boo
   const expected = creativeToTechnical(state);
   return JSON.stringify(expected) === JSON.stringify(technical);
 }
+
+/**
+ * Reverse-engineer the creative state that best matches given technical params.
+ * Inverts the lerp functions used in creativeToTechnical.
+ */
+export function technicalToCreative(params: Record<string, unknown>): CreativeState {
+  const inverseLerp = (a: number, b: number, v: number) => clamp((v - a) / (b - a), 0, 1);
+
+  // energy_x from speed_scale: lerp(0.2, 2.0, x)
+  const speed = Number(params.speed_scale ?? 1.0);
+  const energy_x = inverseLerp(0.2, 2.0, speed);
+
+  // energy_y from opacity: lerp(0.3, 1.0, y) or from particle_count: lerp(500, 5000, y)
+  const opacity = Number(params.opacity ?? 0.7);
+  const pc = Number(params.particle_count ?? 2000);
+  const energy_y_from_opacity = inverseLerp(0.3, 1.0, opacity);
+  const energy_y_from_pc = inverseLerp(500, 5000, pc);
+  const energy_y = (energy_y_from_opacity + energy_y_from_pc) / 2;
+
+  // temporal_weight from tail_length: lerp(3, 24, tw)
+  const tl = Number(params.tail_length ?? 12);
+  const temporal_weight = inverseLerp(3, 24, tl);
+
+  // colour_character from colormap name
+  const colormap = String(params.colormap ?? 'thermal');
+  let colour_character = 0.5;
+  if (colormap === 'arctic') colour_character = 0.15;
+  else if (colormap === 'thermal') colour_character = 0.5;
+  else if (colormap === 'otherworldly') colour_character = 0.85;
+
+  // Find closest mood preset
+  const state: CreativeState = {
+    mood: 'custom',
+    energy_x: Math.round(energy_x * 100) / 100,
+    energy_y: Math.round(energy_y * 100) / 100,
+    colour_character: Math.round(colour_character * 100) / 100,
+    temporal_weight: Math.round(temporal_weight * 100) / 100,
+  };
+
+  // Check if any preset is close
+  for (const [name, preset] of Object.entries(MOOD_PRESETS)) {
+    const dist = Math.abs(preset.energy_x - state.energy_x) +
+                 Math.abs(preset.energy_y - state.energy_y) +
+                 Math.abs(preset.colour_character - state.colour_character) +
+                 Math.abs(preset.temporal_weight - state.temporal_weight);
+    if (dist < 0.15) {
+      state.mood = name;
+      break;
+    }
+  }
+
+  return state;
+}
