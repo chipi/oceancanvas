@@ -2774,6 +2774,8 @@
 <li><strong>Related ADRs</strong> — ADR-008 (shared payload format principle, already accepted)</li>
 <li><strong>Related RFCs</strong> — RFC-001 Recipe YAML schema · RFC-004 Live preview architecture</li>
 </ul>
+<p><strong>Point data format (Argo, scatter):</strong> When the primary source is point data (e.g., Argo floats), <code>data.primary.data</code> is an array of objects <code>[{lat, lon, date, file}, ...]</code> rather than a flat float array. The scatter sketch detects this by checking <code>typeof data[0] === 'object'</code>. Shape is <code>[point_count]</code>. Min/max are based on latitude range.</p>
+<p><strong>Payload filenames:</strong> Pipeline writes payloads as <code>data/payloads/{recipe}__{date}.json</code> (double underscore separator). This avoids ambiguity with recipe names containing single underscores. The render task splits on <code>__</code> to recover recipe name and date.</p>
 
 
 
