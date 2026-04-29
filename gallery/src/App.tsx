@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
+import { DashboardSpread } from './pages/DashboardSpread';
 import { Gallery } from './pages/Gallery';
 import { RecipeEditor } from './pages/RecipeEditor';
 
@@ -17,7 +18,7 @@ export function App() {
         <Route path="/gallery/:recipe/:date" element={<Gallery />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/:source" element={<Dashboard />} />
-        <Route path="/dashboard/:source/explorer" element={<Dashboard />} />
+        <Route path="/dashboard/:source/explorer" element={<DashboardSpread />} />
         <Route path="/recipes" element={<RecipeEditor />} />
         <Route path="/recipes/new" element={<RecipeEditor />} />
         <Route path="/recipes/:id" element={<RecipeEditor />} />

@@ -1,0 +1,176 @@
+.page {
+  min-height: 100vh;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 42px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.topbarLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.topbarChip {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 4px 12px;
+  background: var(--elevated);
+  border-radius: 3px;
+  color: var(--text-secondary);
+}
+
+/* Hero two-column */
+.hero {
+  display: flex;
+  gap: 24px;
+  padding: 32px 24px;
+}
+
+.heroLeft {
+  flex: 1;
+}
+
+.heroRight {
+  flex: 1;
+}
+
+.eyebrow {
+  font-size: 13px;
+  color: var(--domain-sst-accent);
+  margin-bottom: 8px;
+}
+
+.heroNumber {
+  font-size: 72px;
+  font-weight: 500;
+  color: var(--domain-sst-accent);
+  line-height: 1;
+}
+
+.heroSubtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.anomalyWarm {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--intent-alert);
+  margin-top: 12px;
+}
+
+.anomalyCool {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--intent-info);
+  margin-top: 12px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.heroHeatmap {
+  width: 100%;
+  border-radius: 2px;
+  display: block;
+}
+
+/* Data strip */
+.dataStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 0 24px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.dataCol {
+  padding: 16px 0;
+}
+
+.dataValue {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--domain-sst-accent);
+}
+
+.dataLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.dataSub {
+  font-size: 10px;
+  color: var(--text-disabled);
+  margin-top: 2px;
+}
+
+/* Charts */
+.chartsSection {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  flex: 1;
+}
+
+.chartPlaceholder {
+  flex: 1;
+  background: var(--surface);
+  border-radius: 2px;
+  padding: 16px;
+}
+
+.chartTitle {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.chartBody {
+  font-size: 12px;
+  color: var(--text-disabled);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+/* Citation */
+.citation {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 9px;
+  font-family: monospace;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
