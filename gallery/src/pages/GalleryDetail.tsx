@@ -42,6 +42,7 @@ export function GalleryDetail() {
       <header className={styles.topbar}>
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <div className={styles.actions}>
+          <a href="/" className={styles.action}>← gallery</a>
           <a href={`/timelapse/${entry.name}`} className={styles.action}>timelapse ↗</a>
           <a href={`/recipes/${entry.name}`} className={styles.action}>recipe ↗</a>
           <a
