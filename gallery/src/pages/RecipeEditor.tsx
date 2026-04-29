@@ -26,7 +26,6 @@ export function RecipeEditor() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
-  // Region from URL params or defaults
   const region = useMemo(() => ({
     lat: [
       Number(searchParams.get('lat_min') || 25),
@@ -38,12 +37,11 @@ export function RecipeEditor() {
     ] as [number, number],
   }), [searchParams]);
 
-  // Load processed data for preview — find the latest available OISST date
+  // Load processed data for preview
   useEffect(() => {
     fetch('/renders/manifest.json')
       .then((r) => r.json())
       .then((manifest) => {
-        // Find any recipe using OISST to get the latest date
         const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
         const oisstRecipe = recipes.find((r) => r.source === 'oisst');
         if (oisstRecipe?.latest) {
@@ -56,7 +54,7 @@ export function RecipeEditor() {
       .catch((e) => console.error('Failed to load preview data:', e));
   }, []);
 
-  // Load existing recipe if editing — extract render type and source
+  // Load existing recipe
   useEffect(() => {
     if (!isNew && id) {
       fetch(`/recipes/${id}.yaml`)
@@ -67,7 +65,6 @@ export function RecipeEditor() {
         .then((text) => {
           setYamlText(text);
           setRecipeName(id);
-          // Extract render type from YAML
           const typeMatch = text.match(/type:\s*(\w+)/);
           if (typeMatch) setRenderType(typeMatch[1]);
         })
@@ -75,10 +72,8 @@ export function RecipeEditor() {
     }
   }, [id, isNew]);
 
-  // Build technical params from creative state
   const technical = useMemo(() => creativeToTechnical(creativeState), [creativeState]);
 
-  // Build preview payload
   const payload = useMemo<OceanPayload | null>(() => {
     if (!processedData) return null;
     return buildPreviewPayload(
@@ -117,7 +112,6 @@ export function RecipeEditor() {
     }
   }, [creativeState, mode, recipeName, region, technical, renderType]);
 
-  // Detect state when switching to creative mode from YAML
   const handleModeSwitch = useCallback((newMode: 'creative' | 'yaml') => {
     if (newMode === 'creative' && mode === 'yaml') {
       setRecipeState(detectState(creativeState, technical));
@@ -125,7 +119,6 @@ export function RecipeEditor() {
     setMode(newMode);
   }, [mode, creativeState, technical]);
 
-  // Save recipe
   const handleSave = useCallback(async () => {
     setSaving(true);
     setSaveMsg(null);
@@ -143,7 +136,6 @@ export function RecipeEditor() {
     setSaving(false);
   }, [recipeName, yamlText]);
 
-  // Tag YAML lines for colouring
   const taggedLines = useMemo(() => parseRecipeYaml(yamlText), [yamlText]);
 
   return (
@@ -153,74 +145,81 @@ export function RecipeEditor() {
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <span className={styles.topbarRecipe}>{recipeName}</span>
         <span className={styles.topbarMeta}>
-          {renderType} · {technical.colormap} · {processedData?.date || ''} · OISST
+          {renderType} · {technical.colormap} · {processedData?.date || ''}
         </span>
       </header>
 
-      {/* Preview */}
-      {!processedData && (
-        <div className={styles.previewEmpty}>
-          Loading ocean data for preview... Make sure the pipeline has run at least once.
-        </div>
-      )}
-      {processedData && <SketchPreview payload={payload} className={styles.preview} />}
-
-      {/* Flip bar */}
-      <div className={styles.flipBar}>
-        <button
-          className={`${styles.flipPill} ${mode === 'creative' ? styles.flipActive : ''}`}
-          onClick={() => handleModeSwitch('creative')}
-        >
-          creative
-        </button>
-        <button
-          className={`${styles.flipPill} ${mode === 'yaml' ? styles.flipActive : ''}`}
-          onClick={() => handleModeSwitch('yaml')}
-        >
-          yaml
-        </button>
-        <span className={styles.flipSpacer} />
-        {recipeState !== 'matched' && mode === 'creative' && (
-          <span className={styles.stateIndicator}>{recipeState}</span>
-        )}
-        <span className={styles.flipHint}>
-          {mode === 'yaml' ? 'amber lines are your creative choices' : ''}
-        </span>
-      </div>
-
-      {/* Controls or YAML */}
-      <div className={styles.controlArea}>
-        {mode === 'creative' ? (
-          <CreativeControls state={creativeState} onChange={setCreativeState} />
-        ) : (
-          <div className={styles.yamlEditor}>
-            <pre className={styles.yamlPre}>
-              {taggedLines.map((line, i) => (
-                <div
-                  key={i}
-                  className={
-                    line.type === 'creative' ? styles.yamlCreative :
-                    line.type === 'marker' ? styles.yamlMarker :
-                    styles.yamlStructural
-                  }
-                >
-                  {line.text || '\u00A0'}
-                </div>
-              ))}
-            </pre>
+      {/* Body: render left, controls right */}
+      <div className={styles.body}>
+        {/* Render area — same as detail view */}
+        <div className={styles.renderArea}>
+          {!processedData ? (
+            <div className={styles.loadingMsg}>Loading ocean data for preview...</div>
+          ) : (
+            <SketchPreview payload={payload} />
+          )}
+          <div className={styles.overlay}>
+            <div className={styles.overlayName}>{recipeName}</div>
+            <div className={styles.overlayMeta}>{renderType} · {technical.colormap}</div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Action bar */}
-      <div className={styles.actionBar}>
-        <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : 'Save recipe'}
-        </button>
-        <button className={styles.discardBtn} onClick={() => setCreativeState({ ...DEFAULT_STATE })}>
-          Discard
-        </button>
-        {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
+        {/* Controls panel — right side */}
+        <aside className={styles.controls}>
+          {/* Flip bar */}
+          <div className={styles.flipBar}>
+            <button
+              className={`${styles.flipPill} ${mode === 'creative' ? styles.flipActive : ''}`}
+              onClick={() => handleModeSwitch('creative')}
+            >
+              creative
+            </button>
+            <button
+              className={`${styles.flipPill} ${mode === 'yaml' ? styles.flipActive : ''}`}
+              onClick={() => handleModeSwitch('yaml')}
+            >
+              yaml
+            </button>
+            {recipeState !== 'matched' && mode === 'creative' && (
+              <span className={styles.stateIndicator}>{recipeState}</span>
+            )}
+          </div>
+
+          {/* Creative or YAML */}
+          <div className={styles.controlBody}>
+            {mode === 'creative' ? (
+              <CreativeControls state={creativeState} onChange={setCreativeState} />
+            ) : (
+              <div className={styles.yamlEditor}>
+                <pre className={styles.yamlPre}>
+                  {taggedLines.map((line, i) => (
+                    <div
+                      key={i}
+                      className={
+                        line.type === 'creative' ? styles.yamlCreative :
+                        line.type === 'marker' ? styles.yamlMarker :
+                        styles.yamlStructural
+                      }
+                    >
+                      {line.text || '\u00A0'}
+                    </div>
+                  ))}
+                </pre>
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className={styles.actionBar}>
+            <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
+              {saving ? 'Saving...' : 'Save recipe'}
+            </button>
+            <button className={styles.discardBtn} onClick={() => setCreativeState({ ...DEFAULT_STATE })}>
+              Discard
+            </button>
+            {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
+          </div>
+        </aside>
       </div>
     </div>
   );

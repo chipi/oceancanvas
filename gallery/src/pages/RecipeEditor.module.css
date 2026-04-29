@@ -1,8 +1,9 @@
 .page {
-  min-height: 100vh;
+  height: 100vh;
   background: var(--canvas);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Topbar */
@@ -37,27 +38,66 @@
   color: var(--text-secondary);
 }
 
-/* Preview */
-.previewEmpty {
-  height: 200px;
+/* Body: render left, controls right — matches detail view proportions */
+.body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Render area — left, same as detail view */
+.renderArea {
+  flex: 2;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.loadingMsg {
   color: var(--text-muted);
   font-size: 13px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
 }
-.preview {}
 
-/* Flip bar — sits between preview and controls */
+.overlay {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+}
+
+.overlayName {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.overlayMeta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Controls panel — right, replaces context panel */
+.controls {
+  flex: 1;
+  max-width: 360px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Flip bar at top of controls */
 .flipBar {
   display: flex;
   align-items: center;
-  padding: 6px 24px;
+  padding: 8px 16px;
   gap: 4px;
-  background: var(--elevated);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .flipPill {
@@ -75,67 +115,50 @@
   color: var(--text);
 }
 
-.flipSpacer {
-  flex: 1;
-}
-
-.flipHint {
-  font-size: 9px;
-  color: var(--text-disabled);
-  font-style: italic;
-}
-
 .stateIndicator {
   font-size: 9px;
   color: var(--intent-alert);
   padding: 2px 8px;
   border: 1px solid var(--intent-alert);
   border-radius: 2px;
+  margin-left: auto;
 }
 
-/* Control area */
-.controlArea {
+/* Scrollable control body */
+.controlBody {
   flex: 1;
   overflow-y: auto;
 }
 
 /* YAML editor */
 .yamlEditor {
-  padding: 16px 24px;
+  padding: 16px;
   overflow-x: auto;
 }
 
 .yamlPre {
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
-.yamlStructural {
-  color: var(--editor-structure);
-}
+.yamlStructural { color: var(--editor-structure); }
+.yamlCreative { color: var(--editor-creative); }
+.yamlMarker { color: var(--text-muted); }
 
-.yamlCreative {
-  color: var(--editor-creative);
-}
-
-.yamlMarker {
-  color: var(--text-muted);
-}
-
-/* Action bar */
+/* Action bar at bottom of controls */
 .actionBar {
   display: flex;
   align-items: center;
-  padding: 12px 24px;
-  gap: 12px;
-  background: var(--surface);
+  padding: 12px 16px;
+  gap: 8px;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .saveBtn {
-  font-size: 12px;
-  padding: 6px 20px;
+  font-size: 11px;
+  padding: 6px 16px;
   border: 1px solid var(--intent-info);
   border-radius: 3px;
   background: transparent;
@@ -143,18 +166,12 @@
   cursor: pointer;
 }
 
-.saveBtn:hover {
-  background: rgba(93, 202, 165, 0.1);
-}
-
-.saveBtn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
+.saveBtn:hover { background: rgba(93, 202, 165, 0.1); }
+.saveBtn:disabled { opacity: 0.5; cursor: default; }
 
 .discardBtn {
-  font-size: 12px;
-  padding: 6px 20px;
+  font-size: 11px;
+  padding: 6px 16px;
   border: 1px solid var(--border);
   border-radius: 3px;
   background: transparent;
@@ -163,6 +180,7 @@
 }
 
 .saveMsg {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
+  margin-left: auto;
 }
