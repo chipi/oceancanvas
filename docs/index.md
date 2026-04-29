@@ -1,6 +1,17 @@
-# OceanCanvas
+<div class="oc-hero" markdown>
 
-> The scientific infrastructure governments have built over decades — given to an artist.
+# Ocean · Canvas
+
+**Generative ocean art that the data performs daily.**
+
+*The scientific infrastructure governments have built over decades — given to an artist.*
+
+[Get Started](get-started.md){ .md-button .md-button--primary }
+[GitHub](https://github.com/chipi/oceancanvas){ .md-button }
+
+</div>
+
+<div class="oc-wave"></div>
 
 ---
 
@@ -42,9 +53,9 @@ Three data sources. **NOAA OISST** — sea surface temperature, daily, global, s
 
 **The Dashboard.** Read the ocean as data. Full-bleed SST heatmap with editorial stat cards. A timeline scrubber back to 1981. Region selection that feeds directly into the recipe editor.
 
-**The Recipe Editor.** Author a piece at the level of artistic intent. Mood presets, energy × presence, colour character, temporal weight. The preview runs the same p5.js sketch the pipeline uses. What you see is what the pipeline renders. Flip to YAML to see the file your choices generate.
+**The Recipe Editor.** Author a piece at the level of artistic intent. Mood presets, energy × presence, colour character, temporal weight. The preview runs the same p5.js sketch the pipeline uses. What you see is what the pipeline renders.
 
-**The Video Editor.** *(Coming in v0.3)* Assemble a recipe's accumulated renders into a timelapse film with generative audio and data overlays.
+**The Video Editor.** *(Coming in v0.3)* Assemble accumulated renders into timelapse film with generative audio and data overlays.
 
 ---
 
@@ -56,7 +67,7 @@ Three data sources. **NOAA OISST** — sea surface temperature, daily, global, s
 
 **The creative stack is grounded.** Colour is always data-mapped. Motion follows real gradients. Every render carries its source attribution. Nothing decorative. The art is factually correct.
 
-**It runs itself.** Once a recipe is authored, it runs forever. The pipeline is the heartbeat. The gallery is the accumulation. The system does not need you after you author the piece. The ocean keeps feeding it.
+**It runs itself.** Once a recipe is authored, it runs forever. The pipeline is the heartbeat. The gallery is the accumulation.
 
 ---
 
@@ -64,14 +75,14 @@ Three data sources. **NOAA OISST** — sea surface temperature, daily, global, s
 
 - **Not a scientific analysis tool.** It does not replace Jupyter notebooks or any research workflow.
 - **Not a real-time monitoring system.** It does not send alerts or compete with operational products.
-- **Not a random image generator.** Every render is deterministic. Same recipe, same data, same date — same image. Always.
+- **Not a random image generator.** Every render is deterministic. Same recipe, same data, same date — same image.
 - **Not a social media bot.** No view counts, no likes, no share counts, no streaks.
-- **Not a data portal.** It does not host or redistribute raw data. It consumes open data and creates art from it.
+- **Not a data portal.** It consumes open data and creates art from it.
 
 ---
 
-## The deeper bet
+<div class="oc-closing" markdown>
 
-That the ocean's data, treated with editorial dignity and rendered through authored recipes, produces something people want to look at. Not because it's pretty — because it's true. The Gulf Stream is not an abstraction. The thermal anomaly is not a number. The ice extent is not a chart.
+*The data performs daily. The art accumulates. The gallery walks forward.*
 
-The data performs daily. The art accumulates. The gallery walks forward.
+</div>

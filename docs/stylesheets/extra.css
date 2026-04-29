@@ -224,3 +224,114 @@
 .md-header[data-md-state="shadow"] {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
+
+/* ═══════════════════════════════════════════════ */
+/* Hero section — the ocean greets you            */
+/* ═══════════════════════════════════════════════ */
+
+.oc-hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background:
+    radial-gradient(ellipse at 30% 60%, rgba(4, 44, 83, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 40%, rgba(15, 110, 86, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(186, 117, 23, 0.08) 0%, transparent 40%),
+    linear-gradient(180deg, #020810 0%, #042C53 40%, #0F6E56 70%, #030B10 100%);
+  border-radius: 0 0 8px 8px;
+  margin: -20px -20px 0;
+  position: relative;
+}
+
+.oc-hero h1 {
+  font-size: 3.5em !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.15em !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border: none !important;
+  text-shadow: 0 0 40px rgba(93, 202, 165, 0.4), 0 0 80px rgba(4, 44, 83, 0.6);
+  margin-bottom: 8px !important;
+}
+
+.oc-hero > p:first-of-type {
+  font-size: 1.3em;
+  color: var(--ocean-teal);
+  margin-bottom: 4px;
+}
+
+.oc-hero > p:nth-of-type(2) {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.oc-hero .md-button {
+  margin: 0 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.oc-hero .md-button--primary {
+  background: var(--ocean-teal);
+  border-color: var(--ocean-teal);
+  color: #030B10;
+}
+
+.oc-hero .md-button--primary:hover {
+  background: var(--ocean-warm);
+  border-color: var(--ocean-warm);
+}
+
+.oc-hero .md-button:not(.md-button--primary) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.oc-hero .md-button:not(.md-button--primary):hover {
+  border-color: var(--ocean-teal);
+  color: var(--ocean-teal);
+}
+
+/* Animated wave separator */
+.oc-wave {
+  height: 40px;
+  background: linear-gradient(180deg, transparent, var(--ocean-deep));
+  position: relative;
+  overflow: hidden;
+  margin: -20px -20px 30px;
+}
+
+.oc-wave::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  width: 200%;
+  height: 30px;
+  background:
+    radial-gradient(ellipse at 25% 100%, rgba(93, 202, 165, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 100%, rgba(239, 159, 39, 0.08) 0%, transparent 50%);
+  animation: wave-drift 8s ease-in-out infinite;
+}
+
+@keyframes wave-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5%); }
+}
+
+/* Closing section — the ocean's last word */
+.oc-closing {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 20px -20px -20px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(4, 44, 83, 0.3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--ocean-deep), #042C53, var(--ocean-deep));
+}
+
+.oc-closing em {
+  font-size: 1.2em;
+  color: var(--ocean-teal) !important;
+  text-shadow: 0 0 30px rgba(93, 202, 165, 0.3);
+}
