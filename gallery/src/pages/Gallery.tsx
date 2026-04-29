@@ -1,5 +1,6 @@
 import { type SyntheticEvent, useState } from 'react';
-import { useManifest } from '../hooks/useManifest';
+import { useNavigate } from 'react-router-dom';
+import { useManifest, type RecipeEntry } from '../hooks/useManifest';
 import styles from './Gallery.module.css';
 
 function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
@@ -10,10 +11,17 @@ function renderUrl(recipe: string, date: string): string {
   return `/renders/${recipe}/${date}.png`;
 }
 
+/** Assign size tier based on render count relative to the max. */
+function getTier(entry: RecipeEntry, maxCount: number): 'large' | 'medium' | 'standard' {
+  if (entry.count === maxCount && maxCount > 0) return 'large';
+  if (entry.count >= 3) return 'medium';
+  return 'standard';
+}
+
 export function Gallery() {
   const { manifest, error, loading } = useManifest();
   const [filter, setFilter] = useState<string | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Could not load manifest: {error}</div>;
@@ -22,23 +30,15 @@ export function Gallery() {
   }
 
   const recipes = Object.values(manifest.recipes);
-  const filtered = filter
-    ? recipes.filter((r) => r.source === filter)
-    : recipes;
-
-  // Hero: selected recipe, or the one with the most renders
-  const hero = selected
-    ? recipes.find((r) => r.name === selected)
-    : [...recipes].sort((a, b) => b.count - a.count)[0];
+  const filtered = filter ? recipes.filter((r) => r.source === filter) : recipes;
+  const maxCount = Math.max(...recipes.map((r) => r.count));
   const sources = [...new Set(recipes.map((r) => r.source).filter(Boolean))];
 
   return (
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark} onClick={() => setSelected(null)}>
-          OCEANCANVAS
-        </a>
+        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <div className={styles.filters}>
           <button
             className={`${styles.filter} ${!filter ? styles.filterActive : ''}`}
@@ -58,83 +58,36 @@ export function Gallery() {
         </div>
       </header>
 
-      {/* Hero */}
-      {hero && (
-        <div className={styles.hero}>
-          <img
-            className={styles.heroImage}
-            src={renderUrl(hero.name, hero.latest)}
-            alt={`${hero.name} — ${hero.latest}`}
-            onError={handleImgError}
-          />
-          <div className={styles.heroOverlay}>
-            <div className={styles.heroName}>{hero.name}</div>
-            <div className={styles.heroMeta}>
-              {hero.render_type} · {hero.source} · {hero.latest} · {hero.count} render{hero.count !== 1 ? 's' : ''}
-            </div>
-            <div className={styles.heroActions}>
-              <a href={`/timelapse/${hero.name}`} className={styles.heroAction}>timelapse ↗</a>
-              <a href={`/recipes/${hero.name}`} className={styles.heroAction}>recipe ↗</a>
-              <a
-                href={renderUrl(hero.name, hero.latest)}
-                download={`${hero.name}_${hero.latest}_oceancanvas.png`}
-                className={styles.heroActionPrimary}
-              >
-                download
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 14-day strip */}
-      {hero && hero.dates.length > 1 && (
-        <>
-          <div className={styles.stripLabel}>
-            Last {Math.min(14, hero.dates.length)} days · {hero.name}
-          </div>
-          <div className={styles.strip}>
-            {hero.dates.slice(-14).map((date) => (
+      {/* Masonry grid */}
+      <div className={styles.masonry}>
+        {filtered.map((recipe) => {
+          const tier = getTier(recipe, maxCount);
+          return (
+            <div
+              key={recipe.name}
+              className={`${styles.tile} ${styles[`tile_${tier}`]}`}
+              onClick={() => navigate(`/gallery/${recipe.name}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/gallery/${recipe.name}`); }}
+              aria-label={`${recipe.name} — ${recipe.render_type} — ${recipe.latest}`}
+            >
               <img
-                key={date}
-                className={styles.stripThumb}
-                src={renderUrl(hero.name, date)}
-                alt={date}
-                title={date}
+                className={styles.tileImage}
+                src={renderUrl(recipe.name, recipe.latest)}
+                alt={recipe.name}
                 loading="lazy"
                 onError={handleImgError}
               />
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Grid */}
-      <div className={styles.gridLabel}>
-        {filtered.length} recipe{filtered.length !== 1 ? 's' : ''} · today
-      </div>
-      <div className={styles.grid}>
-        {filtered.map((recipe) => (
-          <div
-            key={recipe.name}
-            className={`${styles.card} ${hero?.name === recipe.name ? styles.cardActive : ''}`}
-            onClick={() => setSelected(recipe.name)}
-          >
-            <img
-              className={styles.cardImage}
-              src={renderUrl(recipe.name, recipe.latest)}
-              alt={recipe.name}
-              loading="lazy"
-              onError={handleImgError}
-            />
-            <div className={styles.cardOverlay}>
-              <div className={styles.cardName}>{recipe.name}</div>
-              <div className={styles.cardDate}>
-                {recipe.render_type} · {recipe.latest}
+              <div className={styles.tileOverlay}>
+                <div className={styles.tileName}>{recipe.name}</div>
+                <div className={styles.tileMeta}>
+                  {recipe.render_type} · {recipe.source} · {recipe.latest}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

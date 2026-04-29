@@ -1,0 +1,102 @@
+import { type SyntheticEvent, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useManifest } from '../hooks/useManifest';
+import styles from './GalleryDetail.module.css';
+
+function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
+  e.currentTarget.style.opacity = '0.3';
+}
+
+export function GalleryDetail() {
+  const { recipe } = useParams<{ recipe: string }>();
+  const navigate = useNavigate();
+  const { manifest } = useManifest();
+
+  const entry = manifest?.recipes?.[recipe || ''];
+
+  // Esc key returns to gallery
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') navigate('/');
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [navigate]);
+
+  if (!entry) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.topbar}>
+          <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        </header>
+        <div className={styles.empty}>Recipe not found</div>
+      </div>
+    );
+  }
+
+  const renderUrl = `/renders/${entry.name}/${entry.latest}.png`;
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.topbar}>
+        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <div className={styles.actions}>
+          <a href={`/timelapse/${entry.name}`} className={styles.action}>timelapse ↗</a>
+          <a href={`/recipes/${entry.name}`} className={styles.action}>recipe ↗</a>
+          <a
+            href={renderUrl}
+            download={`${entry.name}_${entry.latest}_oceancanvas.png`}
+            className={styles.actionPrimary}
+          >
+            download
+          </a>
+        </div>
+      </header>
+
+      {/* Full-screen render */}
+      <div className={styles.renderArea}>
+        <img
+          className={styles.renderImage}
+          src={renderUrl}
+          alt={`${entry.name} — ${entry.latest}`}
+          onError={handleImgError}
+        />
+        <div className={styles.overlay}>
+          <div className={styles.overlayLeft}>
+            <div className={styles.recipeName}>{entry.name}</div>
+            <div className={styles.recipeSource}>
+              {entry.render_type} · {entry.source} · NOAA/NCEI OISST · OceanCanvas
+            </div>
+          </div>
+          <div className={styles.overlayRight}>
+            <div className={styles.dateDay}>{entry.latest?.substring(8)}</div>
+            <div className={styles.dateRest}>{entry.latest?.substring(0, 7)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 14-day strip */}
+      {entry.dates.length > 0 && (
+        <div className={styles.strip}>
+          <div className={styles.stripLabel}>
+            LAST {Math.min(14, entry.dates.length)} DAYS
+          </div>
+          <div className={styles.stripRow}>
+            {entry.dates.slice(-14).map((date) => (
+              <div key={date} className={`${styles.stripThumb} ${date === entry.latest ? styles.stripActive : ''}`}>
+                <img
+                  src={`/renders/${entry.name}/${date}.png`}
+                  alt={date}
+                  title={date}
+                  loading="lazy"
+                  onError={handleImgError}
+                />
+                <span className={styles.stripDate}>{date.substring(5)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

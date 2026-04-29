@@ -1,0 +1,167 @@
+.page {
+  min-height: 100vh;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 42px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+}
+
+.action {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.action:hover {
+  color: var(--text);
+}
+
+.actionPrimary {
+  font-size: 11px;
+  color: var(--intent-info);
+  text-decoration: none;
+}
+
+/* Full-screen render */
+.renderArea {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.renderImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 24px;
+  background: linear-gradient(transparent, var(--overlay));
+}
+
+.overlayLeft {}
+
+.recipeName {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.recipeSource {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.overlayRight {
+  text-align: right;
+}
+
+.dateDay {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+
+.dateRest {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Strip */
+.strip {
+  background: var(--surface);
+  padding: 8px 24px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.stripLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.stripRow {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.stripThumb {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.stripThumb img {
+  width: 70px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+  opacity: 0.7;
+}
+
+.stripThumb:hover img {
+  opacity: 1;
+}
+
+.stripActive img {
+  opacity: 1;
+  outline: 1px solid var(--border-strong);
+}
+
+.stripDate {
+  font-size: 8px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
