@@ -71,6 +71,11 @@
   background: var(--canvas);
 }
 
+.renderImage {
+  width: 100%;
+  display: block;
+}
+
 .loadingMsg {
   color: var(--text-muted);
   font-size: 13px;

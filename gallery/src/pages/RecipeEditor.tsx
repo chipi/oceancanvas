@@ -24,6 +24,8 @@ export function RecipeEditor() {
   const [recipeName, setRecipeName] = useState(id || 'new-recipe');
   const [renderType, setRenderType] = useState('field');
   const [loadedParams, setLoadedParams] = useState<Record<string, unknown> | null>(null);
+  const [userEdited, setUserEdited] = useState(false);
+  const [latestDate, setLatestDate] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -46,6 +48,7 @@ export function RecipeEditor() {
         const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
         const oisstRecipe = recipes.find((r) => r.source === 'oisst');
         if (oisstRecipe?.latest) {
+          setLatestDate(oisstRecipe.latest);
           return fetch(`/data/processed/oisst/${oisstRecipe.latest}.json`);
         }
         return null;
@@ -162,16 +165,26 @@ export function RecipeEditor() {
 
       {/* Body: render left, controls right */}
       <div className={styles.body}>
-        {/* Render area — same as detail view */}
+        {/* Render area: show pipeline PNG until user edits, then live preview */}
         <div className={styles.renderArea}>
-          {!processedData ? (
+          {!userEdited && !isNew && latestDate ? (
+            <img
+              className={styles.renderImage}
+              src={`/renders/${recipeName}/${latestDate}.png`}
+              alt={recipeName}
+              onError={() => setUserEdited(true)}
+            />
+          ) : !processedData ? (
             <div className={styles.loadingMsg}>Loading ocean data for preview...</div>
           ) : (
             <SketchPreview payload={payload} />
           )}
           <div className={styles.overlay}>
             <div className={styles.overlayName}>{recipeName}</div>
-            <div className={styles.overlayMeta}>{renderType} · {technical.colormap}</div>
+            <div className={styles.overlayMeta}>
+              {renderType} · {technical.colormap}
+              {!userEdited && !isNew ? '' : ' · live preview'}
+            </div>
           </div>
         </div>
 
@@ -199,7 +212,7 @@ export function RecipeEditor() {
           {/* Creative or YAML */}
           <div className={styles.controlBody}>
             {mode === 'creative' ? (
-              <CreativeControls state={creativeState} onChange={(s) => { setLoadedParams(null); setCreativeState(s); }} />
+              <CreativeControls state={creativeState} onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }} />
             ) : (
               <div className={styles.yamlEditor}>
                 <pre className={styles.yamlPre}>
