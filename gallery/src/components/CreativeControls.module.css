@@ -54,6 +54,11 @@
   color: var(--text);
 }
 
+.moodSaved {
+  border-color: var(--intent-info);
+  color: var(--intent-info);
+}
+
 /* Energy × Presence quadrant */
 .quadrant {
   position: relative;

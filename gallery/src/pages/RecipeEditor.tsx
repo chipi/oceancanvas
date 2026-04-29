@@ -24,6 +24,7 @@ export function RecipeEditor() {
   const [recipeName, setRecipeName] = useState(id || 'new-recipe');
   const [renderType, setRenderType] = useState('field');
   const [loadedParams, setLoadedParams] = useState<Record<string, unknown> | null>(null);
+  const [originalCreative, setOriginalCreative] = useState<CreativeState | null>(null);
   const [userEdited, setUserEdited] = useState(false);
   const [latestDate, setLatestDate] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -75,7 +76,10 @@ export function RecipeEditor() {
           const params = extractRenderParams(text);
           if (Object.keys(params).length > 0) {
             setLoadedParams(params);
-            setCreativeState(technicalToCreative(params));
+            const cs = technicalToCreative(params);
+            cs.mood = 'saved';
+            setCreativeState(cs);
+            setOriginalCreative(cs);
           }
         })
         .catch(() => {});
@@ -215,7 +219,27 @@ export function RecipeEditor() {
           {/* Creative or YAML */}
           <div className={styles.controlBody}>
             {mode === 'creative' ? (
-              <CreativeControls state={creativeState} onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }} />
+              <CreativeControls
+                state={creativeState}
+                onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}
+                originalState={originalCreative}
+                onReset={() => {
+                  setUserEdited(false);
+                  if (originalCreative) {
+                    setCreativeState({ ...originalCreative, mood: 'saved' });
+                    // Reload loadedParams from recipe
+                    if (!isNew && id) {
+                      fetch(`/recipes/${id}.yaml`)
+                        .then((r) => r.text())
+                        .then((text) => {
+                          const params = extractRenderParams(text);
+                          if (Object.keys(params).length > 0) setLoadedParams(params);
+                        })
+                        .catch(() => {});
+                    }
+                  }
+                }}
+              />
             ) : (
               <div className={styles.yamlEditor}>
                 <pre className={styles.yamlPre}>
@@ -240,26 +264,6 @@ export function RecipeEditor() {
           <div className={styles.actionBar}>
             <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
               {saving ? 'Saving...' : 'Save recipe'}
-            </button>
-            <button className={styles.discardBtn} onClick={() => {
-              setUserEdited(false);
-              // Reload original params
-              if (!isNew && id) {
-                fetch(`/recipes/${id}.yaml`)
-                  .then((r) => r.text())
-                  .then((text) => {
-                    const params = extractRenderParams(text);
-                    if (Object.keys(params).length > 0) {
-                      setLoadedParams(params);
-                      setCreativeState(technicalToCreative(params));
-                    }
-                  })
-                  .catch(() => {});
-              } else {
-                setCreativeState({ ...DEFAULT_STATE });
-              }
-            }}>
-              Reset to original
             </button>
             {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
           </div>

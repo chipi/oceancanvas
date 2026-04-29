@@ -6,6 +6,8 @@ import styles from './CreativeControls.module.css';
 interface CreativeControlsProps {
   state: CreativeState;
   onChange: (state: CreativeState) => void;
+  originalState?: CreativeState | null;
+  onReset?: () => void;
 }
 
 /**
@@ -14,7 +16,7 @@ interface CreativeControlsProps {
  *
  * Per UXS-003: the interface operates at the level of artistic intent.
  */
-export function CreativeControls({ state, onChange }: CreativeControlsProps) {
+export function CreativeControls({ state, onChange, originalState, onReset }: CreativeControlsProps) {
   const update = useCallback(
     (partial: Partial<CreativeState>) => onChange({ ...state, ...partial }),
     [state, onChange],
@@ -26,6 +28,14 @@ export function CreativeControls({ state, onChange }: CreativeControlsProps) {
       <div className={styles.section}>
         <div className={styles.sectionLabel}>MOOD</div>
         <div className={styles.moodRow}>
+          {originalState && onReset && (
+            <button
+              className={`${styles.moodPill} ${styles.moodSaved} ${state.mood === 'saved' ? styles.moodActive : ''}`}
+              onClick={onReset}
+            >
+              Saved
+            </button>
+          )}
           {Object.keys(MOOD_PRESETS).map((name) => (
             <button
               key={name}
