@@ -15,9 +15,9 @@ theme:
     code: JetBrains Mono
   features:
     - navigation.sections
-    - navigation.expand
     - navigation.indexes
     - navigation.top
+    - navigation.tabs
     - search.highlight
     - content.code.copy
   icon:
@@ -36,69 +36,65 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.tabbed:
       alternate_style: true
+  - attr_list
+  - md_in_html
   - toc:
       permalink: true
 
 nav:
-  - Home: index.md
-  - Getting Started:
-      - Project README: project-readme.md
+  - OceanCanvas:
+      - index.md
+      - Vision: concept/01-vision.md
+      - The Project: concept/02-project-concept.md
+      - Data Sources: concept/03-data-catalog.md
+      - Design Language: concept/05-design-system.md
+  - Get Started:
+      - project-readme.md
+      - How It Works: concept/04-technical-architecture.md
       - Implementation Guide: implementation.md
-      - Conventions (CLAUDE.md): claude.md
-  - Concept Package:
-      - "OC-00: Introduction": concept/00-package-introduction.md
-      - "OC-01: Vision": concept/01-vision.md
-      - "OC-02: Project Concept": concept/02-project-concept.md
-      - "OC-03: Data Catalog": concept/03-data-catalog.md
-      - "OC-04: Technical Architecture": concept/04-technical-architecture.md
-      - "OC-05: Design System": concept/05-design-system.md
-  - Product:
-      - Product Architecture (PA): prd/OC_PA.md
-      - PRD Index: prd/index.md
-      - "PRD-001: Recipe": prd/PRD-001-recipe.md
-      - "PRD-002: Dashboard": prd/PRD-002-dashboard.md
-      - "PRD-003: Recipe Editor": prd/PRD-003-recipe-editor.md
-      - "PRD-004: Gallery": prd/PRD-004-gallery.md
-      - "PRD-005: Video Editor": prd/PRD-005-video-editor.md
-      - PRD Template: prd/PRD_TEMPLATE.md
-  - UX:
-      - Information Architecture (IA): uxs/OC_IA.md
-      - UXS Index: uxs/index.md
-      - "UXS-001: Dashboard SST": uxs/UXS-001-dashboard-sst.md
-      - "UXS-002: Dashboard Sea Level": uxs/UXS-002-dashboard-sealevel.md
-      - "UXS-003: Recipe Editor": uxs/UXS-003-recipe-editor.md
-      - "UXS-004: Gallery": uxs/UXS-004-gallery.md
-      - "UXS-005: Video Editor": uxs/UXS-005-video-editor.md
-      - UXS Template: uxs/UXS_TEMPLATE.md
+  - Surfaces:
+      - "The Gallery": prd/PRD-004-gallery.md
+      - "The Dashboard": prd/PRD-002-dashboard.md
+      - "The Recipe Editor": prd/PRD-003-recipe-editor.md
+      - "The Recipe": prd/PRD-001-recipe.md
+      - "The Video Editor": prd/PRD-005-video-editor.md
+  - Design:
+      - Visual Contracts:
+          - Gallery: uxs/UXS-004-gallery.md
+          - Dashboard SST: uxs/UXS-001-dashboard-sst.md
+          - Dashboard Sea Level: uxs/UXS-002-dashboard-sealevel.md
+          - Recipe Editor: uxs/UXS-003-recipe-editor.md
+          - Video Editor: uxs/UXS-005-video-editor.md
+      - Information Architecture: uxs/OC_IA.md
+      - Product Architecture: prd/OC_PA.md
   - Technical:
-      - Technical Architecture (TA): adr/OC_TA.md
-      - ADR Index: adr/index.md
-      - ADRs:
-          - "ADR-001: Prefect": adr/ADR-001-prefect-orchestration.md
-          - "ADR-002: dlt": adr/ADR-002-dlt-rest-ingestion.md
-          - "ADR-003: xarray": adr/ADR-003-xarray-netcdf.md
-          - "ADR-004: Three-layer store": adr/ADR-004-three-layer-data-store.md
-          - "ADR-005: No database": adr/ADR-005-no-database-v1.md
-          - "ADR-006: p5.js": adr/ADR-006-p5js-sketch-language.md
-          - "ADR-007: Puppeteer": adr/ADR-007-puppeteer-renderer.md
-          - "ADR-008: Shared payload": adr/ADR-008-shared-payload-format.md
-          - "ADR-009: deck.gl": adr/ADR-009-deck-gl-maplibre.md
-          - "ADR-010: Observable Plot": adr/ADR-010-observable-plot.md
-          - "ADR-011: Docker Compose": adr/ADR-011-docker-compose.md
-          - "ADR-012: Caddy": adr/ADR-012-caddy-static-server.md
-          - "ADR-013: GitHub Actions": adr/ADR-013-github-actions-code-only.md
-          - "ADR-014: Synthetic e2e": adr/ADR-014-synthetic-e2e-gate.md
-          - "ADR-015: Processed JSON": adr/ADR-015-processed-json-format.md
-          - "ADR-016: Single author": adr/ADR-016-single-author-phase-1.md
-          - "ADR-017: One layout per source": adr/ADR-017-one-layout-per-source.md
-      - ADR Template: adr/ADR_TEMPLATE.md
-      - RFC Index: rfc/index.md
-      - RFCs:
-          - "RFC-001: Recipe YAML schema": rfc/RFC-001-recipe-yaml-schema.md
-          - "RFC-002: Render payload": rfc/RFC-002-render-payload-format.md
-          - "RFC-003: Recipe lifecycle": rfc/RFC-003-recipe-lifecycle.md
-          - "RFC-004: Live preview": rfc/RFC-004-live-preview-architecture.md
-          - "RFC-005: YAML round-tripping": rfc/RFC-005-yaml-round-tripping.md
-          - "RFC-006: Audio system": rfc/RFC-006-audio-system.md
-          - "RFC-007: Key moment detection": rfc/RFC-007-key-moment-detection.md
-      - RFC Template: rfc/RFC_TEMPLATE.md
+      - Architecture: adr/OC_TA.md
+      - Decisions (ADRs):
+          - adr/index.md
+          - Prefect: adr/ADR-001-prefect-orchestration.md
+          - dlt: adr/ADR-002-dlt-rest-ingestion.md
+          - xarray: adr/ADR-003-xarray-netcdf.md
+          - Data Store: adr/ADR-004-three-layer-data-store.md
+          - No Database: adr/ADR-005-no-database-v1.md
+          - p5.js: adr/ADR-006-p5js-sketch-language.md
+          - Puppeteer: adr/ADR-007-puppeteer-renderer.md
+          - Shared Payload: adr/ADR-008-shared-payload-format.md
+          - deck.gl: adr/ADR-009-deck-gl-maplibre.md
+          - Observable Plot: adr/ADR-010-observable-plot.md
+          - Docker Compose: adr/ADR-011-docker-compose.md
+          - Caddy: adr/ADR-012-caddy-static-server.md
+          - GitHub Actions: adr/ADR-013-github-actions-code-only.md
+          - Synthetic e2e: adr/ADR-014-synthetic-e2e-gate.md
+          - Processed JSON: adr/ADR-015-processed-json-format.md
+          - Single Author: adr/ADR-016-single-author-phase-1.md
+          - One Layout Per Source: adr/ADR-017-one-layout-per-source.md
+      - Open Questions (RFCs):
+          - rfc/index.md
+          - Recipe YAML: rfc/RFC-001-recipe-yaml-schema.md
+          - Render Payload: rfc/RFC-002-render-payload-format.md
+          - Recipe Lifecycle: rfc/RFC-003-recipe-lifecycle.md
+          - Live Preview: rfc/RFC-004-live-preview-architecture.md
+          - YAML Round-tripping: rfc/RFC-005-yaml-round-tripping.md
+          - Audio System: rfc/RFC-006-audio-system.md
+          - Key Moments: rfc/RFC-007-key-moment-detection.md
+      - Conventions: claude.md
