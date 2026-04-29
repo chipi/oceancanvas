@@ -45,7 +45,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Get Started: get-started.md
-  - Data Sources: concept/03-data-catalog.md
+  - Data Sources: data-sources.md
   - Project Internals:
       - Implementation Guide: implementation.md
       - How It Works: concept/04-technical-architecture.md

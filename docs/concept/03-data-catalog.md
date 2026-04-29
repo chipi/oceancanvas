@@ -1,8 +1,4 @@
----
-title: Data Sources
----
-
-# Data Sources
+# OC-03 — Data Catalog
 
 **OceanCanvas — Data Sources Technical Analysis**
 
