@@ -33,11 +33,10 @@ test('recipe editor route loads', async ({ page }) => {
 });
 
 test('gallery handles missing manifest gracefully', async ({ page }) => {
-  // Even if manifest doesn't load, gallery shouldn't crash
-  await page.goto('/');
-  // Page should render without JS errors
   const errors: string[] = [];
   page.on('pageerror', (err) => errors.push(err.message));
+  await page.goto('/');
   await page.waitForTimeout(2000);
-  // We accept "Could not load manifest" error state — not a JS crash
+  // No unhandled JS exceptions — "Could not load manifest" is an expected UI state, not a crash
+  expect(errors).toHaveLength(0);
 });

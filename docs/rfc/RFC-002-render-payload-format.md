@@ -139,3 +139,7 @@ Rejected because it adds a non-trivial library dependency for browser code, and 
 - **TA** — §contracts/render-payload · §components/render-system · §constraints (shared payload format)
 - **Related ADRs** — ADR-008 (shared payload format principle, already accepted)
 - **Related RFCs** — RFC-001 Recipe YAML schema · RFC-004 Live preview architecture
+
+**Point data format (Argo, scatter):** When the primary source is point data (e.g., Argo floats), `data.primary.data` is an array of objects `[{lat, lon, date, file}, ...]` rather than a flat float array. The scatter sketch detects this by checking `typeof data[0] === 'object'`. Shape is `[point_count]`. Min/max are based on latitude range.
+
+**Payload filenames:** Pipeline writes payloads as `data/payloads/{recipe}__{date}.json` (double underscore separator). This avoids ambiguity with recipe names containing single underscores. The render task splits on `__` to recover recipe name and date.

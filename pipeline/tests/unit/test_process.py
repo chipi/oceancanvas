@@ -1,9 +1,12 @@
 """Tests for Task 03 — Process."""
 
 import json
+import shutil
 from pathlib import Path
 
 import numpy as np
+import pytest
+import xarray as xr
 from PIL import Image
 
 from oceancanvas.tasks.process import (
@@ -51,8 +54,6 @@ class TestProcessOisst:
     def test_produces_three_files(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated — run tests/fixtures/create_fixtures.py")
 
         output = tmp_path / "oisst"
@@ -65,8 +66,6 @@ class TestProcessOisst:
     def test_json_has_correct_shape(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated")
 
         output = tmp_path / "oisst"
@@ -83,8 +82,6 @@ class TestProcessOisst:
     def test_png_is_valid_image(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated")
 
         output = tmp_path / "oisst"
@@ -97,8 +94,6 @@ class TestProcessOisst:
     def test_meta_has_correct_stats(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated")
 
         output = tmp_path / "oisst"
@@ -117,8 +112,6 @@ class TestProcessOisstWithNaN:
         """50% NaN land mask fixture should produce valid output with correct nan_pct."""
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-17.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("NaN fixture not generated")
 
         output = tmp_path / "oisst"
@@ -151,7 +144,6 @@ class TestProcessOisstErrors:
 
     def test_handles_missing_sst_variable(self, tmp_path: Path):
         """A NetCDF without 'sst' variable should raise KeyError."""
-        import xarray as xr
 
         ds = xr.Dataset({"temperature": (["time", "lat"], [[1.0, 2.0]])})
         nc_path = tmp_path / "no_sst.nc"
@@ -169,8 +161,6 @@ class TestProcessGebco:
     def test_produces_three_files(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("GEBCO fixture not generated")
 
         output = tmp_path / "gebco"
@@ -183,8 +173,6 @@ class TestProcessGebco:
     def test_json_has_correct_shape(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("GEBCO fixture not generated")
 
         output = tmp_path / "gebco"
@@ -199,8 +187,6 @@ class TestProcessGebco:
     def test_meta_has_stats(self, tmp_path: Path):
         nc_path = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("GEBCO fixture not generated")
 
         output = tmp_path / "gebco"
@@ -216,14 +202,11 @@ class TestProcess:
     def test_processes_oisst_files(self, tmp_data_dir: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated")
 
         # Copy fixture to source dir
         src_dir = tmp_data_dir / "data" / "sources" / "oisst"
         src_dir.mkdir(parents=True)
-        import shutil
 
         shutil.copy(nc_path, src_dir / "2026-01-15.nc")
 
@@ -237,13 +220,10 @@ class TestProcess:
     def test_skips_already_processed(self, tmp_data_dir: Path):
         nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
         if not nc_path.exists():
-            import pytest
-
             pytest.skip("fixture not generated")
 
         src_dir = tmp_data_dir / "data" / "sources" / "oisst"
         src_dir.mkdir(parents=True)
-        import shutil
 
         shutil.copy(nc_path, src_dir / "2026-01-15.nc")
 
@@ -278,11 +258,7 @@ class TestProcess:
         """GEBCO static file is processed when present in data/gebco/."""
         gebco_fixture = FIXTURES_DIR / "gebco" / "gebco_subset.nc"
         if not gebco_fixture.exists():
-            import pytest
-
             pytest.skip("GEBCO fixture not generated")
-
-        import shutil
 
         gebco_dir = tmp_data_dir / "data" / "gebco"
         gebco_dir.mkdir(parents=True)

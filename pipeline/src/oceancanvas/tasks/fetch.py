@@ -12,18 +12,11 @@ from pathlib import Path
 import requests
 from prefect import task
 
+from oceancanvas.constants import PROCESSING_REGION
 from oceancanvas.log import get_logger
 
 ERDDAP_URL = os.environ.get("OISST_ERDDAP_URL", "https://coastwatch.pfeg.noaa.gov/erddap")
 OISST_DATASET_ID = os.environ.get("OISST_DATASET_ID", "ncdcOisst21Agg_LonPM180")
-
-# Processing region — North Atlantic, wider than any single recipe
-PROCESSING_REGION = {
-    "lat_min": 20.0,
-    "lat_max": 75.0,
-    "lon_min": -90.0,
-    "lon_max": 10.0,
-}
 
 
 def _build_oisst_url(date: str) -> str:

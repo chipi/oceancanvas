@@ -17,6 +17,7 @@ from pathlib import Path
 
 import requests
 
+from oceancanvas.constants import PROCESSING_REGION
 from oceancanvas.io import atomic_write_text
 from oceancanvas.log import get_logger
 
@@ -24,14 +25,6 @@ ARGO_INDEX_URL = os.environ.get(
     "ARGO_INDEX_URL",
     "https://data-argo.ifremer.fr/ar_index_global_prof.txt",
 )
-
-# Processing region — matches OISST processing region
-PROCESSING_REGION = {
-    "lat_min": 20.0,
-    "lat_max": 75.0,
-    "lon_min": -90.0,
-    "lon_max": 10.0,
-}
 
 
 def discover_argo() -> str:
@@ -67,6 +60,8 @@ def fetch_argo(date: str, output_path: Path, max_days: int = 30) -> int:
         if line.startswith("file,"):
             continue  # header
 
+        # Argo index is simple CSV — no quoted fields, no embedded commas.
+        # Safe to split directly. Format: file,date,lat,lon,ocean,...
         parts = line.split(",")
         if len(parts) < 5:
             continue

@@ -85,6 +85,7 @@ export function Gallery() {
                 src={renderUrl(hero.name, date)}
                 alt={date}
                 title={date}
+                loading="lazy"
                 onError={handleImgError}
               />
             ))}
@@ -103,6 +104,7 @@ export function Gallery() {
               className={styles.cardImage}
               src={renderUrl(recipe.name, recipe.latest)}
               alt={recipe.name}
+              loading="lazy"
               onError={handleImgError}
             />
             <div className={styles.cardOverlay}>

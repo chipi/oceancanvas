@@ -17,6 +17,7 @@ import numpy as np
 import yaml
 from prefect import task
 
+from oceancanvas.constants import NAN_VALUE
 from oceancanvas.io import atomic_write_text
 from oceancanvas.log import get_logger
 
@@ -84,7 +85,7 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
     arr = np.array(flat, dtype=np.float32).reshape(lat_count, lon_count)
     cropped = arr[lat_i0:lat_i1, lon_i0:lon_i1]
 
-    valid = cropped[cropped != -999.0]
+    valid = cropped[cropped != NAN_VALUE]
     return {
         "data": cropped.flatten().tolist(),
         "shape": list(cropped.shape),

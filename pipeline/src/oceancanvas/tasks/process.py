@@ -19,6 +19,7 @@ import xarray as xr
 from PIL import Image
 from prefect import task
 
+from oceancanvas.constants import NAN_VALUE
 from oceancanvas.io import atomic_write_bytes, atomic_write_text
 from oceancanvas.log import get_logger
 
@@ -73,8 +74,8 @@ def _process_oisst(nc_path: Path, output_dir: Path, date: str) -> None:
 
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # .json — flat float32 array with NaN as -999.0
-        json_data = np.where(np.isnan(values), -999.0, values)
+        # .json — flat float32 array with NaN as NAN_VALUE
+        json_data = np.where(np.isnan(values), NAN_VALUE, values)
         payload = {
             "data": json_data.flatten().tolist(),
             "shape": list(values.shape),
@@ -136,7 +137,7 @@ def _process_gebco(nc_path: Path, output_dir: Path) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # .json
-        json_data = np.where(np.isnan(values), -999.0, values)
+        json_data = np.where(np.isnan(values), NAN_VALUE, values)
         payload = {
             "data": json_data.flatten().tolist(),
             "shape": list(values.shape),
@@ -154,8 +155,6 @@ def _process_gebco(nc_path: Path, output_dir: Path) -> None:
             [[2, 10, 30], [4, 44, 83], [15, 80, 120], [40, 120, 160], [100, 180, 200]],
             dtype=np.uint8,
         )
-        rgb = _apply_thermal_colormap(values, vmin, vmax)  # reuse interpolation logic
-        # Override with depth palette for GEBCO
         if vmax != vmin:
             normalised = np.clip((values - vmin) / (vmax - vmin), 0, 1)
         else:
