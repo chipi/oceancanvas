@@ -77,7 +77,7 @@ export function Gallery() {
               <a href={`/recipes/${hero.name}`} className={styles.heroAction}>recipe ↗</a>
               <a
                 href={renderUrl(hero.name, hero.latest)}
-                download
+                download={`${hero.name}_${hero.latest}_oceancanvas.png`}
                 className={styles.heroActionPrimary}
               >
                 download
