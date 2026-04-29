@@ -91,8 +91,6 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
     }
   }
 
-  const width = payload?.output.width ?? 960;
-  const height = payload?.output.height ?? 540;
 
   return (
     <div className={`${styles.container} ${className ?? ''}`}>
