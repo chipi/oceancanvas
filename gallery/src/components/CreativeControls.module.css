@@ -1,0 +1,175 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 24px;
+}
+
+.section {}
+
+.sectionLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* Mood presets */
+.moodRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.moodPill {
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.moodPill:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.moodActive {
+  border-color: var(--editor-creative);
+  color: var(--text);
+}
+
+/* Energy × Presence quadrant */
+.quadrant {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: crosshair;
+  margin: 8px 0 24px;
+}
+
+.quadrantGrid {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--editor-quadrant-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--editor-quadrant-grid) 1px, transparent 1px);
+  background-size: 50% 50%;
+}
+
+.quadrantLabels {
+  position: absolute;
+  inset: 0;
+}
+
+.qLabel {
+  position: absolute;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--text-disabled);
+}
+
+.quadrantDot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--editor-quadrant-active);
+  border: 2px solid var(--canvas);
+  transform: translate(-50%, 50%);
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.axisLabel {
+  position: absolute;
+  font-size: 8px;
+  color: var(--text-disabled);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Colour character spectrum */
+.spectrumWrap {
+  max-width: 280px;
+}
+
+.spectrum {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    var(--editor-spectrum-cold),
+    var(--editor-spectrum-thermal),
+    var(--editor-spectrum-otherworldly)
+  );
+  position: relative;
+}
+
+.spectrumInput {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.spectrumInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--editor-slider-handle);
+  border: 2px solid var(--canvas);
+  cursor: grab;
+}
+
+.spectrumLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: var(--text-disabled);
+  margin-top: 4px;
+}
+
+/* Temporal weight slider */
+.sliderWrap {
+  max-width: 280px;
+}
+
+.slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--editor-slider-handle);
+  border: 2px solid var(--canvas);
+  cursor: grab;
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: var(--text-disabled);
+  margin-top: 4px;
+}
