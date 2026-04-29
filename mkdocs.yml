@@ -4,7 +4,7 @@ site_url: https://chipi.github.io/oceancanvas/
 repo_url: https://github.com/chipi/oceancanvas
 repo_name: chipi/oceancanvas
 
-copyright: MIT License · Marko Dragoljevic and contributors
+copyright: MIT License · OceanCanvas contributors
 
 theme:
   name: material
