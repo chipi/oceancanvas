@@ -1,8 +1,9 @@
 .container {
   position: relative;
   width: 100%;
-  background: var(--canvas);
+  background: var(--elevated);
   overflow: hidden;
+  line-height: 0;
 }
 
 .iframe {
