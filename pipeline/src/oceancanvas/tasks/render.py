@@ -27,13 +27,12 @@ PNG_HEADER = b"\x89PNG\r\n\x1a\n"
 
 def _render_one(payload_path: Path, output_path: Path) -> None:
     """Spawn the Node renderer subprocess for one payload."""
-    payload_json = payload_path.read_text()
+    payload_bytes = payload_path.read_bytes()
 
     result = subprocess.run(
         ["node", str(RENDERER_PATH)],
-        input=payload_json,
+        input=payload_bytes,
         capture_output=True,
-        text=False,
         timeout=RENDER_TIMEOUT,
         check=False,
     )

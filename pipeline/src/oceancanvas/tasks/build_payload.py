@@ -58,8 +58,31 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
 
     data_lat = processed["lat_range"]  # [min, max]
     data_lon = processed["lon_range"]  # [min, max]
-    shape = processed["shape"]  # [lat_count, lon_count]
+    shape = processed["shape"]
     flat = processed["data"]
+
+    # Point data (1D shape like [1947]) — filter by lat/lon bounds
+    if len(shape) == 1:
+        if isinstance(flat[0], dict):
+            filtered = [
+                p
+                for p in flat
+                if lat_range[0] <= p.get("lat", 0) <= lat_range[1]
+                and lon_range[0] <= p.get("lon", 0) <= lon_range[1]
+            ]
+            lats = [p["lat"] for p in filtered] if filtered else [0]
+            lons = [p["lon"] for p in filtered] if filtered else [0]
+            return {
+                "data": filtered,
+                "shape": [len(filtered)],
+                "min": min(lats),
+                "max": max(lats),
+                "lat_range": [min(lats), max(lats)],
+                "lon_range": [min(lons), max(lons)],
+                "source_id": processed.get("source_id", ""),
+                "date": processed.get("date", ""),
+            }
+        return processed
 
     lat_count, lon_count = shape
 

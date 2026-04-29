@@ -46,7 +46,7 @@ async function render(payload) {
 </body></html>`;
 
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window.__RENDER_COMPLETE === true, { timeout: 30000 });
+    await page.waitForFunction(() => window.__RENDER_COMPLETE === true, { timeout: 60000 });
 
     const canvas = await page.$('canvas');
     const png = await canvas.screenshot({ type: 'png' });
