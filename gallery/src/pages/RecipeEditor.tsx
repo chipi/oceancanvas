@@ -53,7 +53,7 @@ export function RecipeEditor() {
       })
       .then((r) => r?.json())
       .then((data) => { if (data) setProcessedData(data); })
-      .catch(() => {});
+      .catch((e) => console.error('Failed to load preview data:', e));
   }, []);
 
   // Load existing recipe if editing — extract render type and source
@@ -160,7 +160,12 @@ export function RecipeEditor() {
       </header>
 
       {/* Preview */}
-      <SketchPreview payload={payload} className={styles.preview} />
+      {!processedData && (
+        <div className={styles.previewEmpty}>
+          Loading ocean data for preview... Make sure the pipeline has run at least once.
+        </div>
+      )}
+      {processedData && <SketchPreview payload={payload} className={styles.preview} />}
 
       {/* Flip bar */}
       <div className={styles.flipBar}>
