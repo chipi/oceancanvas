@@ -41,15 +41,20 @@ export function RecipeEditor() {
     ] as [number, number],
   }), [searchParams]);
 
-  // Load processed data for preview
+  // Load manifest to get this recipe's latest render date + processed data for preview
   useEffect(() => {
     fetch('/renders/manifest.json')
       .then((r) => r.json())
       .then((manifest) => {
+        // Get this recipe's latest date for PNG display
+        const thisRecipe = manifest.recipes?.[id || recipeName];
+        if (thisRecipe?.latest) {
+          setLatestDate(thisRecipe.latest);
+        }
+        // Get OISST processed data for live preview
         const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
         const oisstRecipe = recipes.find((r) => r.source === 'oisst');
         if (oisstRecipe?.latest) {
-          setLatestDate(oisstRecipe.latest);
           return fetch(`/data/processed/oisst/${oisstRecipe.latest}.json`);
         }
         return null;
@@ -57,7 +62,7 @@ export function RecipeEditor() {
       .then((r) => r?.json())
       .then((data) => { if (data) setProcessedData(data); })
       .catch((e) => console.error('Failed to load preview data:', e));
-  }, []);
+  }, [id, recipeName]);
 
   // Load existing recipe
   useEffect(() => {
