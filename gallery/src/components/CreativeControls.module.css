@@ -61,7 +61,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  max-width: 280px;
+  max-width: 340px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 2px;
@@ -111,9 +111,7 @@
 }
 
 /* Colour character spectrum */
-.spectrumWrap {
-  max-width: 280px;
-}
+.spectrumWrap {}
 
 .spectrum {
   height: 8px;
@@ -156,9 +154,7 @@
 }
 
 /* Temporal weight slider */
-.sliderWrap {
-  max-width: 280px;
-}
+.sliderWrap {}
 
 .slider {
   width: 100%;

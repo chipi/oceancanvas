@@ -58,6 +58,7 @@
 .preview {
   max-height: 50vh;
   overflow: hidden;
+  margin-bottom: -1px; /* collapse gap with flip bar border */
 }
 
 /* Flip bar — sits between preview and controls */
