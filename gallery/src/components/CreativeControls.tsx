@@ -38,6 +38,9 @@ export function CreativeControls({ state, onChange }: CreativeControlsProps) {
         </div>
       </div>
 
+      {/* Controls row: quadrant left, sliders right */}
+      <div className={styles.controlsRow}>
+
       {/* Energy × Presence quadrant */}
       <div className={styles.section}>
         <div className={styles.sectionLabel}>ENERGY × PRESENCE</div>
@@ -94,6 +97,9 @@ export function CreativeControls({ state, onChange }: CreativeControlsProps) {
         </div>
       </div>
 
+      {/* Right column: sliders */}
+      <div className={styles.slidersCol}>
+
       {/* Colour character */}
       <div className={styles.section}>
         <div className={styles.sectionLabel}>COLOUR CHARACTER</div>
@@ -139,6 +145,8 @@ export function CreativeControls({ state, onChange }: CreativeControlsProps) {
           </div>
         </div>
       </div>
+      </div>{/* end slidersCol */}
+      </div>{/* end controlsRow */}
     </div>
   );
 }

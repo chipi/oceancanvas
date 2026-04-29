@@ -56,17 +56,17 @@
   border-bottom: 1px solid var(--border);
 }
 .preview {
-  max-height: 45vh;
+  max-height: 50vh;
+  overflow: hidden;
 }
 
-/* Flip bar */
+/* Flip bar — sits between preview and controls */
 .flipBar {
   display: flex;
   align-items: center;
-  padding: 8px 24px;
+  padding: 6px 24px;
   gap: 4px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  background: var(--elevated);
   border-bottom: 1px solid var(--border);
 }
 
