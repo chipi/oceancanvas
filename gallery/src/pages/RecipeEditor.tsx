@@ -78,8 +78,11 @@ export function RecipeEditor() {
 
   const technical = useMemo(() => creativeToTechnical(creativeState), [creativeState]);
 
+  // Don't build payload until recipe is loaded (for existing recipes)
+  const recipeReady = isNew || loadedParams !== null;
+
   const payload = useMemo<OceanPayload | null>(() => {
-    if (!processedData) return null;
+    if (!processedData || !recipeReady) return null;
     return buildPreviewPayload(
       processedData,
       {
@@ -91,7 +94,7 @@ export function RecipeEditor() {
       region,
       { full: true },
     );
-  }, [processedData, recipeName, technical, region, renderType, loadedParams]);
+  }, [processedData, recipeName, technical, region, renderType, loadedParams, recipeReady]);
 
   // Sync creative → YAML
   useEffect(() => {
