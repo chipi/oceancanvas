@@ -1871,10 +1871,10 @@
 
 <h1 id="rfc-002-render-payload-format">RFC-002 — Render payload format</h1>
 <blockquote>
-<p><strong>Status</strong> · Draft v0.2 · April 2026 (revised to match Slice 1 implementation)
+<p><strong>Status</strong> · Decided · closed 2026-04-30 → <a href="../../adr/ADR-019-render-payload-schema/">ADR-019</a>
 <strong>TA anchor</strong> · §contracts/render-payload · §components/render-system · §constraints (shared payload)
 <strong>Related</strong> · RFC-001 Recipe YAML schema · RFC-004 Live preview architecture · ADR-008 Shared payload format
-<strong>Closes into</strong> · ADR (pending — schema details, distinct from ADR-008 which locks the principle)
+<strong>Closes into</strong> · ADR-008 (locked principle) + <a href="../../adr/ADR-019-render-payload-schema/">ADR-019</a> (schema details)
 <strong>Why this is an RFC</strong> · The render payload is the contract between the pipeline (or live editor) and the p5.js sketch. Multiple plausible representations exist with real trade-offs around browser load time, server-side parity, and debuggability. The principle of "one payload format for both contexts" is locked (ADR-008); the actual schema is open.</p>
 </blockquote>
 <hr />

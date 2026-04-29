@@ -97,6 +97,22 @@
          <lastmod>2026-04-29</lastmod>
     </url>
     <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-018-recipe-yaml-schema/</loc>
+         <lastmod>2026-04-29</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-019-render-payload-schema/</loc>
+         <lastmod>2026-04-29</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-020-live-preview-architecture/</loc>
+         <lastmod>2026-04-29</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-021-yaml-round-tripping/</loc>
+         <lastmod>2026-04-29</lastmod>
+    </url>
+    <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR_TEMPLATE/</loc>
          <lastmod>2026-04-29</lastmod>
     </url>
