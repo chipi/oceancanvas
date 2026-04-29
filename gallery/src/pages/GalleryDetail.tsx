@@ -55,22 +55,47 @@ export function GalleryDetail() {
         </div>
       </header>
 
-      {/* Main body: render + context panel */}
+      {/* Main body: render+strip left, context right */}
       <div className={styles.body}>
-        {/* Render area */}
-        <div className={styles.renderArea}>
-          <img
-            className={styles.renderImage}
-            src={renderUrl}
-            alt={`${entry.name} — ${entry.latest}`}
-            onError={handleImgError}
-          />
-          <div className={styles.overlay}>
-            <div className={styles.recipeName}>{entry.name}</div>
-            <div className={styles.recipeMeta}>
-              {entry.render_type} · {entry.count} render{entry.count !== 1 ? 's' : ''}
+        {/* Left column: render + strip */}
+        <div className={styles.leftCol}>
+          <div className={styles.renderArea}>
+            <img
+              className={styles.renderImage}
+              src={renderUrl}
+              alt={`${entry.name} — ${entry.latest}`}
+              onError={handleImgError}
+            />
+            <div className={styles.overlay}>
+              <div className={styles.recipeName}>{entry.name}</div>
+              <div className={styles.recipeMeta}>
+                {entry.render_type} · {entry.count} render{entry.count !== 1 ? 's' : ''}
+              </div>
             </div>
           </div>
+
+          {/* 14-day strip — directly under the image */}
+          {entry.dates.length > 0 && (
+            <div className={styles.strip}>
+              <div className={styles.stripLabel}>
+                LAST {Math.min(14, entry.dates.length)} DAYS
+              </div>
+              <div className={styles.stripRow}>
+                {entry.dates.slice(-14).map((date) => (
+                  <div key={date} className={`${styles.stripThumb} ${date === entry.latest ? styles.stripActive : ''}`}>
+                    <img
+                      src={`/renders/${entry.name}/${date}.png`}
+                      alt={date}
+                      title={date}
+                      loading="lazy"
+                      onError={handleImgError}
+                    />
+                    <span className={styles.stripDate}>{date.substring(5)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Context panel */}
@@ -120,29 +145,6 @@ export function GalleryDetail() {
           )}
         </aside>
       </div>
-
-      {/* 14-day strip */}
-      {entry.dates.length > 0 && (
-        <div className={styles.strip}>
-          <div className={styles.stripLabel}>
-            LAST {Math.min(14, entry.dates.length)} DAYS
-          </div>
-          <div className={styles.stripRow}>
-            {entry.dates.slice(-14).map((date) => (
-              <div key={date} className={`${styles.stripThumb} ${date === entry.latest ? styles.stripActive : ''}`}>
-                <img
-                  src={`/renders/${entry.name}/${date}.png`}
-                  alt={date}
-                  title={date}
-                  loading="lazy"
-                  onError={handleImgError}
-                />
-                <span className={styles.stripDate}>{date.substring(5)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

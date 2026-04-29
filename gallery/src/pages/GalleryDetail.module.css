@@ -54,9 +54,16 @@
   overflow: hidden;
 }
 
-/* Render area — left ~65% */
-.renderArea {
+/* Left column: render + strip */
+.leftCol {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.renderArea {
+  flex: 1;
   position: relative;
   display: flex;
   align-items: flex-start;
@@ -152,10 +159,10 @@
   text-decoration: underline;
 }
 
-/* Strip */
+/* Strip — sits directly under the render image */
 .strip {
   background: var(--surface);
-  padding: 8px 24px 12px;
+  padding: 8px 16px 12px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
