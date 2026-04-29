@@ -48,10 +48,7 @@
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.preview {
-  max-height: 38vh;
-  overflow: hidden;
-}
+.preview {}
 
 /* Flip bar — sits between preview and controls */
 .flipBar {
