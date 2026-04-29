@@ -1,90 +1,199 @@
-/* OceanCanvas docs — editorial dark theme matching the product */
+/* OceanCanvas docs — the ocean is alive, the docs should feel it */
 
 :root {
   --md-primary-fg-color: #050E1A;
   --md-primary-bg-color: #E0E0E0;
   --md-accent-fg-color: #5DCAA5;
+  --ocean-deep: #030B10;
+  --ocean-surface: #050E1A;
+  --ocean-mid: #0F6E56;
+  --ocean-warm: #EF9F27;
+  --ocean-teal: #5DCAA5;
 }
 
 [data-md-color-scheme="slate"] {
   --md-default-bg-color: #0a0f16;
   --md-default-fg-color--light: rgba(255, 255, 255, 0.65);
-  --md-typeset-a-color: #5DCAA5;
+  --md-typeset-a-color: var(--ocean-teal);
 }
 
-/* Header bar — deep ocean dark */
+/* Header — deep ocean with wave gradient */
 .md-header {
-  background: #030B10;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(135deg, #020810 0%, #042C53 50%, #0F6E56 100%);
+  border-bottom: 1px solid rgba(93, 202, 165, 0.15);
 }
 
-/* Navigation tabs */
-.md-tabs {
-  background: #050E1A;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-/* Site title — editorial weight */
 .md-header__title {
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px rgba(93, 202, 165, 0.3);
 }
 
-/* Hero-style h1 on landing pages */
+/* Sidebar */
+.md-sidebar {
+  background: var(--ocean-deep);
+}
+
+.md-nav__link {
+  font-size: 0.82rem;
+  transition: color 0.2s;
+}
+
+.md-nav__link:hover {
+  color: var(--ocean-teal) !important;
+}
+
+.md-nav__link--active {
+  color: var(--ocean-teal) !important;
+  border-left: 2px solid var(--ocean-teal);
+  padding-left: 10px;
+}
+
+/* Content — subtle ocean depth */
+.md-content {
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(4, 44, 83, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 80%, rgba(15, 110, 86, 0.1) 0%, transparent 50%),
+    var(--ocean-deep);
+}
+
+/* h1 — teal underline */
 .md-typeset h1 {
   font-weight: 500;
-  letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 2.2em;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.95);
+  border-bottom: 2px solid var(--ocean-teal);
+  padding-bottom: 12px;
 }
 
-/* Blockquotes — editorial voice */
+/* h2 — teal */
+.md-typeset h2 {
+  color: var(--ocean-teal);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(93, 202, 165, 0.15);
+  padding-bottom: 8px;
+}
+
+/* h3 — warm amber */
+.md-typeset h3 {
+  color: var(--ocean-warm);
+}
+
+/* Blockquotes */
 .md-typeset blockquote {
-  border-left-color: #5DCAA5;
-  color: rgba(255, 255, 255, 0.75);
+  border-left: 3px solid var(--ocean-teal);
+  background: rgba(4, 44, 83, 0.2);
+  color: rgba(255, 255, 255, 0.8);
   font-style: italic;
+  padding: 12px 16px;
+  border-radius: 0 4px 4px 0;
 }
 
-/* Tables — clean, no heavy borders */
+/* Tables */
 .md-typeset table:not([class]) {
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(93, 202, 165, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .md-typeset table:not([class]) th {
-  background: #050E1A;
-  color: rgba(255, 255, 255, 0.65);
+  background: linear-gradient(135deg, #042C53, #0F6E56);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.75em;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .md-typeset table:not([class]) td {
-  border-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(93, 202, 165, 0.06);
 }
 
-/* Code blocks */
+.md-typeset table:not([class]) tr:hover td {
+  background: rgba(4, 44, 83, 0.2);
+}
+
+/* Code */
 .md-typeset code {
-  background: #050E1A;
-  color: #5DCAA5;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(4, 44, 83, 0.4);
+  color: var(--ocean-teal);
+  border: 1px solid rgba(93, 202, 165, 0.1);
+  border-radius: 3px;
 }
 
-/* Sidebar nav — subtler */
-.md-nav__link {
-  font-size: 0.82rem;
+.md-typeset pre {
+  background: var(--ocean-deep) !important;
+  border: 1px solid rgba(93, 202, 165, 0.1);
+  border-radius: 6px;
 }
 
-/* Footer */
-.md-footer {
-  background: #030B10;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+/* Links */
+.md-typeset a {
+  color: var(--ocean-teal);
+  transition: color 0.2s;
+}
+
+.md-typeset a:hover {
+  color: var(--ocean-warm);
+}
+
+/* HR — wave gradient */
+.md-typeset hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(4, 44, 83, 0.5) 15%,
+    rgba(93, 202, 165, 0.3) 50%,
+    rgba(4, 44, 83, 0.5) 85%,
+    transparent 100%
+  );
+  margin: 2em 0;
 }
 
 /* Admonitions */
 .md-typeset .admonition {
-  border-left-color: #5DCAA5;
+  border-left-color: var(--ocean-teal);
+  background: rgba(4, 44, 83, 0.15);
+  border-radius: 4px;
 }
 
-/* Images in concept docs */
+/* Images */
 .md-typeset img {
-  border-radius: 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(93, 202, 165, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer */
+.md-footer {
+  background: var(--ocean-deep);
+  border-top: 1px solid rgba(93, 202, 165, 0.1);
+}
+
+.md-footer-meta {
+  background: var(--ocean-deep);
+}
+
+/* Search */
+.md-search__input {
+  background: rgba(4, 44, 83, 0.3) !important;
+  border: 1px solid rgba(93, 202, 165, 0.1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ocean-deep); }
+::-webkit-scrollbar-thumb { background: rgba(93, 202, 165, 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(93, 202, 165, 0.4); }
+
+/* Selection */
+::selection {
+  background: rgba(239, 159, 39, 0.3);
+  color: white;
+}
+
+/* Header shadow on scroll */
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
