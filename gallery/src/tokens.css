@@ -1,4 +1,4 @@
-/* OceanCanvas design tokens — from IA shared-tokens section */
+/* OceanCanvas design tokens — from IA §shared-tokens, UXS-001, UXS-003 */
 :root {
   /* Surface */
   --canvas: #030B10;
@@ -17,6 +17,39 @@
   /* Intent */
   --intent-alert: #F09595;
   --intent-info: #5DCAA5;
+
+  /* Domain — SST (UXS-001) */
+  --domain-sst-cold: #042C53;
+  --domain-sst-mid-low: #0F6E56;
+  --domain-sst-mid: #639922;
+  --domain-sst-mid-high: #BA7517;
+  --domain-sst-warm: #D85A30;
+  --domain-sst-hot: #791F1F;
+  --domain-sst-accent: #EF9F27;
+  --domain-sst-fill-soft: rgba(239, 159, 39, 0.07);
+
+  /* Domain — Sea Level (UXS-002) */
+  --domain-sealevel-accent: #5DCAA5;
+  --domain-sealevel-cool: #1D9E75;
+  --domain-sealevel-warm: #BA7517;
+  --domain-sealevel-hot: #D85A30;
+  --domain-sealevel-fill-soft: rgba(93, 202, 165, 0.07);
+
+  /* Editor — Recipe Editor (UXS-003) */
+  --editor-creative: #EF9F27;
+  --editor-structure: #5DCAA5;
+  --editor-quadrant-active: rgba(255, 255, 255, 0.92);
+  --editor-quadrant-grid: rgba(255, 255, 255, 0.07);
+  --editor-spectrum-cold: #042C53;
+  --editor-spectrum-thermal: #EF9F27;
+  --editor-spectrum-otherworldly: #AFA9EC;
+  --editor-slider-handle: rgba(255, 255, 255, 0.92);
+
+  /* Gallery (UXS-004) */
+  --gallery-overlay-gradient: linear-gradient(transparent, var(--overlay));
+  --gallery-card-overlay: rgba(3, 11, 16, 0.8);
+  --gallery-filter-active: var(--elevated);
+  --gallery-filter-inactive: transparent;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }

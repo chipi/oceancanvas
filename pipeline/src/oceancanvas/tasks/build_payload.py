@@ -61,7 +61,8 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
     shape = processed["shape"]
     flat = processed["data"]
 
-    # Point data (1D shape like [1947]) — filter by lat/lon bounds
+    # Point data (1D shape like [1947]) — filter by lat/lon bounds, cap at 500
+    max_points = 500
     if len(shape) == 1:
         if isinstance(flat[0], dict):
             filtered = [
@@ -70,6 +71,10 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
                 if lat_range[0] <= p.get("lat", 0) <= lat_range[1]
                 and lon_range[0] <= p.get("lon", 0) <= lon_range[1]
             ]
+            # Deterministic subsample: take evenly spaced points if over cap
+            if len(filtered) > max_points:
+                step = len(filtered) / max_points
+                filtered = [filtered[int(i * step)] for i in range(max_points)]
             lats = [p["lat"] for p in filtered] if filtered else [0]
             lons = [p["lon"] for p in filtered] if filtered else [0]
             return {
