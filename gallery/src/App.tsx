@@ -1,12 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Dashboard } from './pages/Dashboard';
 import { Gallery } from './pages/Gallery';
 
-function Dashboard() {
-  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Dashboard — coming in Slice 2</div>;
-}
-
 function RecipeEditor() {
-  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Recipe Editor — coming in Slice 2</div>;
+  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Recipe Editor — coming soon</div>;
 }
 
 function VideoEditor() {

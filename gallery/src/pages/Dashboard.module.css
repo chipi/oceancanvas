@@ -1,0 +1,211 @@
+.page {
+  min-height: 100vh;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 42px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.topbarPath {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.topbarMuted {
+  color: var(--text-muted);
+}
+
+.topbarTime {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Source rail */
+.sourceRail {
+  width: 96px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sourceActive {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--domain-sst-accent);
+  letter-spacing: 0.04em;
+}
+
+.sourceLabel {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  margin-top: -8px;
+}
+
+.sourceInactive {
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: default;
+}
+
+/* Map area */
+.mapArea {
+  flex: 1;
+  position: relative;
+  background: var(--canvas);
+  overflow: hidden;
+}
+
+.heatmap {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hoverCoords {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--text-secondary);
+  background: var(--overlay);
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+/* Legend */
+.legend {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.legendBar {
+  flex: 1;
+  width: 10px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to bottom,
+    var(--domain-sst-hot),
+    var(--domain-sst-warm),
+    var(--domain-sst-mid-high),
+    var(--domain-sst-mid),
+    var(--domain-sst-mid-low),
+    var(--domain-sst-cold)
+  );
+}
+
+.legendLabel {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* Stats overlay */
+.stats {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statCard {
+  background: var(--elevated);
+  padding: 8px 12px;
+  border-radius: 2px;
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--domain-sst-accent);
+}
+
+.statLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.statAnomaly {
+  font-size: 11px;
+  color: var(--intent-alert);
+  margin-top: 2px;
+}
+
+.statAnomalyCool {
+  font-size: 11px;
+  color: var(--intent-info);
+  margin-top: 2px;
+}
+
+/* States */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--intent-alert);
+  font-size: 14px;
+}
+
+/* Citation */
+.citation {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 9px;
+  font-family: monospace;
+  color: var(--text-muted);
+  background: var(--canvas);
+  border-top: 1px solid var(--border);
+}
