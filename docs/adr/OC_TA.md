@@ -138,11 +138,11 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 
 | RFC | Title | Status | Closes into |
 |---|---|---|---|
-| [RFC-001](../rfc/RFC-001-recipe-yaml-schema.md) | Recipe YAML schema | Draft v0.2 | ADR (pending) |
-| [RFC-002](../rfc/RFC-002-render-payload-format.md) | Render payload format | Draft v0.2 | ADR-008 (locked principle) + ADR (pending, schema) |
+| [RFC-001](../rfc/RFC-001-recipe-yaml-schema.md) | Recipe YAML schema | Decided | [ADR-018](ADR-018-recipe-yaml-schema.md) |
+| [RFC-002](../rfc/RFC-002-render-payload-format.md) | Render payload format | Decided | ADR-008 + [ADR-019](ADR-019-render-payload-schema.md) |
 | [RFC-003](../rfc/RFC-003-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Draft v0.1 | ADR (pending) |
-| [RFC-004](../rfc/RFC-004-live-preview-architecture.md) | Live preview architecture | Draft v0.1 | ADR (pending) |
-| [RFC-005](../rfc/RFC-005-yaml-round-tripping.md) | YAML round-tripping | Draft v0.2 | ADR (pending) |
+| [RFC-004](../rfc/RFC-004-live-preview-architecture.md) | Live preview architecture | Decided | [ADR-020](ADR-020-live-preview-architecture.md) |
+| [RFC-005](../rfc/RFC-005-yaml-round-tripping.md) | YAML round-tripping | Decided | [ADR-021](ADR-021-yaml-round-tripping.md) |
 | [RFC-006](../rfc/RFC-006-audio-system.md) | Audio system design | Draft v0.1 | Multiple ADRs (pending) |
 | [RFC-007](../rfc/RFC-007-key-moment-detection.md) | Key moment detection | Draft v0.1 | ADR (pending) |
 
@@ -167,6 +167,10 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [ADR-015](ADR-015-processed-json-format.md) | Processed JSON format with multi-band handling | Accepted |
 | [ADR-016](ADR-016-single-author-phase-1.md) | Single-author recipes in Phase 1 | Accepted |
 | [ADR-017](ADR-017-one-layout-per-source.md) | One editorial layout per source | Accepted |
+| [ADR-018](ADR-018-recipe-yaml-schema.md) | Recipe YAML schema (flat + comment-marker) | Accepted |
+| [ADR-019](ADR-019-render-payload-schema.md) | Render payload JSON schema | Accepted |
+| [ADR-020](ADR-020-live-preview-architecture.md) | Live preview architecture | Accepted |
+| [ADR-021](ADR-021-yaml-round-tripping.md) | YAML round-tripping | Accepted |
 
 ---
 

@@ -1,9 +1,9 @@
 # RFC-001 — Recipe YAML schema
 
-> **Status** · Draft v0.2 · April 2026 · revised against prototype mockup (OC-02 Fig 5)
+> **Status** · Decided · closed 2026-04-30 → [ADR-018](../adr/ADR-018-recipe-yaml-schema.md)
 > **TA anchor** · §contracts/recipe-yaml · §components/pipeline · §components/render-system
 > **Related** · PRD-001 Recipe · PRD-003 Recipe Editor · UXS-003 Recipe Editor · RFC-002 Render payload format · RFC-005 YAML round-tripping
-> **Closes into** · ADR (pending)
+> **Closes into** · [ADR-018](../adr/ADR-018-recipe-yaml-schema.md)
 > **Why this is an RFC** · The recipe YAML is the durable artefact of authorship. Its shape determines whether recipes feel like authored works or like configurations, and whether the editor's creative-parameters surface can round-trip cleanly. Multiple plausible schemas exist; the deliberation is genuine.
 
 ---

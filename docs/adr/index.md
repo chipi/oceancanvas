@@ -40,6 +40,10 @@ If the decision needs deliberation first, write an [RFC](../rfc/index.md). If th
 | [ADR-015](ADR-015-processed-json-format.md) | Processed JSON format with multi-band handling | Accepted | §contracts/processed-data |
 | [ADR-016](ADR-016-single-author-phase-1.md) | Single-author recipes in Phase 1 | Accepted | §components/data-store · §constraints |
 | [ADR-017](ADR-017-one-layout-per-source.md) | One editorial layout per source | Accepted | §components/web-frontend |
+| [ADR-018](ADR-018-recipe-yaml-schema.md) | Recipe YAML schema (flat + comment-marker) | Accepted | §contracts/recipe-yaml |
+| [ADR-019](ADR-019-render-payload-schema.md) | Render payload JSON schema | Accepted | §contracts/render-payload |
+| [ADR-020](ADR-020-live-preview-architecture.md) | Live preview architecture | Accepted | §components/render-system · §components/web-frontend |
+| [ADR-021](ADR-021-yaml-round-tripping.md) | YAML round-tripping | Accepted | §contracts/recipe-yaml · §components/web-frontend |
 
 ## State map
 
