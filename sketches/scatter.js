@@ -77,24 +77,30 @@ function setup() {
  * No p5 draw calls — pure array manipulation.
  */
 function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha) {
-  const r2 = radius * radius;
-  const x0 = Math.max(0, Math.floor(cx - radius));
-  const x1 = Math.min(w - 1, Math.ceil(cx + radius));
-  const y0 = Math.max(0, Math.floor(cy - radius));
-  const y1 = Math.min(h - 1, Math.ceil(cy + radius));
+  // Draw with soft glow: outer ring fades, inner core is solid
+  const glowRadius = radius * 2;
+  const gr2 = glowRadius * glowRadius;
+  const x0 = Math.max(0, Math.floor(cx - glowRadius));
+  const x1 = Math.min(w - 1, Math.ceil(cx + glowRadius));
+  const y0 = Math.max(0, Math.floor(cy - glowRadius));
+  const y1 = Math.min(h - 1, Math.ceil(cy + glowRadius));
 
   for (let y = y0; y <= y1; y++) {
     for (let x = x0; x <= x1; x++) {
       const dx = x - cx;
       const dy = y - cy;
-      if (dx * dx + dy * dy <= r2) {
-        const pi = (y * w + x) * 4;
-        // Alpha blend over existing pixel
-        const a = alpha / 255;
-        img.pixels[pi] = img.pixels[pi] * (1 - a) + cr * a;
-        img.pixels[pi + 1] = img.pixels[pi + 1] * (1 - a) + cg * a;
-        img.pixels[pi + 2] = img.pixels[pi + 2] * (1 - a) + cb * a;
-      }
+      const dist2 = dx * dx + dy * dy;
+      if (dist2 > gr2) continue;
+
+      const dist = Math.sqrt(dist2);
+      // Fade: 1.0 at center, 0.0 at glowRadius
+      const fade = 1 - (dist / glowRadius);
+      const a = (alpha / 255) * fade * fade; // quadratic falloff
+
+      const pi = (y * w + x) * 4;
+      img.pixels[pi] = img.pixels[pi] * (1 - a) + cr * a;
+      img.pixels[pi + 1] = img.pixels[pi + 1] * (1 - a) + cg * a;
+      img.pixels[pi + 2] = img.pixels[pi + 2] * (1 - a) + cb * a;
     }
   }
 }

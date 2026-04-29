@@ -14,6 +14,6 @@ schedule: daily
 render:
   type: scatter
   colormap: argo
-  marker_size: 3
-  marker_opacity: 0.6
+  marker_size: 10
+  marker_opacity: 0.8
   seed: 505
