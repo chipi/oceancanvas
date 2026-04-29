@@ -10,7 +10,8 @@ export default defineConfig({
       '/renders': 'http://localhost:8080',
       '/api': 'http://localhost:3001',
       '/sketches': 'http://localhost:8080',
-      '/recipes': 'http://localhost:8080',
+      // Only proxy .yaml file requests, not React Router /recipes/:id routes
+      '^/recipes/.+\\.yaml$': 'http://localhost:8080',
     },
   },
   test: {
