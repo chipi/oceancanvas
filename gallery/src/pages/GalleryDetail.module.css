@@ -59,8 +59,8 @@
   flex: 2;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   overflow: hidden;
   background: var(--canvas);
 }
