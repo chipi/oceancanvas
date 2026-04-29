@@ -49,13 +49,16 @@
   background: var(--elevated);
 }
 
-/* Masonry grid */
+/* Masonry grid — fills viewport, dense packing */
 .masonry {
-  padding: 8px;
+  padding: 6px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: calc((100vh - 58px) / 3); /* fill viewport minus topbar */
-  gap: 6px;
+  grid-auto-rows: calc((100vh - 58px) / 4);
+  grid-auto-flow: dense;
+  gap: 4px;
+  height: calc(100vh - 42px);
+  overflow: hidden;
 }
 
 /* Size tiers */
