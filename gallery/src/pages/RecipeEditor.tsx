@@ -150,12 +150,9 @@ export function RecipeEditor() {
       {/* Topbar */}
       <header className={styles.topbar}>
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
-        <span className={styles.topbarPath}>/{recipeName}</span>
-        <span className={styles.topbarBadges}>
-          <span className={styles.badge}>live</span>
-          <span className={styles.badge}>OISST</span>
-          <span className={styles.badge}>{processedData?.date || ''}</span>
-          <span className={styles.badge}>{technical.colormap}</span>
+        <span className={styles.topbarRecipe}>{recipeName}</span>
+        <span className={styles.topbarMeta}>
+          {renderType} · {technical.colormap} · {processedData?.date || ''} · OISST
         </span>
       </header>
 
