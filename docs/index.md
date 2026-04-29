@@ -1,68 +1,77 @@
 # OceanCanvas
 
-> Generative ocean art that the data performs daily.
-
-A pipeline runs at 06:00 UTC, fetches today's ocean data from open scientific sources, and renders it through authored recipes. Every day adds a frame. A recipe running for a year is a year of art — the same authored character, the ocean changing underneath it. The gallery walks itself forward without curation.
+> The scientific infrastructure governments have built over decades — given to an artist.
 
 ---
 
-## What this is
+## The premise
 
-Three ideas hold the project together.
+OceanCanvas is what happens when you take NASA and NOAA's ocean data infrastructure — decades of satellite measurements, buoy networks, and climate records, all freely available — and give it to an artist instead of a scientist.
 
-**The recipe.** A YAML file authored by a person — region, source, render type, creative parameters. Once authored, it runs forever. Tomorrow at 06:00 UTC the pipeline reads it, fetches that region's data, and renders it. The recipe is the authored work; each render is the data sitting for the work that day.
+The result is not a data tool. It is a living gallery of the ocean, driven by the same numbers that oceanographers study, but expressed as generative art, animation, and sound.
 
-**The pipeline.** Six tasks in a Prefect flow, running daily. Discover → fetch → process → build payload → render → index. The output is one PNG per recipe per day, on disk.
+---
 
-**The gallery.** A living archive that walks itself forward. No editor curates it. No engagement metrics measure it. The pipeline ran at 06:00 UTC and the gallery reflects what it produced.
+## What it looks like
+
+You name a piece *North Atlantic Drift*. You set the region — 30°N to 60°N, west of Ireland to Newfoundland. You choose how the SST data should look: thermal field, slightly turbulent, lingering. You save the recipe.
+
+Tomorrow morning, while you are still asleep, the ocean will sit for it.
+
+The pipeline runs at 06:00 UTC. It fetches today's sea surface temperature from NOAA, processes it, runs your recipe through a p5.js sketch, and saves a PNG. Every day, one frame. A recipe running for a year is a year of art — the same authored character, the ocean changing underneath it.
+
+The gallery walks itself forward. No one curates it. No one publishes it. The renders accumulate.
+
+---
+
+## How it works
+
+Six tasks, daily, automated.
+
+**Discover** the latest available date from NOAA ERDDAP. **Fetch** the raw data — NetCDF for sea surface temperature, JSON for Argo float positions. **Process** it into browser-friendly formats — colourised PNG tiles, flat JSON arrays, statistics. **Build a render payload** per recipe — the data cropped to the recipe's region, the creative parameters assembled. **Render** via Puppeteer + p5.js — the sketch runs in headless Chromium, screenshots the canvas. **Index** — rebuild the manifest, clean up.
+
+Three render types. **Field** — thermal heatmaps. The Gulf Stream as a painting. **Particles** — flow trails tracing the SST gradient. The current made visible. **Scatter** — point clouds of Argo float positions. The observing network as constellation.
+
+Three data sources. **NOAA OISST** — sea surface temperature, daily, global, since 1981. **Argo** — 4,000 autonomous floats measuring the ocean's interior. **GEBCO** — the ocean floor. All free. All open. No API keys.
 
 ---
 
 ## The four surfaces
 
-| Surface | What it does |
-|---|---|
-| [**Gallery**](prd/PRD-004-gallery.md) | The public face. A masonry grid of renders. Click into any piece for full-screen view with data context. |
-| [**Dashboard**](prd/PRD-002-dashboard.md) | Read the ocean as data. SST heatmaps, editorial spreads, region selection. |
-| [**Recipe Editor**](prd/PRD-003-recipe-editor.md) | Author a piece. Mood presets, energy × presence, colour character. The interface operates at the level of artistic intent. |
-| [**Video Editor**](prd/PRD-005-video-editor.md) | Assemble accumulated renders into timelapse film with generative audio. |
+**The Gallery.** A masonry grid of the day's renders. Click into any piece for full-screen view with data context — what dataset produced it, what agency operates it, where to learn more. The gallery is itself a composition. No curation. No engagement metrics.
+
+**The Dashboard.** Read the ocean as data. Full-bleed SST heatmap with editorial stat cards. A timeline scrubber back to 1981. Region selection that feeds directly into the recipe editor.
+
+**The Recipe Editor.** Author a piece at the level of artistic intent. Mood presets, energy × presence, colour character, temporal weight. The preview runs the same p5.js sketch the pipeline uses. What you see is what the pipeline renders. Flip to YAML to see the file your choices generate.
+
+**The Video Editor.** *(Coming in v0.3)* Assemble a recipe's accumulated renders into a timelapse film with generative audio and data overlays.
 
 ---
 
-## The data
+## Why this earns existence
 
-All data is free, open, and requires no registration. The sources are government and intergovernmental scientific archives.
+**The data is extraordinary and invisible.** The ocean holds 97% of Earth's water, absorbs 90% of excess heat from climate change, and regulates weather across the planet. The scientific community has built extraordinary tools to monitor it. Almost none of that monitoring is visible to anyone who is not a scientist.
 
-| Source | What it offers |
-|---|---|
-| **NOAA OISST** | Sea surface temperature. Global, 0.25° resolution, daily since 1981. |
-| **Argo Float Program** | ~4,000 autonomous floats. Temperature and salinity profiles. |
-| **GEBCO** | Global ocean floor depth at 450m resolution. |
+**When SST anomaly data becomes a 365-frame animation, the ocean's warming is not a statistic. It is something you watch happen.**
 
-Full catalog: [Data Sources](concept/03-data-catalog.md)
+**The creative stack is grounded.** Colour is always data-mapped. Motion follows real gradients. Every render carries its source attribution. Nothing decorative. The art is factually correct.
+
+**It runs itself.** Once a recipe is authored, it runs forever. The pipeline is the heartbeat. The gallery is the accumulation. The system does not need you after you author the piece. The ocean keeps feeding it.
 
 ---
 
-## Quick start
+## What it is not
 
-```bash
-git clone https://github.com/chipi/oceancanvas.git
-cd oceancanvas
-docker compose up
-```
-
-The gallery is at `localhost:8080`. The pipeline runs daily at 06:00 UTC. Recipes live in `recipes/`. No accounts. No API keys.
-
-[Full setup guide →](project-readme.md)
+- **Not a scientific analysis tool.** It does not replace Jupyter notebooks or any research workflow.
+- **Not a real-time monitoring system.** It does not send alerts or compete with operational products.
+- **Not a random image generator.** Every render is deterministic. Same recipe, same data, same date — same image. Always.
+- **Not a social media bot.** No view counts, no likes, no share counts, no streaks.
+- **Not a data portal.** It does not host or redistribute raw data. It consumes open data and creates art from it.
 
 ---
 
-## How the docs work
+## The deeper bet
 
-| You want to... | Read |
-|---|---|
-| Understand what OceanCanvas is | [Vision](concept/01-vision.md) → [Project Concept](concept/02-project-concept.md) |
-| Build or contribute | [Getting Started](project-readme.md) → [Conventions](claude.md) |
-| Design a surface | [Visual Contracts](uxs/UXS-004-gallery.md) → [IA](uxs/OC_IA.md) |
-| Make a technical decision | [Architecture](adr/OC_TA.md) → [ADRs](adr/index.md) |
-| Understand an open question | [RFCs](rfc/index.md) |
+That the ocean's data, treated with editorial dignity and rendered through authored recipes, produces something people want to look at. Not because it's pretty — because it's true. The Gulf Stream is not an abstraction. The thermal anomaly is not a number. The ice extent is not a chart.
+
+The data performs daily. The art accumulates. The gallery walks forward.

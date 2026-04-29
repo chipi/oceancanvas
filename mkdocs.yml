@@ -44,15 +44,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Vision: concept/01-vision.md
-  - The Project: concept/02-project-concept.md
-  - Get Started: project-readme.md
-  - Surfaces:
-      - The Gallery: prd/PRD-004-gallery.md
-      - The Dashboard: prd/PRD-002-dashboard.md
-      - The Recipe Editor: prd/PRD-003-recipe-editor.md
-      - The Recipe: prd/PRD-001-recipe.md
-      - The Video Editor: prd/PRD-005-video-editor.md
+  - Get Started: get-started.md
   - Data Sources: concept/03-data-catalog.md
   - Project Internals:
       - Implementation Guide: implementation.md
