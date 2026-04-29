@@ -1,6 +1,6 @@
 import { type SyntheticEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useManifest, type RecipeEntry } from '../hooks/useManifest';
+import { useManifest } from '../hooks/useManifest';
 import styles from './Gallery.module.css';
 
 function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
@@ -11,10 +11,12 @@ function renderUrl(recipe: string, date: string): string {
   return `/renders/${recipe}/${date}.png`;
 }
 
-/** Assign size tier based on render count relative to the max. */
-function getTier(entry: RecipeEntry, maxCount: number): 'large' | 'medium' | 'standard' {
-  if (entry.count === maxCount && maxCount > 0) return 'large';
-  if (entry.count >= 3) return 'medium';
+/** Assign size tier — creates visual variety in the grid.
+ *  First recipe (most renders) is large. Every 3rd is medium. Rest standard.
+ *  This ensures variety even when all recipes have the same render count. */
+function getTier(index: number, total: number): 'large' | 'medium' | 'standard' {
+  if (index === 0) return 'large';
+  if (total > 3 && (index === 2 || index === 5)) return 'medium';
   return 'standard';
 }
 
@@ -30,8 +32,8 @@ export function Gallery() {
   }
 
   const recipes = Object.values(manifest.recipes);
-  const filtered = filter ? recipes.filter((r) => r.source === filter) : recipes;
-  const maxCount = Math.max(...recipes.map((r) => r.count));
+  const sorted = [...recipes].sort((a, b) => b.count - a.count);
+  const filtered = filter ? sorted.filter((r) => r.source === filter) : sorted;
   const sources = [...new Set(recipes.map((r) => r.source).filter(Boolean))];
 
   return (
@@ -60,8 +62,8 @@ export function Gallery() {
 
       {/* Masonry grid */}
       <div className={styles.masonry}>
-        {filtered.map((recipe) => {
-          const tier = getTier(recipe, maxCount);
+        {filtered.map((recipe, index) => {
+          const tier = getTier(index, filtered.length);
           return (
             <div
               key={recipe.name}
