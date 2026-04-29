@@ -1786,38 +1786,38 @@
   
 
 
-<h1 id="adr-012-caddy-as-static-file-server">ADR-012 — Caddy as static file server<a class="headerlink" href="#adr-012-caddy-as-static-file-server" title="Permanent link">&para;</a></h1>
+<h1 id="adr-012-caddy-as-static-file-server">ADR-012 — Caddy as static file server</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/service-layer · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The web frontend (Dashboard, Recipe Editor, Gallery, Video Editor) is a static React build. It needs serving over HTTP, with HTTPS in production. The pipeline produces files (renders, processed data) that the frontend reads as static assets.</p>
 <p>We need a static file server that handles HTTPS automatically in production, is light enough for a single container, and configurable enough to serve the right paths.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Use Caddy as the static file server inside the <code>gallery</code> container. Caddy serves the built React app, the <code>renders/</code> directory, and the <code>data/processed/</code> directory. In production, Caddy handles HTTPS automatically via Let's Encrypt.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Automatic HTTPS</em> — Caddy provisions and renews Let's Encrypt certificates with one config line. For self-hosters running on a VPS, HTTPS works out of the box.</li>
 <li><em>Simple config</em> — Caddy's Caddyfile syntax is minimal. A complete config for OceanCanvas is around 20 lines.</li>
 <li><em>Single binary</em> — Caddy is one Go binary. The container is tiny.</li>
 <li><em>Static-file-friendly</em> — Caddy's defaults around caching, compression, and CORS are sensible for a static-asset workload.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Nginx</strong> — capable, but the config language is more complex than needed and HTTPS provisioning requires separate certbot integration. Caddy collapses both into one tool.</li>
 <li><strong>Traefik</strong> — designed primarily for service routing in container orchestrators. Overshoots the simple static-serving use case.</li>
 <li><strong>A custom Express/Koa server</strong> — more code than necessary for static serving.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - HTTPS works automatically in production without separate certbot setup.
 - Self-hosters get HTTPS with one line of Caddyfile.
 - Single binary, small image, minimal attack surface.</p>
 <p><strong>Negative:</strong>
 - Less ubiquitous than nginx — some operators are less familiar. Caddyfile syntax is simple enough that this is a small cost.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li><code>gallery/Caddyfile</code> defines the routing.</li>
 <li>Routes:</li>

@@ -2012,17 +2012,17 @@
   
 
 
-<h1 id="oc-04-technical-architecture">OC-04 — Technical Architecture<a class="headerlink" href="#oc-04-technical-architecture" title="Permanent link">&para;</a></h1>
+<h1 id="oc-04-technical-architecture">OC-04 — Technical Architecture</h1>
 <p><strong>OceanCanvas — Pipeline Architecture &amp; Technical Design</strong></p>
 <p><em>April 2026 · v1.0</em></p>
 <p>This document is the definitive technical reference for the OceanCanvas data pipeline, processing layer, and rendering architecture. All decisions are consolidated here.</p>
 <hr />
-<h2 id="architecture-overview">Architecture overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h2>
+<h2 id="architecture-overview">Architecture overview</h2>
 <p>The OceanCanvas pipeline is a daily Prefect flow that fetches ocean data from public APIs, processes it into browser-friendly formats, renders generative art from recipes, and indexes the results. It runs as a service on your hardware (laptop for development, VPS for production) inside Docker Compose.</p>
 <p><img alt="Pipeline architecture" src="../images/pipeline-architecture.png" />
 <em>Fig 1. Complete Prefect pipeline flow — 6 tasks, daily schedule, source-driven fetch + recipe-driven render.</em></p>
 <hr />
-<h2 id="the-six-pipeline-tasks">The six pipeline tasks<a class="headerlink" href="#the-six-pipeline-tasks" title="Permanent link">&para;</a></h2>
+<h2 id="the-six-pipeline-tasks">The six pipeline tasks</h2>
 <table>
 <thead>
 <tr>
@@ -2058,11 +2058,11 @@
 </tbody>
 </table>
 <hr />
-<h2 id="task-03-the-processing-step">Task 03 — The processing step<a class="headerlink" href="#task-03-the-processing-step" title="Permanent link">&para;</a></h2>
+<h2 id="task-03-the-processing-step">Task 03 — The processing step</h2>
 <p>The processing step is the bridge between raw source data and what the dashboard and renderer actually need. It runs once per source per date and produces three outputs.</p>
 <p><img alt="Processing step detail" src="../images/processing-step-detail.png" />
 <em>Fig 2. Task 03 detail — sub-steps from opening the raw file to writing the meta sidecar.</em></p>
-<h3 id="three-outputs-per-source-per-date">Three outputs per source per date<a class="headerlink" href="#three-outputs-per-source-per-date" title="Permanent link">&para;</a></h3>
+<h3 id="three-outputs-per-source-per-date">Three outputs per source per date</h3>
 <p>Written to <code>data/processed/{source_id}/{YYYY-MM-DD}.*</code>:</p>
 <table>
 <thead>
@@ -2090,12 +2090,12 @@
 </tr>
 </tbody>
 </table>
-<h3 id="processing-region">Processing region<a class="headerlink" href="#processing-region" title="Permanent link">&para;</a></h3>
+<h3 id="processing-region">Processing region</h3>
 <p>The processing region is configured per source — for example, North Atlantic (20°N–75°N, 90°W–10°E) covers all recipes that target the North Atlantic basin. It is wider than any individual recipe region but not global.</p>
-<h3 id="prefect-caching-makes-the-step-idempotent">Prefect caching makes the step idempotent<a class="headerlink" href="#prefect-caching-makes-the-step-idempotent" title="Permanent link">&para;</a></h3>
+<h3 id="prefect-caching-makes-the-step-idempotent">Prefect caching makes the step idempotent</h3>
 <p>If <code>data/processed/oisst/2026-04-25.json</code> already exists, the task is a cache hit and is skipped. Running the pipeline twice in one day does not re-process.</p>
 <hr />
-<h2 id="complete-folder-structure">Complete folder structure<a class="headerlink" href="#complete-folder-structure" title="Permanent link">&para;</a></h2>
+<h2 id="complete-folder-structure">Complete folder structure</h2>
 <table>
 <thead>
 <tr>
@@ -2143,10 +2143,10 @@
 </tbody>
 </table>
 <hr />
-<h2 id="core-tech-stack">Core tech stack<a class="headerlink" href="#core-tech-stack" title="Permanent link">&para;</a></h2>
+<h2 id="core-tech-stack">Core tech stack</h2>
 <p><img alt="Tech stack and deployment" src="../images/tech-stack-deployment.png" />
 <em>Fig 3. Core tech stack (6 tools, separated by concern) and deployment model (3 contexts: GitHub repo, Docker Compose service, GitHub Actions CI).</em></p>
-<h3 id="all-decisions-locked">All decisions — locked<a class="headerlink" href="#all-decisions-locked" title="Permanent link">&para;</a></h3>
+<h3 id="all-decisions-locked">All decisions — locked</h3>
 <table>
 <thead>
 <tr>
@@ -2239,7 +2239,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="how-data-is-served-to-the-ui">How data is served to the UI<a class="headerlink" href="#how-data-is-served-to-the-ui" title="Permanent link">&para;</a></h2>
+<h2 id="how-data-is-served-to-the-ui">How data is served to the UI</h2>
 <p>There is no data API server at runtime. Everything the browser needs is served as static files by Caddy.</p>
 <table>
 <thead>
@@ -2283,7 +2283,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="deployment-model">Deployment model<a class="headerlink" href="#deployment-model" title="Permanent link">&para;</a></h2>
+<h2 id="deployment-model">Deployment model</h2>
 <table>
 <thead>
 <tr>
@@ -2307,7 +2307,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="the-six-render-types">The six render types<a class="headerlink" href="#the-six-render-types" title="Permanent link">&para;</a></h2>
+<h2 id="the-six-render-types">The six render types</h2>
 <table>
 <thead>
 <tr>
@@ -2350,18 +2350,18 @@
 </tbody>
 </table>
 <hr />
-<h2 id="recipe-editor-studio-the-creative-interface">Recipe editor studio — the creative interface<a class="headerlink" href="#recipe-editor-studio-the-creative-interface" title="Permanent link">&para;</a></h2>
+<h2 id="recipe-editor-studio-the-creative-interface">Recipe editor studio — the creative interface</h2>
 <p>The recipe editor operates at the level of artistic intent, not technical parameters.</p>
 <blockquote>
 <p><strong>Design principle:</strong> A 1-1 knob mapping (colormap, particle_count, opacity) is the wrong abstraction for a creative user. Someone thinking 'I want this to feel like a storm' should never need to think about particle_count: 4000. The creative control surface lives at the level of intent. Technical parameters are generated output, not user input.</p>
 </blockquote>
-<h3 id="the-flip-one-preview-two-modes">The flip — one preview, two modes<a class="headerlink" href="#the-flip-one-preview-two-modes" title="Permanent link">&para;</a></h3>
+<h3 id="the-flip-one-preview-two-modes">The flip — one preview, two modes</h3>
 <p>The editor has a single preview canvas that never moves, and a control surface below it that flips between two modes.</p>
 <p><img alt="Recipe editor — creative mode" src="../images/editor-creative-mode.png" />
 <em>Fig 4a. Creative mode — mood presets, energy×presence 2D space, colour character spectrum, temporal weight.</em></p>
 <p><img alt="Recipe editor — YAML mode" src="../images/editor-yaml-mode.png" />
 <em>Fig 4b. YAML mode — same preview, recipe YAML with amber lines showing creative choices.</em></p>
-<h3 id="creative-mode-controls">Creative mode controls<a class="headerlink" href="#creative-mode-controls" title="Permanent link">&para;</a></h3>
+<h3 id="creative-mode-controls">Creative mode controls</h3>
 <table>
 <thead>
 <tr>
@@ -2392,20 +2392,20 @@
 </tr>
 </tbody>
 </table>
-<h3 id="yaml-mode">YAML mode<a class="headerlink" href="#yaml-mode" title="Permanent link">&para;</a></h3>
+<h3 id="yaml-mode">YAML mode</h3>
 <p>Amber highlighted lines = the creative choices. Blue lines = structure and source definitions. The YAML is editable — changes snap the creative controls to the closest matching position. Bidirectional sync.</p>
 <hr />
-<h2 id="video-editor-timelapse-assembly">Video editor — timelapse assembly<a class="headerlink" href="#video-editor-timelapse-assembly" title="Permanent link">&para;</a></h2>
+<h2 id="video-editor-timelapse-assembly">Video editor — timelapse assembly</h2>
 <p><img alt="Video editor" src="../images/video-editor-enriched.png" />
 <em>Fig 5. Video editor with audio and overlay enrichment tracks. Sequence · Audio · Overlays in the right panel.</em></p>
 <p>The video editor is assembly only — it reads existing PNGs from <code>renders/{recipe}/</code>. Export time for 365 frames is seconds, not minutes (ffmpeg I/O only, no re-rendering).</p>
-<h3 id="three-enrichment-tracks">Three enrichment tracks<a class="headerlink" href="#three-enrichment-tracks" title="Permanent link">&para;</a></h3>
+<h3 id="three-enrichment-tracks">Three enrichment tracks</h3>
 <p>All three share the same key moment detection algorithm — statistical peaks, record highs, threshold crossings, inflection points. Audio and overlays respond to the same detected frames.</p>
 <p><strong>Track 1 — Visual</strong>: date range sliders, frame rate (6/12/24fps), recipe selector</p>
 <p><strong>Track 2 — Audio</strong>: theme (Ambient/Ocean/Dramatic/etc.), energy arc, sensitivity, key moment intensity. API generates stems at multiple intensities; Python crossfades between them as data scalar changes.</p>
 <p><strong>Track 3 — Overlays</strong>: primary counter, anomaly indicator, event labels, record flash, sparkline, timeline ribbon, date stamp, source attribution (essential, on by default). Pull quote, cumulative stat, projection ghost, comparative split (optional).</p>
 <hr />
-<h2 id="github-actions-e2e-test">GitHub Actions — e2e test<a class="headerlink" href="#github-actions-e2e-test" title="Permanent link">&para;</a></h2>
+<h2 id="github-actions-e2e-test">GitHub Actions — e2e test</h2>
 <p>The e2e test validates the entire pipeline with a synthetic 10×10 grid dataset. Does not hit real NOAA or ESA APIs. Validates:
 - Task order is correct
 - Processing step produces all three outputs
@@ -2414,7 +2414,7 @@
 - <code>manifest.json</code> is rebuilt correctly
 - Prefect flow completes without errors</p>
 <hr />
-<h2 id="open-questions-requiring-rfc-in-phase-2">Open questions — requiring RFC in Phase 2<a class="headerlink" href="#open-questions-requiring-rfc-in-phase-2" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions-requiring-rfc-in-phase-2">Open questions — requiring RFC in Phase 2</h2>
 <p><em>Note: RFC numbering was revised after Phase 2 definition. Three original RFCs (Processed JSON, Docker Compose stack, GitHub Actions CI) closed directly into ADRs (ADR-015, ADR-011, ADR-013/014). Three new RFCs were added from PRD open threads. See <code>docs/rfc/index.md</code> for the current list.</em></p>
 <table>
 <thead>
@@ -2467,22 +2467,22 @@
 </tbody>
 </table>
 <hr />
-<h2 id="implementation-sequence">Implementation sequence<a class="headerlink" href="#implementation-sequence" title="Permanent link">&para;</a></h2>
-<h3 id="phase-1-pipeline-skeleton-v1-3-sources">Phase 1 — Pipeline skeleton (v1, 3 sources)<a class="headerlink" href="#phase-1-pipeline-skeleton-v1-3-sources" title="Permanent link">&para;</a></h3>
+<h2 id="implementation-sequence">Implementation sequence</h2>
+<h3 id="phase-1-pipeline-skeleton-v1-3-sources">Phase 1 — Pipeline skeleton (v1, 3 sources)</h3>
 <ul>
 <li>Set up Prefect Server in Docker Compose + prefect worker container</li>
 <li>Implement the Prefect flow with 6 tasks, wired but empty</li>
 <li>Implement Task 01–06 for OISST, Open-Meteo, and GEBCO</li>
 <li>Write e2e test with 10×10 synthetic OISST data</li>
 </ul>
-<h3 id="phase-2-dashboard-recipe-editor">Phase 2 — Dashboard + recipe editor<a class="headerlink" href="#phase-2-dashboard-recipe-editor" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-dashboard-recipe-editor">Phase 2 — Dashboard + recipe editor</h3>
 <ul>
 <li>Set up React + deck.gl + MapLibre skeleton</li>
 <li>Load <code>data/processed/oisst/{date}.png</code> as a BitmapLayer</li>
 <li>Implement source switching, region selector, editorial spreads</li>
 <li>Build recipe editor studio: flip, creative controls, YAML mode, sketch editor</li>
 </ul>
-<h3 id="phase-3-expand-sources">Phase 3 — Expand sources<a class="headerlink" href="#phase-3-expand-sources" title="Permanent link">&para;</a></h3>
+<h3 id="phase-3-expand-sources">Phase 3 — Expand sources</h3>
 <ul>
 <li>Add remaining ERDDAP sources, ESA CCI sources, dlt tabular sources</li>
 <li>Add processing tasks and editorial spreads for each new source</li>

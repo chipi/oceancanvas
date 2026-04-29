@@ -1786,25 +1786,25 @@
   
 
 
-<h1 id="adr-002-dlt-for-restjson-ingestion">ADR-002 — dlt for REST/JSON ingestion<a class="headerlink" href="#adr-002-dlt-for-restjson-ingestion" title="Permanent link">&para;</a></h1>
+<h1 id="adr-002-dlt-for-restjson-ingestion">ADR-002 — dlt for REST/JSON ingestion</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/pipeline · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>Several OceanCanvas sources are REST/JSON APIs returning record-shaped data: Open-Meteo Marine, NOAA NDBC buoys, Argo float profiles, SOCAT ship tracks. Each requires fetching, incremental cursor tracking (don't re-fetch what we have), and writing to disk in a queryable format.</p>
 <p>Hand-writing this for each source means duplicating cursor logic, retry logic, and serialisation logic. A standard tool would reduce code volume and make the per-source fetcher genuinely small.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Use dlt (data load tool) for all REST/JSON sources. dlt resources are wrapped inside Prefect tasks. dlt writes to <code>data/sources/</code> via its filesystem destination.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>dlt's <code>@dlt.resource</code> generator model is natural for paginated/incremental REST APIs. Cursor state is tracked automatically per resource, replacing hand-written <code>state.json</code> management for these sources. Filesystem destination keeps the architecture file-based — no database introduced.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Hand-written fetchers per source</strong> — works but reproduces dlt's cursor and retry logic per source. Higher code volume, more bug surface.</li>
 <li><strong>Pandas + custom state file</strong> — works but couples the fetcher to pandas and requires custom incremental logic.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Per-source fetchers are small (often under 30 lines).
 - Incremental fetching works without explicit state code.
@@ -1812,7 +1812,7 @@
 <p><strong>Negative:</strong>
 - Adds dlt as a dependency.
 - dlt's abstraction is suited for tabular/record data. For binary gridded data (NetCDF), it's the wrong tool — use ADR-003 instead.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>dlt resources defined inside <code>pipeline/src/oceancanvas/tasks/fetch.py</code>.</li>
 <li>One dlt resource per REST/JSON source.</li>

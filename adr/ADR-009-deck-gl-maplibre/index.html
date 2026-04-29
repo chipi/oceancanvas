@@ -1786,28 +1786,28 @@
   
 
 
-<h1 id="adr-009-deckgl-maplibre-for-spatial-rendering">ADR-009 — deck.gl + MapLibre for spatial rendering<a class="headerlink" href="#adr-009-deckgl-maplibre-for-spatial-rendering" title="Permanent link">&para;</a></h1>
+<h1 id="adr-009-deckgl-maplibre-for-spatial-rendering">ADR-009 — deck.gl + MapLibre for spatial rendering</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/web-frontend · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The Dashboard renders ocean data — gridded fields, scatter point clouds, anomaly maps — over a geographic base. The data volumes are non-trivial: a 0.25° OISST grid is 1440×720 cells globally. The Recipe Editor draws bounding boxes on a map that pass to the recipe definition.</p>
 <p>Two requirements: high-performance rendering of ocean-scale data, and a competent geographic base layer with coastlines and labels.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Use <strong>deck.gl</strong> for data layers (heatmaps, scatter, vector fields) and <strong>MapLibre GL JS</strong> for the geographic base layer. deck.gl renders WebGL data layers on top of MapLibre's vector base. Both are open-source and require no API key.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>deck.gl is purpose-built for high-performance data visualization on maps. WebGL-accelerated. Ocean-scale grids render at 60fps. The component model (BitmapLayer, ScatterplotLayer, GeoJsonLayer) maps cleanly to the kinds of layers OceanCanvas needs.</p>
 <p>MapLibre is the open-source fork of Mapbox GL JS, free of API key requirements. Tile sources like OpenFreeMap or CARTO dark matter give us a clean dark base layer aligned with OceanCanvas's design language.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Leaflet</strong> — SVG-based; cannot handle ocean grid resolutions. A 1440×720 SVG choke-points the browser. Rejected on performance grounds.</li>
 <li><strong>CesiumJS / 3D globe</strong> — 3D hides data behind the sphere, makes spatial comparison harder, adds rendering complexity. 2D projections are clearer for ocean exploration. Rejected.</li>
 <li><strong>Mapbox GL JS</strong> — requires an API key. Violates the open-by-default constraint. Rejected.</li>
 <li><strong>deck.gl with Google Maps</strong> — same API-key problem.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - 60fps rendering of full-globe ocean grids.
 - Hover interactions feel native.
@@ -1815,7 +1815,7 @@
 <p><strong>Negative:</strong>
 - WebGL fallbacks needed for browsers without GPU support (rare in practice).
 - MapLibre is less polished than Mapbox in some edge cases (3D buildings, terrain). We don't use those features.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Dashboard React components in <code>gallery/src/dashboard/</code>.</li>
 <li>Base map setup in <code>gallery/src/dashboard/Map.tsx</code>.</li>

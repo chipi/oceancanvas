@@ -1786,30 +1786,30 @@
   
 
 
-<h1 id="adr-014-synthetic-data-e2e-test-as-ci-gate">ADR-014 — Synthetic-data e2e test as CI gate<a class="headerlink" href="#adr-014-synthetic-data-e2e-test-as-ci-gate" title="Permanent link">&para;</a></h1>
+<h1 id="adr-014-synthetic-data-e2e-test-as-ci-gate">ADR-014 — Synthetic-data e2e test as CI gate</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/ci</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>ADR-013 establishes that GitHub Actions runs code validation only, not the production pipeline. But unit tests alone don't catch integration problems — task ordering issues, payload-format mismatches, render failures. We need an end-to-end check that the pipeline can produce a render, but it must run without depending on real source endpoints.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>A synthetic-data e2e test runs as part of the CI workflow. It uses a fixture: a 10×10 float32 grid in the OISST format, a stubbed Open-Meteo response, and a fixture for GEBCO. The pipeline runs end-to-end against these fixtures, producing a real PNG render. The test asserts: <code>data/processed/</code> is populated correctly, a render PNG exists, <code>manifest.json</code> contains the expected entry.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Fast</em> — fixtures are tiny; the full pipeline runs in seconds.</li>
 <li><em>Stable</em> — no external services touched.</li>
 <li><em>Real</em> — the actual production code runs against the fixtures. Process step, payload builder, Puppeteer renderer, manifest indexer — all execute. Only the <em>fetcher</em> is stubbed.</li>
 <li><em>High signal</em> — most pipeline integration bugs surface here. If this passes, the pipeline is structurally healthy.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Mock everything (no real Puppeteer render)</strong> — faster but loses the rendering integration check. Rejected.</li>
 <li><strong>Run against a single real source for one date</strong> — couples CI to source availability. Rejected (per ADR-013).</li>
 <li><strong>Skip e2e in CI, run only nightly against real sources</strong> — slower feedback on PRs. Rejected; the synthetic e2e is fast enough to run on every push.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Pipeline integration is verified on every change.
 - CI runs in ~3-5 minutes total.
@@ -1817,7 +1817,7 @@
 <p><strong>Negative:</strong>
 - Doesn't catch real-source format changes (handled by occasional manual integration tests).
 - Fixture data must be maintained alongside the production fetchers — if the source format changes legitimately, the fixture must change too. Acceptable maintenance cost.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Fixtures in <code>tests/fixtures/</code>.</li>
 <li>Test harness in <code>tests/e2e/test_pipeline_synthetic.py</code>.</li>

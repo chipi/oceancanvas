@@ -1797,30 +1797,30 @@
   
 
 
-<h1 id="adr-005-no-database-in-v1">ADR-005 — No database in v1<a class="headerlink" href="#adr-005-no-database-in-v1" title="Permanent link">&para;</a></h1>
+<h1 id="adr-005-no-database-in-v1">ADR-005 — No database in v1</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §constraints</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>OceanCanvas could plausibly use a database to store recipes, manifest entries, render metadata, and pipeline state. Most modern projects of this scope reach for SQLite or Postgres reflexively.</p>
 <p>But OceanCanvas is intentionally file-shaped. Recipes are YAML. Renders are PNGs. The manifest is JSON. Pipeline state is JSON. Self-hostability and regenerability are core constraints.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>No database in v1. All persistent state lives in files: YAML for configuration, JSON for state and manifest, PNG for renders. Prefect's own state database (Postgres in the prefect-server container) is the only exception — it's internal to Prefect, not application state.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Self-hostable</em> — <code>git clone &amp;&amp; docker compose up</code> should work with no service dependencies. Adding Postgres for app data adds another container, another set of credentials, another backup story.</li>
 <li><em>Regenerable</em> — every layer of the data store (ADR-004) can be regenerated. A database makes regeneration harder; you have to recreate schemas, dump/restore.</li>
 <li><em>Inspectability</em> — a recipe file in YAML is grep-able, diff-able, version-controllable. The same in a database is not.</li>
 <li><em>Scale</em> — at OceanCanvas's intended scale (tens to hundreds of recipes, low thousands of daily renders), files are entirely sufficient.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>SQLite</strong> — file-based, lightweight, no separate process. Closest to "no database." Worth revisiting only if the manifest grows large enough that JSON parsing becomes a real cost (likely thousands of recipes, far beyond v1).</li>
 <li><strong>Postgres</strong> — over-engineered for this scale. Reasonable later if multi-user / multi-author features arrive.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Anyone can clone and run the system without configuring a database.
 - Recipes are version-controlled in git as files.
@@ -1828,14 +1828,14 @@
 <p><strong>Negative:</strong>
 - Querying across recipes (e.g., "show me all recipes that use OISST") requires reading manifest.json or scanning the recipes folder. Acceptable at scale.
 - Concurrent writes to the manifest need careful handling (Task 06 owns the rebuild; nothing else writes there). Single-author Phase 1 (ADR-016) means no race condition in practice.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Recipes in <code>recipes/*.yaml</code>.</li>
 <li>Pipeline state in <code>data/state.json</code>.</li>
 <li>Manifest in <code>manifest.json</code>.</li>
 <li>Recipe lifecycle state in <code>recipes/{id}.state.json</code> (RFC-003).</li>
 </ul>
-<h2 id="future-trigger">Future trigger<a class="headerlink" href="#future-trigger" title="Permanent link">&para;</a></h2>
+<h2 id="future-trigger">Future trigger</h2>
 <p>Revisit if:
 - Manifest size exceeds 10MB or query latency becomes user-visible.
 - Multi-author features arrive and concurrent writes become real.

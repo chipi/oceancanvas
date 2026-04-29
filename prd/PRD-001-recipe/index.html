@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="prd-001-recipe-the-authored-work">PRD-001 — Recipe (the authored work)<a class="headerlink" href="#prd-001-recipe-the-authored-work" title="Permanent link">&para;</a></h1>
+<h1 id="prd-001-recipe-the-authored-work">PRD-001 — Recipe (the authored work)</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>Sources</strong> · OC-01 §Three layers (Layer 2 — Create) · OC-02 §The concept · §The creative loop · OC-04 §Recipe editor studio
@@ -1676,26 +1676,26 @@
 </blockquote>
 <hr />
 <p>You name it <em>North Atlantic Drift</em>. You set the region — 30°N to 60°N, west of Ireland to Newfoundland. You pick the source — sea surface temperature, daily. You choose how it should look: thermal field, present temporal weight, slightly turbulent. You save the recipe. Tomorrow morning, while you are still asleep, the ocean will sit for it.</p>
-<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<h2 id="the-problem">The problem</h2>
 <p>Generative-art tools produce images. Data-visualisation tools produce charts. Both make output that is finite — a JPEG, a PNG, a frame. Once made, it stops.</p>
 <p>The work OceanCanvas wants to make is different in kind. A piece of music is finite, but a piece of music <em>for piano</em> is not — it can be performed again and again, in different rooms, by different hands, and remain the same piece. What is the ocean equivalent? A piece authored once, performed daily by the data, that is recognisably itself across years even though no two days produce the same render.</p>
 <p>There is no existing form for this. Generative art treats each render as the work; data dashboards treat each render as a snapshot. Neither gives an artist something they can author once and keep authoring.</p>
-<h2 id="the-experience">The experience<a class="headerlink" href="#the-experience" title="Permanent link">&para;</a></h2>
+<h2 id="the-experience">The experience</h2>
 <p>You have been watching the dashboard for weeks; the thermal anomaly in the North Atlantic has been growing. You decide to make a piece about it.</p>
 <p>You open the recipe editor with that region pre-selected. You name the work <em>North Atlantic Drift</em>. You choose particles — what you want is the feeling of the current. You drag a single point in the energy×presence space toward turbulent-ghost. You pick a colour character — thermal, slightly otherworldly. The preview moves. You watch your piece appear with today's data.</p>
 <p>You commit. The recipe is now a YAML file in a folder; the file is also a piece of work. Tomorrow at 06:00 UTC the pipeline reads it, fetches today's SST, runs the sketch, saves a PNG. Six months from now you will have a hundred and eighty frames. Each one is recognisably <em>North Atlantic Drift</em> — the same character, the same palette, the same composition logic. None are identical. The ocean has been sitting for the work, day by day.</p>
 <p>The recipe persists. You did not generate an image. You composed a piece.</p>
-<h2 id="why-now">Why now<a class="headerlink" href="#why-now" title="Permanent link">&para;</a></h2>
+<h2 id="why-now">Why now</h2>
 <p>Recipe-as-concept is the foundation under everything else. The Recipe Editor is the surface that authors them; the Gallery is where they live; the Video Editor is how they accumulate into film. None of those PRDs can argue their case until <em>what a recipe is</em> is settled.</p>
 <p>The earlier OC documentation describes recipes as YAML configurations that the pipeline runs. That description is true at the file level and wrong at the conceptual level. The configuration is not the work. The work is the long-running performance of the data through the recipe's authored character. PRDs that treat recipes as configurations end up specifying configurations; PRDs that treat them as authored works end up specifying authoring experiences. The distinction is not academic. It changes every surface that follows.</p>
-<h2 id="success-looks-like">Success looks like<a class="headerlink" href="#success-looks-like" title="Permanent link">&para;</a></h2>
+<h2 id="success-looks-like">Success looks like</h2>
 <ul>
 <li>Someone shows you a recipe they made and says "this is mine" with the tone of authorship, not configuration.</li>
 <li>A recipe runs for a year and the year of renders reads as one work in time, not three hundred and sixty-five unrelated images.</li>
 <li>Removing a recipe feels like a deliberate act, not a cleanup. No automatic expiry, no "stale" warnings, no nudges to delete. Recipes outlast attention.</li>
 <li>A user describes their recipe to someone else by name, character, and intent — <em>"North Atlantic Drift, particles, slightly turbulent"</em> — not by parameter values.</li>
 </ul>
-<h2 id="out-of-scope">Out of scope<a class="headerlink" href="#out-of-scope" title="Permanent link">&para;</a></h2>
+<h2 id="out-of-scope">Out of scope</h2>
 <ul>
 <li>The authoring interface itself. PRD-003 (Recipe Editor) holds that.</li>
 <li>How recipes are presented to others. PRD-004 (Gallery) holds that.</li>
@@ -1704,18 +1704,18 @@
 <li>The YAML schema specifically. RFC-001 holds that.</li>
 <li>Multiple authors per recipe. Phase 1 is single-author. Collaborative authorship is a later question.</li>
 </ul>
-<h2 id="the-sharpest-threat">The sharpest threat<a class="headerlink" href="#the-sharpest-threat" title="Permanent link">&para;</a></h2>
+<h2 id="the-sharpest-threat">The sharpest threat</h2>
 <p><strong>Recipes feel like configurations.</strong></p>
 <p>If users come to recipes through a configuration mental model — <em>I am setting up a render job</em> — every other promise unravels. Authorship dissolves into setup. Accumulation becomes output history. The Gallery becomes a render queue's display.</p>
 <p>The whole frame depends on whether the recipe surface (editor, file format, gallery presence) successfully communicates that this is a creative work, not a job spec. The risk is highest at the YAML view in the editor — once you see field names like <code>colormap</code> and <code>particle_count</code> you are in configuration-land. The amber-highlighted-creative-fields convention from OC-04 is a partial defence; it has to work, or the frame breaks.</p>
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>RFC-001 — Recipe YAML schema.</strong> What fields, what types, how creative parameters serialise without leaking into configuration vocabulary.</li>
 <li><strong>RFC — Recipe lifecycle.</strong> What happens when a source becomes unavailable mid-recipe-life. Pause, fail loudly, render NaN frames? Affects how durable a recipe really is.</li>
 <li><strong>RFC — Recipe naming and identity.</strong> Are recipe IDs filesystem-safe slugs, freeform names with separate IDs, or both? Affects URL structure and Gallery linking.</li>
 <li><strong>ADR — Single-author Phase 1.</strong> Confirm. Multi-author defers indefinitely.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>Source</strong> — OC-01 §Three layers (Layer 2 — Create) · OC-02 §The concept · §The creative loop · OC-04 §Recipe editor studio</li>
 <li><strong>PA</strong> — §audiences · §promises · §principles</li>

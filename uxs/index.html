@@ -1665,14 +1665,14 @@
   
 
 
-<h1 id="uxs-index">UXS Index<a class="headerlink" href="#uxs-index" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-index">UXS Index</h1>
 <p>UX Specifications for OceanCanvas. One UXS per surface (or per source spread, where ADR-017 applies). Each UXS defines the static visual contract — tokens, layout, component states, accessibility — for one surface.</p>
 <p>The reference document for this folder is <a href="OC_IA/"><code>OC_IA.md</code></a> — Information Architecture. Every UXS anchors to IA's <code>§surfaces</code>, <code>§topbar-patterns</code>, and <code>§shared-tokens</code> sections. UXS documents inherit shared tokens from IA; they define per-surface and per-source tokens themselves.</p>
-<h2 id="what-gets-a-uxs">What gets a UXS<a class="headerlink" href="#what-gets-a-uxs" title="Permanent link">&para;</a></h2>
+<h2 id="what-gets-a-uxs">What gets a UXS</h2>
 <p>The static visual contract for one surface — tokens, layout, component appearance, accessibility targets. UXS documents are the implementation contract for frontend work.</p>
 <p>If the work is <em>behavioural</em> (animation timing, debounce, keyboard transitions, scroll behaviour, focus management sequences), it belongs in an <a href="../rfc/">RFC</a>, not a UXS. The UXS specifies static appearance; the RFC specifies how the surface moves.</p>
 <p>If the work is <em>structural</em> (a new surface, a new navigation path, a new URL), update <a href="OC_IA/"><code>OC_IA.md</code></a> first. The UXS comes after IA reflects the structural change.</p>
-<h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
+<h2 id="reference">Reference</h2>
 <table>
 <thead>
 <tr>
@@ -1691,7 +1691,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="uxs-documents">UXS documents<a class="headerlink" href="#uxs-documents" title="Permanent link">&para;</a></h2>
+<h2 id="uxs-documents">UXS documents</h2>
 <table>
 <thead>
 <tr>
@@ -1734,7 +1734,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="deferred-not-yet-drafted">Deferred (not yet drafted)<a class="headerlink" href="#deferred-not-yet-drafted" title="Permanent link">&para;</a></h3>
+<h3 id="deferred-not-yet-drafted">Deferred (not yet drafted)</h3>
 <table>
 <thead>
 <tr>
@@ -1781,12 +1781,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="how-uxs-documents-number">How UXS documents number<a class="headerlink" href="#how-uxs-documents-number" title="Permanent link">&para;</a></h2>
+<h2 id="how-uxs-documents-number">How UXS documents number</h2>
 <p>UXS numbering is by <em>order written</em>, not by surface or by source. UXS-001 was the first UXS drafted (Dashboard SST). UXS-002 is the second (Dashboard Sea Level — confirming ADR-017 with a genuinely different layout). The numbering is independent of any taxonomy — it reflects work history.</p>
-<h2 id="how-uxs-documents-evolve">How UXS documents evolve<a class="headerlink" href="#how-uxs-documents-evolve" title="Permanent link">&para;</a></h2>
+<h2 id="how-uxs-documents-evolve">How UXS documents evolve</h2>
 <p>A UXS document is versioned alongside the surface it describes. Status moves Draft → Active → Superseded. When a surface's design changes meaningfully, either the existing UXS is revised (small changes) or a new UXS supersedes it (large changes). Superseded UXSes are kept in the folder marked Superseded; the active version is linked from this index.</p>
 <p>UXS-001 advanced from v0.1 to v0.2 after prototype-image verification surfaced layout details that the original draft (written from OC-05's textual figure descriptions) had got wrong. Subsequent UXSes (UXS-002 through UXS-005) were drafted directly from the prototypes, so they start at v0.1 with no equivalent v0.0-from-text predecessor.</p>
-<h2 id="cross-doc-impact-notes">Cross-doc impact notes<a class="headerlink" href="#cross-doc-impact-notes" title="Permanent link">&para;</a></h2>
+<h2 id="cross-doc-impact-notes">Cross-doc impact notes</h2>
 <p>Drafting these UXSes from the prototypes surfaced changes that other docs need:</p>
 <table>
 <thead>

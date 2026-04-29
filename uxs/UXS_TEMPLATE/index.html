@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="uxs-nnn-surface-name">UXS-NNN — [Surface name]<a class="headerlink" href="#uxs-nnn-surface-name" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-nnn-surface-name">UXS-NNN — [Surface name]</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · [date]
 <strong>IA anchor</strong> · §surfaces/[…] · §shell-regions/[…] · §shared-tokens
@@ -1674,23 +1674,23 @@
 <strong>Related RFC</strong> · RFC-NNN (for behavioural rules — animation, debounce, keyboard)</p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>[1–2 sentences. What is this surface and why does it warrant its own visual contract. If the answer is "it's just like UXS-NNN," consider extending that one instead.]</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <p>[The design convictions for this surface. 3–5 bullets. These explain the <em>why</em> behind the token choices.]</p>
 <ul>
 <li>[Principle 1]</li>
 <li>[Principle 2]</li>
 <li>[Principle 3]</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · [the panels, components, and views this UXS covers]</p>
 <p><strong>Non-goals</strong> · [explicitly what this UXS does <em>not</em> cover — usually deferred surfaces or surfaces with their own UXS]</p>
 <p><strong>Boundary note</strong> · Behaviour (animation timing, debounce, keyboard shortcuts, scroll behaviour, focus management transitions) belongs in [RFC-NNN], not here. If you find yourself writing "when the user clicks X, Y animates to Z" in this doc, that sentence belongs in the RFC.</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only. (OceanCanvas is dark-only by design — see <code>OC_IA.md §shared-tokens</code>.)</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <p>[Reference the shared tokens this UXS uses. Don't restate values — just reference.]</p>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>overlay</code>, <code>border</code> (<code>OC_IA.md §shared-tokens/surface-tokens</code>)</li>
@@ -1699,7 +1699,7 @@
 <li><strong>Typography</strong> · <code>type-hero</code>, <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-surface-specific">Defined here (surface-specific)<a class="headerlink" href="#defined-here-surface-specific" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-surface-specific">Defined here (surface-specific)</h3>
 <p>[Tokens that are unique to this surface or source. Per [ADR-017], domain tokens for sources go here in the per-source UXS.]</p>
 <table>
 <thead>
@@ -1727,8 +1727,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
-<h3 id="view-name">[View name]<a class="headerlink" href="#view-name" title="Permanent link">&para;</a></h3>
+<h2 id="layout">Layout</h2>
+<h3 id="view-name">[View name]</h3>
 <p>[Layout description. Use ASCII diagrams or component lists. Identify the major regions and their behaviour. Reference IA shell-regions where they appear.]</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ [Topbar] (42px, IA shell)                       │
@@ -1754,7 +1754,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <p>[Static visual states only. Hover, active, focus, disabled, loading, empty, error. Do NOT include timing or transitions — those are RFC territory.]</p>
 <table>
 <thead>
@@ -1784,14 +1784,14 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · all foreground/background pairings meet WCAG AA at minimum (4.5:1 for body text, 3:1 for large text). Hero numbers at <code>type-hero</code> against <code>canvas</code> confirmed compliant.</li>
 <li><strong>Focus</strong> · focus rings use <code>border-strong</code> token; visible on all interactive elements; never hidden via <code>outline: none</code> without an alternative.</li>
 <li><strong>Keyboard</strong> · all interactive elements reachable in tab order. Tab-order rules are RFC territory; this UXS only confirms reachability.</li>
 <li><strong>Reduced motion</strong> · per-RFC behaviour rules respect <code>prefers-reduced-motion</code>; this UXS specifies static appearance only.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] All colours use semantic tokens — no one-off hex values</li>
 <li>[ ] All foreground/background pairings use matching token pairs from this spec or IA's <code>§shared-tokens</code></li>
@@ -1803,7 +1803,7 @@
 <li>[ ] Keyboard reachability confirmed for all interactive elements</li>
 </ul>
 <hr />
-<h2 id="notes-on-writing-uxs-in-this-format">Notes on writing UXS in this format<a class="headerlink" href="#notes-on-writing-uxs-in-this-format" title="Permanent link">&para;</a></h2>
+<h2 id="notes-on-writing-uxs-in-this-format">Notes on writing UXS in this format</h2>
 <p><strong>The boundary is sharp.</strong> UXS = static visual contract. Tokens, layout, component appearance, accessibility targets. Behaviour (when X clicked, Y animates) belongs in an RFC. If a UXS section starts to read like a sequence of events, it's probably an RFC paragraph in disguise.</p>
 <p><strong>Inherit from IA.</strong> Shared tokens (canvas, surface, text, intent, typography, spacing) live in IA. Reference them by token name. Don't restate values — restating creates two sources of truth that drift.</p>
 <p><strong>Define what's distinctive.</strong> Domain tokens, source-specific layouts, component states unique to this surface live in the UXS. The test: would a second surface (or second source) want a different value? If yes, it's per-UXS.</p>

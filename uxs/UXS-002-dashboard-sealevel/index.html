@@ -1858,7 +1858,7 @@
   
 
 
-<h1 id="uxs-002-dashboard-sea-level-editorial-spread">UXS-002 — Dashboard, Sea Level editorial spread<a class="headerlink" href="#uxs-002-dashboard-sea-level-editorial-spread" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-002-dashboard-sea-level-editorial-spread">UXS-002 — Dashboard, Sea Level editorial spread</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026 · drafted from prototype mockup (OC-02 Fig 3)
 <strong>IA anchor</strong> · §surfaces/dashboard · §topbar-patterns/dashboard-editorial-spread · §shared-tokens
@@ -1868,23 +1868,23 @@
 <strong>Related RFC</strong> · <em>None yet — Dashboard interaction rules will live in a single Dashboard-interaction RFC.</em></p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>Sea level rise is the data set that most resists template-thinking. Where SST wants a thermal field and a 41-year mean line, sea level wants a <em>rise curve</em> — a single continuous arc from 1993 to today, with annotated events plotted along it. ADR-017 lives or dies on this difference: the layout for sea level is genuinely structurally different from the layout for SST. This UXS captures that difference without compromise.</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <ul>
 <li><strong>The curve is the argument.</strong> A 33-year rising curve is the editorial subject. Annotations on the curve (El Niño '97, La Niña '10, El Niño '15, Record '22, Acceleration 2020–2026) make the story concrete.</li>
 <li><strong>Acceleration is named.</strong> The rate is not constant, and the spread says so explicitly — both in the headline rate stats and in the bar chart "ACCELERATION ⊓ RATE IS NOT CONSTANT".</li>
 <li><strong>Composition matters.</strong> The "Sources of rise" composition (Thermal expansion · Greenland · Antarctic · Glaciers) is what turns "the sea is rising" into "this is why."</li>
 <li><strong>Teal is the identity.</strong> Where SST is amber, sea level is teal. The accent colour permeates: curve line, eyebrow, hero rate, base bars in the acceleration chart.</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · Dashboard topbar in editorial-spread pattern with Sea Level active; full-width rise curve hero with event annotations and rate callouts; 5-column events strip; acceleration bar chart; sources-of-rise composition; sea level domain tokens; citation footer.</p>
 <p><strong>Non-goals</strong> · the Dashboard main view with sea level active (a future UXS, or a small extension to UXS-001 covering the cross-source main view); other source spreads; behavioural rules.</p>
 <p><strong>Boundary note</strong> · Curve hover behaviour, event-marker tooltip animation, source-switcher chip dropdown timing, and any scrolling/parallax effects belong in a Dashboard-interaction RFC. This UXS specifies static appearance only.</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only.</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
 <li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code>, <code>text-disabled</code></li>
@@ -1892,7 +1892,7 @@
 <li><strong>Typography</strong> · <code>type-hero</code>, <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-domain-sealevel-">Defined here — <code>domain-sealevel-*</code><a class="headerlink" href="#defined-here-domain-sealevel-" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-domain-sealevel-">Defined here — <code>domain-sealevel-*</code></h3>
 <p>The sea level palette is teal-led with a graduating warm tier for acceleration. Where SST graduates <em>thermally</em> (cool → hot), sea level graduates <em>temporally</em> (early-period teal → recent-period coral). The core identity remains teal.</p>
 <table>
 <thead>
@@ -1931,7 +1931,7 @@
 </tbody>
 </table>
 <p>The composition bars (Sources of rise) reuse <code>domain-sealevel-cool / -warm / -hot</code> to encode contribution scale, not chronology — Thermal expansion (the largest contributor) in cool, Glaciers (smallest) in hot.</p>
-<h2 id="layout-editorial-spread-fig-3">Layout — editorial spread (Fig 3)<a class="headerlink" href="#layout-editorial-spread-fig-3" title="Permanent link">&para;</a></h2>
+<h2 id="layout-editorial-spread-fig-3">Layout — editorial spread (Fig 3)</h2>
 <p>The spread is full-width-curve dominant. The curve occupies roughly the upper-third; strips and bar charts fill the body.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ OCEANCANVAS  /SEA LEVEL                          [ESA Sea Level CCI] ▾   │  ← topbar (42px)
@@ -2061,7 +2061,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <table>
 <thead>
 <tr>
@@ -2134,7 +2134,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · <code>domain-sealevel-accent</code> (<code>#5DCAA5</code>) over <code>canvas</code> is verified at 9:1+ — exceeds WCAG AA. The cool-warm-hot bar graduation maintains contrast at every step.</li>
 <li><strong>Focus</strong> · all interactive elements (source-switcher chip, event markers, bars with tooltips) show a <code>border-strong</code> focus ring.</li>
@@ -2142,7 +2142,7 @@
 <li><strong>Reduced motion</strong> · curve crosshair and tooltip animations respect <code>prefers-reduced-motion</code>. Per-RFC implementation.</li>
 <li><strong>Screen readers</strong> · curve has an <code>aria-label</code> describing the dataset and date range. Event markers have <code>role="button"</code> with <code>aria-label</code> containing the event name and date. Bars have <code>aria-label</code> containing the period and value.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] Topbar matches editorial-spread pattern (<code>/SEA LEVEL</code> path + source-switcher chip)</li>
 <li>[ ] Rise curve uses <code>domain-sealevel-accent</code> line and <code>domain-sealevel-fill-soft</code> area</li>
@@ -2157,7 +2157,7 @@
 <li>[ ] Screen-reader labels in place on curve, event markers, and bars</li>
 </ul>
 <hr />
-<h2 id="notes-for-future-per-source-uxses">Notes for future per-source UXSes<a class="headerlink" href="#notes-for-future-per-source-uxses" title="Permanent link">&para;</a></h2>
+<h2 id="notes-for-future-per-source-uxses">Notes for future per-source UXSes</h2>
 <p>This UXS pairs with UXS-001 to establish that <strong>per-source spreads share the topbar pattern but otherwise have full design freedom.</strong> UXS-001 is two-column hero + data strip + side-by-side trend/anomaly. UXS-002 is full-width curve + events + bar pairs. Future UXSes for salinity, sea ice, chlorophyll, ocean colour, etc. can pick whichever structure fits the data. ADR-017 is the principle; UXS-001 and UXS-002 together are the proof.</p>
 
 

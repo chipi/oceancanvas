@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="oc-02-project-concept">OC-02 — Project Concept<a class="headerlink" href="#oc-02-project-concept" title="Permanent link">&para;</a></h1>
+<h1 id="oc-02-project-concept">OC-02 — Project Concept</h1>
 <p><strong>OceanCanvas — Generative Art from Open Ocean Data</strong></p>
 <p><em>April 2026 · v1.0</em></p>
 <table>
@@ -1695,7 +1695,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="the-concept">The concept<a class="headerlink" href="#the-concept" title="Permanent link">&para;</a></h2>
+<h2 id="the-concept">The concept</h2>
 <p>OceanCanvas turns free open-government ocean data into a living gallery of generative art. The ocean produces data every day — sea surface temperature, salinity, sea level, sea ice extent, chlorophyll blooms, current velocities. That data is precise, beautiful, and largely invisible to everyone outside the scientific community. OceanCanvas makes it visible as art.</p>
 <p>The core idea is the recipe. A recipe is a named configuration that says: take this ocean variable, from this region, render it this way, and do it again tomorrow. The pipeline reads the recipe, fetches today's data from open government sources, generates a render using p5.js, and saves a PNG. Every day the recipe runs, the gallery grows by one frame.</p>
 <blockquote>
@@ -1703,7 +1703,7 @@
 </blockquote>
 <p>This is what separates OceanCanvas from a monitoring dashboard. A dashboard shows you the ocean as data — numbers, charts, maps. OceanCanvas shows you the ocean as art — something you look at rather than read. The scientific precision is preserved. The visual experience is completely different.</p>
 <hr />
-<h2 id="the-creative-material-open-ocean-data">The creative material — open ocean data<a class="headerlink" href="#the-creative-material-open-ocean-data" title="Permanent link">&para;</a></h2>
+<h2 id="the-creative-material-open-ocean-data">The creative material — open ocean data</h2>
 <p>All data used by OceanCanvas is free, open, and requires no registration or API key. The sources are government and intergovernmental scientific archives — NOAA, NASA, ESA, the Argo programme, GEBCO.</p>
 <table>
 <thead>
@@ -1757,7 +1757,7 @@
 </table>
 <p>The data is described in full in OC-03 (Data Catalog).</p>
 <hr />
-<h2 id="the-creative-loop">The creative loop<a class="headerlink" href="#the-creative-loop" title="Permanent link">&para;</a></h2>
+<h2 id="the-creative-loop">The creative loop</h2>
 <p>OceanCanvas is designed as a closed loop. The user explores data, creates a recipe, watches the pipeline render it daily, sees the renders accumulate in the gallery, and assembles them into a timelapse film. The film reveals patterns over time, which prompts new recipes. The loop feeds itself.</p>
 <table>
 <thead>
@@ -1798,32 +1798,32 @@
 </tbody>
 </table>
 <hr />
-<h2 id="surface-1-dashboard-the-data-explorer">Surface 1 — Dashboard: the data explorer<a class="headerlink" href="#surface-1-dashboard-the-data-explorer" title="Permanent link">&para;</a></h2>
+<h2 id="surface-1-dashboard-the-data-explorer">Surface 1 — Dashboard: the data explorer</h2>
 <p>The dashboard is where the creative process begins. It shows the ocean as it is today — live data from all active sources, presented editorially. The design philosophy: data is the hero, numbers appear at display scale, the canvas is always dark.</p>
 <p><img alt="Dashboard overview" src="../images/dashboard-overview.png" />
 <em>Fig 1. Dashboard overview. Full-bleed SST heatmap dominates the canvas. Source rail at top selects the active dataset. Floating stats overlay shows key numbers at display scale. The 41-year timeline scrubber below the map enables historical exploration.</em></p>
 <p>The dashboard is not a monitoring tool. It is an exploration tool — a way to understand what the ocean looks like today and how it has changed over time.</p>
-<h3 id="main-view">Main view<a class="headerlink" href="#main-view" title="Permanent link">&para;</a></h3>
+<h3 id="main-view">Main view</h3>
 <p>The primary view is a full-bleed spatial map — today's data for the selected source rendered as a colour field across the full ocean basin. The map is interactive: hover reveals coordinates and data values. A source rail along the top switches between available datasets.</p>
-<h3 id="editorial-spreads">Editorial spreads<a class="headerlink" href="#editorial-spreads" title="Permanent link">&para;</a></h3>
+<h3 id="editorial-spreads">Editorial spreads</h3>
 <p>Each source has a dedicated editorial spread — a full-page layout that presents the data with journalistic authority.</p>
 <p><img alt="SST editorial spread" src="../images/sst-editorial-spread.png" />
 <em>Fig 2. SST editorial spread. Temperature field at full width. 14.2°C at 72px. +1.4° anomaly in coral. 41-year trend chart below. The spread reads like a magazine page, not a dashboard panel.</em></p>
 <p><img alt="Sea level editorial spread" src="../images/sea-level-editorial-spread.png" />
 <em>Fig 3. Sea level editorial spread. The 30-year rise curve is the hero — +20.4cm at display scale, +3.7mm/yr acceleration rate. Data points to events: the 1997 El Niño, the 2010 La Niña, the acceleration post-2015.</em></p>
-<h3 id="from-dashboard-to-recipe">From dashboard to recipe<a class="headerlink" href="#from-dashboard-to-recipe" title="Permanent link">&para;</a></h3>
+<h3 id="from-dashboard-to-recipe">From dashboard to recipe</h3>
 <p>The user draws a bounding box on the map. The lat/lon bounds pass directly to the recipe editor as the starting region. The transition is immediate: what you see on the dashboard is what the recipe editor shows in its live preview.</p>
 <hr />
-<h2 id="surface-2-recipe-editor-the-creative-studio">Surface 2 — Recipe editor: the creative studio<a class="headerlink" href="#surface-2-recipe-editor-the-creative-studio" title="Permanent link">&para;</a></h2>
+<h2 id="surface-2-recipe-editor-the-creative-studio">Surface 2 — Recipe editor: the creative studio</h2>
 <p>The recipe editor is where ocean data becomes art. The central design decision: the interface operates at the level of artistic intent, not technical parameters. The user thinks in terms of mood and character — not opacity values and colormap names.</p>
 <blockquote>
 <p><strong>The 1-1 knob mapping — colormap, opacity, particle_count — is the wrong abstraction for a creative user.</strong> 'I want this to feel like a storm' should never require thinking about particle_count: 4000. The creative control surface lives at the level of intent. Technical parameters are generated output, not user input.</p>
 </blockquote>
-<h3 id="the-flip-one-preview-two-modes">The flip — one preview, two modes<a class="headerlink" href="#the-flip-one-preview-two-modes" title="Permanent link">&para;</a></h3>
+<h3 id="the-flip-one-preview-two-modes">The flip — one preview, two modes</h3>
 <p>The editor has a single preview canvas that never moves, and a control surface below it that flips between two modes. One mode at a time. The preview is always the reference point.</p>
 <p><img alt="Recipe editor — creative mode" src="../images/editor-creative-mode.png" />
 <em>Fig 4. Recipe editor — creative mode. The live preview occupies the full width above the flip toggle. Below: mood presets, energy × presence 2D space, colour character spectrum, temporal weight. No technical parameter names visible anywhere.</em></p>
-<h3 id="creative-mode-the-editorial-control-surface">Creative mode — the editorial control surface<a class="headerlink" href="#creative-mode-the-editorial-control-surface" title="Permanent link">&para;</a></h3>
+<h3 id="creative-mode-the-editorial-control-surface">Creative mode — the editorial control surface</h3>
 <table>
 <thead>
 <tr>
@@ -1854,18 +1854,18 @@
 </tr>
 </tbody>
 </table>
-<h3 id="yaml-mode-the-transparency-layer">YAML mode — the transparency layer<a class="headerlink" href="#yaml-mode-the-transparency-layer" title="Permanent link">&para;</a></h3>
+<h3 id="yaml-mode-the-transparency-layer">YAML mode — the transparency layer</h3>
 <p>Flipping to YAML replaces the creative controls with the recipe file that the creative choices are generating. The preview is unchanged. Amber highlighted lines are exactly the parameters set by the creative controls.</p>
 <p><img alt="Recipe editor — YAML mode" src="../images/editor-yaml-mode.png" />
 <em>Fig 5. Recipe editor — YAML mode. Same preview, same flip toggle. The creative control panel is replaced by the recipe YAML. Amber lines are the creative choices. Blue lines are structure and source definitions.</em></p>
-<h3 id="sketch-editor-the-escape-hatch">Sketch editor — the escape hatch<a class="headerlink" href="#sketch-editor-the-escape-hatch" title="Permanent link">&para;</a></h3>
+<h3 id="sketch-editor-the-escape-hatch">Sketch editor — the escape hatch</h3>
 <p>'Sketch editor ↗' opens a full-screen raw p5.js code editor with the render payload pre-loaded. No restrictions. This is the route for the 10% of pieces that push beyond the render type system.</p>
 <hr />
-<h2 id="surface-3-gallery-the-living-archive">Surface 3 — Gallery: the living archive<a class="headerlink" href="#surface-3-gallery-the-living-archive" title="Permanent link">&para;</a></h2>
+<h2 id="surface-3-gallery-the-living-archive">Surface 3 — Gallery: the living archive</h2>
 <p>The gallery is the public face of OceanCanvas. A living art gallery that changes every day when the pipeline runs.</p>
 <p><img alt="Gallery front page" src="../images/gallery-front-page.png" />
 <em>Fig 6. Gallery front page. Hero: today's featured render at full width. Below: the 14-day strip of the same recipe. Grid: all recipes rendered today, source palettes visible (SST amber, ice violet, salinity teal, chlorophyll green).</em></p>
-<h3 id="layout-structure">Layout structure<a class="headerlink" href="#layout-structure" title="Permanent link">&para;</a></h3>
+<h3 id="layout-structure">Layout structure</h3>
 <table>
 <thead>
 <tr>
@@ -1892,14 +1892,14 @@
 </tr>
 </tbody>
 </table>
-<h3 id="the-living-quality">The living quality<a class="headerlink" href="#the-living-quality" title="Permanent link">&para;</a></h3>
+<h3 id="the-living-quality">The living quality</h3>
 <p>The gallery never needs to be updated manually. The pipeline runs at 06:00 UTC every day, renders every active recipe, and rebuilds <code>manifest.json</code>. The gallery reads the manifest. When the user opens the gallery, what they see is today's ocean.</p>
 <hr />
-<h2 id="surface-4-video-editor-the-timelapse-studio">Surface 4 — Video editor: the timelapse studio<a class="headerlink" href="#surface-4-video-editor-the-timelapse-studio" title="Permanent link">&para;</a></h2>
+<h2 id="surface-4-video-editor-the-timelapse-studio">Surface 4 — Video editor: the timelapse studio</h2>
 <p>The video editor assembles a recipe's accumulated renders into a timelapse film. The creative decisions are already made in the recipe — how each frame looks is fully determined. The video editor is assembly and enrichment: which frames, what pace, what music, what data annotations.</p>
 <p><img alt="Video editor with enrichment" src="../images/video-editor-enriched.png" />
 <em>Fig 7. Video editor with audio and overlay enrichment. Left: full-width preview with data overlays visible on the frame — date stamp, anomaly indicator, sparkline, timeline ribbon, record flash banner. Right panel: Sequence, Audio, Overlays sections.</em></p>
-<h3 id="the-three-enrichment-tracks">The three enrichment tracks<a class="headerlink" href="#the-three-enrichment-tracks" title="Permanent link">&para;</a></h3>
+<h3 id="the-three-enrichment-tracks">The three enrichment tracks</h3>
 <p>All three tracks are optional. All three share the same data time series and the same key moment detection algorithm.</p>
 <p><strong>Track 1 — Visual: the daily renders</strong>
 - Which recipe, date range (start/end sliders), frame rate (6fps · 12fps · 24fps)</p>
@@ -1980,10 +1980,10 @@
 </tr>
 </tbody>
 </table>
-<h3 id="the-shared-moment-detection-algorithm">The shared moment detection algorithm<a class="headerlink" href="#the-shared-moment-detection-algorithm" title="Permanent link">&para;</a></h3>
+<h3 id="the-shared-moment-detection-algorithm">The shared moment detection algorithm</h3>
 <p>Audio and overlays share a single key moment detection algorithm. The algorithm finds: statistical peaks (&gt;2 standard deviations), record highs, threshold crossings (user-defined), and inflection points. The video editor timeline shows the audio intensity waveform and overlay event markers aligned at the same frame numbers.</p>
 <hr />
-<h2 id="the-editorial-philosophy">The editorial philosophy<a class="headerlink" href="#the-editorial-philosophy" title="Permanent link">&para;</a></h2>
+<h2 id="the-editorial-philosophy">The editorial philosophy</h2>
 <table>
 <thead>
 <tr>
@@ -2020,8 +2020,8 @@
 </table>
 <p>The design system is documented in full in OC-05.</p>
 <hr />
-<h2 id="phase-1-scope">Phase 1 scope<a class="headerlink" href="#phase-1-scope" title="Permanent link">&para;</a></h2>
-<h3 id="in-scope">In scope<a class="headerlink" href="#in-scope" title="Permanent link">&para;</a></h3>
+<h2 id="phase-1-scope">Phase 1 scope</h2>
+<h3 id="in-scope">In scope</h3>
 <table>
 <thead>
 <tr>
@@ -2060,7 +2060,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="deferred-to-later-phases">Deferred to later phases<a class="headerlink" href="#deferred-to-later-phases" title="Permanent link">&para;</a></h3>
+<h3 id="deferred-to-later-phases">Deferred to later phases</h3>
 <ul>
 <li>Additional sources (ESA CCI series, NSIDC, OSCAR, Argo, NDBC, SOCAT, HadSST4)</li>
 <li>Additional render types (Pulse · Scatter · Composite)</li>

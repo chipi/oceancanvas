@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="prd-002-dashboard">PRD-002 — Dashboard<a class="headerlink" href="#prd-002-dashboard" title="Permanent link">&para;</a></h1>
+<h1 id="prd-002-dashboard">PRD-002 — Dashboard</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>Sources</strong> · OC-02 §Surface 1 · OC-05 §View 1 · §View 2 · §View 3
@@ -1676,28 +1676,28 @@
 </blockquote>
 <hr />
 <p>It is a Tuesday morning. You open OceanCanvas. The canvas is dark, almost black. A field of warm and cool tones spreads across it — the North Atlantic, today. In the corner, <em>14.2°</em>. Below it, <em>+1.4°</em> in coral. There is no panel. There is no toolbar. The data fills the frame.</p>
-<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<h2 id="the-problem">The problem</h2>
 <p>The world has many ways to look at the ocean. Few of them are pleasant to read.</p>
 <p>NASA Worldview is precise but built like a research instrument — every layer is a checkbox, every option a dropdown. Earthdata returns NetCDF files. Operational dashboards (CMEMS, Coral Reef Watch) lead with disclaimers and metadata. The visual register is uniformly the same: clinical, busy, full of UI furniture.</p>
 <p>The result is that the ocean's data — some of the most consequential measurements humans take — is, in practice, only read by people who already know how to read it. It is not absent from the public sphere; it is unreadable in the public sphere. A climate-communicator looking for an image to use in a piece does not go to NSIDC. They go to a stock-photo site.</p>
 <p>OceanCanvas wants the data to be readable as text — as something a person scrolls through with attention, not as something they query with a goal.</p>
-<h2 id="the-experience">The experience<a class="headerlink" href="#the-experience" title="Permanent link">&para;</a></h2>
+<h2 id="the-experience">The experience</h2>
 <p>You scroll into the SST spread. The number <em>14.2°</em> is the largest thing on the page. Below it, <em>+1.4°</em> in coral; that is the number that means something. To the right, the thermal field of the North Atlantic, full bleed, no frame around it. You move the mouse — the coordinate display updates. You drag the timeline backward through 2024, 2020, 2010. The map redraws to those dates. You see, plainly, that the ocean was cooler then.</p>
 <p>You scroll further. The forty-one-year trend chart sits on the dark canvas without a chart border. The 1981–2010 mean is a dashed line. The 2024 dot is labelled. You read the chart the way you read a magazine graphic, not the way you read an analytics tool.</p>
 <p>You scroll into the Sea Level spread. The thirty-year curve is the entire hero — full width, two hundred and eighty pixels tall, teal on dark. <em>+20.4cm</em> at display scale top-left. <em>+5.1mm/yr</em> in coral below it. The curve rises from left to right and you watch thirty years happen.</p>
 <p>You select a region. The lat/lon bounds pass through to the recipe editor. You make a piece.</p>
-<h2 id="why-now">Why now<a class="headerlink" href="#why-now" title="Permanent link">&para;</a></h2>
+<h2 id="why-now">Why now</h2>
 <p>The dashboard is the entry point to recipes. Someone who has not first read the data cannot author a piece about it; PRD-001 (Recipe) requires a place where the data has already been understood.</p>
 <p>It is also the artefact most likely to be encountered by audiences who never touch the editor — the climate-communicator looking for a visual, the curious-person who clicked through. For a non-trivial fraction of visitors, the dashboard <em>is</em> OceanCanvas. The first impression and the depth-of-engagement impression are both set here.</p>
 <p>Phase 1 ships SST as the only live source. The dashboard's editorial logic has to be right for SST first; the system extends to other sources without re-arguing the form.</p>
-<h2 id="success-looks-like">Success looks like<a class="headerlink" href="#success-looks-like" title="Permanent link">&para;</a></h2>
+<h2 id="success-looks-like">Success looks like</h2>
 <ul>
 <li>Someone with no prior interest in ocean data scrolls through the SST spread for longer than they meant to.</li>
 <li>A climate-communicator screenshots the sea-level curve and uses it in a deck without modification, attribution included.</li>
 <li>A scientist-adjacent reader is not insulted by the simplification — feels the data has been respected even where the chrome has been removed.</li>
 <li>The dashboard is mistaken for a magazine more often than for a tool.</li>
 </ul>
-<h2 id="out-of-scope">Out of scope<a class="headerlink" href="#out-of-scope" title="Permanent link">&para;</a></h2>
+<h2 id="out-of-scope">Out of scope</h2>
 <ul>
 <li>Generative renders. Those live in the recipe pipeline; the dashboard shows raw ocean data, not authored work.</li>
 <li>Real-time alerts, watch lists, monitoring. The dashboard is not operational.</li>
@@ -1705,18 +1705,18 @@
 <li>Analytics on dashboard use. (<em>no-engagement-chrome</em> applies here too.)</li>
 <li>Region drawing UX in detail. UXS-002 holds the static visual contract; the related RFC holds the behaviour.</li>
 </ul>
-<h2 id="the-sharpest-threat">The sharpest threat<a class="headerlink" href="#the-sharpest-threat" title="Permanent link">&para;</a></h2>
+<h2 id="the-sharpest-threat">The sharpest threat</h2>
 <p><strong>The dashboard reads as a viewer.</strong></p>
 <p>If first-time visitors experience the dashboard as <em>yet another way to look at SST data</em>, it has failed at its actual job. The editorial promise — that this is a reading experience, not a viewing tool — has to land in the first scroll. If the page is interpreted as a layer of UI on top of the data, the entire frame collapses into the existing genre of scientific dashboards.</p>
 <p>The risk is highest at the source rail and the timeline scrubber, both the most tool-like elements on the page. They have to feel like they belong to a magazine spread, not a Tableau dashboard. The visual restraint in OC-05 is the primary defence; the behavioural details in the related RFC are the secondary one.</p>
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>RFC — Dashboard interaction.</strong> Hover behaviour, scrubber semantics, region selection mode. The behavioural rules that don't belong in UXS.</li>
 <li><strong>RFC — Source switching.</strong> Layout preserved on switch, or each source has its own editorial structure with its own URL? Likely the second; confirm.</li>
 <li><strong>UXS-002 — Dashboard.</strong> Static visual contract.</li>
 <li><strong>ADR — One editorial layout per source.</strong> OC-05 establishes the principle; confirm at ADR.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>Source</strong> — OC-02 §Surface 1 (Dashboard) · OC-05 §View 1 · §View 2 · §View 3</li>
 <li><strong>PA</strong> — §audiences · §promises · §principles</li>

@@ -1786,41 +1786,41 @@
   
 
 
-<h1 id="adr-015-processed-json-format-with-multi-band-handling">ADR-015 — Processed JSON format with multi-band handling<a class="headerlink" href="#adr-015-processed-json-format-with-multi-band-handling" title="Permanent link">&para;</a></h1>
+<h1 id="adr-015-processed-json-format-with-multi-band-handling">ADR-015 — Processed JSON format with multi-band handling</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §contracts/processed-data · §components/data-store</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>Task 03 (Process) converts raw NetCDF or JSON source files into a browser-friendly format in <code>data/processed/{source}/{date}.*</code>. OC-04 specifies three files per source per date: a flat float32 JSON array, a colourised PNG tile, and a meta sidecar. Most sources are single-band (one variable per date — SST, sea level, salinity). Some are multi-band (e.g., a source providing both temperature and uncertainty per pixel).</p>
 <p>This was originally framed as RFC-003 (Processed JSON format) but the answer is largely settled. The remaining open question — multi-band handling — is small enough to lock as an ADR with one alternative noted.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Each processed file set follows this naming convention:</p>
 <ul>
 <li><strong>Single-band sources</strong> — <code>data/processed/{source}/{date}.json</code>, <code>.png</code>, <code>.meta.json</code>. Three files.</li>
 <li><strong>Multi-band sources</strong> — separate file sets per band: <code>data/processed/{source}/{date}.{band}.json</code> etc. Six files for two bands.</li>
 </ul>
 <p>The <code>.json</code> schema is fixed regardless of band count: <code>{ data: [float32 array], shape: [h, w], min, max, lat_range, lon_range, source_id, band, date }</code>.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li>Separate files per band keeps each file simple and small. Browser code requesting "the SST data for date X" gets exactly that, not an envelope object containing four bands.</li>
 <li>The dashboard typically renders one band at a time. Loading separate files matches the access pattern.</li>
 <li>The <code>.meta.json</code> sidecar always exists per band and contains the band-specific statistics.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Single multi-band file with all bands inside</strong> — efficient if the consumer always reads all bands. But the dashboard reads one band at a time, so this would over-fetch. Rejected.</li>
 <li><strong>Multi-band as additional dimensions inside one array</strong> — possible, but conflates two different concepts (spatial dimensions and variable identity). Rejected.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Same loader code works for single-band and multi-band sources.
 - Simple naming convention. <code>data/processed/sst-cci/2026-04-25.analysed_sst.json</code> is self-explanatory.
 - Storage cost scales linearly with band count (no overhead).</p>
 <p><strong>Negative:</strong>
 - More files in the directory for multi-band sources. At v1 scale this is fine.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Process step in <code>pipeline/src/oceancanvas/tasks/process.py</code>.</li>
 <li>Naming convention: <code>{source}/{date}.json</code> for single-band, <code>{source}/{date}.{band}.json</code> for multi-band.</li>

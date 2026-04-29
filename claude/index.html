@@ -1965,14 +1965,14 @@
   
 
 
-<h1 id="claudemd">CLAUDE.md<a class="headerlink" href="#claudemd" title="Permanent link">&para;</a></h1>
+<h1 id="claudemd">CLAUDE.md</h1>
 <blockquote>
 <p>Conventions for AI-assisted work on OceanCanvas. Read this first.</p>
 </blockquote>
 <p>OceanCanvas is generative ocean art that the data performs daily. A pipeline runs at 06:00 UTC, fetches today's ocean data, and renders it through authored recipes. The output is a gallery that walks itself forward without curation.</p>
 <p>This file is the orientation document for any AI assistant working on the codebase. It is read at the start of every session. The code conventions here are firm; the doc-system conventions match the structure under <code>docs/</code>.</p>
 <hr />
-<h2 id="where-things-live">Where things live<a class="headerlink" href="#where-things-live" title="Permanent link">&para;</a></h2>
+<h2 id="where-things-live">Where things live</h2>
 <p><strong>Concept package (<code>docs/concept/</code>).</strong> OC-00 through OC-05 — the founding narrative documents (<code>00-package-introduction.md</code> through <code>05-design-system.md</code>). Read once or twice; rarely updated. The <code>why</code>.</p>
 <p><strong>Definition tree (<code>docs/</code>).</strong></p>
 <ul>
@@ -1991,7 +1991,7 @@
 <li><code>docker-compose.yml</code> — Four containers: pipeline, gallery, prefect-server, postgres (Prefect state DB).</li>
 </ul>
 <hr />
-<h2 id="the-locked-stack">The locked stack<a class="headerlink" href="#the-locked-stack" title="Permanent link">&para;</a></h2>
+<h2 id="the-locked-stack">The locked stack</h2>
 <p>These are decided. Don't propose alternatives in code review or refactors. If a change feels needed, write an RFC and propose it there — never change the stack silently in a PR.</p>
 <table>
 <thead>
@@ -2091,7 +2091,7 @@
 </table>
 <p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> §stack.</p>
 <hr />
-<h2 id="the-non-negotiable-constraints">The non-negotiable constraints<a class="headerlink" href="#the-non-negotiable-constraints" title="Permanent link">&para;</a></h2>
+<h2 id="the-non-negotiable-constraints">The non-negotiable constraints</h2>
 <p>These hold across every PR. Code that violates one of these is broken even if it works.</p>
 <p><strong>File-based storage in v1.</strong> No database. YAML for recipes, JSON for state, PNG for renders. The system is <code>git clone</code> + <code>docker compose up</code>-able with no service dependencies.</p>
 <p><strong>Deterministic rendering.</strong> Same recipe + same source data + same date = same render. Always. No unset random seeds. No clock-dependent code paths in render logic. Re-running produces byte-identical PNGs.</p>
@@ -2102,8 +2102,8 @@
 <p><strong>Attribution baked in.</strong> Source attribution is part of every render. Removing it requires deliberate code change; including it is the default.</p>
 <p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> §constraints.</p>
 <hr />
-<h2 id="code-conventions">Code conventions<a class="headerlink" href="#code-conventions" title="Permanent link">&para;</a></h2>
-<h3 id="python-pipeline">Python (pipeline)<a class="headerlink" href="#python-pipeline" title="Permanent link">&para;</a></h3>
+<h2 id="code-conventions">Code conventions</h2>
+<h3 id="python-pipeline">Python (pipeline)</h3>
 <ul>
 <li>Python 3.12. Type hints on every function signature.</li>
 <li>Format: <code>ruff format</code>. Lint: <code>ruff check</code>.</li>
@@ -2113,7 +2113,7 @@
 <li>Logging via <code>oceancanvas.log.get_logger()</code> — returns Prefect's <code>get_run_logger()</code> inside a flow/task context, falls back to stdlib <code>logging</code> in tests and standalone scripts. No <code>print</code> in pipeline code.</li>
 <li>Tests in <code>tests/</code> mirroring the package structure. Pytest. Each pipeline task has a unit test against synthetic data.</li>
 </ul>
-<h3 id="nodejs-renderer">Node.js (renderer)<a class="headerlink" href="#nodejs-renderer" title="Permanent link">&para;</a></h3>
+<h3 id="nodejs-renderer">Node.js (renderer)</h3>
 <ul>
 <li>Node 20. ES modules (<code>"type": "module"</code> in package.json).</li>
 <li>Format: <code>prettier</code>. Lint: <code>eslint</code>.</li>
@@ -2121,7 +2121,7 @@
 <li>Renderer subprocess pattern: parent Python process spawns Node, streams payload via stdin, receives PNG bytes via stdout, errors via stderr.</li>
 <li>Sketch files live in <code>sketches/{render_type}.js</code> at the repo root. One file per render type. Mounted at <code>/sketches</code> in Docker.</li>
 </ul>
-<h3 id="react-frontend">React (frontend)<a class="headerlink" href="#react-frontend" title="Permanent link">&para;</a></h3>
+<h3 id="react-frontend">React (frontend)</h3>
 <ul>
 <li>React 18, Vite, TypeScript.</li>
 <li>Format: <code>prettier</code>. Lint: <code>eslint</code>.</li>
@@ -2130,29 +2130,29 @@
 <li>Component naming: PascalCase files, kebab-case routes.</li>
 <li>Tests: Vitest + React Testing Library. Visual regression via Playwright (deferred until first surface ships).</li>
 </ul>
-<h3 id="yaml-recipes">YAML (recipes)<a class="headerlink" href="#yaml-recipes" title="Permanent link">&para;</a></h3>
+<h3 id="yaml-recipes">YAML (recipes)</h3>
 <ul>
 <li>Schema follows RFC-001 v0.2 — flat, with comment-marker (<code># ⊓ creative controls ⊓</code>) delimiting structural fields above from creative state + derived params below.</li>
 <li>Validation runs in pipeline Task 01 (discover) before any fetching happens.</li>
 <li>Filenames are kebab-case slugs that match the recipe <code>name</code>. Slug is filesystem-safe and stable.</li>
 </ul>
-<h3 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h3>
+<h3 id="commits">Commits</h3>
 <ul>
 <li>Conventional commits: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>refactor:</code>, <code>test:</code>, <code>chore:</code>.</li>
 <li>Scope optional but encouraged: <code>feat(pipeline): add discover task for OISST</code>.</li>
 <li>Body explains the <em>why</em>, not the <em>what</em>. The diff is the what.</li>
 <li>Reference the ADR/RFC/PRD that the commit serves: <code>Closes RFC-001 → ADR-NNN</code> or <code>Implements PRD-002 §"The experience"</code>.</li>
 </ul>
-<h3 id="branches">Branches<a class="headerlink" href="#branches" title="Permanent link">&para;</a></h3>
+<h3 id="branches">Branches</h3>
 <ul>
 <li>Trunk-based: <code>main</code> is always deployable.</li>
 <li>Feature work in short-lived branches named <code>feat/recipe-yaml-parser</code>, <code>fix/process-task-shape-mismatch</code>. Merge via PR, squash on merge.</li>
 <li>No long-lived dev/staging branches in Phase 1.</li>
 </ul>
 <hr />
-<h2 id="doc-system-rules">Doc-system rules<a class="headerlink" href="#doc-system-rules" title="Permanent link">&para;</a></h2>
+<h2 id="doc-system-rules">Doc-system rules</h2>
 <p>The mechanics of how PRDs / RFCs / ADRs / UXSes interact, in operational form.</p>
-<h3 id="when-code-requires-a-documentation-update">When code requires a documentation update<a class="headerlink" href="#when-code-requires-a-documentation-update" title="Permanent link">&para;</a></h3>
+<h3 id="when-code-requires-a-documentation-update">When code requires a documentation update</h3>
 <ul>
 <li><strong>New surface or major surface change</strong> → update <code>docs/uxs/OC_IA.md</code> first, then add or revise the relevant UXS.</li>
 <li><strong>New shared design token</strong> → add to <code>OC_IA.md §shared-tokens</code>. Don't define it locally in a UXS or hardcode it in a component.</li>
@@ -2161,7 +2161,7 @@
 <li><strong>New audience or new product promise</strong> → update <code>OC_PA.md</code>. Existing PRDs that should reference it get cross-linked.</li>
 <li><strong>New user-facing experience</strong> → write a PRD in blog-post format using the template.</li>
 </ul>
-<h3 id="cross-doc-consistency-rule">Cross-doc consistency rule<a class="headerlink" href="#cross-doc-consistency-rule" title="Permanent link">&para;</a></h3>
+<h3 id="cross-doc-consistency-rule">Cross-doc consistency rule</h3>
 <p>When you change one doc, ask which other docs read from it. Six places update together when an RFC closes into an ADR:</p>
 <ol>
 <li>New ADR file in <code>docs/adr/</code></li>
@@ -2172,7 +2172,7 @@
 <li><code>rfc/index.md</code> and <code>adr/index.md</code> mirror</li>
 </ol>
 <p>Forget any of these and silent drift starts. The fix is cheap when caught early, painful when not.</p>
-<h3 id="what-goes-where">What goes where<a class="headerlink" href="#what-goes-where" title="Permanent link">&para;</a></h3>
+<h3 id="what-goes-where">What goes where</h3>
 <table>
 <thead>
 <tr>
@@ -2217,13 +2217,13 @@
 </table>
 <p>If a piece of writing doesn't fit any of those, it probably doesn't belong in <code>docs/</code>.</p>
 <hr />
-<h2 id="voice">Voice<a class="headerlink" href="#voice" title="Permanent link">&para;</a></h2>
+<h2 id="voice">Voice</h2>
 <p>The documentation is editorial — present-tense, declarative, slightly literary. No SaaS-speak. No "the user shall." No apologetic preamble.</p>
 <p>In code comments and commit messages, the voice can be more functional, but the same principles apply: present-tense, specific, declarative. "Discovers latest OISST date via ERDDAP" — not "This function will be responsible for…"</p>
 <p>Code identifiers (variables, functions, classes) follow standard language conventions — Pythonic for Python, camelCase for JS, etc. Don't try to make code itself sound editorial.</p>
 <hr />
-<h2 id="what-to-do-what-not-to-do">What to do, what not to do<a class="headerlink" href="#what-to-do-what-not-to-do" title="Permanent link">&para;</a></h2>
-<h3 id="do">Do<a class="headerlink" href="#do" title="Permanent link">&para;</a></h3>
+<h2 id="what-to-do-what-not-to-do">What to do, what not to do</h2>
+<h3 id="do">Do</h3>
 <ul>
 <li>Read <code>docs/adr/OC_TA.md</code> and <code>docs/prd/OC_PA.md</code> at the start of any non-trivial session. They are the structural foundation.</li>
 <li>Reference the relevant PRD section when implementing a surface ("PRD-002 §The experience" describes the dashboard interaction this commit implements).</li>
@@ -2232,7 +2232,7 @@
 <li>Update <code>docs/</code> when changing the system's structure, contracts, or surfaces. Same commit if possible.</li>
 <li>Use the templates: <code>PRD_TEMPLATE.md</code>, <code>UXS_TEMPLATE.md</code>, <code>RFC_TEMPLATE.md</code>, <code>ADR_TEMPLATE.md</code>.</li>
 </ul>
-<h3 id="dont">Don't<a class="headerlink" href="#dont" title="Permanent link">&para;</a></h3>
+<h3 id="dont">Don't</h3>
 <ul>
 <li>Don't introduce a new dependency without an ADR. Even small ones. The locked stack is locked for reasons captured in 17 ADRs.</li>
 <li>Don't add a database. ADR-005 says no database in v1 unless the manifest grows enough to need SQLite. "It would be cleaner with Postgres" is not a v1 argument.</li>
@@ -2246,7 +2246,7 @@
 <li>Don't add behavioural rules to a UXS. Animation timing, debounce, transitions, keyboard sequences — those go in an RFC. UXS specifies static appearance only.</li>
 </ul>
 <hr />
-<h2 id="when-in-doubt">When in doubt<a class="headerlink" href="#when-in-doubt" title="Permanent link">&para;</a></h2>
+<h2 id="when-in-doubt">When in doubt</h2>
 <p>Three default moves when you're unsure how to proceed:</p>
 <ol>
 <li><strong>Re-read the PRD or RFC the work serves.</strong> If the work doesn't serve any PRD or RFC, ask whether the work should happen at all in Phase 1.</li>
@@ -2255,7 +2255,7 @@
 </ol>
 <p>If none of those resolve the question, write an RFC. Open questions are a normal state — captured in writing, they make decisions explicit; left in your head, they leak into code as inconsistency.</p>
 <hr />
-<h2 id="phase-1-scope">Phase 1 scope<a class="headerlink" href="#phase-1-scope" title="Permanent link">&para;</a></h2>
+<h2 id="phase-1-scope">Phase 1 scope</h2>
 <p>Phase 1 ships:</p>
 <ul>
 <li>One pipeline running daily at 06:00 UTC.</li>
@@ -2274,7 +2274,7 @@
 </ul>
 <p>Anything outside Phase 1 scope, when it comes up, becomes a Phase 2 PRD or stays deferred. Don't quietly extend Phase 1.</p>
 <hr />
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h2 id="references">References</h2>
 <ul>
 <li><strong>Concept package</strong> — OC-00 through OC-05 in <code>docs/concept/</code></li>
 <li><strong>Reference docs</strong> — <code>docs/prd/OC_PA.md</code>, <code>docs/uxs/OC_IA.md</code>, <code>docs/adr/OC_TA.md</code></li>

@@ -1771,8 +1771,8 @@
   
 
 
-<h1 id="get-started">Get Started<a class="headerlink" href="#get-started" title="Permanent link">&para;</a></h1>
-<h2 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h2>
+<h1 id="get-started">Get Started</h1>
+<h2 id="run-it">Run it</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/chipi/oceancanvas.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>oceancanvas
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up
@@ -1804,7 +1804,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>pipeline-run
 </code></pre></div>
 <hr />
-<h2 id="first-time-setup-local-development">First-time setup (local development)<a class="headerlink" href="#first-time-setup-local-development" title="Permanent link">&para;</a></h2>
+<h2 id="first-time-setup-local-development">First-time setup (local development)</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>scripts/setup.sh
 </code></pre></div>
 <p>This checks prerequisites (Python 3.12, Node 20, Docker), installs dependencies, creates <code>.env</code> from the template, and validates the installation.</p>
@@ -1817,7 +1817,7 @@
 </code></pre></div>
 <p>Gallery at <code>localhost:5173</code>. Changes hot-reload.</p>
 <hr />
-<h2 id="add-a-recipe">Add a recipe<a class="headerlink" href="#add-a-recipe" title="Permanent link">&para;</a></h2>
+<h2 id="add-a-recipe">Add a recipe</h2>
 <p>Drop a YAML file in <code>recipes/</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-recipe</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">created</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2026-04-29</span>
@@ -1841,14 +1841,14 @@
 <p>Or use the Recipe Editor at <code>localhost:8080/recipes/new</code>.</p>
 <p>The next pipeline run picks it up and renders it.</p>
 <hr />
-<h2 id="run-the-pipeline-manually">Run the pipeline manually<a class="headerlink" href="#run-the-pipeline-manually" title="Permanent link">&para;</a></h2>
+<h2 id="run-the-pipeline-manually">Run the pipeline manually</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="nv">$PWD</span>/data<span class="w"> </span><span class="nv">RECIPES_DIR</span><span class="o">=</span><span class="nv">$PWD</span>/recipes<span class="w"> </span><span class="nv">RENDERS_DIR</span><span class="o">=</span><span class="nv">$PWD</span>/renders
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PUPPETEER_EXECUTABLE_PATH</span><span class="o">=</span><span class="s2">&quot;/path/to/chromium&quot;</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SKETCHES_DIR</span><span class="o">=</span><span class="nv">$PWD</span>/sketches
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nb">cd</span><span class="w"> </span>pipeline<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>oceancanvas.flow
 </code></pre></div>
 <hr />
-<h2 id="what-you-need">What you need<a class="headerlink" href="#what-you-need" title="Permanent link">&para;</a></h2>
+<h2 id="what-you-need">What you need</h2>
 <table>
 <thead>
 <tr>

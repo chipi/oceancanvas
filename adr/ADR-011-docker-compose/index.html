@@ -1786,30 +1786,30 @@
   
 
 
-<h1 id="adr-011-docker-compose-deployment">ADR-011 — Docker Compose deployment<a class="headerlink" href="#adr-011-docker-compose-deployment" title="Permanent link">&para;</a></h1>
+<h1 id="adr-011-docker-compose-deployment">ADR-011 — Docker Compose deployment</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/service-layer · §stack · §constraints (self-hostable)</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>OceanCanvas runs as a service: scheduled pipeline, a static web frontend, the Prefect server. The stack must be the same on the developer's laptop, on a VPS, and on a self-hoster's machine. Multiple options exist (Kubernetes, plain systemd, custom shell scripts), each with different trade-offs.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Docker Compose is the deployment model. One <code>docker-compose.yml</code> defines the full stack: <code>pipeline</code>, <code>gallery</code>, <code>prefect-server</code>, and <code>postgres</code> (Prefect's state database) containers. Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Self-hostable</em> — <code>git clone &amp;&amp; docker compose up</code> is the spell. No service dependencies, no credentials to set up, no orchestrator to install. Anyone with Docker can run the system.</li>
 <li><em>Portable</em> — laptop and VPS run identical stacks. Tested locally is tested in production (in terms of stack composition).</li>
 <li><em>Simple</em> — four containers (pipeline, gallery, prefect-server, postgres). No service mesh. No load balancer. Compose is sized exactly for this.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Kubernetes</strong> — over-engineered for four containers running on one machine. The operational overhead of Kubernetes is more than the value at this scale. Revisit when (if) OceanCanvas multi-tenants.</li>
 <li><strong>Plain systemd / docker run scripts</strong> — works, but <code>docker-compose.yml</code> is more declarative and self-documenting than a collection of shell scripts.</li>
 <li><strong>Nomad</strong> — capable but adds an orchestrator most contributors don't know.</li>
 <li><strong>Fly.io / Railway / managed PaaS</strong> — works for hosted instances but breaks the self-hostable property.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Self-hosting documentation collapses to "install Docker, run <code>docker compose up</code>."
 - Local development matches production behaviour exactly.
@@ -1817,7 +1817,7 @@
 <p><strong>Negative:</strong>
 - Compose's networking model is simpler than Kubernetes — multi-host scaling would require something else.
 - No built-in secret management beyond env files. Acceptable; v1 has no secrets to manage (no auth-required sources).</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li><code>docker-compose.yml</code> in repo root.</li>
 <li>Four services: <code>postgres</code>, <code>prefect-server</code>, <code>pipeline</code>, <code>gallery</code>.</li>

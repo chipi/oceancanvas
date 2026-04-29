@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="prd-004-gallery">PRD-004 — Gallery<a class="headerlink" href="#prd-004-gallery" title="Permanent link">&para;</a></h1>
+<h1 id="prd-004-gallery">PRD-004 — Gallery</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.2 · April 2026 (supersedes earlier v0.1 numbered PRD-007)
 <strong>Sources</strong> · OC-02 §Surface 3 · OC-05 §View 1 · OC-04 §Gallery
@@ -1676,25 +1676,25 @@
 </blockquote>
 <hr />
 <p>Open OceanCanvas tomorrow morning. The hero render has changed — yesterday's North Atlantic is now today's. The fourteen-day strip below it has shifted by one frame. The grid of recipes underneath shows the ocean as it looked while you slept. Nothing was published. Nothing was curated. The pipeline ran at 06:00 UTC, the manifest rebuilt itself, and the gallery walked itself one day forward.</p>
-<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<h2 id="the-problem">The problem</h2>
 <p>Generative-art projects almost always die at the gallery stage. The art gets made, the artist posts a few pieces, and then the work is asked to fight for its life in the same feeds and storefronts as everything else. The output is mistaken for content. The archive becomes a chore to maintain.</p>
 <p>OceanCanvas's pipeline produces one render per recipe per day, every day, for as long as a recipe is active. A recipe that has been running for a year is three hundred and sixty-five frames. The cost of curating that by hand kills the project at month three. The cost of not curating it leaves the work invisible.</p>
 <p>What is missing is a presentation surface where accumulation is the point — where three hundred and sixty-five frames is not a backlog but the piece.</p>
-<h2 id="the-experience">The experience<a class="headerlink" href="#the-experience" title="Permanent link">&para;</a></h2>
+<h2 id="the-experience">The experience</h2>
 <p>It is morning. The gallery is the first tab. The hero fills the page — today's <em>North Atlantic Drift</em>, a thermal field rendered six hours ago. The recipe name and date float over the image without a card around them. The number <em>14.6°</em> in the corner is not a label, it is the value.</p>
 <p>You scroll. The fourteen-day strip lays out the same recipe's last two weeks like a film of frames. You see a front passing through on the eleventh. You drift down to the grid. <em>Amazon Plume</em>, <em>Labrador Ice</em>, <em>Gulf Stream Front</em> — different palettes, different logics, all rendered today. The amber, the violet, the teal arrange themselves into something that looks composed without anyone having composed it.</p>
 <p>You click into a recipe. The render goes full screen. From here, a quiet <em>timelapse ↗</em> takes you into the video editor with frames already loaded; <em>recipe ↗</em> drops you into the editor with this piece's parameters. There is no dashboard, no panel of analytics, no engagement metric. The page is the work.</p>
-<h2 id="why-now">Why now<a class="headerlink" href="#why-now" title="Permanent link">&para;</a></h2>
+<h2 id="why-now">Why now</h2>
 <p>Phase 1 ships three recipes. Without a gallery, the only way to see them is the filesystem, which is to say there is no way. The dashboard answers <em>what is the ocean doing today?</em> — the gallery answers <em>what has it looked like, through OceanCanvas's eyes?</em> Without that surface the creative loop does not close: there is no place where accumulation becomes visible and nothing prompts the loop back into new recipes.</p>
 <p>The gallery is also the URL that gets shared when OceanCanvas eventually goes public. Editorial quality cannot be retrofitted later — the visual contract has to be right from day one, even if the hosting story is local-only at first.</p>
-<h2 id="success-looks-like">Success looks like<a class="headerlink" href="#success-looks-like" title="Permanent link">&para;</a></h2>
+<h2 id="success-looks-like">Success looks like</h2>
 <ul>
 <li>A recipe that has been running for thirty days reads as a month of the ocean rather than thirty separate files.</li>
 <li>A recipe that has been running for a year shows the seasonal cycle at a glance.</li>
 <li>A first-time visitor assumes a person curated the page that morning. Nobody did.</li>
 <li>No one notices the page changed overnight, because nothing announces it. It just is.</li>
 </ul>
-<h2 id="out-of-scope">Out of scope<a class="headerlink" href="#out-of-scope" title="Permanent link">&para;</a></h2>
+<h2 id="out-of-scope">Out of scope</h2>
 <ul>
 <li>Public hosting. Phase 1 is local-only. Cloudflare R2, custom domains, social share cards — Phase 2.</li>
 <li>Recipe management. Renaming, archiving, duplicating, version history — that work lives in the recipe editor.</li>
@@ -1702,18 +1702,18 @@
 <li>Recipe creation. The gallery is a viewing surface. New work begins in the editor.</li>
 <li>Engagement analytics. (<em>no-engagement-chrome</em>.) Not in Phase 1, possibly not ever.</li>
 </ul>
-<h2 id="the-sharpest-threat">The sharpest threat<a class="headerlink" href="#the-sharpest-threat" title="Permanent link">&para;</a></h2>
+<h2 id="the-sharpest-threat">The sharpest threat</h2>
 <p><strong>Accumulation does not become beautiful at scale.</strong></p>
 <p>The promise that three hundred and sixty-five frames is the piece — not a backlog — depends on something that has not been tested yet: that a year of daily renders, viewed in aggregate, actually reads as one work. If the visual character of a recipe is not consistent enough across a year of varying ocean conditions, the archive will look like a folder, not a film.</p>
 <p>This is the assumption underneath the entire project. If it fails for OceanCanvas, it fails everywhere — the gallery, the video editor, the long-term value of recipes themselves. Phase 1 cannot prove this directly because there is no year-old archive yet; the signal has to come from the fourteen-day strip, which is the smallest scale at which <em>accumulation as work</em> is visible.</p>
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>RFC — <code>manifest.json</code> schema.</strong> Written by pipeline Task 06, consumed by gallery.</li>
 <li><strong>RFC — Featured-recipe selection.</strong> Where it lives, who sets it, how it changes.</li>
 <li><strong>ADR — Phase 1 static serving.</strong> Caddy + filesystem; Cloudflare R2 deferred to Phase 2.</li>
 <li><strong>UXS-004 — Gallery.</strong> Static visual contract: tokens, hero layout, grid responsiveness, full-screen view.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>Source</strong> — OC-02 §Surface 3 · OC-05 §View 1 · OC-04 §Gallery</li>
 <li><strong>PA</strong> — §audiences · §promises · §principles</li>

@@ -1925,7 +1925,7 @@
   
 
 
-<h1 id="uxs-004-gallery">UXS-004 — Gallery<a class="headerlink" href="#uxs-004-gallery" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-004-gallery">UXS-004 — Gallery</h1>
 <blockquote>
 <p><strong>Status</strong> · v0.2 · April 2026 · redesigned from hero+strip+grid to masonry+detail
 <strong>IA anchor</strong> · §surfaces/gallery · §topbar-patterns/gallery · §shared-tokens
@@ -1933,22 +1933,22 @@
 <strong>Related ADRs</strong> · <a href="../../adr/ADR-004-three-layer-data-store/">ADR-004 Three-layer data store</a> · <a href="../../adr/ADR-012-caddy-static-server/">ADR-012 Caddy as static file server</a></p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>The Gallery is the public face — the surface anyone visiting OceanCanvas sees first. It accumulates daily without curation. The gallery itself should feel like a composed piece of art, not a file browser.</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <ul>
 <li><strong>The gallery is a composition.</strong> Tiles at varied sizes create visual rhythm. The layout itself is the editorial statement — no separate hero needed.</li>
 <li><strong>Art leads, data follows.</strong> Renders fill tiles edge-to-edge. Metadata appears on hover only, never competing with the image.</li>
 <li><strong>Click to focus.</strong> Browsing happens on the grid; focused viewing happens in a full-screen detail view. Two modes, not one scrolling page.</li>
 <li><strong>Self-curating.</strong> Tile size is algorithmically determined by render count. No manual curation.</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · Gallery topbar with source-filter pills; masonry grid with 3 size tiers; hover metadata; full-screen detail view at <code>/gallery/{recipe}</code> with render, strip, and actions; gallery tokens.</p>
 <p><strong>Non-goals</strong> · Recipe page editing; video editor handoff UX; behavioural rules (animation, transitions).</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only.</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
 <li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code>, <code>text-disabled</code></li>
@@ -1956,7 +1956,7 @@
 <li><strong>Typography</strong> · <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-gallery-">Defined here — <code>gallery-*</code><a class="headerlink" href="#defined-here-gallery-" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-gallery-">Defined here — <code>gallery-*</code></h3>
 <table>
 <thead>
 <tr>
@@ -1988,7 +1988,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="layout-main-view">Layout — Main view (/)<a class="headerlink" href="#layout-main-view" title="Permanent link">&para;</a></h2>
+<h2 id="layout-main-view">Layout — Main view (/)</h2>
 <p>The gallery is a single-page masonry grid. No hero section, no strip on this page. Tiles vary in size based on recipe activity.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ OCEANCANVAS                         [all*] [SST] [salinity] [ice] │  ← topbar (42px)
@@ -2011,7 +2011,7 @@
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│                                                                    │
 <a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>└────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
-<h3 id="size-tiers">Size tiers<a class="headerlink" href="#size-tiers" title="Permanent link">&para;</a></h3>
+<h3 id="size-tiers">Size tiers</h3>
 <table>
 <thead>
 <tr>
@@ -2042,7 +2042,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="tile-states">Tile states<a class="headerlink" href="#tile-states" title="Permanent link">&para;</a></h3>
+<h3 id="tile-states">Tile states</h3>
 <table>
 <thead>
 <tr>
@@ -2069,7 +2069,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="layout-detail-view-galleryrecipe">Layout — Detail view (/gallery/{recipe})<a class="headerlink" href="#layout-detail-view-galleryrecipe" title="Permanent link">&para;</a></h2>
+<h2 id="layout-detail-view-galleryrecipe">Layout — Detail view (/gallery/{recipe})</h2>
 <p>Focused view of a single recipe's latest render. The render sits on the left; the context panel on the right provides editorial context about the data source — attribution, explanation, and educational value. The 14-day strip runs along the bottom.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ OCEANCANVAS                                  timelapse ↗  recipe ↗│  ← topbar (42px)
@@ -2099,7 +2099,7 @@
 <a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>└────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p>The context panel serves the <em>editorial-dignity</em> promise (PA §promises) and the <em>citation-travels</em> promise. The render is the art; the panel is the reading. Together they communicate that the art is grounded in real measurement.</p>
-<h3 id="detail-view-elements">Detail view elements<a class="headerlink" href="#detail-view-elements" title="Permanent link">&para;</a></h3>
+<h3 id="detail-view-elements">Detail view elements</h3>
 <table>
 <thead>
 <tr>
@@ -2154,13 +2154,13 @@
 </tr>
 </tbody>
 </table>
-<h3 id="navigation">Navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h3>
+<h3 id="navigation">Navigation</h3>
 <ul>
 <li><strong>Esc key</strong> or <strong>wordmark click</strong> → returns to gallery grid</li>
 <li><strong>Left/Right arrows</strong> → navigate between recipes (optional, v2)</li>
 <li><strong>Strip thumbnail click</strong> → shows that date's render</li>
 </ul>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <table>
 <thead>
 <tr>
@@ -2217,7 +2217,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · text over <code>gallery-overlay-gradient</code> verified against multiple render colours.</li>
 <li><strong>Focus</strong> · all tiles, actions, strip thumbnails show <code>border-strong</code> focus ring.</li>
@@ -2225,7 +2225,7 @@
 <li><strong>Reduced motion</strong> · hover transitions respect <code>prefers-reduced-motion</code>.</li>
 <li><strong>Screen readers</strong> · grid is <code>&lt;ul&gt;</code>, each tile has <code>aria-label</code> with recipe name and date. Detail view render has <code>aria-label</code> describing the recipe.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] Masonry grid with 3 size tiers (large/medium/standard) based on render count</li>
 <li>[ ] Tiles show render image only by default — no visible metadata</li>
@@ -2241,7 +2241,7 @@
 <li>[ ] Keyboard reachability confirmed</li>
 </ul>
 <hr />
-<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h2 id="changelog">Changelog</h2>
 <ul>
 <li><strong>v0.2 · April 2026</strong> — Redesigned from hero+strip+grid to masonry+detail. Dropped hero section; grid tiles now vary in size. Detail view is a separate route. 14-day strip moves to detail view only. Hover metadata replaces always-visible labels.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft: hero+strip+grid vertical stack.</li>

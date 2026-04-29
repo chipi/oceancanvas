@@ -1791,40 +1791,40 @@
   
 
 
-<h1 id="oceancanvas">OceanCanvas<a class="headerlink" href="#oceancanvas" title="Permanent link">&para;</a></h1>
+<h1 id="oceancanvas">OceanCanvas</h1>
 <blockquote>
 <p>The scientific infrastructure governments have built over decades — given to an artist.</p>
 </blockquote>
 <hr />
-<h2 id="the-premise">The premise<a class="headerlink" href="#the-premise" title="Permanent link">&para;</a></h2>
+<h2 id="the-premise">The premise</h2>
 <p>OceanCanvas is what happens when you take NASA and NOAA's ocean data infrastructure — decades of satellite measurements, buoy networks, and climate records, all freely available — and give it to an artist instead of a scientist.</p>
 <p>The result is not a data tool. It is a living gallery of the ocean, driven by the same numbers that oceanographers study, but expressed as generative art, animation, and sound.</p>
 <hr />
-<h2 id="what-it-looks-like">What it looks like<a class="headerlink" href="#what-it-looks-like" title="Permanent link">&para;</a></h2>
+<h2 id="what-it-looks-like">What it looks like</h2>
 <p>You name a piece <em>North Atlantic Drift</em>. You set the region — 30°N to 60°N, west of Ireland to Newfoundland. You choose how the SST data should look: thermal field, slightly turbulent, lingering. You save the recipe.</p>
 <p>Tomorrow morning, while you are still asleep, the ocean will sit for it.</p>
 <p>The pipeline runs at 06:00 UTC. It fetches today's sea surface temperature from NOAA, processes it, runs your recipe through a p5.js sketch, and saves a PNG. Every day, one frame. A recipe running for a year is a year of art — the same authored character, the ocean changing underneath it.</p>
 <p>The gallery walks itself forward. No one curates it. No one publishes it. The renders accumulate.</p>
 <hr />
-<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<h2 id="how-it-works">How it works</h2>
 <p>Six tasks, daily, automated.</p>
 <p><strong>Discover</strong> the latest available date from NOAA ERDDAP. <strong>Fetch</strong> the raw data — NetCDF for sea surface temperature, JSON for Argo float positions. <strong>Process</strong> it into browser-friendly formats — colourised PNG tiles, flat JSON arrays, statistics. <strong>Build a render payload</strong> per recipe — the data cropped to the recipe's region, the creative parameters assembled. <strong>Render</strong> via Puppeteer + p5.js — the sketch runs in headless Chromium, screenshots the canvas. <strong>Index</strong> — rebuild the manifest, clean up.</p>
 <p>Three render types. <strong>Field</strong> — thermal heatmaps. The Gulf Stream as a painting. <strong>Particles</strong> — flow trails tracing the SST gradient. The current made visible. <strong>Scatter</strong> — point clouds of Argo float positions. The observing network as constellation.</p>
 <p>Three data sources. <strong>NOAA OISST</strong> — sea surface temperature, daily, global, since 1981. <strong>Argo</strong> — 4,000 autonomous floats measuring the ocean's interior. <strong>GEBCO</strong> — the ocean floor. All free. All open. No API keys.</p>
 <hr />
-<h2 id="the-four-surfaces">The four surfaces<a class="headerlink" href="#the-four-surfaces" title="Permanent link">&para;</a></h2>
+<h2 id="the-four-surfaces">The four surfaces</h2>
 <p><strong>The Gallery.</strong> A masonry grid of the day's renders. Click into any piece for full-screen view with data context — what dataset produced it, what agency operates it, where to learn more. The gallery is itself a composition. No curation. No engagement metrics.</p>
 <p><strong>The Dashboard.</strong> Read the ocean as data. Full-bleed SST heatmap with editorial stat cards. A timeline scrubber back to 1981. Region selection that feeds directly into the recipe editor.</p>
 <p><strong>The Recipe Editor.</strong> Author a piece at the level of artistic intent. Mood presets, energy × presence, colour character, temporal weight. The preview runs the same p5.js sketch the pipeline uses. What you see is what the pipeline renders. Flip to YAML to see the file your choices generate.</p>
 <p><strong>The Video Editor.</strong> <em>(Coming in v0.3)</em> Assemble a recipe's accumulated renders into a timelapse film with generative audio and data overlays.</p>
 <hr />
-<h2 id="why-this-earns-existence">Why this earns existence<a class="headerlink" href="#why-this-earns-existence" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-earns-existence">Why this earns existence</h2>
 <p><strong>The data is extraordinary and invisible.</strong> The ocean holds 97% of Earth's water, absorbs 90% of excess heat from climate change, and regulates weather across the planet. The scientific community has built extraordinary tools to monitor it. Almost none of that monitoring is visible to anyone who is not a scientist.</p>
 <p><strong>When SST anomaly data becomes a 365-frame animation, the ocean's warming is not a statistic. It is something you watch happen.</strong></p>
 <p><strong>The creative stack is grounded.</strong> Colour is always data-mapped. Motion follows real gradients. Every render carries its source attribution. Nothing decorative. The art is factually correct.</p>
 <p><strong>It runs itself.</strong> Once a recipe is authored, it runs forever. The pipeline is the heartbeat. The gallery is the accumulation. The system does not need you after you author the piece. The ocean keeps feeding it.</p>
 <hr />
-<h2 id="what-it-is-not">What it is not<a class="headerlink" href="#what-it-is-not" title="Permanent link">&para;</a></h2>
+<h2 id="what-it-is-not">What it is not</h2>
 <ul>
 <li><strong>Not a scientific analysis tool.</strong> It does not replace Jupyter notebooks or any research workflow.</li>
 <li><strong>Not a real-time monitoring system.</strong> It does not send alerts or compete with operational products.</li>
@@ -1833,7 +1833,7 @@
 <li><strong>Not a data portal.</strong> It does not host or redistribute raw data. It consumes open data and creates art from it.</li>
 </ul>
 <hr />
-<h2 id="the-deeper-bet">The deeper bet<a class="headerlink" href="#the-deeper-bet" title="Permanent link">&para;</a></h2>
+<h2 id="the-deeper-bet">The deeper bet</h2>
 <p>That the ocean's data, treated with editorial dignity and rendered through authored recipes, produces something people want to look at. Not because it's pretty — because it's true. The Gulf Stream is not an abstraction. The thermal anomaly is not a number. The ice extent is not a chart.</p>
 <p>The data performs daily. The art accumulates. The gallery walks forward.</p>
 

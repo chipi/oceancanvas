@@ -2033,7 +2033,7 @@
   
 
 
-<h1 id="oc_pa-product-architecture">OC_PA — Product Architecture<a class="headerlink" href="#oc_pa-product-architecture" title="Permanent link">&para;</a></h1>
+<h1 id="oc_pa-product-architecture">OC_PA — Product Architecture</h1>
 <ul>
 <li><strong>Status</strong> · v1.0 · April 2026</li>
 <li><strong>Type</strong> · Reference document — structured for linking-into, not reading end-to-end</li>
@@ -2044,56 +2044,56 @@
 <p>This document holds the structural reasoning that every PRD inherits — the audiences OceanCanvas serves, the promises made to them, the principles every feature follows, and the map of which PRDs exist. Individual PRDs link into specific sections rather than restating audiences or principles per feature.</p>
 <p>PA holds <em>what is true across the product</em>. Per-feature argument lives in PRDs. Visual contract lives in UXS. Technical decisions live in ADRs. PA is the document PRDs anchor to so they don't have to carry that work themselves.</p>
 <hr />
-<h2 id="audiences">§audiences<a class="headerlink" href="#audiences" title="Permanent link">&para;</a></h2>
+<h2 id="audiences">§audiences</h2>
 <p>OceanCanvas is for anyone curious about the ocean who cares how things look. Five audiences are named explicitly because each shapes specific PRDs differently. PRDs reference audiences as <code>(PA §audiences/artist)</code>.</p>
-<h3 id="artist">artist<a class="headerlink" href="#artist" title="Permanent link">&para;</a></h3>
+<h3 id="artist">artist</h3>
 <p>Wants to make generative art that is about something real. Finds purely algorithmic work empty. Has no interest in NetCDF but is drawn to the idea that the Gulf Stream can be a painting. Cares deeply about authorship, control, and durability of the work.</p>
-<h3 id="climate-communicator">climate-communicator<a class="headerlink" href="#climate-communicator" title="Permanent link">&para;</a></h3>
+<h3 id="climate-communicator">climate-communicator</h3>
 <p>Needs ways to show climate change that are not bar charts. Works at an NGO, a newsroom, in advocacy, in education. Needs visuals that land without explanation, with proper citation built in.</p>
-<h3 id="scientist-adjacent">scientist-adjacent<a class="headerlink" href="#scientist-adjacent" title="Permanent link">&para;</a></h3>
+<h3 id="scientist-adjacent">scientist-adjacent</h3>
 <p>Works in oceanography, marine biology, or climate science. Already knows what SST anomaly means. Wants their field's data expressed beautifully — for themselves and to show others outside the field.</p>
-<h3 id="curious-person">curious-person<a class="headerlink" href="#curious-person" title="Permanent link">&para;</a></h3>
+<h3 id="curious-person">curious-person</h3>
 <p>Saw a beautiful image somewhere and clicked through. Does not know what degree heating weeks are but finds the coral bleaching alert map viscerally alarming. Starts to understand the data through the art rather than the other way around.</p>
-<h3 id="developer">developer<a class="headerlink" href="#developer" title="Permanent link">&para;</a></h3>
+<h3 id="developer">developer</h3>
 <p>Wants to build something real with open data. Finds the generative art angle more interesting than yet another dashboard. Drawn to the technical challenge of a pipeline that runs itself.</p>
 <hr />
-<h2 id="promises">§promises<a class="headerlink" href="#promises" title="Permanent link">&para;</a></h2>
+<h2 id="promises">§promises</h2>
 <p>Promises are the impact-level commitments OceanCanvas makes to its audiences. Each PRD acts on a subset. PRDs reference promises as <code>(PA §promises/accumulation)</code>.</p>
-<h3 id="authored">authored<a class="headerlink" href="#authored" title="Permanent link">&para;</a></h3>
+<h3 id="authored">authored</h3>
 <p>Every render is part of a named, intentional work. Recipes are not roll-of-the-dice generation — they are authored pieces that happen to be alive. <em>Serves: artist, climate-communicator.</em></p>
-<h3 id="grounded">grounded<a class="headerlink" href="#grounded" title="Permanent link">&para;</a></h3>
+<h3 id="grounded">grounded</h3>
 <p>Every aesthetic choice traces to a measurement. Colour encodes physics. Motion follows real currents. Sound derives from the data scalar. Nothing decorative. <em>Serves: artist, scientist-adjacent, climate-communicator.</em> (Compare principle: <em>aesthetic-traces-to-data</em>.)</p>
-<h3 id="accumulation">accumulation<a class="headerlink" href="#accumulation" title="Permanent link">&para;</a></h3>
+<h3 id="accumulation">accumulation</h3>
 <p>Pieces evolve and accumulate over time. A recipe running for a year is a year of art. The archive is part of the work, not a side effect of it. <em>Serves: artist, climate-communicator, scientist-adjacent.</em></p>
-<h3 id="self-curating">self-curating<a class="headerlink" href="#self-curating" title="Permanent link">&para;</a></h3>
+<h3 id="self-curating">self-curating</h3>
 <p>The public face walks itself forward every day with no editorial maintenance. The pipeline runs at 06:00 UTC; the gallery reflects what it produced, automatically. <em>Serves: artist, curious-person, developer.</em></p>
-<h3 id="editorial-dignity">editorial-dignity<a class="headerlink" href="#editorial-dignity" title="Permanent link">&para;</a></h3>
+<h3 id="editorial-dignity">editorial-dignity</h3>
 <p>The design quality of a magazine, not a dashboard. Numbers at display scale. Dark canvas. No chart chrome. The data is the hero. <em>Serves: climate-communicator, scientist-adjacent, curious-person.</em></p>
-<h3 id="citation-travels">citation-travels<a class="headerlink" href="#citation-travels" title="Permanent link">&para;</a></h3>
+<h3 id="citation-travels">citation-travels</h3>
 <p>Attribution is baked into every render and every export. Sources travel with the work. Reproducibility is built in, not bolted on. <em>Serves: scientist-adjacent, climate-communicator, developer.</em> (Compare principle: <em>attribution-baked-in</em>.)</p>
-<h3 id="open">open<a class="headerlink" href="#open" title="Permanent link">&para;</a></h3>
+<h3 id="open">open</h3>
 <p>Open data. No accounts, no API keys, no auth in Phase 1. Self-hostable end-to-end. Anyone can clone the repo and run the system on their own machine. <em>Serves: developer, scientist-adjacent.</em> (Compare principle: <em>open-by-default</em>.)</p>
 <hr />
-<h2 id="principles">§principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">§principles</h2>
 <p>Principles are the rules followed when building any feature. They constrain the solution space. Every PRD inherits these without arguing them. PRDs reference principles as <code>(PA §principles/data-is-hero)</code>.</p>
-<h3 id="data-is-hero">data-is-hero<a class="headerlink" href="#data-is-hero" title="Permanent link">&para;</a></h3>
+<h3 id="data-is-hero">data-is-hero</h3>
 <p>Every interface element exists to make the data visible. Chrome serves the data, never the other way around. Borders, backgrounds, decorative elements that compete with the data are out by default.</p>
-<h3 id="aesthetic-traces-to-data">aesthetic-traces-to-data<a class="headerlink" href="#aesthetic-traces-to-data" title="Permanent link">&para;</a></h3>
+<h3 id="aesthetic-traces-to-data">aesthetic-traces-to-data</h3>
 <p>Colour, motion, sound, scale, line weight — all map to a measurement. If a parameter has no data referent, it is the wrong parameter. (Compare promise: <em>grounded</em>.)</p>
-<h3 id="determinism">determinism<a class="headerlink" href="#determinism" title="Permanent link">&para;</a></h3>
+<h3 id="determinism">determinism</h3>
 <p>Same recipe + same source data + same date = same render. Always. The render is a function, not an experiment. Reruns produce identical output.</p>
-<h3 id="recipes-are-durable">recipes-are-durable<a class="headerlink" href="#recipes-are-durable" title="Permanent link">&para;</a></h3>
+<h3 id="recipes-are-durable">recipes-are-durable</h3>
 <p>A recipe, once created, runs forever. Authoring is a long-term commitment, not a temporary experiment. The system does not expire recipes; the user removes them deliberately.</p>
-<h3 id="daily-clock-is-sacred">daily-clock-is-sacred<a class="headerlink" href="#daily-clock-is-sacred" title="Permanent link">&para;</a></h3>
+<h3 id="daily-clock-is-sacred">daily-clock-is-sacred</h3>
 <p>The pipeline's daily cadence is the heartbeat. Manual renders are the exception. The system's primary mode is unattended.</p>
-<h3 id="no-engagement-chrome">no-engagement-chrome<a class="headerlink" href="#no-engagement-chrome" title="Permanent link">&para;</a></h3>
+<h3 id="no-engagement-chrome">no-engagement-chrome</h3>
 <p>No view counts, no likes, no share counts, no streaks, no virality features. The work earns its visit. Even when measurable, these are not measured.</p>
-<h3 id="attribution-baked-in">attribution-baked-in<a class="headerlink" href="#attribution-baked-in" title="Permanent link">&para;</a></h3>
+<h3 id="attribution-baked-in">attribution-baked-in</h3>
 <p>Source attribution is part of the render, not a footer added at export. Removing attribution requires deliberate effort; including it is the default. (Compare promise: <em>citation-travels</em>.)</p>
-<h3 id="open-by-default">open-by-default<a class="headerlink" href="#open-by-default" title="Permanent link">&para;</a></h3>
+<h3 id="open-by-default">open-by-default</h3>
 <p>No source requiring authentication ships in Phase 1. No API keys, no accounts. If a source becomes essential and requires auth later, that is a deliberate ADR, not a drift. (Compare promise: <em>open</em>.)</p>
 <hr />
-<h2 id="map">§map<a class="headerlink" href="#map" title="Permanent link">&para;</a></h2>
+<h2 id="map">§map</h2>
 <p>Five PRDs define OceanCanvas at the feature level. Each makes a specific argument for one experience. Implementation work (RFCs, ADRs, UXS) anchors to PRDs.</p>
 <table>
 <thead>
@@ -2146,7 +2146,7 @@
 <p><strong>Numbering</strong> — fresh, replacing the earlier 1–10 list. The pipeline, processing, and rendering items in the original index are not PRDs (no user-value argument to make for them); they live as RFCs and ADRs anchored to OC-04.</p>
 <p><strong>Audio and overlay enrichment</strong> are not separate PRDs. They fold into PRD-005 (Video Editor) as parts of one experience. Their technical implementation gets one or more RFCs.</p>
 <hr />
-<h2 id="how-prds-reference-this-doc">How PRDs reference this doc<a class="headerlink" href="#how-prds-reference-this-doc" title="Permanent link">&para;</a></h2>
+<h2 id="how-prds-reference-this-doc">How PRDs reference this doc</h2>
 <p>PRDs link into PA sections by anchor. The convention:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Primary audiences · curious-person, climate-communicator (PA §audiences)
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Acts on promises  · accumulation, self-curating, editorial-dignity (PA §promises)
@@ -2155,7 +2155,7 @@
 <p>A PRD that references PA can drop its own audience description, its own restatement of principles, and its own argument for why the project's core promises matter. That work happens here, once.</p>
 <p>A PRD that does <em>not</em> reference any PA section is a smell. It usually means either (a) the feature does not fit the product's promises, in which case it should not be a PRD, or (b) the PRD is restating PA-level reasoning instead of using it.</p>
 <hr />
-<h2 id="what-this-doc-is-not">What this doc is not<a class="headerlink" href="#what-this-doc-is-not" title="Permanent link">&para;</a></h2>
+<h2 id="what-this-doc-is-not">What this doc is not</h2>
 <table>
 <thead>
 <tr>
@@ -2214,7 +2214,7 @@
 </table>
 <p>PA does not hold per-feature argument, visual contract, technical decisions, open technical questions, vision narrative, or the project concept. If a section here drifts toward any of those, it belongs in the corresponding doc, not here.</p>
 <hr />
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>Audiences calibration.</strong> Five audiences distilled from OC-01. <em>Curious-person</em> in particular may collapse into <em>climate-communicator</em> if the PRDs end up serving them with the same surfaces and the same promises. Revisit after one quarter of usage signal.</li>
 <li><strong>Promise sequencing.</strong> Promises are rough-grouped by theme rather than ordered by importance. Reorder once the natural reference frequency reveals itself.</li>

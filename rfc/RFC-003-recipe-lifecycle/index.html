@@ -1880,7 +1880,7 @@
   
 
 
-<h1 id="rfc-003-recipe-lifecycle-on-source-unavailability">RFC-003 — Recipe lifecycle on source unavailability<a class="headerlink" href="#rfc-003-recipe-lifecycle-on-source-unavailability" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-003-recipe-lifecycle-on-source-unavailability">RFC-003 — Recipe lifecycle on source unavailability</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>TA anchor</strong> · §components/pipeline · §constraints (determinism, attribution)
@@ -1889,7 +1889,7 @@
 <strong>Why this is an RFC</strong> · Recipes are durable — they run forever once authored (PA §principles/recipes-are-durable). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do <em>something</em>. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>A recipe has been running daily for eighteen months. One morning the upstream source returns a 503 for the requested date. What does the pipeline do?</p>
 <p>The choices look simple in isolation but each one has consequences that ripple through the rest of the system:</p>
 <ul>
@@ -1900,7 +1900,7 @@
 <li><em>Substitute</em> with a related source. Use SST-CCI when OISST is down.</li>
 </ul>
 <p>Each of these has implications for the <em>accumulation</em> promise (PA §promises/accumulation), the <em>attribution-baked-in</em> principle, and the artist's relationship to their work. The deliberation is real because there is no obvious right answer — pause is conservative but creates archive gaps; fall-back is convenient but breaks attribution; substitute is clever but breaks determinism.</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Transient outage.</strong> ERDDAP is down for an afternoon, comes back the next morning. The pipeline should not panic.</li>
 <li><strong>Format change.</strong> NOAA reorganises an endpoint. The fetcher returns 200 but with unexpected structure. The pipeline must not silently accept it.</li>
@@ -1908,7 +1908,7 @@
 <li><strong>Partial unavailability.</strong> The source is up but missing today's date. Common with ICDR products that publish on a 2-week lag.</li>
 </ol>
 <p>The four cases want different behaviours. A unified approach that covers all four cleanly is the goal.</p>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>An archive gap is visible as a gap, not as misleading data.</li>
 <li>A recipe that hits a transient outage continues working when the source recovers.</li>
@@ -1916,14 +1916,14 @@
 <li>The attribution promise is never violated — every render shows what data it was made from.</li>
 <li>Determinism is preserved: re-running the pipeline for a past date with cached data must produce the same render as the original run.</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>Determinism</em> — same recipe + same data = same render (TA §constraints). A "fall back to yesterday" approach must record exactly what data was used.</li>
 <li><em>Attribution baked in</em> — every render shows its source (TA §constraints). Substitution silently breaks this.</li>
 <li><em>Daily clock is sacred</em> — the pipeline runs once per day; we cannot rely on retries (TA §constraints).</li>
 <li><em>File-based storage in v1</em> — recipe state (active, paused, broken) is a flag in a file, not a database row.</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p><strong>Pause-with-clear-logging as the default. Fail-loudly when the failure is structural.</strong></p>
 <p>A recipe has three lifecycle states: <code>active</code>, <code>paused</code>, <code>broken</code>.</p>
 <ul>
@@ -1943,37 +1943,37 @@
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
 </code></pre></div>
 <p>For the partial-unavailability case (Use case 4 — ICDR lag), the discover task (Task 01) already detects this before the fetch attempts, and skips the recipe with reason "no new data" rather than escalating it. A recipe in this state is <code>active</code>, not <code>paused</code> — it's behaving correctly.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-fall-back-to-last-known-data">Alternative: fall back to last known data<a class="headerlink" href="#alternative-fall-back-to-last-known-data" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-fall-back-to-last-known-data">Alternative: fall back to last known data</h3>
 <p>When today's fetch fails, use yesterday's processed data. Mark the render with a "stale-data" overlay.</p>
 <p>Rejected because it breaks the attribution promise. A render dated 2026-04-25 that uses 2026-04-24 data is misattributed even with an overlay — the file timestamp says one thing, the data was another. The temptation to do this came from "the gallery should never have gaps", but archive gaps are honest in a way that stale-data renders are not.</p>
-<h3 id="alternative-render-nan-frames">Alternative: render NaN frames<a class="headerlink" href="#alternative-render-nan-frames" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-render-nan-frames">Alternative: render NaN frames</h3>
 <p>Produce a render with empty data on the failure date — a visible blank or grey frame in the archive.</p>
 <p>Rejected because NaN frames pollute the time series. The video editor would have to skip them; the gallery's 14-day strip would show grey blocks; the visual archive would have visible gaps but in a more confusing way than a missing frame. A skipped frame is cleaner than a present-but-empty one.</p>
-<h3 id="alternative-source-substitution-sst-cci-for-oisst">Alternative: source substitution (SST-CCI for OISST)<a class="headerlink" href="#alternative-source-substitution-sst-cci-for-oisst" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-source-substitution-sst-cci-for-oisst">Alternative: source substitution (SST-CCI for OISST)</h3>
 <p>Define source equivalences. When the primary source is down, fall back to the equivalent.</p>
 <p>Rejected because the sources are not actually equivalent. OISST and SST-CCI differ in resolution, gap-filling strategy, and version history. A recipe built for OISST that suddenly renders SST-CCI data would change visual character — the artist's work would silently shift. If substitution is wanted, it should be an explicit recipe property (<code>fallback_source: sst-cci</code>) authored by the artist, not an automatic system behaviour. Defer that as a future option.</p>
-<h3 id="alternative-human-required-intervention-on-every-failure">Alternative: human-required intervention on every failure<a class="headerlink" href="#alternative-human-required-intervention-on-every-failure" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-human-required-intervention-on-every-failure">Alternative: human-required intervention on every failure</h3>
 <p>Stop and require a human to acknowledge each failure before continuing. Most conservative; least automated.</p>
 <p>Rejected for transient outages — most pause-and-recover scenarios should not require human intervention. The escalation-after-three-failures rule preserves human-in-the-loop for genuinely broken cases without forcing it on every blip.</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>Archive gaps are visible.</strong> Some artists may dislike this. The trade is honesty over completeness.</li>
 <li><strong>Three-day escalation threshold is a magic number.</strong> Tuneable; documenting the choice but accepting we may revise.</li>
 <li><strong>State lives in a sidecar file.</strong> Adds a file per recipe to the directory. Keeps the recipe YAML clean (the YAML is the work; the state is not).</li>
 <li><strong>No automatic recovery from <code>broken</code>.</strong> Once escalated, only manual reset. Conservative; appropriate for "broken" semantics.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>Should the gallery show paused recipes or hide them? A paused recipe is still active and may recover; hiding feels wrong. Show with a subtle indicator?</li>
 <li>Should <code>consecutive_failures</code> reset on success, or accumulate over the recipe's lifetime? Reset is simpler; accumulation gives historical signal.</li>
 <li>The notification mechanism for <code>broken</code> recipes — gallery surface only, or also a log file the artist actively monitors? V1 is gallery-only; assess after first real broken-recipe scenario.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Recipe lifecycle states and unavailability behaviour.</strong> Locks pause-with-logging, the three-state model, the escalation rule.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §components/pipeline · §constraints (determinism, attribution)</li>
 <li><strong>Related PRDs</strong> — PRD-001 Recipe (this RFC was flagged in its open threads)</li>

@@ -1797,43 +1797,43 @@
   
 
 
-<h1 id="adr-016-single-author-recipes-in-phase-1">ADR-016 — Single-author recipes in Phase 1<a class="headerlink" href="#adr-016-single-author-recipes-in-phase-1" title="Permanent link">&para;</a></h1>
+<h1 id="adr-016-single-author-recipes-in-phase-1">ADR-016 — Single-author recipes in Phase 1</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/data-store · §constraints
 <strong>Related PRDs</strong> — PRD-001 Recipe (this constraint was flagged in its open threads)</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>OceanCanvas could plausibly support multi-author recipes — collaborative authorship, shared edits, attribution lists. PRD-001 explicitly defers this question to a future ADR. The deferral itself is a decision worth recording.</p>
 <p>The single-author choice has implications across the system: recipe storage (one author field), permissions model (none in Phase 1), gallery attribution (one name), authorship UX (no collaborator-pending states).</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Phase 1 recipes are single-author. The recipe YAML has one <code>author</code> field. There is no collaboration model, no shared editing, no permissions system. A self-hosted instance has one author by definition; a future hosted multi-tenant instance would still treat each recipe as belonging to one author.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Self-hostable</em> — the typical OceanCanvas instance is one person on their machine. Multi-author features add complexity that nobody needs at this scale.</li>
 <li><em>Sharp scope</em> — adding multi-author later is straightforward (extend the schema, add a permissions layer). Removing multi-author features once added is harder. Defer until there's a real pull.</li>
 <li><em>Authorship is a creative claim</em> — a recipe is named, intentional creative work (PA §promises/authored). Single authorship matches this character.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Multi-author from day one</strong> — adds a permissions model, an invitation flow, conflict resolution, attribution chains. Significant work for no current users. Rejected.</li>
 <li><strong>Implicit author (no field at all)</strong> — the recipe has no author. Acceptable for self-hosted but fails when recipes are shared between instances. Rejected.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Recipe schema is one field simpler.
 - No permissions model needed.
 - Gallery attribution is straightforward.</p>
 <p><strong>Negative:</strong>
 - A future shift to multi-author requires schema migration and likely an editor refactor. Acceptable; the cost is paid once when the feature genuinely arrives.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Recipe YAML has a top-level <code>author</code> field (RFC-001 schema).</li>
 <li>Gallery displays the single author name.</li>
 <li>Self-hosted default: the operating system user who initialised the instance.</li>
 </ul>
-<h2 id="future-trigger">Future trigger<a class="headerlink" href="#future-trigger" title="Permanent link">&para;</a></h2>
+<h2 id="future-trigger">Future trigger</h2>
 <p>Revisit when:
 - Multi-tenant hosting is on the roadmap.
 - Real users ask for collaborative authorship.

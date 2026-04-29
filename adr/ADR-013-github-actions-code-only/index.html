@@ -1786,37 +1786,37 @@
   
 
 
-<h1 id="adr-013-github-actions-for-code-ci-only">ADR-013 — GitHub Actions for code CI only<a class="headerlink" href="#adr-013-github-actions-for-code-ci-only" title="Permanent link">&para;</a></h1>
+<h1 id="adr-013-github-actions-for-code-ci-only">ADR-013 — GitHub Actions for code CI only</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/ci · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The codebase needs continuous integration: lint, unit tests, build verification, and an end-to-end check that the pipeline can produce a render. The question is what role GitHub Actions plays, and what role it does <em>not</em> play.</p>
 <p>A common temptation is to run the actual data pipeline from CI — fetch real data, render real recipes, push to production. This couples CI to upstream data sources, makes CI runs slow and flaky, and conflates code validation with production data flow.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>GitHub Actions runs code validation only: lint, unit tests, build the Docker image, run a synthetic-data e2e test (ADR-014). It never runs the production data pipeline. Production runs on the deployed Docker Compose stack, on its own schedule.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <ul>
 <li>CI's job is to validate code changes. Production's job is to run the pipeline. Mixing them creates a flakier, slower CI and a harder-to-trust production environment.</li>
 <li>Real source endpoints (NOAA, ESA) have rate limits and occasional outages. Running them on every PR is a bad idea.</li>
 <li>The pipeline runs in a Docker container; the same container runs in CI (for the e2e test) and in production. Image parity is the integrity guarantee.</li>
 </ul>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Run the production pipeline from CI on every push</strong> — couples PR feedback to upstream data availability. Rejected.</li>
 <li><strong>Run a lightweight pipeline check (one source, one recipe) on CI</strong> — better than full production but still introduces upstream dependencies. ADR-014's synthetic-data approach is cleaner.</li>
 <li><strong>No CI at all, rely on local testing</strong> — fragile; doesn't catch problems before merge.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - CI is fast and stable; doesn't depend on third-party services being up.
 - Production pipeline runs are independent — a CI outage doesn't affect daily renders.
 - Image parity between CI and production gives a strong correctness signal.</p>
 <p><strong>Negative:</strong>
 - CI doesn't catch real-world data oddities (e.g., an ESA endpoint changing format). Mitigated by occasional manual testing against real sources before deploying.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Workflow file at <code>.github/workflows/ci.yml</code>.</li>
 <li>Triggers: push to main, pull request.</li>

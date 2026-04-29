@@ -1665,19 +1665,19 @@
   
 
 
-<h1 id="oceancanvas">OceanCanvas<a class="headerlink" href="#oceancanvas" title="Permanent link">&para;</a></h1>
+<h1 id="oceancanvas">OceanCanvas</h1>
 <p>Generative ocean art that the data performs daily.</p>
 <p>A pipeline runs at 06:00 UTC, fetches today's ocean data from open scientific sources, and renders it through authored recipes. Every day adds a frame. A recipe running for a year is a year of art — the same authored character, the ocean changing underneath it. The gallery walks itself forward without curation.</p>
 <p>This is not a dashboard. It is not a research tool. It is a project where the ocean's data is treated with editorial dignity, and where authorship and accumulation matter more than dashboards and metrics.</p>
 <hr />
-<h2 id="what-this-is">What this is<a class="headerlink" href="#what-this-is" title="Permanent link">&para;</a></h2>
+<h2 id="what-this-is">What this is</h2>
 <p>Three concepts hold the project together.</p>
 <p><strong>The recipe.</strong> A YAML file authored by a person — region, source, render type, creative parameters. Once authored, it runs forever. Tomorrow at 06:00 UTC the pipeline reads it, fetches that region's data for that source, and renders it. The recipe is the authored work; each render is the data sitting for the work that day.</p>
 <p><strong>The pipeline.</strong> Six tasks in a Prefect flow, running daily. Discover the latest available date per source. Fetch raw data. Process it into a browser-friendly intermediate format. Build a render payload per recipe. Render via Puppeteer + p5.js. Rebuild the manifest. The output is one PNG per recipe per day, on disk.</p>
 <p><strong>The gallery.</strong> A static React app that reads the manifest. Today's renders fill the front page. The fourteen-day strip below shows recent history. The grid below that shows every active recipe. No editor curated it. No engagement metrics measure it. The pipeline ran at 06:00 UTC and the gallery reflects what it produced.</p>
 <p>The four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor — close the creative loop: read the data, author a piece, watch it accumulate, assemble a year into a film.</p>
 <hr />
-<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<h2 id="status">Status</h2>
 <p><strong>Phase 1 — implementation in progress.</strong> The documentation system is complete; code is being written. Phase 1 ships:</p>
 <ul>
 <li>The pipeline running daily, self-hosted via Docker Compose</li>
@@ -1687,9 +1687,9 @@
 </ul>
 <p>Phase 2 (later) will add public hosting, more sources, additional editorial features. Phase 1 stays open-by-default, file-based, and self-hostable.</p>
 <hr />
-<h2 id="how-to-read-this-repository">How to read this repository<a class="headerlink" href="#how-to-read-this-repository" title="Permanent link">&para;</a></h2>
+<h2 id="how-to-read-this-repository">How to read this repository</h2>
 <p>OceanCanvas's documentation has two layers — a concept package at the project root, and a living definition tree under <code>docs/</code>.</p>
-<h3 id="the-concept-package-read-end-to-end-once">The concept package — read end-to-end, once<a class="headerlink" href="#the-concept-package-read-end-to-end-once" title="Permanent link">&para;</a></h3>
+<h3 id="the-concept-package-read-end-to-end-once">The concept package — read end-to-end, once</h3>
 <table>
 <thead>
 <tr>
@@ -1725,7 +1725,7 @@
 </tbody>
 </table>
 <p>Read these once or twice for the <em>why</em>. They are updated rarely.</p>
-<h3 id="the-definition-tree-read-selectively-when-working-on-something">The definition tree — read selectively, when working on something<a class="headerlink" href="#the-definition-tree-read-selectively-when-working-on-something" title="Permanent link">&para;</a></h3>
+<h3 id="the-definition-tree-read-selectively-when-working-on-something">The definition tree — read selectively, when working on something</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docs/
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── prd/                 Product — user-value arguments per surface
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── OC_PA.md         Reference: audiences · promises · principles
@@ -1744,7 +1744,7 @@
 </code></pre></div>
 <p>Read what you need when you need it. Reference docs (PA / IA / TA) are linked into, not read end-to-end. Per-artifact docs are read when working on the thing they describe.</p>
 <hr />
-<h2 id="how-to-run-it">How to run it<a class="headerlink" href="#how-to-run-it" title="Permanent link">&para;</a></h2>
+<h2 id="how-to-run-it">How to run it</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/chipi/oceancanvas.git
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>oceancanvas
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up
@@ -1756,7 +1756,7 @@
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>make<span class="w"> </span>gallery-dev<span class="w">                   </span><span class="c1"># starts Vite (5173) + save server (3001)</span>
 </code></pre></div>
 <hr />
-<h2 id="working-on-the-project">Working on the project<a class="headerlink" href="#working-on-the-project" title="Permanent link">&para;</a></h2>
+<h2 id="working-on-the-project">Working on the project</h2>
 <p>Two documents at the project root guide hands-on work:</p>
 <ul>
 <li><strong><code>CLAUDE.md</code></strong> — project conventions for working on the codebase. Where things live, the locked stack, the non-negotiable constraints, code conventions, what to do and what not to do. Written for AI-assisted work but readable by humans.</li>
@@ -1764,10 +1764,10 @@
 </ul>
 <p>Phase 1 is single-author. Once Phase 1 ships, contribution conventions will be documented here.</p>
 <hr />
-<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
+<h2 id="license">License</h2>
 <p>To be decided before public release. Phase 1 is private development; Phase 2 will ship under an open license appropriate to a project built on open scientific data.</p>
 <hr />
-<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permanent link">&para;</a></h2>
+<h2 id="acknowledgements">Acknowledgements</h2>
 <p>Built on data from NOAA, ESA, NASA, NSIDC, and the broader open ocean-data ecosystem. The data is the work; this project is one way of looking at it.</p>
 
 

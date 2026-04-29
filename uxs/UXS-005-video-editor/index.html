@@ -1869,7 +1869,7 @@
   
 
 
-<h1 id="uxs-005-video-editor">UXS-005 — Video Editor<a class="headerlink" href="#uxs-005-video-editor" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-005-video-editor">UXS-005 — Video Editor</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026 · drafted from prototype mockup (OC-02 Fig 7)
 <strong>IA anchor</strong> · §surfaces/video-editor · §topbar-patterns/video-editor · §shared-tokens
@@ -1878,23 +1878,23 @@
 <strong>Related RFCs</strong> · <a href="../../rfc/RFC-006-audio-system/">RFC-006 Audio system</a> · <a href="../../rfc/RFC-007-key-moment-detection/">RFC-007 Key moment detection</a></p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>The Video Editor is the assembly studio — accumulated PNG renders become an MP4 with audio and overlays. PRD-005's sharpest threat (audio reads as decorative) is defeated specifically when the visual and audio events are demonstrably synchronised. This UXS specifies the visual contract that makes that synchronisation visible: the timeline ribbon under the preview shows key-moment markers; the Audio panel's "key moments detected" list shows the same moments by frame number; the Overlays panel's "Record flash" overlay fires at the same moment the audio swells. The UI has to make the connection visible — that's what this document specifies.</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <ul>
 <li><strong>Preview dominates; controls are dense.</strong> The preview takes ~75% of horizontal space. The right panel is dense and information-rich — this is a workshop surface, not a public face.</li>
 <li><strong>Key moments are first-class.</strong> They appear in the preview (ribbon markers, NEW RECORD banner overlays), in the Audio panel (frame-number list), and in the Overlays panel (which overlays fire on which moment types). One detection algorithm (RFC-007), three points of visibility.</li>
 <li><strong>Audio and overlays share a vocabulary.</strong> Both consume the per-frame intensity signal. The Overlays panel groups them visually: rendering overlays (counter, anomaly, label, flash) above editorial overlays (date, attribution, pull-quote).</li>
 <li><strong>Export is the primary action.</strong> <code>export MP4</code> lives in the topbar's right region in <code>intent-info</code> — present at all times, never buried in a menu.</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · Video Editor topbar with <code>export MP4</code> action; preview area with rendered frame, sparkline, key-moment NEW RECORD banner, in-frame metadata overlay, and timeline ribbon; right-side control panel with Sequence, Audio, and Overlays sections; key-moments-detected list; overlay enable/disable list with status dots; citation footer.</p>
 <p><strong>Non-goals</strong> · The export-completion screen / share modal (deferred); the audio API authentication flow (Phase 2); behavioural rules (playback timing, key-moment detection algorithm — those are RFC territory).</p>
 <p><strong>Boundary note</strong> · Frame playback timing, audio crossfading mechanics (RFC-006), key-moment detection algorithm (RFC-007), and timeline ribbon scrubbing behaviour all belong in their respective RFCs. This UXS specifies the static appearance of every panel and overlay marker — not how they animate or compute.</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only.</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
 <li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code>, <code>text-disabled</code></li>
@@ -1902,7 +1902,7 @@
 <li><strong>Typography</strong> · <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-videoeditor-">Defined here — <code>videoeditor-*</code><a class="headerlink" href="#defined-here-videoeditor-" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-videoeditor-">Defined here — <code>videoeditor-*</code></h3>
 <p>The Video Editor introduces tokens for the timeline ribbon's key-moment markers and the overlay status indicators.</p>
 <table>
 <thead>
@@ -1951,7 +1951,7 @@
 </tbody>
 </table>
 <p>The marker colours intentionally match the source palette so that the timeline ribbon under an SST recipe uses warm tones and an ice recipe would use cool tones — the visual identity carries through.</p>
-<h2 id="layout-fig-7">Layout (Fig 7)<a class="headerlink" href="#layout-fig-7" title="Permanent link">&para;</a></h2>
+<h2 id="layout-fig-7">Layout (Fig 7)</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ OCEANCANVAS  /timelapse editor / gulf_stream_thermal               export MP4│  ← topbar (42px)
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────┬────────────────────┤
@@ -2096,7 +2096,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="the-overlays-concrete-list">The overlays — concrete list<a class="headerlink" href="#the-overlays-concrete-list" title="Permanent link">&para;</a></h2>
+<h2 id="the-overlays-concrete-list">The overlays — concrete list</h2>
 <p>The prototype defines the overlay set explicitly. PRD-005 should be revised to match this list.</p>
 <table>
 <thead>
@@ -2159,7 +2159,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <table>
 <thead>
 <tr>
@@ -2265,7 +2265,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · <code>intent-info</code> (<code>#5DCAA5</code>) over <code>surface</code> is 8:1+. <code>intent-alert</code> (<code>#F09595</code>) over <code>videoeditor-banner</code> (low-opacity amber) is verified at 4.8:1 — meets WCAG AA. The status dots in the overlay list are colour-coded but always paired with text labels, so they remain distinguishable for users with colour-vision differences.</li>
 <li><strong>Focus</strong> · all interactive elements (export button, ribbon markers, ribbon playhead, audio section values, overlay rows, key-moment list rows) show a <code>border-strong</code> focus ring.</li>
@@ -2273,7 +2273,7 @@
 <li><strong>Reduced motion</strong> · NEW RECORD banner appearance, ribbon playhead movement, overlay enable/disable transitions, export-progress animation all respect <code>prefers-reduced-motion</code>.</li>
 <li><strong>Screen readers</strong> · preview is <code>&lt;region&gt;</code> with <code>aria-label</code> containing the recipe id and current frame number. Timeline ribbon is a <code>&lt;slider&gt;</code> (or <code>aria-valuenow</code>-equipped element) with <code>aria-valuemin</code>/<code>-max</code>/<code>-now</code> for frame number. Markers are <code>role="button"</code> with descriptions. Overlay rows are checkboxes with <code>aria-checked</code>. Key-moment list is <code>&lt;ul&gt;</code> with each row as <code>&lt;li&gt;</code> containing a button.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] Topbar shows two-segment path (<code>/timelapse editor / {recipe-id}</code>) and <code>export MP4</code> action in <code>intent-info</code></li>
 <li>[ ] Preview area takes ~75% of horizontal space; right panel is ~340px wide</li>
@@ -2291,7 +2291,7 @@
 <li>[ ] Screen-reader labels in place on preview, ribbon, overlay rows, and key-moment list</li>
 </ul>
 <hr />
-<h2 id="notes-for-related-docs">Notes for related docs<a class="headerlink" href="#notes-for-related-docs" title="Permanent link">&para;</a></h2>
+<h2 id="notes-for-related-docs">Notes for related docs</h2>
 <p><strong>PRD-005 should enumerate the overlays.</strong> This UXS contains the concrete list (10 overlays, 8 default-enabled). PRD-005 v0.2 should reference it explicitly so the product surface is documented at the impact level, not only at the visual-contract level.</p>
 <p><strong>RFC-006 audio system architecture stands.</strong> The prototype confirms the four-axis audio control surface (theme, energy arc, sensitivity, key moments). The "via generative API" subtitle indicates the stem-source choice (per RFC-006's Implementation B path) is in play here — the deeper API choice (Mubert vs. Beatoven) remains open.</p>
 <p><strong>RFC-007 key moment detection</strong> — the prototype shows three detected moments by name (<code>El Niño peak</code>, <code>Record high</code>, <code>Acceleration</code>). These map to the four detector types in RFC-007 (peaks, records, threshold, inflection); <code>Acceleration</code> corresponds to the inflection detector. Worth confirming in RFC-007's open questions whether the user-facing moment names are derived from detector type or set by the user / preset.</p>

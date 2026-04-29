@@ -1891,7 +1891,7 @@
   
 
 
-<h1 id="rfc-005-yaml-round-tripping">RFC-005 — YAML round-tripping<a class="headerlink" href="#rfc-005-yaml-round-tripping" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-005-yaml-round-tripping">RFC-005 — YAML round-tripping</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.2 · April 2026 · revised to match RFC-001 v0.2 flat schema
 <strong>TA anchor</strong> · §contracts/recipe-yaml · §components/web-frontend
@@ -1900,7 +1900,7 @@
 <strong>Why this is an RFC</strong> · The Recipe Editor's flip between Creative mode and YAML mode is a core artistic surface (PRD-003). Creative mode generates YAML; YAML mode allows direct edits. When a power user changes a value in YAML and flips back to Creative, what happens? The deliberation is not whether to support this — both modes must exist (PRD-003 sharpest threat) — but how the round-trip handles divergence between the two representations.</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>The editor maintains two representations of the same recipe:</p>
 <ol>
 <li><strong>Creative state</strong> — five values held in the editor's UI: <code>mood</code>, <code>energy_x</code>, <code>energy_y</code>, <code>colour_character</code>, <code>temporal_weight</code>.</li>
@@ -1909,28 +1909,28 @@
 <p>Going <em>creative state → YAML</em> is straightforward: the deterministic mapping function takes creative-state values and produces the <code>render</code> and <code>audio</code> blocks. The editor writes the creative-state values as YAML keys (<code>mood:</code>, <code>energy_x:</code>, etc.) and the derived blocks below them. All of these lines render amber in YAML mode.</p>
 <p>Going <em>YAML → creative state</em> is harder. If a power user edits the YAML directly — changes <code>colormap</code> from <code>thermal-warm</code> to <code>arctic-cool</code>, or sets a particle-count override — what should the creative controls do when the user flips back to Creative mode?</p>
 <p>There is no perfect answer. The mapping creative-state → technical-params is many-to-one (multiple creative states can produce similar technical values for some parameters), and the YAML edit may be a small tweak (still maps to a creative state) or a fundamental change (no creative state matches).</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Small tweak in YAML.</strong> Power user changes <code>render.opacity</code> from <code>0.71</code> to <code>0.74</code>. Almost no effect on creative state — the energy×presence point would barely move. The creative controls should snap to the closest match.</li>
 <li><strong>Large change in YAML.</strong> Power user replaces the entire <code>render</code> block with hand-tuned values — different colormap, different blend mode, different particle behaviour. No nearby creative state exists.</li>
 <li><strong>Round-trip preservation.</strong> User opens an existing recipe, never edits YAML, just adjusts creative controls and saves. The YAML's <code>render</code>/<code>audio</code> blocks should match exactly what the creative-to-yaml-mapping would produce, preserving git diffs at minimum.</li>
 <li><strong>Sketch override active.</strong> Recipe has <code>sketch_override</code> set to a path. The technical block is ignored by the pipeline. What do creative controls show?</li>
 </ol>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>A pure creative-mode workflow produces stable YAML across sessions (no spurious diffs).</li>
 <li>A power user editing YAML never has their work silently overwritten by creative-mode interactions.</li>
 <li>The user can always tell, by looking at the editor, whether the current creative-control state matches the YAML or has diverged.</li>
 <li>The same mapping function generates creative-state → YAML in the editor and the pipeline (no separate "interpretation" of the YAML happens at render time).</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>Determinism</em> — creative-state-to-technical mapping must be a pure function. Same creative state always produces the same technical values (TA §constraints).</li>
 <li><em>File-based storage</em> — recipes are flat YAML; the editor cannot rely on hidden metadata in a database (TA §constraints).</li>
 <li><em>Flat schema with marker</em> — the schema (per RFC-001 v0.2) is flat; round-tripping operates on lines below the marker, not on a separate <code>creative:</code> block.</li>
 <li><em>No editor-only sketch code</em> — the round-tripping logic lives in the editor, not in the sketch.</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p><strong>Inverse-mapping with a "custom" indicator.</strong> Two-way binding for clean cases; explicit "custom" marker when divergence is detected. The logic operates on lines below the comment marker (per RFC-001 v0.2).</p>
 <p>The editor keeps a deterministic mapping function <code>creative_to_technical(creative_state) → technical_dict</code>. This function is the source of truth for forward conversion. It is pure, versioned, and identical in editor and pipeline.</p>
 <p>For YAML → creative state, the editor parses the file and partitions it at the marker:</p>
@@ -1960,45 +1960,45 @@
 </ul>
 <p>The state (<code>matched</code>, <code>partially-custom</code>, <code>custom</code>) is editor-side only. It is <em>not</em> persisted in the YAML file. Reopening the recipe re-runs the comparison.</p>
 <p>For sketch overrides (use case 4), the editor displays creative controls greyed out with a "sketch override active" message. The five creative-state YAML keys (<code>mood</code>, <code>energy_x</code>, etc.) and the technical blocks (<code>render</code>, <code>audio</code>) are preserved as-is but unused by the pipeline.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-hash-based-detection-store-creative-state-hash-in-yaml">Alternative: hash-based detection (store creative state hash in YAML)<a class="headerlink" href="#alternative-hash-based-detection-store-creative-state-hash-in-yaml" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-hash-based-detection-store-creative-state-hash-in-yaml">Alternative: hash-based detection (store creative state hash in YAML)</h3>
 <p>Embed a hash of the creative state as a field in the YAML; if it doesn't match the recomputed hash, mark as custom.</p>
 <p>Rejected because it adds non-semantic state to the recipe file. The recipe is the artist's authored work; sticking a hash in there to support editor logic is the wrong concern in the wrong file. The inverse-mapping approach achieves the same detection from data already in the recipe.</p>
-<h3 id="alternative-never-round-trip-yaml-edits-are-one-way">Alternative: never round-trip — YAML edits are one-way<a class="headerlink" href="#alternative-never-round-trip-yaml-edits-are-one-way" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-never-round-trip-yaml-edits-are-one-way">Alternative: never round-trip — YAML edits are one-way</h3>
 <p>Once a user edits YAML, the recipe is permanently in "custom" mode. Creative controls are disabled forever for that recipe.</p>
 <p>Rejected because it punishes small tweaks. A user nudging one parameter shouldn't lose access to the creative surface. The <code>partially-custom</code> middle state is the right granularity.</p>
-<h3 id="alternative-full-inverse-mapping-always-derive-creative-from-technical">Alternative: full inverse mapping (always derive creative from technical)<a class="headerlink" href="#alternative-full-inverse-mapping-always-derive-creative-from-technical" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-full-inverse-mapping-always-derive-creative-from-technical">Alternative: full inverse mapping (always derive creative from technical)</h3>
 <p>When loading a YAML, recompute creative state from the <code>render</code>/<code>audio</code> blocks via an inverse function. Always show the closest creative state. Ignore the creative-state YAML keys (<code>mood:</code>, etc.) entirely.</p>
 <p>Rejected because the mapping is many-to-one — there is no unique inverse. The closest creative state may not be what the user intended (they may have made deliberate technical-only choices). Better to preserve the user's stated creative state (the explicit <code>mood:</code> etc. keys) and detect divergence than to second-guess it.</p>
-<h3 id="alternative-lock-the-yaml-mode-behind-a-confirmation">Alternative: lock the YAML mode behind a confirmation<a class="headerlink" href="#alternative-lock-the-yaml-mode-behind-a-confirmation" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-lock-the-yaml-mode-behind-a-confirmation">Alternative: lock the YAML mode behind a confirmation</h3>
 <p>Require a "Yes, I want to edit YAML directly" confirmation before allowing technical-block edits. Reduces accidental divergence.</p>
 <p>Rejected because it makes the YAML mode feel hostile. PRD-003's sharpest threat is power users feeling infantilised; gating YAML edits behind a confirmation worsens that. The custom state already provides clarity without friction.</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>The "closest creative state" function for Adopt YAML as creative is lossy.</strong> The user may end up with creative-control values they didn't choose. Mitigation: confirm before adopting.</li>
 <li><strong>Editor and pipeline must use the same mapping function.</strong> This is a code-sharing constraint — the mapping logic lives in a module imported by both. Keeps logic synchronised; means a bug in the mapping affects both contexts at once.</li>
 <li><strong>State detection runs every time YAML is loaded.</strong> Cheap (parse + comparison) but a non-zero startup cost per recipe.</li>
 <li><strong>The creative-state YAML keys (<code>mood:</code>, <code>energy_x:</code>, etc.) are duplicate sources of truth with the <code>render</code>/<code>audio</code> blocks.</strong> They have to stay in sync — when out of sync, the state-detection algorithm picks up the difference and flags it as <code>partially-custom</code> or <code>custom</code>. This is the feature, not a bug, but it's worth being explicit that the editor must always update both the creative-state keys <em>and</em> the derived blocks together.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>How small a divergence is <code>partially-custom</code> vs <code>custom</code>? A single field edit is clearly partially-custom; a complete rewrite is clearly custom. Where between? Probably a fixed threshold (e.g., &gt;50% of fields differ).</li>
 <li>Should there be a visible indicator in the gallery for recipes in <code>custom</code> state — a small marker that this is a power-user piece? Could enrich the gallery with a useful signal; could also be visual noise.</li>
 <li>The mapping function will evolve (new presets, refined energy×presence behaviour). A recipe authored in v1 should still load correctly in v2. Versioning the mapping function with a <code>creative_mapping_version</code> field in the recipe? Probably worth it.</li>
 <li>When the marker comment is missing (e.g., user deleted it accidentally), should the editor (a) restore it on save with the current mapping; (b) treat the entire file as custom; or (c) show a warning prompt? Probably (a) — restore silently, since the marker is editor-managed metadata.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Round-tripping and divergence handling.</strong> Locks the matched/partially-custom/custom state model, the explicit user actions (Reset, Adopt), the no-hash policy, and the mapping-function-versioning approach.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §contracts/recipe-yaml · §components/web-frontend</li>
 <li><strong>Related PRDs</strong> — PRD-003 Recipe Editor (this RFC was flagged in its open threads)</li>
 <li><strong>Related UXS</strong> — UXS-003 Recipe Editor (visual contract for the YAML mode this RFC operates on)</li>
 <li><strong>Related RFCs</strong> — RFC-001 Recipe YAML schema (the schema this RFC operates on)</li>
 </ul>
-<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h2 id="changelog">Changelog</h2>
 <ul>
 <li><strong>v0.2 · April 2026</strong> — Revised to match RFC-001 v0.2's flat schema. Replaced "loaded_yaml.creative / loaded_yaml.technical" partitioning with "lines below marker — creative-state keys + technical blocks (render, audio)". Added open question about marker-comment recovery on accidental deletion. Updated trade-offs to note the dual-source-of-truth between creative-state YAML keys and derived blocks.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, written assuming the two-tier (<code>creative:</code> / <code>technical:</code>) schema from RFC-001 v0.1. Superseded by v0.2.</li>

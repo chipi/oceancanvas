@@ -1923,13 +1923,13 @@
   
 
 
-<h1 id="implementation-phase-3-kickoff">Implementation — Phase 3 kickoff<a class="headerlink" href="#implementation-phase-3-kickoff" title="Permanent link">&para;</a></h1>
+<h1 id="implementation-phase-3-kickoff">Implementation — Phase 3 kickoff</h1>
 <blockquote>
 <p>How Phase 1 gets built. What ships first, what gates the next slice, what order the rest follows.</p>
 </blockquote>
 <p>This guide is the bridge between the documentation system and running code. It names three slices, the gates that justify moving from one to the next, and the rough order of what follows. It is not a roadmap. Roadmaps name dates; this guide names <em>gates</em>. A slice ships when it works end-to-end.</p>
 <hr />
-<h2 id="the-principle-each-slice-closes-a-complete-loop">The principle: each slice closes a complete loop<a class="headerlink" href="#the-principle-each-slice-closes-a-complete-loop" title="Permanent link">&para;</a></h2>
+<h2 id="the-principle-each-slice-closes-a-complete-loop">The principle: each slice closes a complete loop</h2>
 <p>The instinct, faced with a complete documentation system, is to build everything in parallel — pipeline here, frontend there, recipes in a third place. Resist that.</p>
 <p>Build slices that close. Each slice ends with a working end-to-end system that does <em>less</em> than the final product but does it <em>completely</em>. By the end of Slice 1, recipes render daily and someone can browse the results in the gallery. The system gets richer with each slice; it never sits half-built.</p>
 <p>The reason is feedback. Documentation predicts; code teaches. The fastest way to learn where the documentation got something wrong is to make the system run.</p>
@@ -1940,9 +1940,9 @@
 <li><strong>Video Editor</strong> — accumulation becomes film. Audio and overlays.</li>
 </ol>
 <hr />
-<h2 id="slice-1-pipeline-gallery">Slice 1 — Pipeline + Gallery<a class="headerlink" href="#slice-1-pipeline-gallery" title="Permanent link">&para;</a></h2>
+<h2 id="slice-1-pipeline-gallery">Slice 1 — Pipeline + Gallery</h2>
 <p>The thinnest end-to-end slice that produces a daily-updating public artefact. Three recipes, three render types, three pipeline runs per day, a gallery that reads the manifest and shows the work.</p>
-<h3 id="what-ships">What ships<a class="headerlink" href="#what-ships" title="Permanent link">&para;</a></h3>
+<h3 id="what-ships">What ships</h3>
 <p><strong>Three recipes, one per render type.</strong> Each is a hand-authored YAML file that exercises the relevant render type end-to-end:</p>
 <ul>
 <li><code>north-atlantic-sst</code> — render type <code>field</code>. Source: NOAA OISST. The thermal heatmap canonical case.</li>
@@ -1986,7 +1986,7 @@
 <li>Run a synthetic-data e2e test of the full pipeline (discover → render → manifest) using fixture data</li>
 </ul>
 <p><strong>The deployment.</strong> <code>docker compose up</code> brings up four containers per ADR-011: pipeline, prefect-server, postgres (Prefect state DB), gallery (Caddy). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host.</p>
-<h3 id="what-this-proves">What this proves<a class="headerlink" href="#what-this-proves" title="Permanent link">&para;</a></h3>
+<h3 id="what-this-proves">What this proves</h3>
 <ul>
 <li><strong>The architecture closes.</strong> Pipeline produces what gallery reads. The contracts in TA §contracts (recipe.yaml, processed JSON, render payload, manifest.json) are real, not theoretical.</li>
 <li><strong>The shared payload format works for three render types.</strong> The same payload structure feeds three different sketches. If the format is too field-centric, this slice exposes it.</li>
@@ -1995,7 +1995,7 @@
 <li><strong>CI gates the pipeline.</strong> Synthetic-data e2e in GitHub Actions catches regressions before they reach the daily run.</li>
 <li><strong>Self-hostable end-to-end.</strong> Anyone with Docker can <code>git clone</code>, <code>docker compose up</code>, and have the system running on their own machine.</li>
 </ul>
-<h3 id="gate-to-slice-2">Gate to Slice 2<a class="headerlink" href="#gate-to-slice-2" title="Permanent link">&para;</a></h3>
+<h3 id="gate-to-slice-2">Gate to Slice 2</h3>
 <p>The pipeline runs daily for <strong>fourteen consecutive days</strong> without manual intervention. Three recipes × fourteen days = forty-two PNGs accumulated. The gallery loads on a fresh <code>docker compose up</code> and shows:</p>
 <ul>
 <li>Today's renders in the grid</li>
@@ -2011,9 +2011,9 @@
 </ul>
 <p>If the pipeline misses a day or the gallery breaks on a fresh deploy, fix that before adding anything. Daily cadence is sacred (TA §constraints).</p>
 <hr />
-<h2 id="slice-2-recipe-editor-dashboard">Slice 2 — Recipe Editor + Dashboard<a class="headerlink" href="#slice-2-recipe-editor-dashboard" title="Permanent link">&para;</a></h2>
+<h2 id="slice-2-recipe-editor-dashboard">Slice 2 — Recipe Editor + Dashboard</h2>
 <p>The full creative loop closes. Authoring and reading — the surfaces a person uses to make and read the work. The hero from Slice 1's deferred gallery scope earns its place here, because there's now a Recipe Editor and a Recipe page (deferred or stubbed) to link to.</p>
-<h3 id="what-ships_1">What ships<a class="headerlink" href="#what-ships_1" title="Permanent link">&para;</a></h3>
+<h3 id="what-ships_1">What ships</h3>
 <p><strong>The Recipe Editor.</strong> Per UXS-003. Preview canvas at the top, flip bar between Creative and YAML modes, the four creative-control surfaces (mood preset, energy×presence, colour character, temporal weight), the YAML mode with comment-marker amber highlighting, save/discard. Live preview running the same shared payload format the pipeline uses.</p>
 <p><strong>The Dashboard.</strong> Per UXS-001 (SST main view + editorial spread). Source rail with SST active, full-bleed thermal heatmap, three stacked stats cards, vertical legend, timeline scrubber, mini sparkline below. Editorial spread with 41-year trend chart and last-10-years anomaly bars.</p>
 <p><strong>Gallery hero added.</strong> The full-bleed hero per UXS-004 — today's featured render with metadata overlay and the now-real <code>recipe ↗</code> action. Cards in the grid also gain the <code>recipe ↗</code> action linking to the Recipe Editor at <code>/recipes/{id}</code>.</p>
@@ -2023,7 +2023,7 @@
 <li>Gallery <code>recipe ↗</code> actions pass recipe id to <code>/recipes/{id}</code></li>
 </ul>
 <p><strong>More recipes.</strong> A handful of additional hand-authored recipes (likely 3–5 more) exercising different combinations of mood, energy, colour, and region. The recipe set grows from three to roughly eight, all using the three render types from Slice 1.</p>
-<h3 id="what-this-proves_1">What this proves<a class="headerlink" href="#what-this-proves_1" title="Permanent link">&para;</a></h3>
+<h3 id="what-this-proves_1">What this proves</h3>
 <ul>
 <li><strong>The shared payload format holds across editor and pipeline.</strong> The editor's live preview is the canonical test — if the editor preview shows a result and the pipeline produces a different one from the same recipe, the system is broken.</li>
 <li><strong>The flat-with-comment-marker schema (RFC-001 v0.2) survives real authoring.</strong> Power users edit YAML directly; round-tripping (RFC-005) operates on real recipes; the matched / partially-custom / custom states are real.</li>
@@ -2031,7 +2031,7 @@
 <li><strong>Editorial-quality data reading is real.</strong> The Dashboard is the surface that most directly tests OC-05's claims about treating scientific data with editorial dignity.</li>
 <li><strong>The creative loop closes.</strong> Read the data on the Dashboard → select a region → author a recipe in the Editor → save it → see it in the Gallery the next morning.</li>
 </ul>
-<h3 id="gate-to-slice-3">Gate to Slice 3<a class="headerlink" href="#gate-to-slice-3" title="Permanent link">&para;</a></h3>
+<h3 id="gate-to-slice-3">Gate to Slice 3</h3>
 <p>A recipe authored entirely in Creative mode produces a render byte-identical to what the pipeline produces from the same recipe file (the shared-payload-format constraint, verified). A power user editing YAML directly sees their changes reflected in the preview, and round-tripping back to Creative mode either preserves the state or honestly flags divergence.</p>
 <p>The Dashboard loads with today's SST and the timeline scrubber works back to 1981. Region selection from the Dashboard passes lat/lon to the Recipe Editor.</p>
 <p>The Gallery shows today's hero, the 14-day strip works, and <code>recipe ↗</code> actions navigate correctly.</p>
@@ -2042,20 +2042,20 @@
 <li><strong>RFC-005 (YAML round-tripping)</strong> — power users have edited YAML and round-tripped back. Lock the algorithm.</li>
 </ul>
 <hr />
-<h2 id="slice-3-video-editor">Slice 3 — Video Editor<a class="headerlink" href="#slice-3-video-editor" title="Permanent link">&para;</a></h2>
+<h2 id="slice-3-video-editor">Slice 3 — Video Editor</h2>
 <p>Accumulation becomes film. By the time Slice 3 starts, the recipes from Slice 1 have months of accumulated frames. The Video Editor is the surface that turns that accumulation into something a person can show someone.</p>
-<h3 id="what-ships_2">What ships<a class="headerlink" href="#what-ships_2" title="Permanent link">&para;</a></h3>
+<h3 id="what-ships_2">What ships</h3>
 <p><strong>The Video Editor.</strong> Per UXS-005. Preview area with sparkline, NEW RECORD banner, in-frame metadata, timeline ribbon with key-moment markers. Right panel with Sequence / Audio / Overlays sections. The ten overlays per UXS-005 (eight default-on, two deferred). Export to MP4.</p>
 <p><strong>The audio system.</strong> Per RFC-006. Stem-based crossfading driven by the per-frame intensity signal. The system generates the track at export time based on theme, energy arc, and sensitivity controls.</p>
 <p><strong>Key moment detection.</strong> Per RFC-007. The shared signal that audio and overlays both consume — peaks, records, threshold crossings, inflections — produced once per timelapse and consumed by both tracks.</p>
 <p><strong>Gallery <code>timelapse ↗</code> actions wire up.</strong> Cards in the grid and the hero gain the <code>timelapse ↗</code> action linking to <code>/timelapse/{recipe}</code>. The IA navigation graph closes.</p>
-<h3 id="what-this-proves_2">What this proves<a class="headerlink" href="#what-this-proves_2" title="Permanent link">&para;</a></h3>
+<h3 id="what-this-proves_2">What this proves</h3>
 <ul>
 <li><strong>The audio and overlays read as data, not decoration.</strong> PRD-005's sharpest threat — that audio sounds like a soundtrack and overlays look like decoration — is finally testable at the artefact level. A viewer watching the export either feels the music swell at the same instant the anomaly indicator peaks, or doesn't.</li>
 <li><strong>The shared key-moment signal is the architecture's payoff.</strong> RFC-007 produces the signal once; audio crossfades to it, the record-flash overlay fires on it, the timeline ribbon marks it, the anomaly indicator hits its highest contrast on it. One signal, four expressions.</li>
 <li><strong>The export carries the work elsewhere.</strong> The MP4 plays anywhere a video plays. Citation, attribution, anomaly framing all baked into the frames. The work travels.</li>
 </ul>
-<h3 id="gate-to-phase-1-ship">Gate to Phase 1 ship<a class="headerlink" href="#gate-to-phase-1-ship" title="Permanent link">&para;</a></h3>
+<h3 id="gate-to-phase-1-ship">Gate to Phase 1 ship</h3>
 <p>The Video Editor exports an MP4 from any recipe with at least 30 days of accumulated renders. Audio fires at detected key moments. Default overlays are on; pull quote and projection ghost are off (deferred per UXS-005). Export plays in any video player. Citation appears in every frame.</p>
 <p>UXS-005 acceptance criteria pass. PRD-005's success markers can be honestly evaluated against the artefacts the editor produces.</p>
 <p>This is when the audio and key-moment RFCs close:</p>
@@ -2065,7 +2065,7 @@
 </ul>
 <p>After Slice 3, Phase 1 ships.</p>
 <hr />
-<h2 id="what-gates-a-slice-what-doesnt">What gates a slice, what doesn't<a class="headerlink" href="#what-gates-a-slice-what-doesnt" title="Permanent link">&para;</a></h2>
+<h2 id="what-gates-a-slice-what-doesnt">What gates a slice, what doesn't</h2>
 <p>A slice ships when:</p>
 <ul>
 <li>Its acceptance criteria pass — UXS acceptance criteria for surface slices, concrete artefact checks for backend slices</li>
@@ -2081,7 +2081,7 @@
 </ul>
 <p>After Slice 1 ships, revisit this guide. Real implementation reveals patterns documentation can't predict. Update slice scope, gates, and ordering as evidence emerges.</p>
 <hr />
-<h2 id="when-to-update-which-doc">When to update which doc<a class="headerlink" href="#when-to-update-which-doc" title="Permanent link">&para;</a></h2>
+<h2 id="when-to-update-which-doc">When to update which doc</h2>
 <p>Implementation produces feedback. Where that feedback lands depends on what kind of feedback it is.</p>
 <table>
 <thead>
@@ -2127,7 +2127,7 @@
 </table>
 <p>When you change one doc, ask which other docs read from it. Update them in the same commit when possible.</p>
 <hr />
-<h2 id="the-first-commit">The first commit<a class="headerlink" href="#the-first-commit" title="Permanent link">&para;</a></h2>
+<h2 id="the-first-commit">The first commit</h2>
 <p>The first commit on the implementation branch is small and concrete: the bare repo skeleton.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pipeline/
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  pyproject.toml
@@ -2152,7 +2152,7 @@
 <p>No code yet — just the structure. The structure itself is a commit because every subsequent commit anchors to it. Anchor it intentionally rather than letting it accrete.</p>
 <p>The second commit starts Slice 1.</p>
 <hr />
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h2 id="references">References</h2>
 <ul>
 <li><strong>CLAUDE.md</strong> — project conventions for AI-assisted code work</li>
 <li><strong><code>docs/adr/OC_TA.md</code></strong> — components, contracts, constraints, stack, state board</li>

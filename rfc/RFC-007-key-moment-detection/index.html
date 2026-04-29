@@ -1880,7 +1880,7 @@
   
 
 
-<h1 id="rfc-007-key-moment-detection">RFC-007 — Key moment detection<a class="headerlink" href="#rfc-007-key-moment-detection" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-007-key-moment-detection">RFC-007 — Key moment detection</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>TA anchor</strong> · §components/render-system · §contracts (audio scalars in payload)
@@ -1889,7 +1889,7 @@
 <strong>Why this is an RFC</strong> · Audio swells and overlay markers must fire at the same frames — when the music swells, the record-flash appears, the anomaly bar peaks. PRD-005's sharpest threat (audio reads as decorative) is defeated specifically when the visual and audio events are demonstrably synchronised. They share a single per-frame intensity signal. The algorithm that produces that signal is open: multiple plausible approaches, each detecting different kinds of "moment."</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>Given a data scalar time series — say, daily SST anomaly for the North Atlantic over a year — produce a per-frame intensity signal that captures <em>moments worth marking</em>. The signal is consumed by:</p>
 <ul>
 <li><strong>Audio</strong> (RFC-006): the per-frame intensity drives crossfading between musical stems.</li>
@@ -1903,7 +1903,7 @@
 <li><strong>Inflection points</strong> — moments where the rate of change reverses or accelerates significantly.</li>
 </ol>
 <p>Each captures a different kind of moment. A complete system uses all four, combined into one intensity signal. The deliberation is the combination — how to weight, scale, and merge them into a single 0.0–1.0 value per frame.</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Year of SST anomaly.</strong> Statistical peaks fire mid-summer (above-mean warming days). Records fire in late August (warmest day ever). Threshold crossings fire on the days exceeding the 1.5°C warming line. Inflection points fire at the start and end of heat-wave periods.</li>
 <li><strong>Decadal sea-level rise.</strong> Records fire constantly in recent years (every month is a new high). Statistical peaks barely fire (the trend dominates the noise). Threshold crossings on integer-cm marks. Inflection points on acceleration changes.</li>
@@ -1911,7 +1911,7 @@
 <li><strong>A calm time series.</strong> No records, few peaks, no significant inflections. Intensity stays low; audio remains calm; overlays don't intrude.</li>
 </ol>
 <p>The four use cases want different relative weights on the four signals. A unified algorithm with sensible defaults plus per-recipe tuning is the goal.</p>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>One algorithm, one signal, both audio and overlays consume the same value for the same frame.</li>
 <li>The signal is deterministic — same time series produces the same per-frame intensities.</li>
@@ -1919,13 +1919,13 @@
 <li>The signal scales gracefully across different data ranges (SST anomaly vs. sea-level vs. ice extent).</li>
 <li>The four signal types are inspectable individually (the editor can show which kind of moment was detected, for debugging and overlay labelling).</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>Determinism</em> — same time series + same parameters → same intensity signal (TA §constraints).</li>
 <li><em>Single source of truth for moments</em> — audio and overlays compute from the same algorithm output. No separate moment-detection paths (TA §constraints).</li>
 <li><em>No machine learning models in v1</em> — the algorithm must be classical (statistical, threshold-based). Trainable models are deferred.</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p><strong>Four detectors, each producing an intensity contribution; a weighted sum, clamped to 0.0–1.0.</strong></p>
 <p>For each frame <em>f</em> in a time series of values <code>v[0..N]</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>peaks_score(f)        = abs(v[f] - mean) / (k * stddev)        # k=2 for the 2σ convention
@@ -1959,38 +1959,38 @@
 <li>High inflection_score → "trend change" subtle marker</li>
 </ul>
 <p>Same signal drives audio crossfading; the labels drive overlay choice.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-just-use-anomaly-directly">Alternative: just use anomaly directly<a class="headerlink" href="#alternative-just-use-anomaly-directly" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-just-use-anomaly-directly">Alternative: just use anomaly directly</h3>
 <p>Define <code>intensity(f) = abs(anomaly(f))</code> normalised to [0, 1]. Skip the four-detector composition.</p>
 <p>Rejected because anomaly alone misses records (a value 1.5σ above mean that is also a record is more meaningful than a 2σ value that is unremarkable in a long record). Records and anomalies are <em>different kinds</em> of significance, and the system should treat them differently. The composition is a small cost for a meaningful gain in expressiveness.</p>
-<h3 id="alternative-ml-based-event-detection">Alternative: ML-based event detection<a class="headerlink" href="#alternative-ml-based-event-detection" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-ml-based-event-detection">Alternative: ML-based event detection</h3>
 <p>Train a model on labelled "interesting moments" in time series; use the model output as the intensity signal.</p>
 <p>Rejected for v1. Adds a model-training pipeline, model versioning, dataset curation — entire infrastructure. The classical four-detector approach handles the use cases cleanly. Revisit if classical approach proves insufficient.</p>
-<h3 id="alternative-single-threshold-per-recipe">Alternative: single threshold per recipe<a class="headerlink" href="#alternative-single-threshold-per-recipe" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-single-threshold-per-recipe">Alternative: single threshold per recipe</h3>
 <p>Set one threshold; intensity is binary (event / no event).</p>
 <p>Rejected because audio crossfading needs continuous values, not binary. Overlays could use binary, but coupling audio and overlays through a single signal forces continuous output.</p>
-<h3 id="alternative-data-source-specific-algorithms">Alternative: data-source-specific algorithms<a class="headerlink" href="#alternative-data-source-specific-algorithms" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-data-source-specific-algorithms">Alternative: data-source-specific algorithms</h3>
 <p>Different algorithms for SST, sea level, ice extent — tuned to each variable's typical statistics.</p>
 <p>Rejected because the four-detector model with configurable weights handles per-source tuning at the weights level rather than the algorithm level. Keeps the algorithm uniform across sources; just the parameters change.</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>Default weights are a choice that won't be right for every recipe.</strong> Mitigated by per-recipe overrides; documented as expected.</li>
 <li><strong>Smoothing window is a magic number.</strong> 3-frame is conservative; longer smoothing makes audio mushier; shorter makes audio jittery. Tuneable.</li>
 <li><strong>The intensity signal is a single channel.</strong> A more nuanced design might output multiple channels (peaks-channel, records-channel, etc.) to drive multi-instrument arrangements. Reserved for a future iteration.</li>
 <li><strong>Inflection detection is sensitive to noise.</strong> Second derivatives amplify noise. Mitigated by smoothing the time series before computing the inflection score.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>Is the threshold-crossing detector worth the complexity? It requires per-recipe configuration of meaningful thresholds. Default to "off" for recipes that don't define them?</li>
 <li>How does this interact with multi-source recipes? Currently the algorithm assumes one scalar time series. A composite recipe with two sources may want to combine their signals — additively, multiplicatively, or pick the dominant one?</li>
 <li>Should the algorithm produce its output once at export time, or per-frame on demand during preview? Probably once at export, cached. Preview can use a cheap approximation.</li>
 <li>Storage: do we store the per-frame intensity signal as part of the export bundle, or recompute every time? Storing makes the export reproducible without re-running the algorithm; recomputing keeps the bundle small.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Key moment detection algorithm.</strong> Locks the four-detector composition, the default weights, the smoothing window, and the per-recipe override mechanism.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §components/render-system · §contracts (audio scalars)</li>
 <li><strong>Related PRDs</strong> — PRD-005 Video Editor</li>

@@ -1869,7 +1869,7 @@
   
 
 
-<h1 id="uxs-001-dashboard-sst-main-view-editorial-spread">UXS-001 — Dashboard, SST main view + editorial spread<a class="headerlink" href="#uxs-001-dashboard-sst-main-view-editorial-spread" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-001-dashboard-sst-main-view-editorial-spread">UXS-001 — Dashboard, SST main view + editorial spread</h1>
 <blockquote>
 <p><strong>Status</strong> · v0.2 · April 2026 · revised against prototype mockup (OC-02 Figs 1–2)
 <strong>Visual fidelity</strong> · Verified against prototype. Some details (e.g., precise hero number font weight) interpreted from a partially-rendered PDF where some glyphs garbled at export — flagged inline.
@@ -1879,9 +1879,9 @@
 <strong>Related RFC</strong> · <em>None yet — Dashboard behavioural rules (timeline scrubber animation, source-rail tab transitions, hover debounce, source-switcher chip behaviour) need an RFC when implemented.</em></p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>The Dashboard's SST experience is the canonical first surface — the one PRD-002 and ADR-017 most directly pair with, and the one OC-02 Figs 1–2 illustrate. This UXS establishes the visual contract for both Dashboard views with SST active: the <strong>main view</strong> (full-bleed thermal heatmap with stats overlay and timeline) and the <strong>editorial spread</strong> (hero number + heatmap + 41-year trend + anomaly bars). It also establishes patterns subsequent per-source UXSes (UXS-NNN sea level, etc.) will adapt without restating.</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <ul>
 <li><strong>Data is the hero.</strong> The thermal heatmap and the hero number are the editorial subject. Chrome serves the data — never competes with it.</li>
 <li><strong>Numbers at display scale.</strong> Hero stats are unboxed and unbordered, rendered at <code>type-hero</code> over the dark canvas.</li>
@@ -1889,14 +1889,14 @@
 <li><strong>Editorial voice.</strong> The spread reads like a magazine page. No chart frames; whitespace as composition.</li>
 <li><strong>Dark always.</strong> <code>canvas</code> background everywhere.</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · Dashboard topbar (main view + editorial spread variants); source rail with SST active; SST main view (full-bleed heatmap, three-card stats overlay, vertical legend strip on right, timeline scrubber, mini time series below); SST editorial spread (eyebrow, two-column hero with number + heatmap, three-fact metadata row, four-column data strip, trend chart + anomaly bars side-by-side); SST domain tokens; citation footer.</p>
 <p><strong>Non-goals</strong> · per-source editorial spreads for sources other than SST (each gets its own UXS); the Recipe Editor, Gallery, Video Editor (separate UXSes); Dashboard's "select region" mode UI (will live in a future Dashboard-interaction RFC + an extension to this UXS or a sibling UXS); behavioural rules.</p>
 <p><strong>Boundary note</strong> · Timeline scrubber animation, source-rail tab transitions, hover debounce, source-switcher chip dropdown timing, and date-change reflow behaviour belong in an RFC. The first time these need to be implemented, write that RFC. This UXS specifies static appearance only.</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only. Per <code>OC_IA.md §shared-tokens</code>, all OceanCanvas surfaces are dark-only.</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <p>All surface, text, intent, typography, and spacing tokens are inherited from <code>OC_IA.md §shared-tokens</code>. This UXS uses them by name without restating values.</p>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
@@ -1905,7 +1905,7 @@
 <li><strong>Typography</strong> · <code>type-hero</code>, <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-domain-sst-">Defined here — <code>domain-sst-*</code><a class="headerlink" href="#defined-here-domain-sst-" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-domain-sst-">Defined here — <code>domain-sst-*</code></h3>
 <p>The SST palette is a thermal gradient. Both the heatmap rendering and the UI accents (active source-rail label, hero number, data-strip values, eyebrow date in editorial spread) draw from this palette.</p>
 <table>
 <thead>
@@ -1959,7 +1959,7 @@
 </tbody>
 </table>
 <p>The heatmap colormap interpolates continuously across <code>domain-sst-cold → domain-sst-hot</code>. The discrete tokens are reference stops, not a discrete palette.</p>
-<h2 id="layout-main-view-fig-1">Layout — main view (Fig 1)<a class="headerlink" href="#layout-main-view-fig-1" title="Permanent link">&para;</a></h2>
+<h2 id="layout-main-view-fig-1">Layout — main view (Fig 1)</h2>
 <p>The main view is the Dashboard's primary entry. Today's global SST as a full-bleed thermal heatmap with shell chrome and contextual stats floating on the map.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ OCEANCANVAS  /sea surface temperature ⊓ NOAA OISST   25 APR 2026 / 06:00 UTC  │  ← topbar (42px)
@@ -2063,7 +2063,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="layout-editorial-spread-fig-2">Layout — editorial spread (Fig 2)<a class="headerlink" href="#layout-editorial-spread-fig-2" title="Permanent link">&para;</a></h2>
+<h2 id="layout-editorial-spread-fig-2">Layout — editorial spread (Fig 2)</h2>
 <p>The editorial spread is the Dashboard going deeper on SST. Two-column hero (number left, heatmap right), three-fact metadata row, four-column data strip, then trend chart and anomaly bars side-by-side.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌──────────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ OCEANCANVAS  /DATA EXPLORER                  [all sources ⊓ SST ⊓ NOAA OISST] ▾  │
@@ -2196,7 +2196,7 @@
 </tbody>
 </table>
 <p><em>Note: an "art potential" block is described in OC-05's prose for editorial spreads but </em><em>does not appear in the prototype mockup (Fig 2)</em><em>. Treating it as deferred until clarified — not included in this UXS.</em></p>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <p>Static visual states only. Behaviour (timing, transitions) is RFC territory.</p>
 <table>
 <thead>
@@ -2292,7 +2292,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · all foreground/background pairings meet WCAG AA. Hero number at <code>domain-sst-accent</code> over <code>canvas</code> is verified at 6.5:1+. The <code>intent-alert</code> anomaly value at <code>#F09595</code> over <code>canvas</code> is 7:1+. The <code>text-muted</code> token is used only for <code>type-label</code> and <code>type-axis</code> (small text where the lower contrast is acceptable for visual hierarchy).</li>
 <li><strong>Focus</strong> · all interactive elements (source-rail entries, timeline scrubber handle, source-switcher chip, stat cards if interactive) show a <code>border-strong</code> focus ring. Never <code>outline: none</code> without an alternative.</li>
@@ -2300,7 +2300,7 @@
 <li><strong>Reduced motion</strong> · timeline scrubber animation, hover transitions, and source-tab cross-fades respect <code>prefers-reduced-motion</code>. Per-RFC implementation; this UXS specifies static appearance only.</li>
 <li><strong>Screen readers</strong> · the hero number has an aria-label including units ("14.2 degrees Celsius"). Source-rail is a <code>&lt;nav&gt;</code> with <code>aria-current="page"</code> on the active source. The map has <code>aria-label</code> describing the source and date.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] Topbar matches the per-view pattern in IA §topbar-patterns (main view → path + UTC time; editorial spread → <code>/DATA EXPLORER</code> + source-switcher chip)</li>
 <li>[ ] Source rail's active state is text colour only — no left border, no background fill</li>
@@ -2320,7 +2320,7 @@
 <li>[ ] Screen-reader labels in place on hero number, source-rail entries, map, and stat cards</li>
 </ul>
 <hr />
-<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h2 id="changelog">Changelog</h2>
 <ul>
 <li><strong>v0.2 · April 2026</strong> — Revised against prototype mockup (OC-02 Figs 1–2). Major changes: topbar split into main-view and editorial-spread variants per IA §topbar-patterns; source-rail active state changed from "2px coloured left border" to "text colour only"; stats overlay redrawn as three stacked cards; mini sparkline moved below the timeline scrubber; hover coordinates added to upper-left of map area; legend strip narrowed and moved to top-right vertical; editorial spread eyebrow changed to <code>domain-sst-accent</code> colour; anomaly bars moved to right of trend chart; "art potential" block removed (not in prototype). Added source-switcher chip component to editorial-spread state table.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, written from OC-05 figure descriptions before prototype access. Superseded by v0.2.</li>

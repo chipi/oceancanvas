@@ -1786,28 +1786,28 @@
   
 
 
-<h1 id="adr-007-puppeteer-for-server-side-rendering">ADR-007 — Puppeteer for server-side rendering<a class="headerlink" href="#adr-007-puppeteer-for-server-side-rendering" title="Permanent link">&para;</a></h1>
+<h1 id="adr-007-puppeteer-for-server-side-rendering">ADR-007 — Puppeteer for server-side rendering</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/render-system · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The pipeline must produce a PNG render for each active recipe daily, server-side, without human supervision. The rendering uses p5.js sketches (ADR-006) — designed to run in a browser. The pipeline runs in a container.</p>
 <p>We need a way to run a real browser, headlessly, programmatically, in a Docker container. The browser must execute the same JavaScript path that the live editor preview uses, because byte-identical output between contexts is locked by ADR-008.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Use Puppeteer with bundled headless Chromium for server-side rendering. The pipeline's Task 05 (Render) launches a Node.js subprocess that spawns Puppeteer, loads the sketch HTML, injects the render payload, waits for <code>window.__RENDER_COMPLETE</code>, screenshots the canvas, and saves the PNG.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>Puppeteer is the most stable and widely-used solution for headless Chromium control. Its API is well-documented; its event model handles deterministic waits cleanly; it bundles a known-good Chromium version so we don't depend on the host system.</p>
 <p>The "same browser" guarantee matters: the editor preview runs in the user's Chromium-family browser; Puppeteer runs Chromium directly. The rendering primitives match.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Playwright</strong> — Microsoft's successor, supports multiple browsers. More flexible than Puppeteer (Firefox, WebKit support) but also heavier. Puppeteer is sufficient for our needs since we only target Chromium-family.</li>
 <li><strong>Selenium</strong> — older, slower, less designed for headless / programmatic control. Rejected.</li>
 <li><strong>Server-side p5.js via node-canvas</strong> — runs p5.js in Node directly without a browser. Tempting (lighter than Chromium) but rendering primitives differ subtly between node-canvas and browser canvas. Pixel-identical output between editor preview and pipeline render is not guaranteed. Rejected on grounds of ADR-008 violation risk.</li>
 <li><strong>Custom WebGL renderer in Node</strong> — would require rewriting the sketches. Rejected.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Browser preview and pipeline render share the same rendering path.
 - Puppeteer's mature API handles edge cases (load failures, network timeouts, etc.).
@@ -1815,7 +1815,7 @@
 <p><strong>Negative:</strong>
 - Chromium is heavy. ~300MB in the pipeline container. Acceptable; the alternative is rendering bugs.
 - Headless Chromium has occasional flake under heavy load. Mitigated by Prefect's retry policy.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Renderer in <code>pipeline/src/oceancanvas/renderer/render.mjs</code> (Node.js subprocess, receives payload via stdin, outputs PNG via stdout).</li>
 <li>Pipeline container includes Node.js 20, system Chromium, and <code>puppeteer-core</code>.</li>

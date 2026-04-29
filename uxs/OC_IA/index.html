@@ -2144,7 +2144,7 @@
   
 
 
-<h1 id="oc_ia-information-architecture">OC_IA — Information Architecture<a class="headerlink" href="#oc_ia-information-architecture" title="Permanent link">&para;</a></h1>
+<h1 id="oc_ia-information-architecture">OC_IA — Information Architecture</h1>
 <ul>
 <li><strong>Status</strong> · v0.2 · April 2026 · revised against prototype mockups (OC-02 Figs 1–7)</li>
 <li><strong>Type</strong> · Reference document — structured for linking-into, not reading end-to-end</li>
@@ -2156,84 +2156,84 @@
 <p>IA holds <em>what is true across the UX</em>. Per-surface visual contracts live in UXS documents. Behavioural rules (animation timing, debounce intervals, keyboard shortcuts) belong in RFCs in the tech plane, not here.</p>
 <p>The §surface-map at the bottom is the visual reference for how surfaces relate. The §url-structure section is the canonical address space for the product.</p>
 <hr />
-<h2 id="overview">§overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<h2 id="overview">§overview</h2>
 <p>OceanCanvas has <strong>four primary surfaces</strong> plus one <strong>mode</strong> that opens within a primary surface. All surfaces share a dark canvas, editorial typography, and a common state model (region selection, active recipe, active source) that persists across navigation.</p>
 <p>Surface navigation in OceanCanvas is <strong>not via a persistent global nav bar.</strong> Each surface has its own topbar pattern (see §topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have <code>recipe ↗</code> and <code>timelapse ↗</code> actions that jump to the editor or the video editor for that specific recipe.</p>
 <p>The product's information architecture reflects its central activity: the creative loop. Dashboard exploration leads to recipe authoring; recipe rendering leads to gallery accumulation; gallery viewing leads to video assembly; video patterns prompt new recipes. The four surfaces are the four points on this loop.</p>
 <hr />
-<h2 id="surfaces">§surfaces<a class="headerlink" href="#surfaces" title="Permanent link">&para;</a></h2>
+<h2 id="surfaces">§surfaces</h2>
 <p>The four primary surfaces and one mode. Each is a destination with its own URL, its own purpose, its own UXS document(s).</p>
-<h3 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h3>
+<h3 id="dashboard">Dashboard</h3>
 <p>The data exploration surface. Two views: a <strong>main view</strong> with full-bleed source heatmap (today's data over the world map) and per-source <strong>editorial spreads</strong> that read like magazine pages. Per <a href="../../adr/ADR-017-one-layout-per-source/">ADR-017</a>, each source has its own editorial layout — SST has its thermal heatmap and 41-year trend, sea level has its full-width rise curve. The dashboard is <em>the entry point to the recipe editor</em> — drawing a region on a source's map passes the bounds directly to the editor.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-002-dashboard/">PRD-002 Dashboard</a></li>
 <li><strong>UXS</strong> · UXS-001 (SST main view + spread); one additional UXS per source spread</li>
 <li><strong>URL</strong> · <code>/dashboard</code>, <code>/dashboard/{source}</code>, <code>/dashboard/{source}/explorer</code> (editorial spread mode)</li>
 </ul>
-<h3 id="recipe-editor">Recipe Editor<a class="headerlink" href="#recipe-editor" title="Permanent link">&para;</a></h3>
+<h3 id="recipe-editor">Recipe Editor</h3>
 <p>The creative surface where data becomes art. A single preview canvas above a flip toggle; below the toggle, the controls flip between Creative mode (mood preset, energy×presence, colour character, temporal weight) and YAML mode (the recipe file with creative-driven lines highlighted in amber). A "sketch editor ↗" link opens the raw p5.js sketch.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-003-recipe-editor/">PRD-003 Recipe Editor</a></li>
 <li><strong>UXS</strong> · UXS-NNN (deferred)</li>
 <li><strong>URL</strong> · <code>/recipes/{id}</code> for an existing recipe; <code>/recipes/new</code> for authoring</li>
 </ul>
-<h3 id="gallery">Gallery<a class="headerlink" href="#gallery" title="Permanent link">&para;</a></h3>
+<h3 id="gallery">Gallery</h3>
 <p>The public face. A living archive of accumulated daily renders. Hero (today's featured recipe at full bleed with <code>timelapse ↗</code> · <code>recipe ↗</code> · <code>download</code> actions) + 14-day strip (the same recipe's recent history) + grid (every active recipe rendered today). Updates automatically when the pipeline runs — no manual curation. The default landing surface.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-004-gallery/">PRD-004 Gallery</a></li>
 <li><strong>UXS</strong> · UXS-NNN (deferred)</li>
 <li><strong>URL</strong> · <code>/</code> (default landing), <code>/gallery/{recipe}</code> for a specific recipe page, <code>/gallery/{recipe}/{date}</code> for a specific render</li>
 </ul>
-<h3 id="video-editor">Video Editor<a class="headerlink" href="#video-editor" title="Permanent link">&para;</a></h3>
+<h3 id="video-editor">Video Editor</h3>
 <p>The timelapse studio. Assembles a recipe's accumulated PNG renders into an MP4 with optional audio (RFC-006) and overlay annotations. Frames already exist as stored renders; the editor is assembly and enrichment, not creation. Right-side panel has Sequence · Audio · Overlays sections.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-005-video-editor/">PRD-005 Video Editor</a></li>
 <li><strong>UXS</strong> · UXS-NNN (deferred)</li>
 <li><strong>URL</strong> · <code>/timelapse/{recipe}</code></li>
 </ul>
-<h3 id="sketch-editor-mode-not-a-surface">Sketch Editor (mode, not a surface)<a class="headerlink" href="#sketch-editor-mode-not-a-surface" title="Permanent link">&para;</a></h3>
+<h3 id="sketch-editor-mode-not-a-surface">Sketch Editor (mode, not a surface)</h3>
 <p>A full-screen mode that opens from within the Recipe Editor for power users writing custom p5.js sketches. Not a primary navigation destination; not addressable by a top-level URL.</p>
 <ul>
 <li>Opens via "sketch editor ↗" in the Recipe Editor's flip bar.</li>
 <li>Returns to the Recipe Editor with the modified sketch on save.</li>
 </ul>
 <hr />
-<h2 id="topbar-patterns">§topbar-patterns<a class="headerlink" href="#topbar-patterns" title="Permanent link">&para;</a></h2>
+<h2 id="topbar-patterns">§topbar-patterns</h2>
 <p>The topbar varies per surface — it is contextual chrome (breadcrumb + actions), not persistent global navigation. Each surface defines its topbar in its UXS, but the patterns rhyme. All topbars are 42px tall, against <code>surface</code> background, with the wordmark on the left.</p>
-<h3 id="dashboard-main-view">Dashboard — main view<a class="headerlink" href="#dashboard-main-view" title="Permanent link">&para;</a></h3>
+<h3 id="dashboard-main-view">Dashboard — main view</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[OCEANCANVAS]    /sea surface temperature ⊓ NOAA OISST                  25 APR 2026 / 06:00 UTC
 </code></pre></div>
 <ul>
 <li>Wordmark · path showing source name + provider · UTC timestamp on right</li>
 <li>The path uses <code>text-secondary</code>; the timestamp <code>text-muted</code></li>
 </ul>
-<h3 id="dashboard-editorial-spread">Dashboard — editorial spread<a class="headerlink" href="#dashboard-editorial-spread" title="Permanent link">&para;</a></h3>
+<h3 id="dashboard-editorial-spread">Dashboard — editorial spread</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[OCEANCANVAS]    /DATA EXPLORER                                  [all sources ⊓ SST ⊓ NOAA OISST] ▾
 </code></pre></div>
 <ul>
 <li>Wordmark · <code>/DATA EXPLORER</code> page label · source-switcher chip on right (a dropdown styled as a chip)</li>
 </ul>
-<h3 id="recipe-editor_1">Recipe Editor<a class="headerlink" href="#recipe-editor_1" title="Permanent link">&para;</a></h3>
+<h3 id="recipe-editor_1">Recipe Editor</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[OCEANCANVAS]    /north_atlantic_sst                       live · OISST    25 Apr 2026    field
 </code></pre></div>
 <ul>
 <li>Wordmark · recipe id as path · status badges on right showing data source freshness, date, and active render type</li>
 <li>The status badges use <code>text-secondary</code> and <code>text-muted</code> for definition</li>
 </ul>
-<h3 id="gallery_1">Gallery<a class="headerlink" href="#gallery_1" title="Permanent link">&para;</a></h3>
+<h3 id="gallery_1">Gallery</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>[OCEANCANVAS]                                              [all] [SST] [salinity] [sea level] [ice]
 </code></pre></div>
 <ul>
 <li>Wordmark · source-type filter pills on the right</li>
 <li>Active filter is highlighted (white text on <code>elevated</code> background); others in <code>text-muted</code> on transparent</li>
 </ul>
-<h3 id="video-editor_1">Video Editor<a class="headerlink" href="#video-editor_1" title="Permanent link">&para;</a></h3>
+<h3 id="video-editor_1">Video Editor</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>[OCEANCANVAS]    /timelapse editor / gulf_stream_thermal                                  export MP4
 </code></pre></div>
 <ul>
 <li>Wordmark · two-segment path (surface + recipe) · primary action on right (<code>export MP4</code> in <code>intent-info</code> teal)</li>
 </ul>
-<h3 id="patterns-across-topbars">Patterns across topbars<a class="headerlink" href="#patterns-across-topbars" title="Permanent link">&para;</a></h3>
+<h3 id="patterns-across-topbars">Patterns across topbars</h3>
 <ul>
 <li><strong>Wordmark</strong> is always the leftmost element, clickable, returns to Gallery (<code>/</code>).</li>
 <li><strong>Path or filter</strong> in the centre-left or right depends on surface logic.</li>
@@ -2241,9 +2241,9 @@
 <li><strong>No persistent four-surface nav menu.</strong> Surface switching is via direct URLs (which users bookmark or share) and via in-context links from one surface to another.</li>
 </ul>
 <hr />
-<h2 id="navigation">§navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h2>
+<h2 id="navigation">§navigation</h2>
 <p>How surfaces connect. Without a global nav, navigation is <em>contextual</em> — each surface offers paths to other surfaces relevant to its own work.</p>
-<h3 id="cross-surface-transitions-state-passing">Cross-surface transitions (state-passing)<a class="headerlink" href="#cross-surface-transitions-state-passing" title="Permanent link">&para;</a></h3>
+<h3 id="cross-surface-transitions-state-passing">Cross-surface transitions (state-passing)</h3>
 <table>
 <thead>
 <tr>
@@ -2305,18 +2305,18 @@
 </tbody>
 </table>
 <p>State transitions are explicit — no surface silently inherits state from another. The receiving surface either gets state passed via URL query param or starts with its own default.</p>
-<h3 id="how-users-return-to-gallery">How users return to Gallery<a class="headerlink" href="#how-users-return-to-gallery" title="Permanent link">&para;</a></h3>
+<h3 id="how-users-return-to-gallery">How users return to Gallery</h3>
 <ul>
 <li>Click the wordmark in the topbar (any surface).</li>
 <li>Direct URL <code>/</code>.</li>
 </ul>
-<h3 id="how-users-reach-the-dashboard">How users reach the Dashboard<a class="headerlink" href="#how-users-reach-the-dashboard" title="Permanent link">&para;</a></h3>
+<h3 id="how-users-reach-the-dashboard">How users reach the Dashboard</h3>
 <ul>
 <li>Direct URL <code>/dashboard</code> or <code>/dashboard/{source}</code>.</li>
 <li><em>No link from Gallery to Dashboard exists in v1.</em> This is intentional — the Gallery is for browsing renders; the Dashboard is for exploring data. They are different activities. Users who want to author a recipe go from Gallery → existing recipe → editor, or from Dashboard via region selection.</li>
 </ul>
 <hr />
-<h2 id="url-structure">§url-structure<a class="headerlink" href="#url-structure" title="Permanent link">&para;</a></h2>
+<h2 id="url-structure">§url-structure</h2>
 <p>The canonical address space. Every surface is addressable by URL. Every meaningful sub-state has its own URL when it makes sense to share or bookmark.</p>
 <table>
 <thead>
@@ -2391,18 +2391,18 @@
 <li><strong>Source slugs.</strong> Match the source-id in the OC-03 catalog: <code>sst</code>, <code>sea-level</code>, <code>salinity</code>, <code>sea-ice</code>, <code>chlorophyll</code>, etc.</li>
 </ul>
 <hr />
-<h2 id="shell-regions">§shell-regions<a class="headerlink" href="#shell-regions" title="Permanent link">&para;</a></h2>
+<h2 id="shell-regions">§shell-regions</h2>
 <p>The persistent chrome. UXS documents inherit these.</p>
-<h3 id="topbar-42px">Topbar (42px)<a class="headerlink" href="#topbar-42px" title="Permanent link">&para;</a></h3>
+<h3 id="topbar-42px">Topbar (42px)</h3>
 <p>See §topbar-patterns above for the per-surface variations.</p>
-<h3 id="source-rail-dashboard-main-view-only-96px-wide">Source rail (Dashboard main view only, ~96px wide)<a class="headerlink" href="#source-rail-dashboard-main-view-only-96px-wide" title="Permanent link">&para;</a></h3>
+<h3 id="source-rail-dashboard-main-view-only-96px-wide">Source rail (Dashboard main view only, ~96px wide)</h3>
 <p>The Dashboard's main view has a left-side rail listing available data sources. Active source has its label rendered in the source's accent token (e.g., <code>domain-sst-accent</code> for SST); other sources in <code>text-muted</code>. <em>No left border, no background fill — purely text-colour treatment.</em> The rail does not appear in editorial spreads or in any other surface.</p>
-<h3 id="citation-footer-dashboard-recipe-editor-video-editor">Citation footer (Dashboard, Recipe Editor, Video Editor)<a class="headerlink" href="#citation-footer-dashboard-recipe-editor-video-editor" title="Permanent link">&para;</a></h3>
+<h3 id="citation-footer-dashboard-recipe-editor-video-editor">Citation footer (Dashboard, Recipe Editor, Video Editor)</h3>
 <p>A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the <em>attribution-baked-in</em> constraint (TA §constraints, PA §promises/citation-travels). Format: <code>[source] · [resolution] · [cadence] · [date range] · OceanCanvas</code>. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.</p>
 <hr />
-<h2 id="shared-tokens">§shared-tokens<a class="headerlink" href="#shared-tokens" title="Permanent link">&para;</a></h2>
+<h2 id="shared-tokens">§shared-tokens</h2>
 <p>Design tokens that genuinely apply across all surfaces. Per-surface and per-source tokens live in the relevant UXS.</p>
-<h3 id="surface-tokens">Surface tokens<a class="headerlink" href="#surface-tokens" title="Permanent link">&para;</a></h3>
+<h3 id="surface-tokens">Surface tokens</h3>
 <table>
 <thead>
 <tr>
@@ -2444,7 +2444,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="text-tokens">Text tokens<a class="headerlink" href="#text-tokens" title="Permanent link">&para;</a></h3>
+<h3 id="text-tokens">Text tokens</h3>
 <table>
 <thead>
 <tr>
@@ -2476,7 +2476,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="intent-tokens">Intent tokens<a class="headerlink" href="#intent-tokens" title="Permanent link">&para;</a></h3>
+<h3 id="intent-tokens">Intent tokens</h3>
 <table>
 <thead>
 <tr>
@@ -2499,7 +2499,7 @@
 </tbody>
 </table>
 <p>Intent tokens are <em>physical-meaning</em> indicators (warming vs. cooling) and primary-action indicators. UI-state feedback (success/error/warning) is rare in OceanCanvas — most surfaces are exploratory, not transactional.</p>
-<h3 id="typography-scale">Typography scale<a class="headerlink" href="#typography-scale" title="Permanent link">&para;</a></h3>
+<h3 id="typography-scale">Typography scale</h3>
 <table>
 <thead>
 <tr>
@@ -2541,10 +2541,10 @@
 </tr>
 </tbody>
 </table>
-<h3 id="spacing-scale">Spacing scale<a class="headerlink" href="#spacing-scale" title="Permanent link">&para;</a></h3>
+<h3 id="spacing-scale">Spacing scale</h3>
 <p>Base unit: 4px. All spacing in surfaces uses multiples: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64.</p>
 <hr />
-<h2 id="state-persistence">§state-persistence<a class="headerlink" href="#state-persistence" title="Permanent link">&para;</a></h2>
+<h2 id="state-persistence">§state-persistence</h2>
 <p>What carries across surface transitions. State that doesn't appear here resets at each surface load.</p>
 <table>
 <thead>
@@ -2589,7 +2589,7 @@
 </table>
 <p>Phase 1 has no auth, no user accounts, no per-user state. State persistence is via URLs and URL query parameters — never via localStorage or cookies (per the artifact constraints in TA).</p>
 <hr />
-<h2 id="entry-points">§entry-points<a class="headerlink" href="#entry-points" title="Permanent link">&para;</a></h2>
+<h2 id="entry-points">§entry-points</h2>
 <p>How a person first reaches each surface.</p>
 <table>
 <thead>
@@ -2634,7 +2634,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="surface-map">§surface-map<a class="headerlink" href="#surface-map" title="Permanent link">&para;</a></h2>
+<h2 id="surface-map">§surface-map</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>                     ┌──────────────────────────┐
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                     │    Wordmark (clickable)  │  ← always returns to Gallery
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                     │     OCEANCANVAS          │
@@ -2672,7 +2672,7 @@
 <a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>                                              └─► (insight prompts new recipes)
 </code></pre></div>
 <hr />
-<h2 id="how-uxs-documents-reference-this-doc">How UXS documents reference this doc<a class="headerlink" href="#how-uxs-documents-reference-this-doc" title="Permanent link">&para;</a></h2>
+<h2 id="how-uxs-documents-reference-this-doc">How UXS documents reference this doc</h2>
 <p>UXS documents anchor to IA sections. The conventions:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>IA anchor · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §shared-tokens
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Tokens inherited · §shared-tokens (canvas, surface, text, intent)
@@ -2681,7 +2681,7 @@
 </code></pre></div>
 <p>A UXS document that doesn't reference IA is a smell. UXS documents <em>define</em> per-surface and per-source design tokens. IA does not — IA holds only what is genuinely shared.</p>
 <hr />
-<h2 id="what-this-doc-is-not">What this doc is not<a class="headerlink" href="#what-this-doc-is-not" title="Permanent link">&para;</a></h2>
+<h2 id="what-this-doc-is-not">What this doc is not</h2>
 <table>
 <thead>
 <tr>
@@ -2715,7 +2715,7 @@
 </table>
 <p>IA does not hold per-surface visual contracts, behaviour rules, or implementation specs. If a section here drifts toward any of those, it belongs in the corresponding doc, not here.</p>
 <hr />
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>UXS coverage.</strong> Phase 1 ships UXS-001 (Dashboard SST main view + spread). Other surfaces (Recipe Editor, Gallery, Video Editor) and other source spreads (Sea Level, Salinity, etc.) are deferred until needed for implementation. With prototypes now available, drafting them is straightforward.</li>
 <li><strong>Sketch editor mode contract.</strong> Currently no UXS — full-screen code editor with payload pre-loaded. Warrants a UXS once visual conventions are firmed up.</li>
@@ -2723,7 +2723,7 @@
 <li><strong>Source switcher chip in Dashboard editorial spread.</strong> Behaviour (whether it triggers a hard navigation or an in-place transition) belongs in an RFC for Dashboard interactions; how it looks belongs in UXS-001.</li>
 </ul>
 <hr />
-<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h2 id="changelog">Changelog</h2>
 <ul>
 <li><strong>v0.2 · April 2026</strong> — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added §topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated §url-structure to add <code>/dashboard/{source}/explorer</code> for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, written before prototype access. Superseded by v0.2.</li>

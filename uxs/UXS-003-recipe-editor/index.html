@@ -1875,7 +1875,7 @@
   
 
 
-<h1 id="uxs-003-recipe-editor">UXS-003 — Recipe Editor<a class="headerlink" href="#uxs-003-recipe-editor" title="Permanent link">&para;</a></h1>
+<h1 id="uxs-003-recipe-editor">UXS-003 — Recipe Editor</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026 · drafted from prototype mockups (OC-02 Figs 4–5)
 <strong>IA anchor</strong> · §surfaces/recipe-editor · §topbar-patterns/recipe-editor · §shared-tokens
@@ -1884,23 +1884,23 @@
 <strong>Related RFCs</strong> · <a href="../../rfc/RFC-001-recipe-yaml-schema/">RFC-001 Recipe YAML schema</a> — <em>needs revision; the prototype shows a flat schema with comment-marked sections rather than the two-tier shape RFC-001 v0.1 proposed</em> · <a href="../../rfc/RFC-004-live-preview-architecture/">RFC-004 Live preview architecture</a> · <a href="../../rfc/RFC-005-yaml-round-tripping/">RFC-005 YAML round-tripping</a></p>
 </blockquote>
 <hr />
-<h2 id="why-this-uxs-exists">Why this UXS exists<a class="headerlink" href="#why-this-uxs-exists" title="Permanent link">&para;</a></h2>
+<h2 id="why-this-uxs-exists">Why this UXS exists</h2>
 <p>The Recipe Editor is where data becomes art. Of the four primary surfaces, it is the one whose visual contract most closely controls <em>the act of authorship</em>. The single preview canvas above a flip toggle, the five mood presets, the energy×presence quadrant, the colour-character spectrum, and the temporal-weight slider are not generic UI controls — they are creative instruments. This UXS specifies their static visual contract; behaviour (live preview update, flip animation, slider interaction) lives in the RFCs above.</p>
-<h2 id="principles">Principles<a class="headerlink" href="#principles" title="Permanent link">&para;</a></h2>
+<h2 id="principles">Principles</h2>
 <ul>
 <li><strong>Preview is permanent.</strong> The render canvas is always visible at the top, occupying roughly the upper third. It does not collapse, does not hide. The artist sees the work changing as they work.</li>
 <li><strong>Flip, don't tab.</strong> Creative mode and YAML mode are alternative views of the same recipe state, not separate panels. The flip toggle makes the duality explicit. Both serve the same artist; both are first-class.</li>
 <li><strong>Creative controls are instruments, not forms.</strong> Mood pills are not radio buttons. The energy×presence quadrant is not a coordinate input. They are tools that map directly to artistic intent — calmness, turbulence, presence, ghost. Their visual language is closer to a synthesizer panel than a settings dialog.</li>
 <li><strong>Power respect.</strong> Power users editing YAML directly see their work honoured. Amber-highlighted lines indicate "this came from creative mode"; everything else is structural and editable. The system never silently overwrites.</li>
 </ul>
-<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<h2 id="scope">Scope</h2>
 <p><strong>In scope</strong> · Recipe Editor topbar with status badges; preview canvas with overlay metadata and Preview-full / Render-now affordances; flip toggle bar (creative / yaml); creative-mode controls (mood, energy×presence, colour character, temporal weight); YAML mode display with structural / creative-line colour coding; bottom action bar (save recipe / discard); domain tokens specific to the editor's interactive surfaces.</p>
 <p><strong>Non-goals</strong> · Sketch Editor mode (a separate full-screen mode, deferred to its own UXS); the recipe list at <code>/recipes</code> (deferred); behavioural rules for live preview, slider interaction, flip animation, YAML editor hotkeys.</p>
 <p><strong>Boundary note</strong> · Live preview update timing (RFC-004), flip animation, slider drag behaviour, and the YAML round-tripping detection algorithm (RFC-005) all belong in their respective RFCs. This UXS specifies static appearance only — what each control looks like, not how it responds.</p>
-<h2 id="theme">Theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h2>
+<h2 id="theme">Theme</h2>
 <p>Dark only.</p>
-<h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
-<h3 id="inherited-from-ia">Inherited from IA<a class="headerlink" href="#inherited-from-ia" title="Permanent link">&para;</a></h3>
+<h2 id="tokens">Tokens</h2>
+<h3 id="inherited-from-ia">Inherited from IA</h3>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
 <li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code>, <code>text-disabled</code></li>
@@ -1908,7 +1908,7 @@
 <li><strong>Typography</strong> · <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
-<h3 id="defined-here-editor-">Defined here — <code>editor-*</code><a class="headerlink" href="#defined-here-editor-" title="Permanent link">&para;</a></h3>
+<h3 id="defined-here-editor-">Defined here — <code>editor-*</code></h3>
 <p>The Recipe Editor introduces its own surface-specific tokens: the creative-line colour for YAML highlighting, the structural-line colour, and the colour-character gradient.</p>
 <table>
 <thead>
@@ -1962,7 +1962,7 @@
 </tbody>
 </table>
 <p><code>editor-creative</code> and <code>editor-structure</code> are intentionally close to <code>domain-sst-accent</code> and <code>intent-info</code> — but they're different tokens because their semantics are different. Creative-line colouring and source identity are not the same concept.</p>
-<h2 id="layout">Layout<a class="headerlink" href="#layout" title="Permanent link">&para;</a></h2>
+<h2 id="layout">Layout</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌──────────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ OCEANCANVAS  /north_atlantic_sst       live · OISST   25 Apr 2026   field │  ← topbar (42px)
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├──────────────────────────────────────────────────────────────────────────┤
@@ -2018,7 +2018,7 @@
 <a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>│  └───────────────────────────────┘  └───────────────────────────────┘    │
 <a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>└──────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
-<h3 id="yaml-mode-fig-5">YAML mode (Fig 5)<a class="headerlink" href="#yaml-mode-fig-5" title="Permanent link">&para;</a></h3>
+<h3 id="yaml-mode-fig-5">YAML mode (Fig 5)</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>├──────────────────────────────────────────────────────────────────────────┤
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ [creative]  [yaml*]    amber lines are your creative choices  sketch editor↗│  ← flip toggled
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├──────────────────────────────────────────────────────────────────────────┤
@@ -2140,7 +2140,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="component-states">Component states<a class="headerlink" href="#component-states" title="Permanent link">&para;</a></h2>
+<h2 id="component-states">Component states</h2>
 <table>
 <thead>
 <tr>
@@ -2268,7 +2268,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="accessibility">Accessibility<a class="headerlink" href="#accessibility" title="Permanent link">&para;</a></h2>
+<h2 id="accessibility">Accessibility</h2>
 <ul>
 <li><strong>Contrast</strong> · <code>editor-creative</code> (<code>#EF9F27</code>) over <code>canvas</code> is 7:1+; <code>editor-structure</code> (<code>#5DCAA5</code>) over <code>canvas</code> is 9:1+. Both exceed WCAG AA. White slider handles over the gradient bar are clearly distinguishable at every position on the spectrum.</li>
 <li><strong>Focus</strong> · all controls (mood pills, quadrant dot, sliders, action buttons) show a <code>border-strong</code> focus ring. The flip toggle pills also have a focus ring.</li>
@@ -2276,7 +2276,7 @@
 <li><strong>Reduced motion</strong> · live-preview re-render visual settling, slider handle transitions, and flip animation respect <code>prefers-reduced-motion</code>. Per-RFC implementation.</li>
 <li><strong>Screen readers</strong> · the preview canvas has an <code>aria-label</code> describing the recipe and current render type. Mood pills are a <code>role="radiogroup"</code> with <code>aria-checked</code>. The quadrant has an <code>aria-label</code> describing position; sliders use standard slider semantics with <code>aria-valuemin</code>, <code>aria-valuemax</code>, <code>aria-valuenow</code>.</li>
 </ul>
-<h2 id="acceptance-criteria">Acceptance criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] Preview canvas is always visible at top, ~38% of viewport height, never collapses</li>
 <li>[ ] Preview-full and Render-now affordances appear in lower-right of preview, with Render-now in <code>intent-info</code> indicating primary</li>
@@ -2293,7 +2293,7 @@
 <li>[ ] Keyboard reachability and screen-reader labels confirmed</li>
 </ul>
 <hr />
-<h2 id="notes-for-related-rfcs">Notes for related RFCs<a class="headerlink" href="#notes-for-related-rfcs" title="Permanent link">&para;</a></h2>
+<h2 id="notes-for-related-rfcs">Notes for related RFCs</h2>
 <p><strong>RFC-001 (Recipe YAML schema) needs revision.</strong> The prototype's YAML mode shows a <em>flat</em> schema with comment markers demarcating the creative-controlled section, not the two-tier <code>creative:</code> / <code>technical:</code> schema RFC-001 v0.1 proposed. The flat schema is cleaner — power users edit any line without nesting; the editor parses comment markers to know which lines to render in <code>editor-creative</code>. RFC-001 v0.2 should adopt the flat-with-comments approach.</p>
 <p><strong>RFC-005 (YAML round-tripping) is unchanged in shape</strong> — the matched / partially-custom / custom detection logic still applies, but it operates on lines below the <code># ⊓ creative controls ⊓ ...</code> marker rather than on a separate <code>creative:</code> block. This UXS doesn't lock the matched/partially-custom/custom visual states yet — they're a future addition once the round-tripping is implemented.</p>
 

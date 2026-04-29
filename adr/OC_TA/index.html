@@ -2050,7 +2050,7 @@
   
 
 
-<h1 id="oc_ta-technical-architecture">OC_TA — Technical Architecture<a class="headerlink" href="#oc_ta-technical-architecture" title="Permanent link">&para;</a></h1>
+<h1 id="oc_ta-technical-architecture">OC_TA — Technical Architecture</h1>
 <ul>
 <li><strong>Status</strong> · v1.0 · April 2026</li>
 <li><strong>Type</strong> · Reference document — structured for linking-into, not reading end-to-end</li>
@@ -2062,52 +2062,52 @@
 <p>TA holds <em>what is true across the system</em>. Per-question deliberation lives in RFCs (<a href="../../rfc/"><code>../rfc/</code></a>). Per-decision commitment lives in ADRs (this folder). TA is the document RFCs and ADRs anchor to so they don't have to carry that work themselves.</p>
 <p>The §map at the bottom is the live state board — it is the single place to see what is open, what is decided, and what supersedes what. The folder-local indexes (<a href="../"><code>./index.md</code></a> for ADRs, <a href="../../rfc/"><code>../rfc/index.md</code></a> for RFCs) mirror the relevant slice of §map for direct discovery.</p>
 <hr />
-<h2 id="components">§components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h2>
+<h2 id="components">§components</h2>
 <p>OceanCanvas is six subsystems with sharp boundaries. Each subsystem owns its concerns; cross-subsystem communication happens only through the contracts in §contracts.</p>
-<h3 id="pipeline">pipeline<a class="headerlink" href="#pipeline" title="Permanent link">&para;</a></h3>
+<h3 id="pipeline">pipeline</h3>
 <p>The Prefect-orchestrated daily flow. Six tasks: discover (latest available date per source) → fetch (raw data to <code>data/sources/</code>) → process (raw to <code>data/processed/</code>) → build payload (per recipe) → render (Puppeteer + p5.js) → index (rebuild <code>manifest.json</code>). Runs at 06:00 UTC. Self-hosted in a Docker container. Owns: data acquisition, format normalisation, render orchestration.</p>
-<h3 id="data-store">data-store<a class="headerlink" href="#data-store" title="Permanent link">&para;</a></h3>
+<h3 id="data-store">data-store</h3>
 <p>Three-layer file-based storage. <code>data/sources/</code> holds raw fetched files in their native formats (NetCDF, JSON). <code>data/processed/</code> holds browser-friendly outputs (flat JSON arrays, colourised PNG tiles, meta sidecars). <code>renders/</code> holds the daily PNG outputs per recipe. None of these are committed to git in v1; all are regenerable. Owns: persistence, regenerability, the contracts between pipeline tasks.</p>
-<h3 id="render-system">render-system<a class="headerlink" href="#render-system" title="Permanent link">&para;</a></h3>
+<h3 id="render-system">render-system</h3>
 <p>The p5.js + Puppeteer rendering subsystem. Browser-side: the same sketch runs in the Recipe Editor preview and in the Puppeteer headless render. Server-side: Node.js subprocess launches Chromium, injects the render payload, waits for <code>window.__RENDER_COMPLETE</code>, screenshots the canvas. Owns: deterministic image production from a recipe + a payload.</p>
-<h3 id="web-frontend">web-frontend<a class="headerlink" href="#web-frontend" title="Permanent link">&para;</a></h3>
+<h3 id="web-frontend">web-frontend</h3>
 <p>Static React app served from <code>gallery/</code>. deck.gl + MapLibre for spatial rendering. Observable Plot for time series. Reads <code>data/processed/</code> files and <code>manifest.json</code> directly as static assets. No runtime API server. Owns: the dashboard, the recipe editor, the gallery, the video editor — all four customer-facing surfaces.</p>
-<h3 id="service-layer">service-layer<a class="headerlink" href="#service-layer" title="Permanent link">&para;</a></h3>
+<h3 id="service-layer">service-layer</h3>
 <p>Docker Compose stack. Four containers: <code>postgres</code> (Prefect state DB), <code>prefect-server</code> (Prefect Server), <code>pipeline</code> (Python 3.12 + Node.js 20 + Chromium), <code>gallery</code> (Caddy serving the built React app). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host. Owns: deployment, container orchestration, the runnable system.</p>
-<h3 id="ci">ci<a class="headerlink" href="#ci" title="Permanent link">&para;</a></h3>
+<h3 id="ci">ci</h3>
 <p>GitHub Actions for code validation only. Lint, unit tests, build Docker image, run a synthetic-data e2e test of the full pipeline. Never runs the production data pipeline. Owns: code-quality gating between development and production.</p>
 <hr />
-<h2 id="contracts">§contracts<a class="headerlink" href="#contracts" title="Permanent link">&para;</a></h2>
+<h2 id="contracts">§contracts</h2>
 <p>The data shapes that flow between components. Every contract is a stable interface — components on either side depend on it, and changing it is a breaking change.</p>
-<h3 id="recipeyaml">recipe.yaml<a class="headerlink" href="#recipeyaml" title="Permanent link">&para;</a></h3>
+<h3 id="recipeyaml">recipe.yaml</h3>
 <p>The authored work. One YAML file per recipe in <code>recipes/</code>. Specifies: id, name, region (lat/lon bounds), source(s), render type, creative parameters, optional sketch override. Read by the pipeline at fetch and render time. Read by the recipe editor for round-tripping. Schema defined by <strong>RFC-001 → ADR (pending)</strong>.</p>
-<h3 id="dataprocessedsourcedate">data/processed/{source}/{date}.*<a class="headerlink" href="#dataprocessedsourcedate" title="Permanent link">&para;</a></h3>
+<h3 id="dataprocessedsourcedate">data/processed/{source}/{date}.*</h3>
 <p>The pipeline's intermediate format. Three files per source per date: <code>.json</code> (flat float32 array + shape + min/max + lat/lon range + metadata), <code>.png</code> (colourised tile at processing-region resolution), <code>.meta.json</code> (statistics sidecar). Read by the dashboard for live visualisation, by the render-payload builder for recipe assembly. Format defined by <strong>ADR-015</strong>.</p>
-<h3 id="render-payload-windowocean_payload">render payload (<code>window.OCEAN_PAYLOAD</code>)<a class="headerlink" href="#render-payload-windowocean_payload" title="Permanent link">&para;</a></h3>
+<h3 id="render-payload-windowocean_payload">render payload (<code>window.OCEAN_PAYLOAD</code>)</h3>
 <p>The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by <strong>RFC-002 → ADR (pending)</strong>.</p>
-<h3 id="creative-state-technical-parameters">creative state → technical parameters<a class="headerlink" href="#creative-state-technical-parameters" title="Permanent link">&para;</a></h3>
+<h3 id="creative-state-technical-parameters">creative state → technical parameters</h3>
 <p>Maps mood presets and creative controls (energy×presence, colour character, temporal weight) to render parameters (colormap, opacity, particle_count, etc.). Implemented identically in TypeScript (<code>gallery/src/lib/creativeMapping.ts</code>) and Python (<code>pipeline/src/oceancanvas/creative_mapping.py</code>). Both must produce identical outputs — divergence is a bug. Used by the Recipe Editor to translate artistic intent into p5.js render config, and by the pipeline when processing recipes authored via the editor.</p>
-<h3 id="manifestjson">manifest.json<a class="headerlink" href="#manifestjson" title="Permanent link">&para;</a></h3>
+<h3 id="manifestjson">manifest.json</h3>
 <p>The gallery index. Lists all recipes, all render dates, dimensions and metadata for each. Rebuilt from scratch by pipeline Task 06 (Index). Read by the React gallery and the video editor. No partial updates — full rebuild each day.</p>
 <hr />
-<h2 id="constraints">§constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">§constraints</h2>
 <p>The non-negotiables. Every RFC must honour these. A change to any of them is a major architectural shift requiring its own ADR and likely an updated TA.</p>
-<h3 id="file-based-storage-in-v1">file-based storage in v1<a class="headerlink" href="#file-based-storage-in-v1" title="Permanent link">&para;</a></h3>
+<h3 id="file-based-storage-in-v1">file-based storage in v1</h3>
 <p>No database. Recipe configs are YAML files. Pipeline state is JSON. Manifest is JSON. Renders are PNGs on disk. The system is <code>git clone</code> + <code>docker compose up</code>-able with no service dependencies. SQLite is permitted if the manifest grows large enough to require it; nothing more in Phase 1.</p>
-<h3 id="deterministic-rendering">deterministic rendering<a class="headerlink" href="#deterministic-rendering" title="Permanent link">&para;</a></h3>
+<h3 id="deterministic-rendering">deterministic rendering</h3>
 <p>Same recipe + same source data + same date = same render. Always. The render is a function, not an experiment. No random seeds left unset. No clock-dependent code paths. Re-running the pipeline produces byte-identical PNGs.</p>
-<h3 id="daily-cadence-is-sacred">daily cadence is sacred<a class="headerlink" href="#daily-cadence-is-sacred" title="Permanent link">&para;</a></h3>
+<h3 id="daily-cadence-is-sacred">daily cadence is sacred</h3>
 <p>The pipeline runs once at 06:00 UTC. Manual renders are the exception, never the rule. The system's primary mode is unattended. Anything that requires the pipeline to run more often than daily — for any reason — needs its own ADR.</p>
-<h3 id="no-auth-sources-only-in-phase-1">no-auth sources only in Phase 1<a class="headerlink" href="#no-auth-sources-only-in-phase-1" title="Permanent link">&para;</a></h3>
+<h3 id="no-auth-sources-only-in-phase-1">no-auth sources only in Phase 1</h3>
 <p>No source requiring API keys or authentication ships in v1. If a source becomes essential and requires auth, that is a deliberate ADR upgrading from <code>open-by-default</code>, not a drift.</p>
-<h3 id="self-hostable-end-to-end">self-hostable end-to-end<a class="headerlink" href="#self-hostable-end-to-end" title="Permanent link">&para;</a></h3>
+<h3 id="self-hostable-end-to-end">self-hostable end-to-end</h3>
 <p>Anyone with Docker can clone the repo and run the full stack on their machine. No cloud-only services in the critical path. Cloudflare R2 (Phase 2) is optional even when added — local serving via Caddy must remain a working alternative.</p>
-<h3 id="shared-payload-format-for-preview-and-pipeline">shared payload format for preview and pipeline<a class="headerlink" href="#shared-payload-format-for-preview-and-pipeline" title="Permanent link">&para;</a></h3>
+<h3 id="shared-payload-format-for-preview-and-pipeline">shared payload format for preview and pipeline</h3>
 <p>The Recipe Editor's live preview runs the same p5.js sketch with the same payload format that the Puppeteer pipeline renders with. If the editor preview looks right, the pipeline render looks right. Any divergence between these paths is a bug, not a trade-off.</p>
-<h3 id="attribution-baked-in">attribution baked in<a class="headerlink" href="#attribution-baked-in" title="Permanent link">&para;</a></h3>
+<h3 id="attribution-baked-in">attribution baked in</h3>
 <p>Source attribution is part of every render. Removing it requires a deliberate code change; including it is the default. (The promise side of this constraint lives in <code>OC_PA.md §promises/citation-travels</code>.)</p>
 <hr />
-<h2 id="stack">§stack<a class="headerlink" href="#stack" title="Permanent link">&para;</a></h2>
+<h2 id="stack">§stack</h2>
 <p>The locked tech choices. Each entry points to its ADR. Changes happen by writing a new ADR that supersedes the existing one — never by edit-in-place.</p>
 <table>
 <thead>
@@ -2206,9 +2206,9 @@
 </tbody>
 </table>
 <hr />
-<h2 id="map">§map<a class="headerlink" href="#map" title="Permanent link">&para;</a></h2>
+<h2 id="map">§map</h2>
 <p>The live state board. Open RFCs are under deliberation. Decided RFCs have closed into ADRs. ADRs are accepted or superseded.</p>
-<h3 id="rfcs-folder-index">RFCs · <a href="../../rfc/">folder index</a><a class="headerlink" href="#rfcs-folder-index" title="Permanent link">&para;</a></h3>
+<h3 id="rfcs-folder-index">RFCs · <a href="../../rfc/">folder index</a></h3>
 <table>
 <thead>
 <tr>
@@ -2263,7 +2263,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="adrs-folder-index">ADRs · <a href="../">folder index</a><a class="headerlink" href="#adrs-folder-index" title="Permanent link">&para;</a></h3>
+<h3 id="adrs-folder-index">ADRs · <a href="../">folder index</a></h3>
 <table>
 <thead>
 <tr>
@@ -2361,7 +2361,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="how-rfcs-and-adrs-reference-this-doc">How RFCs and ADRs reference this doc<a class="headerlink" href="#how-rfcs-and-adrs-reference-this-doc" title="Permanent link">&para;</a></h2>
+<h2 id="how-rfcs-and-adrs-reference-this-doc">How RFCs and ADRs reference this doc</h2>
 <p>RFCs and ADRs link into TA sections by anchor. The conventions:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TA anchor · §components/pipeline · §contracts/recipe-yaml
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Constraints · file-based storage in v1, deterministic rendering (TA §constraints)
@@ -2371,7 +2371,7 @@
 <p>An RFC that doesn't reference any TA section is a smell. It usually means either (a) the question can be answered without affecting the architecture, in which case it should not be an RFC, or (b) the RFC is restating TA-level content instead of using it.</p>
 <p>ADRs reference the TA section they constrain or unlock. An ADR that locks a component or contract should be explicitly linked from the corresponding §components or §contracts entry.</p>
 <hr />
-<h2 id="what-this-doc-is-not">What this doc is not<a class="headerlink" href="#what-this-doc-is-not" title="Permanent link">&para;</a></h2>
+<h2 id="what-this-doc-is-not">What this doc is not</h2>
 <table>
 <thead>
 <tr>
@@ -2405,7 +2405,7 @@
 </table>
 <p>TA does not hold per-question deliberation, per-decision rationale, narrative explanation, implementation specs, or the contents of any artifact. If a section here drifts toward any of those, it belongs in the corresponding doc, not here.</p>
 <hr />
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>Phase 2 image serving.</strong> Cloudflare R2 is named in OC-04 but not yet decided. Becomes an ADR when public hosting is on the table.</li>
 <li><strong>Database upgrade.</strong> SQLite is permitted under ADR-005 if the manifest grows; the threshold isn't defined. Worth an ADR if the trigger is hit.</li>

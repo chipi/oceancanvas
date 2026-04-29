@@ -49,21 +49,34 @@
   padding-left: 10px;
 }
 
-/* Content — subtle ocean depth */
+/* Content — deeper ocean atmosphere */
 .md-content {
   background:
-    radial-gradient(ellipse at 80% 20%, rgba(4, 44, 83, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 20% 80%, rgba(15, 110, 86, 0.1) 0%, transparent 50%),
-    var(--ocean-deep);
+    radial-gradient(ellipse at 90% 10%, rgba(4, 44, 83, 0.25) 0%, transparent 40%),
+    radial-gradient(ellipse at 10% 90%, rgba(15, 110, 86, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(93, 202, 165, 0.03) 0%, transparent 70%),
+    linear-gradient(180deg, #0a0f16 0%, #061020 50%, #0a0f16 100%);
 }
 
-/* h1 — teal underline */
+/* Body text — warmer white */
+.md-typeset {
+  color: rgba(220, 230, 240, 0.85);
+}
+
+/* Bold text — teal tint */
+.md-typeset strong {
+  color: rgba(93, 202, 165, 0.9);
+  font-weight: 600;
+}
+
+/* h1 — gradient underline */
 .md-typeset h1 {
   font-weight: 500;
   font-size: 2.2em;
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.95);
-  border-bottom: 2px solid var(--ocean-teal);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--ocean-teal), var(--ocean-warm), transparent) 1;
   padding-bottom: 12px;
 }
 
@@ -77,6 +90,20 @@
 
 /* h3 — warm amber */
 .md-typeset h3 {
+  color: var(--ocean-warm);
+}
+
+/* Emphasis — lighter, airy */
+.md-typeset em {
+  color: rgba(175, 169, 236, 0.85);
+}
+
+/* Lists — teal markers */
+.md-typeset ul > li::marker {
+  color: var(--ocean-teal);
+}
+
+.md-typeset ol > li::marker {
   color: var(--ocean-warm);
 }
 

@@ -1786,26 +1786,26 @@
   
 
 
-<h1 id="adr-008-shared-payload-format-for-preview-and-pipeline">ADR-008 — Shared payload format for preview and pipeline<a class="headerlink" href="#adr-008-shared-payload-format-for-preview-and-pipeline" title="Permanent link">&para;</a></h1>
+<h1 id="adr-008-shared-payload-format-for-preview-and-pipeline">ADR-008 — Shared payload format for preview and pipeline</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §contracts/render-payload · §constraints</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The Recipe Editor's live preview runs a sketch in the browser. The pipeline's Task 05 runs the same sketch in headless Chromium via Puppeteer. Both need the same data — the sketch must work in either context.</p>
 <p>If the editor and pipeline used different payload shapes, sketches would have to branch on context. Two code paths in every sketch. Drift becomes inevitable. The promise that "what you see in the editor is what the pipeline renders" collapses.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>The render payload format is the same in both contexts. Both the editor live preview and the Puppeteer pipeline render inject the payload as <code>window.OCEAN_PAYLOAD</code> with identical schema. Sketches read the payload identically in both contexts; no context-detection branching is permitted in sketch code.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>This is the non-negotiable principle that makes the editor preview <em>trustworthy</em>. An artist who tweaks a recipe in the editor needs to know that the pipeline render will look the same. Without this guarantee, the editor preview is decorative.</p>
 <p>The schema details — what specific fields the payload contains — are deliberated in RFC-002. This ADR locks only the principle: one schema, two contexts.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Two payload schemas, one per context</strong> — explicitly rejected. Sketches would branch on context, creating two code paths. Drift between editor and pipeline becomes inevitable.</li>
 <li><strong>Editor-only sketch mode flag</strong> — a global flag the sketch reads to choose behaviour. Same problem as two payloads. Rejected.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Sketches are simple — read payload, draw. No context-awareness.
 - A sketch override developed in the editor will work in the pipeline without modification.
@@ -1813,7 +1813,7 @@
 <p><strong>Negative:</strong>
 - Both contexts pay the cost of any payload feature. If the editor needs something the pipeline doesn't, it goes in the payload anyway. Mitigated by keeping the payload focused.
 - The downsampling approach in the editor preview (RFC-004) means the payload values differ between contexts — but the <em>schema</em> is the same. The shape constraint holds.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Schema details defined in RFC-002 → ADR (pending, separate from this one).</li>
 <li>Editor payload builder in <code>gallery/src/preview/</code> (to be created).</li>

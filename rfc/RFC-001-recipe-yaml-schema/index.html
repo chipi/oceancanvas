@@ -1891,7 +1891,7 @@
   
 
 
-<h1 id="rfc-001-recipe-yaml-schema">RFC-001 — Recipe YAML schema<a class="headerlink" href="#rfc-001-recipe-yaml-schema" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-001-recipe-yaml-schema">RFC-001 — Recipe YAML schema</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.2 · April 2026 · revised against prototype mockup (OC-02 Fig 5)
 <strong>TA anchor</strong> · §contracts/recipe-yaml · §components/pipeline · §components/render-system
@@ -1900,7 +1900,7 @@
 <strong>Why this is an RFC</strong> · The recipe YAML is the durable artefact of authorship. Its shape determines whether recipes feel like authored works or like configurations, and whether the editor's creative-parameters surface can round-trip cleanly. Multiple plausible schemas exist; the deliberation is genuine.</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>A recipe is a YAML file in <code>recipes/</code>. Every day the pipeline reads it, fetches data, builds a payload, and produces a render. The Recipe Editor authors it through a creative-control surface (mood preset, energy×presence, colour character, temporal weight) and through a YAML view where amber-highlighted lines are the parameters set by creative work and dim teal lines are structural.</p>
 <p>The question: what is the schema? Specifically, how do we structure the file so that:</p>
 <ol>
@@ -1910,14 +1910,14 @@
 <li>Recipes remain readable by humans years after authoring — version-control diffs should be legible.</li>
 </ol>
 <p>The schema is the contract between the editor, the pipeline, and the artist. Getting it wrong contaminates all three.</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Authoring a new recipe in the editor.</strong> User picks a mood preset, drags energy×presence, selects colour character. The editor serialises this into YAML and writes the file. The schema must capture the creative state in a form the editor can re-read.</li>
 <li><strong>Editing the YAML directly.</strong> A power user opens the file in their editor of choice. They tweak <code>colormap</code> from <code>thermal</code> to <code>thermal-soft</code>. The editor reads the change and snaps the colour-character control to the closest match (or marks it as "custom" — see RFC-005).</li>
 <li><strong>Extending a recipe with a sketch override.</strong> A user wants to push beyond what the render type system allows. They write a custom p5.js sketch. The recipe references it by path. The pipeline loads the override sketch instead of the template.</li>
 <li><strong>Reviewing a year-old recipe.</strong> The artist returns to a recipe they wrote a year ago. The YAML must be self-describing enough that they understand what they made without consulting the editor.</li>
 </ol>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>Creative and structural sections are visually separated in the file (supporting the editor's amber/teal rendering).</li>
 <li>Round-trip from creative controls → YAML → creative controls is lossless when no manual YAML edits have been made.</li>
@@ -1926,13 +1926,13 @@
 <li>The file is human-editable in any text editor without tooling.</li>
 <li>Schema is <strong>flat</strong> — no <code>creative:</code> / <code>technical:</code> nested blocks — and the editor's amber/teal distinction is communicated by a comment marker, not by document structure.</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>File-based storage in v1</em> — recipes are flat files under version control (TA §constraints).</li>
 <li><em>Determinism</em> — same recipe + same data = same render (TA §constraints). The schema cannot contain implicit time-dependent fields.</li>
 <li><em>Shared payload format</em> — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA §constraints).</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p>A <strong>flat schema with a comment-marker delimiter</strong>. All keys live at the top level. A single line comment — <code># ⊓ creative controls ⊓</code> — divides the file into two sections: above it, structural fields (the recipe's identity, region, sources, schedule); below it, creative state and the technical parameters derived from creative state. The editor renders lines below the marker in <code>editor-creative</code> (amber) and lines above in <code>editor-structure</code> (teal).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># recipe: north_atlantic_sst</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">north_atlantic_sst</span>
@@ -1980,8 +1980,8 @@
 <p><strong>Below the marker</strong> — creative state and derived technical params. The five creative-control values (<code>mood</code>, <code>energy_x</code>, <code>energy_y</code>, <code>colour_character</code>, <code>temporal_weight</code>) live as top-level keys. The technical blocks (<code>render</code>, <code>audio</code>) sit below them as the parameters those creative values drive. The editor renders all of this in amber.</p>
 <p><strong>The <code>sketch_override</code> field.</strong> Optional. Path to a custom p5.js sketch file. When present, the pipeline loads that sketch instead of the render-type template. The technical block is preserved but unused by the renderer when override is active.</p>
 <p><strong>Rendering and round-tripping.</strong> RFC-002 specifies how the pipeline turns this YAML into a render payload — only the lines below the marker (plus <code>region</code> and <code>sources</code> from above) are needed for rendering. RFC-005 specifies how the editor detects creative-state divergence: it computes <code>creative_to_technical(mood, energy_x, energy_y, colour_character, temporal_weight)</code> and compares against the actual <code>render</code> and <code>audio</code> blocks to decide if the recipe is matched, partially-custom, or custom.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-two-tier-schema-creative-technical-blocks">Alternative: two-tier schema (<code>creative:</code> / <code>technical:</code> blocks)<a class="headerlink" href="#alternative-two-tier-schema-creative-technical-blocks" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-two-tier-schema-creative-technical-blocks">Alternative: two-tier schema (<code>creative:</code> / <code>technical:</code> blocks)</h3>
 <p>The original v0.1 proposal: nested blocks with <code>creative:</code> holding the five creative-control values and <code>technical:</code> holding the render/audio params.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">creative</span><span class="p">:</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">mood</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Becalmed</span>
@@ -1993,23 +1993,23 @@
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 </code></pre></div>
 <p>Rejected because the prototype shows the design uses a flat schema with a comment marker, not nested blocks. The flat approach is cleaner: power users edit any line without nesting; the file reads more like a recipe and less like a configuration object. The two-tier shape also forced an artificial split of <code>audio:</code> (does it go in creative or technical?) — flat avoids that.</p>
-<h3 id="alternative-flat-schema-no-marker">Alternative: flat schema, no marker<a class="headerlink" href="#alternative-flat-schema-no-marker" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-flat-schema-no-marker">Alternative: flat schema, no marker</h3>
 <p>All keys at top-level, no marker comment, no visual delimiter. The editor would identify creative-controlled lines by hard-coded list (e.g., "lines starting with <code>mood</code>, <code>energy_x</code>, … and lines under <code>render:</code> or <code>audio:</code>").</p>
 <p>Rejected because the editor needs to know which lines to render in amber. A hard-coded list works <em>initially</em> but couples the editor to the schema — any new creative-driven field requires updating both the schema and the editor's list. The marker comment is content-driven: any line below the marker is creative, no list needed.</p>
-<h3 id="alternative-creative-only-schema-with-technical-fields-inferred-at-runtime">Alternative: creative-only schema with technical fields inferred at runtime<a class="headerlink" href="#alternative-creative-only-schema-with-technical-fields-inferred-at-runtime" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-creative-only-schema-with-technical-fields-inferred-at-runtime">Alternative: creative-only schema with technical fields inferred at runtime</h3>
 <p>The recipe stores only the five creative-control values. The pipeline computes <code>render</code> and <code>audio</code> parameters from creative state at render time using a deterministic mapping function.</p>
 <p>Rejected because power users lose the ability to override individual technical parameters. This was a real consideration — the simplicity is appealing — but it eliminates the YAML-mode escape valve that PRD-003's "sharpest threat" argument depends on.</p>
-<h3 id="alternative-marker-delimiters-as-paired-tokens-creative_begin-creative_end">Alternative: marker delimiters as paired tokens (<code># CREATIVE_BEGIN</code> / <code># CREATIVE_END</code>)<a class="headerlink" href="#alternative-marker-delimiters-as-paired-tokens-creative_begin-creative_end" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-marker-delimiters-as-paired-tokens-creative_begin-creative_end">Alternative: marker delimiters as paired tokens (<code># CREATIVE_BEGIN</code> / <code># CREATIVE_END</code>)</h3>
 <p>Use bracketing comment markers to delimit the creative section, allowing structural content to appear <em>after</em> the creative section.</p>
 <p>Rejected because it adds complexity for no clear benefit. The single-marker convention places creative content at the bottom of the file by convention; structural content goes at the top. This matches how recipes are <em>read</em> (start with what it is, end with how it looks) and how they're <em>authored</em> in the editor (mood/energy first, render details below).</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>The mapping from creative state to technical params lives in the editor, not in the file.</strong> This means the meaning of <code>mood: Becalmed</code> could drift across editor versions. Mitigation: version the preset definitions (<code>creative_mapping_version: 1</code> could be added to the marker line in a future revision; deferred).</li>
 <li><strong>Per-render-type technical fields means the <code>render:</code> block has variable shape.</strong> A schema validator needs to know the render type before it can validate the block. Acceptable; the render type is the first key inside <code>render:</code>.</li>
 <li><strong>The marker comment is parser-relevant.</strong> YAML treats comments as ignorable, so the pipeline doesn't care about the marker. But the editor <em>must</em> preserve it on save. Documentation must be explicit that the marker is meaningful.</li>
 <li><strong>A user who deletes the marker by accident loses the editor's amber highlighting.</strong> The editor falls back to "all lines look the same" — no functional harm, but the visual cue is gone. The editor should restore the marker on save if it's missing.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>Should the <code>region</code> block accept a named region (e.g., <code>region: north-atlantic</code>) as well as explicit lat/lon bounds? Cleaner for common cases; adds a region registry as another contract.</li>
 <li>Should <code>created</code> and <code>author</code> be optional metadata or required? Required nudges good hygiene; optional keeps the minimal recipe minimal.</li>
@@ -2017,18 +2017,18 @@
 <li>Should the marker carry preset metadata (e.g., <code># ⊓ creative controls ⊓ mood: Becalmed</code>) for redundancy, or is the <code>mood:</code> YAML key enough? The prototype shows the marker carries the mood — could be either decorative or load-bearing. v0.2 treats it as decorative (the <code>mood:</code> YAML key is the truth); a future revision could promote it to load-bearing if useful.</li>
 <li>How are mood-preset definitions versioned? See trade-off above.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Recipe YAML schema v1.</strong> Locks the flat-with-marker shape, the field set per render type, the marker convention, and the structural-vs-creative section semantics.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §contracts/recipe-yaml · §components/pipeline · §components/render-system · §constraints</li>
 <li><strong>Related PRDs</strong> — PRD-001 Recipe · PRD-003 Recipe Editor</li>
 <li><strong>Related UXS</strong> — UXS-003 Recipe Editor (visual contract for the YAML mode this schema feeds)</li>
 <li><strong>Related RFCs</strong> — RFC-002 Render payload format · RFC-005 YAML round-tripping</li>
 </ul>
-<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h2 id="changelog">Changelog</h2>
 <ul>
 <li><strong>v0.2 · April 2026</strong> — Revised against prototype mockup (OC-02 Fig 5). Replaced the two-tier (<code>creative:</code> / <code>technical:</code>) proposal with a flat schema delimited by a comment marker (<code># ⊓ creative controls ⊓</code>). Updated rationale, alternatives, trade-offs, and open questions to match. Added explicit marker-detection regex.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, proposing a two-tier schema with separate <code>creative:</code> and <code>technical:</code> blocks. Superseded by v0.2.</li>

@@ -1786,33 +1786,33 @@
   
 
 
-<h1 id="adr-003-xarray-requests-for-netcdf-sources">ADR-003 — xarray + requests for NetCDF sources<a class="headerlink" href="#adr-003-xarray-requests-for-netcdf-sources" title="Permanent link">&para;</a></h1>
+<h1 id="adr-003-xarray-requests-for-netcdf-sources">ADR-003 — xarray + requests for NetCDF sources</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/pipeline · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The majority of OceanCanvas sources return NetCDF binary files: NOAA OISST, GEBCO bathymetry, ESA CCI sources (SST, SSS, Sea Level, Ocean Colour), NSIDC Sea Ice, HadSST4. NetCDF is gridded scientific data — multidimensional arrays with named dimensions and metadata. dlt (ADR-002) is the wrong abstraction for this shape.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Use plain Python with <code>xarray</code> for opening NetCDF and <code>requests</code> for HTTP. Wrap each fetcher in a Prefect <code>@task</code> for retries, caching, and logging.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>xarray is the de-facto standard for NetCDF in Python. It opens files lazily, slices regions efficiently, exposes data as labelled multidimensional arrays. No framework wraps NetCDF better than xarray itself.</p>
 <p>The Prefect <code>@task</code> wrapper provides the same orchestration benefits we get from dlt — retries, caching, logging, observability — without forcing the binary data through a record-shaped abstraction.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>dlt for NetCDF</strong> — possible via custom transformers, but dlt's record/table model fights with NetCDF's gridded structure. The custom transformers end up reproducing xarray.</li>
 <li><strong>netCDF4 library directly</strong> — lower-level than xarray, more code to write per fetcher. xarray sits on top of netCDF4 anyway.</li>
 <li><strong>iris (UK Met Office)</strong> — high quality but more opinionated; xarray is more general-purpose and widely supported.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Each NetCDF fetcher is small — open, slice region, save to <code>data/sources/</code>.
 - xarray's lazy loading means we only read what we need.
 - Standard tooling; new contributors recognise it.</p>
 <p><strong>Negative:</strong>
 - Two fetcher styles in the codebase (dlt for REST, xarray+requests for NetCDF). Worth the cost — they're genuinely different data shapes.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>NetCDF fetching logic inside <code>pipeline/src/oceancanvas/tasks/fetch.py</code>.</li>
 <li>Per-source fetcher functions called from the <code>fetch</code> task.</li>

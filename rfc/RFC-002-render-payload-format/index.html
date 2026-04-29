@@ -1869,7 +1869,7 @@
   
 
 
-<h1 id="rfc-002-render-payload-format">RFC-002 — Render payload format<a class="headerlink" href="#rfc-002-render-payload-format" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-002-render-payload-format">RFC-002 — Render payload format</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.2 · April 2026 (revised to match Slice 1 implementation)
 <strong>TA anchor</strong> · §contracts/render-payload · §components/render-system · §constraints (shared payload)
@@ -1878,7 +1878,7 @@
 <strong>Why this is an RFC</strong> · The render payload is the contract between the pipeline (or live editor) and the p5.js sketch. Multiple plausible representations exist with real trade-offs around browser load time, server-side parity, and debuggability. The principle of "one payload format for both contexts" is locked (ADR-008); the actual schema is open.</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>Every render — whether in the Recipe Editor's live preview or in the daily Puppeteer pipeline — receives a payload through <code>window.OCEAN_PAYLOAD</code> that the p5.js sketch consumes to produce the canvas output. The payload contains the data arrays, region bounds, audio scalars, and metadata the sketch needs.</p>
 <p>What goes in the payload, and how is it serialised? The question has three sub-questions:</p>
 <ol>
@@ -1887,14 +1887,14 @@
 <li><strong>Numeric precision.</strong> Float32 (smaller, sufficient) or Float64 (larger, lossless)?</li>
 </ol>
 <p>The same sketch reads this payload in the editor preview (live) and in the pipeline render (headless). Whatever schema is chosen, both contexts must produce byte-identical output. ADR-008 locks the principle. This RFC locks the schema.</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Editor live preview.</strong> User adjusts the energy×presence point. The editor reassembles the payload and re-injects it into the preview iframe. The sketch redraws. This happens many times per second during interactive use.</li>
 <li><strong>Pipeline render.</strong> Daily, for each active recipe, the pipeline reads <code>data/processed/</code>, builds a payload for the recipe's region, and writes it to a temp file. Puppeteer launches Chromium, loads the sketch HTML, sets <code>window.OCEAN_PAYLOAD</code> from the temp file, waits for <code>window.__RENDER_COMPLETE</code>, screenshots.</li>
 <li><strong>Sketch-override authoring.</strong> A power user writes a custom p5.js sketch. They need to know what fields are guaranteed to exist on <code>window.OCEAN_PAYLOAD</code>. The schema is the documentation.</li>
 <li><strong>Debugging a misrendered frame.</strong> A render looks wrong. The artist opens the payload file in their editor. The schema must be human-readable enough that they can check whether the data is wrong or the sketch is wrong.</li>
 </ol>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>Same schema in both contexts (editor live preview and pipeline render). No conditional fields per context.</li>
 <li>Loadable in under 100ms for a typical regional payload (North Atlantic OISST + GEBCO).</li>
@@ -1902,13 +1902,13 @@
 <li>No dependency on a binary-format library beyond what's already in the stack (no msgpack, no protobuf, no NetCDF-in-browser).</li>
 <li>Forward-compatible: adding new fields doesn't break old sketches.</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>Shared payload format</em> — same shape for editor and Puppeteer (TA §constraints; locked by ADR-008).</li>
 <li><em>Determinism</em> — same payload + same sketch = same render bytes (TA §constraints).</li>
 <li><em>File-based storage in v1</em> — payload is a file on disk, not a database query result.</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p>A single JSON file per render (or per preview) with a fixed top-level schema. Numeric arrays serialised as plain JSON arrays of float32 values. One file, loaded with a single <code>fetch</code>, parsed with <code>JSON.parse</code>. No separate context loading.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// window.OCEAN_PAYLOAD shape (v0.2 — matches Slice 1 implementation)</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
@@ -1955,34 +1955,34 @@
 <p><strong>Data layout:</strong> Arrays are row-major. Row 0 is the southernmost latitude. Sketches that render to screen must flip vertically (row 0 → bottom of canvas, row N → top). Shape is <code>[lat_count, lon_count]</code>.</p>
 <p>Numeric arrays as plain JSON arrays of float32 values. Yes, this is verbose. Modern JSON.parse handles a 100k-element float array in under 30ms in Chrome — well within the 100ms goal. The verbosity is the price of debuggability and zero binary-library dependency.</p>
 <p>The <code>creative</code> and <code>technical</code> blocks mirror RFC-001's recipe schema, allowing the sketch to read either creative-state-driven or technical-parameter-driven decisions without duplicating logic.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-typed-array-binary-float32array-via-arraybuffer">Alternative: typed-array binary (Float32Array via ArrayBuffer)<a class="headerlink" href="#alternative-typed-array-binary-float32array-via-arraybuffer" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-typed-array-binary-float32array-via-arraybuffer">Alternative: typed-array binary (Float32Array via ArrayBuffer)</h3>
 <p>Serialise numeric arrays as a base64-encoded binary block, decoded into a <code>Float32Array</code> in the sketch. Considerably smaller on the wire, faster to parse.</p>
 <p>Rejected at this stage. The size and parse-time benefits are real but small for typical regional payloads (a 280×360 OISST grid is ~400KB as JSON, ~50ms parse). The cost in debuggability is large — you cannot eyeball a binary blob in a text editor when something looks wrong. Worth revisiting if payloads grow significantly (full-globe sources, multi-day stacks).</p>
-<h3 id="alternative-separate-payload-files-per-source-loaded-by-reference">Alternative: separate payload files per source, loaded by reference<a class="headerlink" href="#alternative-separate-payload-files-per-source-loaded-by-reference" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-separate-payload-files-per-source-loaded-by-reference">Alternative: separate payload files per source, loaded by reference</h3>
 <p>The main payload references context layers by URL; the sketch loads them with additional fetches. More flexible (sketch decides which context to load); more I/O.</p>
 <p>Rejected because it breaks the single-source-of-truth-per-render property. A render is defined by exactly one payload file. If the sketch makes additional fetches, the determinism guarantee gets harder to verify (was the bathymetry file the same on date X as on date Y?). Single payload, even if larger, is the cleaner contract.</p>
-<h3 id="alternative-netcdf-in-the-browser">Alternative: NetCDF in the browser<a class="headerlink" href="#alternative-netcdf-in-the-browser" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-netcdf-in-the-browser">Alternative: NetCDF in the browser</h3>
 <p>Use <code>netcdfjs</code> or similar to read NetCDF directly in the browser, eliminating the JSON conversion step.</p>
 <p>Rejected because it adds a non-trivial library dependency for browser code, and because NetCDF is the source format, not the consumption format. The processed JSON is already a reduction of NetCDF to what the sketch needs; introducing NetCDF parsing in the browser duplicates work and complicates the sketch contract.</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>JSON size.</strong> A 280×360 region at float32 is ~400KB raw. JSON inflation makes it ~1.2MB on disk. Acceptable for v1; revisit if payloads commonly exceed 5MB.</li>
 <li><strong>Float32 throughout.</strong> Loses precision vs. float64. For ocean data this is fine — most sources are themselves float32 at origin. Sketches that need more precision can request a float64 mode in a future schema version.</li>
 <li><strong>Schema versioning by <code>version</code> field.</strong> Adds a field every payload pays for. Cheap; pays off the first time we add a new top-level field.</li>
 <li><strong>No streaming.</strong> The entire payload is in memory before the sketch starts drawing. Acceptable at v1 sizes; would need rethinking for full-globe payloads.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>Should <code>audio_scalars</code> be a flat object or a structured time series? Today's payload is for one render (one date); for video editor work the scalar time series matters. Probably a separate payload concern (RFC-006 Audio system territory) — keep flat-object here.</li>
 <li>Should the payload include the source attribution string, or should the sketch hard-code attribution by source_id? Including it makes the payload self-describing for export; hard-coding is more compact but couples the sketch to source metadata.</li>
 <li>Should the payload be validatable by JSON Schema? Useful for sketch authors writing overrides; adds a schema file to maintain.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Render payload schema v1.</strong> Locks the field set, the array serialisation choice, and the version field convention.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §contracts/render-payload · §components/render-system · §constraints (shared payload format)</li>
 <li><strong>Related ADRs</strong> — ADR-008 (shared payload format principle, already accepted)</li>

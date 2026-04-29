@@ -1665,7 +1665,7 @@
   
 
 
-<h1 id="prd-003-recipe-editor">PRD-003 — Recipe Editor<a class="headerlink" href="#prd-003-recipe-editor" title="Permanent link">&para;</a></h1>
+<h1 id="prd-003-recipe-editor">PRD-003 — Recipe Editor</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>Sources</strong> · OC-02 §Surface 2 · OC-04 §Recipe editor studio
@@ -1676,26 +1676,26 @@
 </blockquote>
 <hr />
 <p>You think <em>storm</em>. You click <em>Storm surge</em>. The preview transforms — the field tightens, the particles speed up, the colour cools to an industrial blue. You drag a point on the energy×presence canvas toward turbulent-ghost. The preview responds. You never see a number.</p>
-<h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
+<h2 id="the-problem">The problem</h2>
 <p>Creative software tends to expose its parameters. Photoshop has sliders for hue, saturation, brightness — three numerical knobs. After Effects has dozens of nested property panels. The convention works for technical users; it fails for creative users who think in moods, not values.</p>
 <p>The OceanCanvas recipe is, technically, a YAML file with about thirty parameters: <code>render_type</code>, <code>colormap</code>, <code>particle_count</code>, <code>opacity</code>, <code>tail_length</code>, <code>contour_levels</code>, and so on. If the editor exposes those parameters as labelled controls, it has imported the failure mode of every parameter-driven creative tool: the user thinks <em>I want this to feel like a storm</em> and is asked to think <em>particle_count: 4000</em>.</p>
 <p>The artist's mental model is mood, energy, character, weight. The system's mental model is parameters. Bridging those two is the whole problem of the editor — and getting it wrong does not produce a slightly worse experience. It produces a tool that reads as configuration.</p>
-<h2 id="the-experience">The experience<a class="headerlink" href="#the-experience" title="Permanent link">&para;</a></h2>
+<h2 id="the-experience">The experience</h2>
 <p>You open the editor with a region pre-selected from the dashboard. The preview takes the upper half of the screen with today's actual data already rendering. Below it, a control surface: five mood presets in a row, an energy×presence canvas, a colour-character spectrum, a temporal-weight scale. No labelled inputs. No sliders showing 0.4. No dropdowns named <code>colormap</code>.</p>
 <p>You click <em>Becalmed</em>. The field smooths, the particles slow, the palette cools. You drag the energy×presence point gently up and to the right. The preview tightens. You move the colour character toward thermal. You watch the ocean become exactly what you wanted by adjusting feelings, not values.</p>
 <p>You toggle to YAML. The control surface flips; the preview stays. You see the file your choices have generated. The lines that came from your creative work are amber; the structural fields are dim blue. You spot one parameter you would like to nudge directly — you change it. You toggle back. The creative controls have moved to match.</p>
 <p>You save. The recipe enters the pipeline.</p>
-<h2 id="why-now">Why now<a class="headerlink" href="#why-now" title="Permanent link">&para;</a></h2>
+<h2 id="why-now">Why now</h2>
 <p>PRD-001 asserts that recipes are authored works. Without an authoring surface that operates at the level of artistic intent, that assertion is empty — the only way to author a recipe would be to edit YAML, which is configuration work by definition. The whole frame collapses.</p>
 <p>The Recipe Editor is also the surface that does the most to determine whether OceanCanvas attracts the artist audience at all. Generative-art-curious users either have a moment of <em>this is for me</em> in the first three minutes of the editor or they leave. The editor's first impression is the project's recruitment moment.</p>
-<h2 id="success-looks-like">Success looks like<a class="headerlink" href="#success-looks-like" title="Permanent link">&para;</a></h2>
+<h2 id="success-looks-like">Success looks like</h2>
 <ul>
 <li>A user describes the piece they made by character (<em>"turbulent ghost, thermal, lingering"</em>) rather than by values.</li>
 <li>The YAML mode is used by power users <em>after</em> they have made a piece, not as the primary authoring path.</li>
 <li>A user learns what <em>Storm surge</em> means in technical terms by flipping to YAML and noticing the amber lines — not by being taught.</li>
 <li>The preview is treated as the canvas. Users move toward it, not toward the controls, when they are working.</li>
 </ul>
-<h2 id="out-of-scope">Out of scope<a class="headerlink" href="#out-of-scope" title="Permanent link">&para;</a></h2>
+<h2 id="out-of-scope">Out of scope</h2>
 <ul>
 <li>The recipe-as-concept argument. PRD-001 holds that.</li>
 <li>The render execution. RFC and ADR territory.</li>
@@ -1704,11 +1704,11 @@
 <li>Templates and starter recipes beyond the five mood presets. Named starters (e.g. <em>Gulf Stream particles</em>) are deferred.</li>
 <li>The sketch editor's actual code-editing UX. Its own RFC and UXS hold that surface.</li>
 </ul>
-<h2 id="the-sharpest-threat">The sharpest threat<a class="headerlink" href="#the-sharpest-threat" title="Permanent link">&para;</a></h2>
+<h2 id="the-sharpest-threat">The sharpest threat</h2>
 <p><strong>Power users feel infantilised.</strong></p>
 <p>The creative-control surface is designed for artists thinking in moods. A power user — a developer, a generative-art veteran — opens the editor and sees five named presets and a 2D point. Their first reaction is <em>where are the actual controls?</em> If the YAML toggle and the sketch-editor escape hatch do not communicate clearly enough that the full parameter surface is one click away, this user concludes the tool is shallow and leaves.</p>
 <p>The risk is highest in the first sixty seconds of someone's first session. The visibility, labelling, and prominence of the YAML and sketch-editor toggles in the flip bar carry the entire weight of communicating <em>the surface goes deeper than it looks</em>. If they read as buried, the failure mode is a permanent perception.</p>
-<h2 id="open-threads">Open threads<a class="headerlink" href="#open-threads" title="Permanent link">&para;</a></h2>
+<h2 id="open-threads">Open threads</h2>
 <ul>
 <li><strong>RFC — Mood preset definitions.</strong> The five presets must be authored carefully — they set the tonal range artists work within. Each preset is a complete parameter snapshot; the snapshots themselves are creative work.</li>
 <li><strong>RFC — Energy×presence mapping.</strong> Which parameters move with X, which with Y, and how — the semantics underlying the 2D space.</li>
@@ -1716,7 +1716,7 @@
 <li><strong>RFC — YAML round-tripping.</strong> Power users edit YAML directly; the creative controls must snap back to the closest match. Algorithm for this.</li>
 <li><strong>UXS-003 — Recipe Editor.</strong> Static visual contract.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>Source</strong> — OC-02 §Surface 2 · OC-04 §Recipe editor studio</li>
 <li><strong>PA</strong> — §audiences · §promises · §principles</li>

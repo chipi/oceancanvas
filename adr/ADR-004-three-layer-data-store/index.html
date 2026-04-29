@@ -1786,37 +1786,37 @@
   
 
 
-<h1 id="adr-004-three-layer-data-store">ADR-004 — Three-layer data store<a class="headerlink" href="#adr-004-three-layer-data-store" title="Permanent link">&para;</a></h1>
+<h1 id="adr-004-three-layer-data-store">ADR-004 — Three-layer data store</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/data-store</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>The pipeline produces and consumes data in several distinct stages: raw fetched files in their native formats, browser-friendly intermediate formats, and the final daily renders. Mixing these in one folder confuses access patterns and makes it hard to reason about regenerability.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>Three top-level data folders, each with a clear role:</p>
 <ul>
 <li><strong><code>data/sources/</code></strong> — raw fetched files in native formats (NetCDF, JSON). Not committed to git. Regenerable by re-running fetch tasks.</li>
 <li><strong><code>data/processed/</code></strong> — browser-ready outputs from Task 03: flat JSON arrays, colourised PNG tiles, meta sidecars. Not committed to git. Regenerable from <code>data/sources/</code> by re-running Task 03.</li>
 <li><strong><code>renders/</code></strong> — daily PNG outputs per recipe. Either committed to repo (Phase 1) or pushed to Cloudflare R2 (Phase 2).</li>
 </ul>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>Each layer has a clear input, a clear output, and a clear regeneration path. A failure in any layer doesn't corrupt the layers below it. Re-running the pipeline is idempotent; partial failures recover cleanly.</p>
 <p>The dashboard reads from <code>data/processed/</code> directly as static assets — no API server. The render-payload builder also reads from <code>data/processed/</code>. Both consumers see the same intermediate format.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Single data folder</strong> — simpler but conflates concerns. A failed fetch and a stale processed file look the same.</li>
 <li><strong>Database-backed intermediate layer</strong> — would require a database (violates ADR-005). Unnecessary at v1 scale.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Clear ownership: Task 02 owns <code>sources/</code>, Task 03 owns <code>processed/</code>, Task 05 owns <code>renders/</code>.
 - Regenerability is visible in the directory structure.
 - <code>.gitignore</code> rules are simple — <code>data/*</code> is ignored, <code>renders/</code> is committed (Phase 1).</p>
 <p><strong>Negative:</strong>
 - Disk usage is higher than a single layer would require. Acceptable; data is regenerable so old layers can be pruned.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Top-level folders in repo root.</li>
 <li>Pipeline tasks read/write only their owned layer.</li>

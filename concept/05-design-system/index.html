@@ -2008,14 +2008,14 @@
   
 
 
-<h1 id="oc-05-design-system-creative-direction">OC-05 — Design System &amp; Creative Direction<a class="headerlink" href="#oc-05-design-system-creative-direction" title="Permanent link">&para;</a></h1>
+<h1 id="oc-05-design-system-creative-direction">OC-05 — Design System &amp; Creative Direction</h1>
 <p><strong>OceanCanvas — Dashboard &amp; Visualization Design Direction</strong></p>
 <p><em>April 2026 · v1.0</em></p>
 <p>This document captures the visual language, editorial design philosophy, and all surface designs for OceanCanvas. It documents three fully-designed dashboard views, the recipe editor studio, the gallery front page, and the video editor — each with screenshots.</p>
 <hr />
-<h2 id="design-philosophy-editorial-quality">Design philosophy — editorial quality<a class="headerlink" href="#design-philosophy-editorial-quality" title="Permanent link">&para;</a></h2>
+<h2 id="design-philosophy-editorial-quality">Design philosophy — editorial quality</h2>
 <p>The central design decision is to treat OceanCanvas's data visualizations as editorial design rather than dashboard design. The reference is Wired magazine at the intersection of technology and art — specifically its Infoporn data visualization tradition where a single data point, given the design it deserves, becomes the story.</p>
-<h3 id="what-editorial-means-in-practice">What editorial means in practice<a class="headerlink" href="#what-editorial-means-in-practice" title="Permanent link">&para;</a></h3>
+<h3 id="what-editorial-means-in-practice">What editorial means in practice</h3>
 <table>
 <thead>
 <tr>
@@ -2051,11 +2051,11 @@
 </tbody>
 </table>
 <hr />
-<h2 id="dashboard-view-1-main-overview">Dashboard — View 1: Main overview<a class="headerlink" href="#dashboard-view-1-main-overview" title="Permanent link">&para;</a></h2>
+<h2 id="dashboard-view-1-main-overview">Dashboard — View 1: Main overview</h2>
 <p>The primary entry point. A full-bleed ocean data visualization with source navigation, contextual stats, and a historical timeline scrubber.</p>
 <p><img alt="Dashboard overview" src="../images/dashboard-overview.png" />
 <em>Fig 1. Main dashboard — SST view active. North Atlantic sea surface temperature, NOAA OISST. Left rail: source navigation. Stats overlay: region mean, max, anomaly. Bottom: 1981–2026 timeline scrubber + mini time series.</em></p>
-<h3 id="layout-structure">Layout structure<a class="headerlink" href="#layout-structure" title="Permanent link">&para;</a></h3>
+<h3 id="layout-structure">Layout structure</h3>
 <table>
 <thead>
 <tr>
@@ -2103,10 +2103,10 @@
 </tbody>
 </table>
 <hr />
-<h2 id="dashboard-view-2-sst-editorial-spread">Dashboard — View 2: SST editorial spread<a class="headerlink" href="#dashboard-view-2-sst-editorial-spread" title="Permanent link">&para;</a></h2>
+<h2 id="dashboard-view-2-sst-editorial-spread">Dashboard — View 2: SST editorial spread</h2>
 <p><img alt="SST editorial spread" src="../images/sst-editorial-spread.png" />
 <em>Fig 2. SST editorial spread. Left: hero number (14.2°C at display size) + contextual stats + metadata. Right: North Atlantic SST thermal heatmap. Below: 1981–2026 annual trend chart + 10-year anomaly bar chart.</em></p>
-<h3 id="composition-decisions">Composition decisions<a class="headerlink" href="#composition-decisions" title="Permanent link">&para;</a></h3>
+<h3 id="composition-decisions">Composition decisions</h3>
 <table>
 <thead>
 <tr>
@@ -2142,11 +2142,11 @@
 </tbody>
 </table>
 <hr />
-<h2 id="dashboard-view-3-sea-level-editorial-spread">Dashboard — View 3: Sea level editorial spread<a class="headerlink" href="#dashboard-view-3-sea-level-editorial-spread" title="Permanent link">&para;</a></h2>
+<h2 id="dashboard-view-3-sea-level-editorial-spread">Dashboard — View 3: Sea level editorial spread</h2>
 <p>The sea level spread demonstrates the editorial voice at its most forceful. The 30-year satellite altimetry record occupies the entire hero zone, full width, 280px tall.</p>
 <p><img alt="Sea level editorial spread" src="../images/sea-level-editorial-spread.png" />
 <em>Fig 3. Sea level editorial spread. Hero: full-width 30-year rise curve (1993–2026), teal on dark canvas. Numbers float over the hero: +20.4cm total rise, 3.7mm/yr mean rate, +5.1mm/yr current rate. Below: events strip, acceleration chart, sources of rise.</em></p>
-<h3 id="why-this-layout-works">Why this layout works<a class="headerlink" href="#why-this-layout-works" title="Permanent link">&para;</a></h3>
+<h3 id="why-this-layout-works">Why this layout works</h3>
 <p>The sea level dataset has one dominant story: the ocean is rising, and it is rising faster. Every layout decision serves that story. The curve is not a chart — it is a landscape.</p>
 <table>
 <thead>
@@ -2179,13 +2179,13 @@
 </tbody>
 </table>
 <hr />
-<h2 id="recipe-editor-studio">Recipe editor studio<a class="headerlink" href="#recipe-editor-studio" title="Permanent link">&para;</a></h2>
+<h2 id="recipe-editor-studio">Recipe editor studio</h2>
 <p><img alt="Recipe editor — creative mode" src="../images/editor-creative-mode.png" />
 <em>Fig 4. Recipe editor — creative mode. The live preview (today's actual ocean data rendered in real time) occupies the full width above the flip toggle. Below: mood presets, energy × presence 2D space, colour character spectrum, temporal weight.</em></p>
 <p><img alt="Recipe editor — YAML mode" src="../images/editor-yaml-mode.png" />
 <em>Fig 5. Recipe editor — YAML mode. Same preview, same flip toggle. Creative controls replaced by recipe YAML. Amber lines are the creative choices. Blue lines are structure and source definitions.</em></p>
 <p>The design philosophy: <strong>the interface operates at the level of artistic intent, not technical parameters.</strong> The user thinks in terms of mood and character. Technical parameters are generated output, not user input.</p>
-<h3 id="the-flip">The flip<a class="headerlink" href="#the-flip" title="Permanent link">&para;</a></h3>
+<h3 id="the-flip">The flip</h3>
 <p>One preview canvas (always visible, runs live p5.js sketch with real data). Mode toggle below switches between:</p>
 <ul>
 <li><strong>Creative mode</strong>: mood presets, energy×presence 2D Cartesian space, colour character spectrum, temporal weight</li>
@@ -2193,10 +2193,10 @@
 </ul>
 <p><strong>Sketch editor ↗</strong> is a link out, not a mode flip — opens raw p5.js code editor with the payload pre-loaded. Escape hatch for the 10% of pieces that push beyond the system.</p>
 <hr />
-<h2 id="gallery-front-page">Gallery front page<a class="headerlink" href="#gallery-front-page" title="Permanent link">&para;</a></h2>
+<h2 id="gallery-front-page">Gallery front page</h2>
 <p><img alt="Gallery front page" src="../images/gallery-front-page.png" />
 <em>Fig 6. Gallery front page. Nav with wordmark and source type filters. Hero: today's featured render, full-bleed. Strip: the last 14 renders of that recipe. Grid: all recipes today, source palettes visible.</em></p>
-<h3 id="layout-structure_1">Layout structure<a class="headerlink" href="#layout-structure_1" title="Permanent link">&para;</a></h3>
+<h3 id="layout-structure_1">Layout structure</h3>
 <table>
 <thead>
 <tr>
@@ -2225,13 +2225,13 @@
 </table>
 <p>The gallery is never static. The pipeline runs daily at 06:00 UTC. No manual curation needed.</p>
 <hr />
-<h2 id="video-editor">Video editor<a class="headerlink" href="#video-editor" title="Permanent link">&para;</a></h2>
+<h2 id="video-editor">Video editor</h2>
 <p><img alt="Video editor with enrichment" src="../images/video-editor-enriched.png" />
 <em>Fig 7. Video editor. Left: full-width preview with data overlays visible. Right panel: Sequence, Audio (via generative API), Overlays (toggle list). Audio and overlay key moments shared and synced.</em></p>
 <p>The video editor is assembly and enrichment — the creative decisions are already made in the recipe. Three enrichment tracks, all optional, all sharing the same key moment detection algorithm.</p>
 <hr />
-<h2 id="colour-system">Colour system<a class="headerlink" href="#colour-system" title="Permanent link">&para;</a></h2>
-<h3 id="base">Base<a class="headerlink" href="#base" title="Permanent link">&para;</a></h3>
+<h2 id="colour-system">Colour system</h2>
+<h3 id="base">Base</h3>
 <table>
 <thead>
 <tr>
@@ -2263,7 +2263,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="source-domain-palettes">Source domain palettes<a class="headerlink" href="#source-domain-palettes" title="Permanent link">&para;</a></h3>
+<h3 id="source-domain-palettes">Source domain palettes</h3>
 <table>
 <thead>
 <tr>
@@ -2305,7 +2305,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="intent-tokens">Intent tokens<a class="headerlink" href="#intent-tokens" title="Permanent link">&para;</a></h3>
+<h3 id="intent-tokens">Intent tokens</h3>
 <table>
 <thead>
 <tr>
@@ -2333,7 +2333,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="typography">Typography<a class="headerlink" href="#typography" title="Permanent link">&para;</a></h2>
+<h2 id="typography">Typography</h2>
 <table>
 <thead>
 <tr>
@@ -2395,7 +2395,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="layout-principles">Layout principles<a class="headerlink" href="#layout-principles" title="Permanent link">&para;</a></h2>
+<h2 id="layout-principles">Layout principles</h2>
 <ul>
 <li><strong>Dark canvas everywhere</strong> — data always renders on dark. Never a white chart background.</li>
 <li><strong>0.5px dividers</strong> — internal structure created by hairline rules, never by background fills.</li>
@@ -2405,7 +2405,7 @@
 <li><strong>Intentional typography scale</strong> — two or three sizes per view, clearly hierarchical.</li>
 </ul>
 <hr />
-<h2 id="implementation-stack">Implementation stack<a class="headerlink" href="#implementation-stack" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-stack">Implementation stack</h2>
 <table>
 <thead>
 <tr>
@@ -2432,7 +2432,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="what-was-explicitly-not-chosen">What was explicitly not chosen<a class="headerlink" href="#what-was-explicitly-not-chosen" title="Permanent link">&para;</a></h3>
+<h3 id="what-was-explicitly-not-chosen">What was explicitly not chosen</h3>
 <table>
 <thead>
 <tr>
@@ -2464,7 +2464,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="design-principles-to-protect">Design principles to protect<a class="headerlink" href="#design-principles-to-protect" title="Permanent link">&para;</a></h2>
+<h2 id="design-principles-to-protect">Design principles to protect</h2>
 <ul>
 <li>Never add a white chart background. If a chart needs a background, reconsider the layout.</li>
 <li>Never box a hero number. The number lives in space.</li>

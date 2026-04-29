@@ -1869,7 +1869,7 @@
   
 
 
-<h1 id="rfc-004-live-preview-architecture">RFC-004 — Live preview architecture<a class="headerlink" href="#rfc-004-live-preview-architecture" title="Permanent link">&para;</a></h1>
+<h1 id="rfc-004-live-preview-architecture">RFC-004 — Live preview architecture</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026
 <strong>TA anchor</strong> · §components/render-system · §components/web-frontend · §constraints (shared payload, determinism)
@@ -1878,7 +1878,7 @@
 <strong>Why this is an RFC</strong> · The Recipe Editor's live preview is the primary surface where artists see their work take shape. It must be both <em>responsive</em> (fast feedback during exploration) and <em>faithful</em> (what you see is what the pipeline will render). These goals pull in opposite directions. The architecture choice has consequences for the editor's feel, the pipeline's reliability, and the trust between author and tool.</p>
 </blockquote>
 <hr />
-<h2 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h2>
+<h2 id="the-question">The question</h2>
 <p>When the artist drags the energy×presence point in the Recipe Editor, the preview canvas updates. What is actually running in that preview canvas, and what data is it running on?</p>
 <p>Three plausible architectures:</p>
 <ol>
@@ -1887,7 +1887,7 @@
 <li><strong>Approximation.</strong> A simplified preview that mimics the look but doesn't run the pipeline sketch. Faster, but parity is not guaranteed.</li>
 </ol>
 <p>Each choice trades off responsiveness, fidelity, and parity differently. The constraint from ADR-008 — that the editor preview and pipeline render must share the same payload format — narrows but does not eliminate the choice.</p>
-<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Initial preset selection.</strong> Artist opens the editor on a new recipe, clicks through five mood presets to see how each looks. Fast switching matters; absolute fidelity less so.</li>
 <li><strong>Fine-tuning energy×presence.</strong> Artist drags the 2D point slowly. Preview should update smoothly — at least 10 frames per second of feedback.</li>
@@ -1895,20 +1895,20 @@
 <li><strong>Sketch override development.</strong> A user writing a custom p5.js sketch needs the preview to behave identically to the pipeline render — they're debugging the sketch, not exploring presets.</li>
 </ol>
 <p>The four cases want different fidelity/responsiveness ratios. A unified architecture that handles all four is the goal.</p>
-<h2 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h2>
+<h2 id="goals">Goals</h2>
 <ul>
 <li>Interactive preview updates within 200ms of a control change for the common case (preset switch, knob drag).</li>
 <li>"Preview full" and "Render now" produce output identical to what the pipeline would produce on the same date (byte-identical when payloads match).</li>
 <li>Sketch override development works in the editor — what the developer sees in the preview is what the pipeline will render.</li>
 <li>The same sketch code path runs in both contexts — no editor-only code branches in the sketch.</li>
 </ul>
-<h2 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h2>
+<h2 id="constraints">Constraints</h2>
 <ul>
 <li><em>Shared payload format</em> — same <code>window.OCEAN_PAYLOAD</code> shape in editor and pipeline (TA §constraints; ADR-008).</li>
 <li><em>Determinism</em> — same payload + same sketch = same render (TA §constraints). Any difference in output means a difference in input.</li>
 <li><em>No editor-only sketch code</em> — sketches must not branch on a "preview mode" flag. The sketch is one code path with one set of inputs.</li>
 </ul>
-<h2 id="proposed-approach">Proposed approach<a class="headerlink" href="#proposed-approach" title="Permanent link">&para;</a></h2>
+<h2 id="proposed-approach">Proposed approach</h2>
 <p><strong>Real sketch, two payload tiers, explicit "Preview full" affordance.</strong></p>
 <p>The editor preview runs the actual p5.js sketch, in a sandboxed iframe, against a <em>downsampled</em> version of the recipe's payload. The downsampling is deterministic — the same recipe and date always produces the same downsampled payload — so the preview is reproducible across sessions. The downsampling lives in the editor's payload-builder, not in the sketch:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Pipeline path (full):
@@ -1929,33 +1929,33 @@
 </ul>
 <p>Critically, the <em>sketch code</em> is the same in all paths. The sketch reads <code>window.OCEAN_PAYLOAD.primary.data</code> regardless of whether <code>data</code> is 25,200 or 100,800 values. The shape and lat/lon range fields tell the sketch how to interpret the array. No sketch-side branching on size.</p>
 <p>This means a sketch override developed in the editor will behave identically in the pipeline — the only difference is array length, which the sketch already handles via <code>payload.primary.shape</code>.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
-<h3 id="alternative-real-sketch-full-payload">Alternative: real sketch + full payload<a class="headerlink" href="#alternative-real-sketch-full-payload" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-real-sketch-full-payload">Alternative: real sketch + full payload</h3>
 <p>Run the sketch with full-resolution data in the editor preview, no downsampling.</p>
 <p>Rejected because interactive responsiveness suffers. A 280×360 OISST grid with 4000 particles in a <code>field</code> render type is around 50ms per frame in a typical browser — fast enough for "fast preview", marginal for "drag a control and see continuous feedback." For composite renders with multiple sources, latency climbs to 100–200ms per frame. Acceptable for "Preview full" but not for the dragging-a-knob experience the editor needs.</p>
-<h3 id="alternative-pre-rendered-preview-cache">Alternative: pre-rendered preview cache<a class="headerlink" href="#alternative-pre-rendered-preview-cache" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-pre-rendered-preview-cache">Alternative: pre-rendered preview cache</h3>
 <p>Precompute preview frames for common parameter combinations (e.g., the five mood presets at the corners of the energy×presence space). Display the cached preview, interpolate visually between cached frames during drag.</p>
 <p>Rejected because it breaks parity with the pipeline. A cached frame is a snapshot; if the data changes (next day's render) or the sketch changes (a code update), the cache is stale and the preview lies. The cost of cache invalidation is more than the cost of running the sketch live.</p>
-<h3 id="alternative-simplified-approximation-sketch">Alternative: simplified approximation sketch<a class="headerlink" href="#alternative-simplified-approximation-sketch" title="Permanent link">&para;</a></h3>
+<h3 id="alternative-simplified-approximation-sketch">Alternative: simplified approximation sketch</h3>
 <p>Write a separate "preview sketch" per render type that approximates the pipeline sketch's look but uses faster algorithms. Same payload format, different code.</p>
 <p>Rejected because it violates the no-editor-only-sketch-code constraint. The whole point of ADR-008 is that one sketch runs in both contexts. A separate approximation sketch means two pieces of code that must be kept in visual sync forever — a guaranteed source of drift.</p>
-<h2 id="trade-offs">Trade-offs<a class="headerlink" href="#trade-offs" title="Permanent link">&para;</a></h2>
+<h2 id="trade-offs">Trade-offs</h2>
 <ul>
 <li><strong>Downsampling has visual character.</strong> A 140×180 OISST grid looks slightly different from 280×360 — coarser features, less fine detail. The artist sees an approximation during interactive editing and the actual render only on Preview full / Render now. Acceptable because the artist is making <em>creative</em> decisions during interactive use; fine-detail decisions are made at Preview full.</li>
 <li><strong>The downsampling algorithm is itself a contract.</strong> Bilinear vs. nearest-neighbour vs. mean-pooling affects what the artist sees. Need to lock this in the ADR.</li>
 <li><strong>Composite renders with multiple sources may still be slow at downsampled scale.</strong> The Preview full button is the relief valve; users learn to use it for complex recipes.</li>
 </ul>
-<h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
+<h2 id="open-questions">Open questions</h2>
 <ol>
 <li>Downsampling algorithm: bilinear, nearest-neighbour, or mean-pooling? Bilinear preserves smooth gradients (good for fields); mean-pooling preserves visual statistics. Probably bilinear for v1 — confirm at ADR.</li>
 <li>Should the downsampling factor be fixed (always 2x) or adaptive (dependent on grid size)? Fixed is predictable; adaptive handles the wide range of source resolutions.</li>
 <li>Sketch override development: should there be a "force full payload in editor preview" mode for developers, or is "Preview full" sufficient? Probably sufficient.</li>
 </ol>
-<h2 id="how-this-closes">How this closes<a class="headerlink" href="#how-this-closes" title="Permanent link">&para;</a></h2>
+<h2 id="how-this-closes">How this closes</h2>
 <ul>
 <li><strong>ADR-NNN — Editor live preview architecture.</strong> Locks the real-sketch-with-downsampled-payload approach, the two affordances (Preview full, Render now), and the downsampling parameters.</li>
 </ul>
-<h2 id="links">Links<a class="headerlink" href="#links" title="Permanent link">&para;</a></h2>
+<h2 id="links">Links</h2>
 <ul>
 <li><strong>TA</strong> — §components/render-system · §components/web-frontend · §constraints (shared payload, determinism)</li>
 <li><strong>Related PRDs</strong> — PRD-003 Recipe Editor (this RFC was flagged in its open threads)</li>

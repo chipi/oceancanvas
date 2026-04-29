@@ -1786,27 +1786,27 @@
   
 
 
-<h1 id="adr-006-p5js-as-sketch-language">ADR-006 — p5.js as sketch language<a class="headerlink" href="#adr-006-p5js-as-sketch-language" title="Permanent link">&para;</a></h1>
+<h1 id="adr-006-p5js-as-sketch-language">ADR-006 — p5.js as sketch language</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
 <strong>TA anchor</strong> · §components/render-system · §stack</p>
 </blockquote>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<h2 id="context">Context</h2>
 <p>OceanCanvas's renders are generative art produced from data. Each render type (field, particles, contour, pulse, scatter, composite) has a sketch template — a small program that consumes a payload and draws to a canvas. Sketches must run in two contexts: the browser (Recipe Editor preview) and headless Chromium (Puppeteer pipeline render).</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h2 id="decision">Decision</h2>
 <p>p5.js is the sketch language. All render-type templates and sketch overrides are p5.js sketches.</p>
-<h2 id="rationale">Rationale<a class="headerlink" href="#rationale" title="Permanent link">&para;</a></h2>
+<h2 id="rationale">Rationale</h2>
 <p>p5.js is designed for creative coding. The API matches the artistic mental model — <code>noStroke()</code>, <code>fill()</code>, <code>vertex()</code> — without imposing the data-vis vocabulary of D3 or the game-engine abstractions of Three.js. The community is large; sketch overrides written by users will draw on a substantial body of existing creative work.</p>
 <p>Critically, p5.js runs in any browser the same way. The same sketch in the editor preview and in Puppeteer's headless Chromium produces the same pixels.</p>
-<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>D3.js</strong> — designed for data visualization, not generative art. Wrong vocabulary; pulls toward chart-shaped output.</li>
 <li><strong>Three.js / WebGL</strong> — too low-level for the kinds of pieces OceanCanvas typically produces (2D field renders, particle flows). Three.js shines for 3D; we don't need that.</li>
 <li><strong>Canvas API directly</strong> — works but more boilerplate. p5.js sits on top and is well-suited to creative coding.</li>
 <li><strong>Custom shaders</strong> — overkill. The render types we ship don't need GPU shaders; CPU canvas operations are sufficient at our resolutions.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
 - Sketch authors find a familiar API.
 - Existing p5.js learning resources apply directly.
@@ -1814,7 +1814,7 @@
 <p><strong>Negative:</strong>
 - Performance ceiling. For very high particle counts (&gt;50k) p5.js becomes slow. Mitigation: render types ship with sensible particle-count limits.
 - p5.js is not a small library. ~750KB minified. Acceptable; it's a one-time download.</p>
-<h2 id="implementation-notes">Implementation notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Sketch templates in <code>sketches/</code> (one per render type).</li>
 <li>Renderer (<code>pipeline/src/oceancanvas/renderer/render.mjs</code>) constructs sketch HTML inline and injects <code>window.OCEAN_PAYLOAD</code>.</li>
