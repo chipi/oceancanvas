@@ -62,16 +62,8 @@ export function GalleryDetail() {
           onError={handleImgError}
         />
         <div className={styles.overlay}>
-          <div className={styles.overlayLeft}>
-            <div className={styles.recipeName}>{entry.name}</div>
-            <div className={styles.recipeSource}>
-              {entry.render_type} · {entry.source} · NOAA/NCEI OISST · OceanCanvas
-            </div>
-          </div>
-          <div className={styles.overlayRight}>
-            <div className={styles.dateDay}>{entry.latest?.substring(8)}</div>
-            <div className={styles.dateRest}>{entry.latest?.substring(0, 7)}</div>
-          </div>
+          <div className={styles.recipeName}>{entry.name}</div>
+          <div className={styles.recipeMeta}>{entry.render_type} · {entry.count} render{entry.count !== 1 ? 's' : ''}</div>
         </div>
       </div>
 

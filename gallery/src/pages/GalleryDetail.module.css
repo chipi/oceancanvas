@@ -66,41 +66,17 @@
 
 .overlay {
   position: absolute;
-  bottom: 24px; /* sit above the baked-in PNG attribution text */
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0 24px;
+  top: 16px;
+  left: 24px;
 }
-
-.overlayLeft {}
 
 .recipeName {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--text);
 }
 
-.recipeSource {
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 4px;
-}
-
-.overlayRight {
-  text-align: right;
-}
-
-.dateDay {
-  font-size: 28px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1;
-}
-
-.dateRest {
+.recipeMeta {
   font-size: 11px;
   color: var(--text-secondary);
   margin-top: 2px;
