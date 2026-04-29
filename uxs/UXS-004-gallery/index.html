@@ -2912,29 +2912,35 @@
 </tbody>
 </table>
 <h2 id="layout-detail-view-galleryrecipe">Layout — Detail view (/gallery/{recipe})<a class="headerlink" href="#layout-detail-view-galleryrecipe" title="Permanent link">&para;</a></h2>
-<p>Full-screen focused view of a single recipe's latest render.</p>
+<p>Focused view of a single recipe's latest render. The render sits on the left; the context panel on the right provides editorial context about the data source — attribution, explanation, and educational value. The 14-day strip runs along the bottom.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌────────────────────────────────────────────────────────────────────┐
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ OCEANCANVAS                                  timelapse ↗  recipe ↗│  ← topbar (42px)
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│                                              download              │
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│                                                                    │
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│                                                                    │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│                                                                    │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│              FULL-SCREEN RENDER                                    │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│              (latest render for this recipe)                       │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│                                                                    │
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│                                                                    │
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│                                                                    │
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│  recipe-name · type · source                              25 Apr  │  ← overlay at bottom
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│  NOAA/NCEI OISST · noaa.gov                                2026   │
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>│                                                                    │
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>├────────────────────────────────────────────────────────────────────┤
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>│ LAST 14 DAYS                                                       │
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>│ ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐        │  ← 14-day strip
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>│ └──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘        │
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>│ 12 Apr ... 25 Apr                                                  │
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>└────────────────────────────────────────────────────────────────────┘
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├────────────────────────────────────┬───────────────────────────────┤
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│                                    │                               │
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│  recipe-name                       │  ABOUT THIS DATA              │
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  render-type · N renders           │                               │
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│                                    │  NOAA/NCEI Optimum            │
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│                                    │  Interpolation SST (OISST)    │
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│     RENDER IMAGE                   │                               │
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>│     (object-fit: contain)          │  Global sea surface           │
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│                                    │  temperature at 0.25°         │
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│                                    │  resolution. Daily since      │
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│                                    │  September 1981. Derived from │
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>│                                    │  satellite and in-situ obs.   │
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>│                                    │                               │
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>│                                    │  RECIPE                       │
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>│                                    │  region · render type · date  │
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>│                                    │                               │
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>│  oisst · recipe · date · OC       │  noaa.gov/oisst               │
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>│  (baked into PNG)                  │                               │
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>├────────────────────────────────────┴───────────────────────────────┤
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>│ LAST 14 DAYS                                                       │
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>│ ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐        │
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>│ └──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘└──┘        │
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>└────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
+<p>The context panel serves the <em>editorial-dignity</em> promise (PA §promises) and the <em>citation-travels</em> promise. The render is the art; the panel is the reading. Together they communicate that the art is grounded in real measurement.</p>
 <h3 id="detail-view-elements">Detail view elements<a class="headerlink" href="#detail-view-elements" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -2954,21 +2960,33 @@
 </tr>
 <tr>
 <td><strong>Render image</strong></td>
-<td>Full viewport minus topbar and strip</td>
-<td>Edge-to-edge, no border</td>
-<td>Object-fit: contain (show full image without crop)</td>
+<td>Left ~65% of body area</td>
+<td>Object-fit: contain, no border</td>
+<td>Recipe name + type overlay at top-left</td>
 </tr>
 <tr>
-<td><strong>Overlay</strong></td>
-<td>Bottom-left over gradient</td>
-<td><code>gallery-overlay-gradient</code>, <code>text</code> for name, <code>text-secondary</code> for source</td>
-<td>Two lines: recipe info + source attribution with URL</td>
+<td><strong>Context panel</strong></td>
+<td>Right ~35%, <code>surface</code> background</td>
+<td><code>text</code> for headings, <code>text-secondary</code> for body, <code>text-muted</code> for labels</td>
+<td>Three sections: About This Data, Recipe, Source Link</td>
 </tr>
 <tr>
-<td><strong>Date</strong></td>
-<td>Bottom-right over gradient</td>
-<td><code>text</code> <code>type-display</code> for day, <code>text-secondary</code> for year</td>
-<td></td>
+<td><strong>About This Data</strong></td>
+<td>Top of context panel</td>
+<td><code>type-label</code> for heading, <code>type-body</code> for description</td>
+<td>Dataset name, what it measures, resolution, coverage, how it's produced</td>
+</tr>
+<tr>
+<td><strong>Recipe section</strong></td>
+<td>Middle of context panel</td>
+<td><code>type-label</code> heading, <code>type-data</code> values</td>
+<td>Region, render type, authored date, render count</td>
+</tr>
+<tr>
+<td><strong>Source link</strong></td>
+<td>Bottom of context panel</td>
+<td><code>intent-info</code> for URL</td>
+<td>Links to the data source (e.g., noaa.gov/oisst)</td>
 </tr>
 <tr>
 <td><strong>14-day strip</strong></td>
