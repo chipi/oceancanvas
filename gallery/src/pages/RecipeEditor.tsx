@@ -22,6 +22,7 @@ export function RecipeEditor() {
   const [recipeState, setRecipeState] = useState<RecipeState>('matched');
   const [processedData, setProcessedData] = useState<ProcessedData | null>(null);
   const [recipeName, setRecipeName] = useState(id || 'new-recipe');
+  const [renderType, setRenderType] = useState('field');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -55,14 +56,20 @@ export function RecipeEditor() {
       .catch(() => {});
   }, []);
 
-  // Load existing recipe if editing
+  // Load existing recipe if editing — extract render type and source
   useEffect(() => {
     if (!isNew && id) {
       fetch(`/recipes/${id}.yaml`)
-        .then((r) => r.text())
+        .then((r) => {
+          if (!r.ok) throw new Error('Recipe not found');
+          return r.text();
+        })
         .then((text) => {
           setYamlText(text);
           setRecipeName(id);
+          // Extract render type from YAML
+          const typeMatch = text.match(/type:\s*(\w+)/);
+          if (typeMatch) setRenderType(typeMatch[1]);
         })
         .catch(() => {});
     }
@@ -79,12 +86,12 @@ export function RecipeEditor() {
       {
         id: recipeName,
         name: recipeName,
-        render: { type: 'field', seed: 42, ...technical },
+        render: { type: renderType, seed: 42, ...technical },
         render_date: processedData.date,
       },
       region,
     );
-  }, [processedData, recipeName, technical, region]);
+  }, [processedData, recipeName, technical, region, renderType]);
 
   // Sync creative → YAML
   useEffect(() => {
@@ -100,14 +107,14 @@ export function RecipeEditor() {
         ``,
         CREATIVE_MARKER,
         `render:`,
-        `  type: field`,
+        `  type: ${renderType}`,
         ...Object.entries(technical).map(([k, v]) => `  ${k}: ${v}`),
         `  seed: 42`,
       ].join('\n');
       setYamlText(yaml);
       setRecipeState('matched');
     }
-  }, [creativeState, mode, recipeName, region, technical]);
+  }, [creativeState, mode, recipeName, region, technical, renderType]);
 
   // Detect state when switching to creative mode from YAML
   const handleModeSwitch = useCallback((newMode: 'creative' | 'yaml') => {
