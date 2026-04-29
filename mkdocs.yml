@@ -4,6 +4,8 @@ site_url: https://chipi.github.io/oceancanvas/
 repo_url: https://github.com/chipi/oceancanvas
 repo_name: chipi/oceancanvas
 
+copyright: MIT License · Marko Mrdjenovic and contributors
+
 theme:
   name: material
   palette:
@@ -41,33 +43,30 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - OceanCanvas:
-      - index.md
-      - Vision: concept/01-vision.md
-      - The Project: concept/02-project-concept.md
-      - Data Sources: concept/03-data-catalog.md
-      - Design Language: concept/05-design-system.md
-  - Get Started:
-      - project-readme.md
-      - How It Works: concept/04-technical-architecture.md
-      - Implementation Guide: implementation.md
+  - Home: index.md
+  - Vision: concept/01-vision.md
+  - The Project: concept/02-project-concept.md
+  - Get Started: project-readme.md
   - Surfaces:
-      - "The Gallery": prd/PRD-004-gallery.md
-      - "The Dashboard": prd/PRD-002-dashboard.md
-      - "The Recipe Editor": prd/PRD-003-recipe-editor.md
-      - "The Recipe": prd/PRD-001-recipe.md
-      - "The Video Editor": prd/PRD-005-video-editor.md
-  - Design:
+      - The Gallery: prd/PRD-004-gallery.md
+      - The Dashboard: prd/PRD-002-dashboard.md
+      - The Recipe Editor: prd/PRD-003-recipe-editor.md
+      - The Recipe: prd/PRD-001-recipe.md
+      - The Video Editor: prd/PRD-005-video-editor.md
+  - Data Sources: concept/03-data-catalog.md
+  - Project Internals:
+      - Implementation Guide: implementation.md
+      - How It Works: concept/04-technical-architecture.md
+      - Design Language: concept/05-design-system.md
+      - Architecture: adr/OC_TA.md
+      - Product Architecture: prd/OC_PA.md
+      - Information Architecture: uxs/OC_IA.md
       - Visual Contracts:
           - Gallery: uxs/UXS-004-gallery.md
           - Dashboard SST: uxs/UXS-001-dashboard-sst.md
           - Dashboard Sea Level: uxs/UXS-002-dashboard-sealevel.md
           - Recipe Editor: uxs/UXS-003-recipe-editor.md
           - Video Editor: uxs/UXS-005-video-editor.md
-      - Information Architecture: uxs/OC_IA.md
-      - Product Architecture: prd/OC_PA.md
-  - Technical:
-      - Architecture: adr/OC_TA.md
       - Decisions (ADRs):
           - adr/index.md
           - Prefect: adr/ADR-001-prefect-orchestration.md
