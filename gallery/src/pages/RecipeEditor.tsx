@@ -90,6 +90,7 @@ export function RecipeEditor() {
         render_date: processedData.date,
       },
       region,
+      { full: true },
     );
   }, [processedData, recipeName, technical, region, renderType]);
 
