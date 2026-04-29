@@ -59,9 +59,9 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
 <script>
 window.OCEAN_PAYLOAD = ${JSON.stringify(debouncedPayload)};
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 <script src="/sketches/shared.js"></script>
 <script src="/sketches/${renderType}.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 <script>
 // Observer: notify parent when render completes
 (function(){

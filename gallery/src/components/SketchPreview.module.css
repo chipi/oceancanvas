@@ -1,14 +1,14 @@
 .container {
   position: relative;
   width: 100%;
-  background: var(--elevated);
+  aspect-ratio: 16 / 9;
+  background: var(--canvas);
   overflow: hidden;
-  line-height: 0;
 }
 
 .iframe {
   width: 100%;
-  height: auto;
+  height: 100%;
   border: none;
   display: block;
 }
