@@ -1,0 +1,18 @@
+name: tropical-atlantic
+created: 2026-04-29
+author: chipi
+region:
+  lat: [0, 25]
+  lon: [-60, -10]
+  name: Tropical Atlantic
+sources:
+  primary: oisst
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: field
+  colormap: thermal
+  opacity: 0.92
+  smooth: true
+  seed: 202

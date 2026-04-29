@@ -72,6 +72,17 @@ export function Gallery() {
             <div className={styles.heroMeta}>
               {hero.render_type} · {hero.source} · {hero.latest} · {hero.count} render{hero.count !== 1 ? 's' : ''}
             </div>
+            <div className={styles.heroActions}>
+              <a href={`/timelapse/${hero.name}`} className={styles.heroAction}>timelapse ↗</a>
+              <a href={`/recipes/${hero.name}`} className={styles.heroAction}>recipe ↗</a>
+              <a
+                href={renderUrl(hero.name, hero.latest)}
+                download
+                className={styles.heroActionPrimary}
+              >
+                download
+              </a>
+            </div>
           </div>
         </div>
       )}

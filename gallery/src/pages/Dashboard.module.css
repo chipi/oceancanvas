@@ -197,6 +197,85 @@
   font-size: 14px;
 }
 
+/* Region → Editor handoff */
+.createRecipe {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-size: 11px;
+  padding: 8px 16px;
+  border: 1px solid var(--intent-info);
+  border-radius: 3px;
+  background: var(--overlay);
+  color: var(--intent-info);
+  cursor: pointer;
+}
+
+.createRecipe:hover {
+  background: rgba(93, 202, 165, 0.15);
+}
+
+/* Timeline scrubber */
+.scrubber {
+  height: 52px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px 24px 0;
+  flex-shrink: 0;
+}
+
+.scrubberInput {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.scrubberInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--domain-sst-accent);
+  border: 2px solid var(--canvas);
+}
+
+.scrubberLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Mini sparkline */
+.sparkline {
+  height: 56px;
+  background: var(--canvas);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sparklineLabel {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.sparklineValue {
+  font-size: 14px;
+  color: var(--domain-sst-accent);
+  font-weight: 500;
+}
+
 /* Citation */
 .citation {
   height: 32px;

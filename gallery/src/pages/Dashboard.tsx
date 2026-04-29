@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 
 interface SstMeta {
@@ -40,6 +41,7 @@ function useSstData() {
 
 export function Dashboard() {
   const { meta, latestDate, error } = useSstData();
+  const navigate = useNavigate();
   const [hoverCoords, setHoverCoords] = useState<string | null>(null);
 
   if (error) {
@@ -130,8 +132,47 @@ export function Dashboard() {
               </div>
             </div>
           )}
+
+          {/* Region select → Recipe Editor handoff */}
+          <button
+            className={styles.createRecipe}
+            onClick={() => {
+              const lr = meta?.lat_range ?? [20, 75];
+              const lnr = meta?.lon_range ?? [-90, 10];
+              navigate(`/recipes/new?lat_min=${lr[0]}&lat_max=${lr[1]}&lon_min=${lnr[0]}&lon_max=${lnr[1]}&source=oisst`);
+            }}
+          >
+            Create recipe from this region →
+          </button>
         </div>
       </div>
+
+      {/* Timeline scrubber */}
+      <div className={styles.scrubber}>
+        <input
+          type="range"
+          min="1981"
+          max="2026"
+          value={parseInt(latestDate?.substring(0, 4) || '2026')}
+          className={styles.scrubberInput}
+          aria-label="Year selection"
+          readOnly
+          title="Historical scrubber — data navigation coming in full Dashboard build"
+        />
+        <div className={styles.scrubberLabels}>
+          <span>1981</span><span>1990</span><span>2000</span><span>2010</span><span>2020</span><span>2026</span>
+        </div>
+      </div>
+
+      {/* Mini sparkline */}
+      {meta && (
+        <div className={styles.sparkline}>
+          <div className={styles.sparklineLabel}>
+            NORTH ATLANTIC MEAN SST ⊓ LATEST
+          </div>
+          <div className={styles.sparklineValue}>{meta.mean.toFixed(1)} °C</div>
+        </div>
+      )}
 
       {/* Citation footer */}
       <footer className={styles.citation}>

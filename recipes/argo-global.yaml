@@ -1,0 +1,19 @@
+name: argo-global
+created: 2026-04-29
+author: chipi
+region:
+  lat: [20, 75]
+  lon: [-90, 10]
+  name: North Atlantic (full)
+sources:
+  primary: argo
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: argo
+  marker_size: 3
+  marker_opacity: 0.6
+  seed: 505

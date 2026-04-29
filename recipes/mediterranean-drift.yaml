@@ -1,0 +1,21 @@
+name: mediterranean-drift
+created: 2026-04-29
+author: chipi
+region:
+  lat: [30, 46]
+  lon: [-6, 10]
+  name: Western Mediterranean
+sources:
+  primary: oisst
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  colormap: thermal
+  opacity: 0.75
+  particle_count: 2000
+  tail_length: 8
+  speed_scale: 0.8
+  seed: 303

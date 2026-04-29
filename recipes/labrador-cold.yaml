@@ -1,0 +1,19 @@
+name: labrador-cold
+created: 2026-04-29
+author: chipi
+region:
+  lat: [45, 65]
+  lon: [-65, -40]
+  name: Labrador Sea
+sources:
+  primary: oisst
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: field
+  colormap: arctic
+  opacity: 0.85
+  smooth: true
+  seed: 101

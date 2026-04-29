@@ -87,6 +87,32 @@
   letter-spacing: 0.04em;
 }
 
+.heroActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.heroAction {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.heroAction:hover {
+  color: var(--text);
+}
+
+.heroActionPrimary {
+  font-size: 11px;
+  color: var(--intent-info);
+  text-decoration: none;
+}
+
+.heroActionPrimary:hover {
+  text-decoration: underline;
+}
+
 /* 14-day strip */
 .strip {
   display: flex;
