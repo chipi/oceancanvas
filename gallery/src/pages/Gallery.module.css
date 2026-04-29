@@ -141,6 +141,16 @@
   overflow: hidden;
   border-radius: 2px;
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+.cardActive {
+  border-color: var(--intent-info);
 }
 
 .cardImage {

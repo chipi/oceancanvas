@@ -13,6 +13,7 @@ function renderUrl(recipe: string, date: string): string {
 export function Gallery() {
   const { manifest, error, loading } = useManifest();
   const [filter, setFilter] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Could not load manifest: {error}</div>;
@@ -25,15 +26,19 @@ export function Gallery() {
     ? recipes.filter((r) => r.source === filter)
     : recipes;
 
-  // Hero: first recipe with the most renders
-  const hero = [...recipes].sort((a, b) => b.count - a.count)[0];
+  // Hero: selected recipe, or the one with the most renders
+  const hero = selected
+    ? recipes.find((r) => r.name === selected)
+    : [...recipes].sort((a, b) => b.count - a.count)[0];
   const sources = [...new Set(recipes.map((r) => r.source).filter(Boolean))];
 
   return (
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark} onClick={() => setSelected(null)}>
+          OCEANCANVAS
+        </a>
         <div className={styles.filters}>
           <button
             className={`${styles.filter} ${!filter ? styles.filterActive : ''}`}
@@ -65,7 +70,7 @@ export function Gallery() {
           <div className={styles.heroOverlay}>
             <div className={styles.heroName}>{hero.name}</div>
             <div className={styles.heroMeta}>
-              {hero.render_type} · {hero.source} · {hero.latest} · {hero.count} renders
+              {hero.render_type} · {hero.source} · {hero.latest} · {hero.count} render{hero.count !== 1 ? 's' : ''}
             </div>
           </div>
         </div>
@@ -99,7 +104,11 @@ export function Gallery() {
       </div>
       <div className={styles.grid}>
         {filtered.map((recipe) => (
-          <div key={recipe.name} className={styles.card}>
+          <div
+            key={recipe.name}
+            className={`${styles.card} ${hero?.name === recipe.name ? styles.cardActive : ''}`}
+            onClick={() => setSelected(recipe.name)}
+          >
             <img
               className={styles.cardImage}
               src={renderUrl(recipe.name, recipe.latest)}
