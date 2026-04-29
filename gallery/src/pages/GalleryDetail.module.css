@@ -54,12 +54,13 @@
   overflow: hidden;
 }
 
-/* Left column: render + strip */
+/* Left column: render + strip, background fills remaining space */
 .leftCol {
   flex: 2;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--surface);
 }
 
 .renderArea {
