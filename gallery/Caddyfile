@@ -24,8 +24,10 @@
     }
 
     # Recipe save API — proxies to Node.js save server
+    # In Docker: recipe-server runs as a separate container
+    # RECIPE_SERVER env var allows override; defaults to localhost:3001 for dev
     handle /api/* {
-        reverse_proxy localhost:3001
+        reverse_proxy {$RECIPE_SERVER:localhost:3001}
     }
 
     # Serve recipe YAML files as static assets (for editor loading)

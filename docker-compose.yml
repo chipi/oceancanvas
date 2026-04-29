@@ -55,6 +55,8 @@ services:
     build: ./gallery
     ports:
       - "8080:8080"
+    environment:
+      RECIPE_SERVER: recipe-server:3001
     volumes:
       - ./data/processed:/data/processed:ro
       - ./renders:/renders:ro
@@ -62,6 +64,8 @@ services:
       - ./sketches:/sketches:ro
     depends_on:
       pipeline:
+        condition: service_started
+      recipe-server:
         condition: service_started
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
@@ -81,6 +85,11 @@ services:
       - ./recipes:/recipes
     ports:
       - "3001:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"const http=require('http');http.get('http://localhost:3001/',r=>{process.exit(r.statusCode===404?0:1)}).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   pgdata:

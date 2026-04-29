@@ -15,16 +15,33 @@ services:
       - ./sketches:/sketches:ro
     command: python -m oceancanvas.flow --test-mode
 
+  recipe-server:
+    image: node:20-slim
+    working_dir: /app
+    command: node server/save-recipe.mjs
+    environment:
+      RECIPES_DIR: /recipes
+      SAVE_PORT: "3001"
+    volumes:
+      - ./gallery/server:/app/server:ro
+      - ./pipeline/tests/fixtures/recipes:/recipes
+
   gallery:
     build: ./gallery
     ports:
       - "8080:8080"
+    environment:
+      RECIPE_SERVER: recipe-server:3001
     volumes:
       - test-processed:/data/processed:ro
       - test-renders:/renders:ro
+      - ./pipeline/tests/fixtures/recipes:/recipes:ro
+      - ./sketches:/sketches:ro
     depends_on:
       pipeline:
         condition: service_completed_successfully
+      recipe-server:
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
       interval: 5s

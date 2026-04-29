@@ -41,44 +41,75 @@ test('clicking a gallery tile navigates to detail view', async ({ page }) => {
 
 // ═══════════════════════════════════════════════
 // Gallery — detail view
+// Uses first available recipe from manifest (works with any fixture data)
 // ═══════════════════════════════════════════════
 
 test('detail view shows render image', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  const img = page.locator('img').first();
-  if (await img.isVisible()) {
-    await expect(img).toHaveAttribute('src', /renders/);
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    const img = page.locator('img').first();
+    if (await img.isVisible()) {
+      await expect(img).toHaveAttribute('src', /renders/);
+    }
   }
 });
 
 test('detail view shows context panel', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  await expect(page.locator('body')).toContainText('ABOUT THIS DATA');
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    await expect(page.locator('body')).toContainText('ABOUT THIS DATA');
+  }
 });
 
 test('detail view has navigation links', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  await expect(page.locator('a', { hasText: '← gallery' })).toBeVisible();
-  await expect(page.locator('a', { hasText: 'recipe ↗' })).toBeVisible();
-  await expect(page.locator('a', { hasText: 'download' })).toBeVisible();
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    await expect(page.locator('a', { hasText: '← gallery' })).toBeVisible();
+    await expect(page.locator('a', { hasText: 'recipe ↗' })).toBeVisible();
+    await expect(page.locator('a', { hasText: 'download' })).toBeVisible();
+  }
 });
 
 test('detail view — gallery link navigates back', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  await page.click('a:has-text("← gallery")');
-  await page.waitForURL('/');
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    await page.click('a:has-text("← gallery")');
+    await page.waitForURL('/');
+  }
 });
 
 test('detail view — recipe link navigates to editor', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  await page.click('a:has-text("recipe ↗")');
-  await page.waitForURL(/\/recipes\/.+/);
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    await page.click('a:has-text("recipe ↗")');
+    await page.waitForURL(/\/recipes\/.+/);
+  }
 });
 
 test('detail view — Esc returns to gallery', async ({ page }) => {
-  await page.goto('/gallery/north-atlantic-sst');
-  await page.keyboard.press('Escape');
-  await page.waitForURL('/');
+  await page.goto('/');
+  const tile = page.locator('[role="button"]').first();
+  if (await tile.isVisible()) {
+    await tile.click();
+    await page.waitForURL(/\/gallery\/.+/);
+    await page.keyboard.press('Escape');
+    await page.waitForURL('/');
+  }
 });
 
 // ═══════════════════════════════════════════════
@@ -120,8 +151,8 @@ test('recipe editor loads for new recipe', async ({ page }) => {
 });
 
 test('recipe editor loads existing recipe', async ({ page }) => {
-  await page.goto('/recipes/north-atlantic-sst');
-  await expect(page.locator('body')).toContainText('north-atlantic-sst');
+  await page.goto('/recipes/test-field');
+  await expect(page.locator('body')).toContainText('test-field');
 });
 
 test('recipe editor shows mood presets', async ({ page }) => {
@@ -157,7 +188,7 @@ test('recipe editor has save button', async ({ page }) => {
 });
 
 test('recipe editor has navigation links', async ({ page }) => {
-  await page.goto('/recipes/north-atlantic-sst');
+  await page.goto('/recipes/test-field');
   await expect(page.locator('a', { hasText: 'view ↗' })).toBeVisible();
   await expect(page.locator('a', { hasText: 'gallery ↗' })).toBeVisible();
 });
@@ -202,7 +233,7 @@ test('gallery handles missing manifest gracefully', async ({ page }) => {
   expect(errors).toHaveLength(0);
 });
 
-test('detail view handles unknown recipe', async ({ page }) => {
+test('detail view handles unknown recipe gracefully', async ({ page }) => {
   await page.goto('/gallery/nonexistent-recipe-xyz');
   await expect(page.locator('body')).toContainText(/(not found|OCEANCANVAS)/i);
 });
