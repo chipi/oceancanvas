@@ -27,6 +27,26 @@ const THERMAL_STOPS = [
   [121, 31, 31],   // domain-sst-hot    #791F1F
 ];
 
+// Arctic palette — deep navy → steel blue → ice white
+const ARCTIC_STOPS = [
+  [2, 10, 30],
+  [10, 40, 80],
+  [30, 90, 140],
+  [80, 150, 190],
+  [160, 210, 230],
+  [220, 240, 250],
+];
+
+// Otherworldly palette — deep purple → magenta → gold → white
+const OTHERWORLDLY_STOPS = [
+  [20, 5, 40],
+  [80, 20, 120],
+  [160, 40, 140],
+  [200, 80, 100],
+  [230, 160, 60],
+  [250, 230, 180],
+];
+
 // Argo palette — dark blue → teal → lavender → purple (from OC-05)
 const ARGO_STOPS = [
   [4, 44, 83],
@@ -34,6 +54,20 @@ const ARGO_STOPS = [
   [175, 169, 236],
   [120, 80, 180],
 ];
+
+/**
+ * Get colormap stops by name.
+ * Falls back to thermal if name is unrecognized.
+ */
+function getColormap(name) {
+  const maps = {
+    thermal: THERMAL_STOPS,
+    arctic: ARCTIC_STOPS,
+    otherworldly: OTHERWORLDLY_STOPS,
+    argo: ARGO_STOPS,
+  };
+  return maps[name] || THERMAL_STOPS;
+}
 
 /**
  * Interpolate between colormap stops.

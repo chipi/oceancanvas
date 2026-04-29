@@ -4,6 +4,13 @@
  * Renders gridded data (e.g., SST) as a coloured heatmap.
  * Depends on shared.js (loaded first by the renderer).
  *
+ * Responds to:
+ *   - colormap: palette selection (thermal/arctic/otherworldly)
+ *   - opacity: transparency (0.3–1.0)
+ *   - smooth: bilinear vs nearest-neighbor interpolation
+ *   - tail_length: controls contrast curve (higher = more contrast)
+ *   - speed_scale: controls brightness shift (higher = brighter)
+ *
  * Determinism rules (TA §constraints/deterministic-rendering):
  *   - Always call randomSeed() in setup
  *   - Never use Date.now(), millis(), or clock-dependent APIs
@@ -17,6 +24,9 @@ function setup() {
   const seed = payload.recipe?.render?.seed || 42;
   const opacity = (payload.recipe?.render?.opacity ?? 1.0) * 255;
   const doSmooth = payload.recipe?.render?.smooth ?? true;
+  const colormapName = payload.recipe?.render?.colormap || 'thermal';
+  const tailLength = payload.recipe?.render?.tail_length || 12;
+  const speedScale = payload.recipe?.render?.speed_scale || 1.0;
 
   createCanvas(w, h);
   randomSeed(seed);
@@ -34,13 +44,21 @@ function setup() {
   const [rows, cols] = primary.shape;
   const vmin = primary.min;
   const vmax = primary.max;
+  const stops = getColormap(colormapName);
+
+  // Contrast curve: tail_length drives gamma (higher = more contrast)
+  // Range: tail_length 3→24 maps to gamma 0.6→1.8
+  const gamma = lerp(0.6, 1.8, constrain((tailLength - 3) / 21, 0, 1));
+
+  // Brightness: speed_scale drives a brightness multiplier
+  // Range: 0.2→2.0 maps to 0.7→1.3
+  const brightness = lerp(0.7, 1.3, constrain((speedScale - 0.2) / 1.8, 0, 1));
 
   const img = createImage(cols, rows);
   img.loadPixels();
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      // Data row 0 = southernmost; screen row 0 = northernmost
       const dataRow = rows - 1 - r;
       const val = dataArr[dataRow * cols + c];
       const pi = (r * cols + c) * 4;
@@ -51,11 +69,14 @@ function setup() {
         img.pixels[pi + 2] = CANVAS_BG[2];
         img.pixels[pi + 3] = 255;
       } else {
-        const t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
-        const [cr, cg, cb] = thermalColor(t);
-        img.pixels[pi] = cr;
-        img.pixels[pi + 1] = cg;
-        img.pixels[pi + 2] = cb;
+        // Normalise and apply gamma for contrast
+        let t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
+        t = Math.pow(t, gamma);
+        const [cr, cg, cb] = colorFromStops(stops, t);
+        // Apply brightness
+        img.pixels[pi] = constrain(cr * brightness, 0, 255);
+        img.pixels[pi + 1] = constrain(cg * brightness, 0, 255);
+        img.pixels[pi + 2] = constrain(cb * brightness, 0, 255);
         img.pixels[pi + 3] = opacity;
       }
     }

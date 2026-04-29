@@ -53,6 +53,8 @@ function setup() {
   const particleCount = payload.recipe?.render?.particle_count || 3000;
   const tailLength = payload.recipe?.render?.tail_length || 12;
   const speedScale = payload.recipe?.render?.speed_scale || 1.0;
+  const colormapName = payload.recipe?.render?.colormap || 'thermal';
+  const stops = getColormap(colormapName);
 
   createCanvas(w, h);
   randomSeed(seed);
@@ -108,7 +110,7 @@ function setup() {
     if (val === NAN_VALUE) continue;
 
     const t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
-    const [cr, cg, cb] = thermalColor(t);
+    const [cr, cg, cb] = colorFromStops(stops, t);
 
     beginShape();
     for (let i = 0; i < p.trail.length; i++) {
