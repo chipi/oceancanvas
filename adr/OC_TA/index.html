@@ -1496,6 +1496,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#creative-state-technical-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        creative state → technical parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#manifestjson" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2787,6 +2798,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#creative-state-technical-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        creative state → technical parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#manifestjson" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3034,6 +3056,8 @@
 <p>The pipeline's intermediate format. Three files per source per date: <code>.json</code> (flat float32 array + shape + min/max + lat/lon range + metadata), <code>.png</code> (colourised tile at processing-region resolution), <code>.meta.json</code> (statistics sidecar). Read by the dashboard for live visualisation, by the render-payload builder for recipe assembly. Format defined by <strong>ADR-015</strong>.</p>
 <h3 id="render-payload-windowocean_payload">render payload (<code>window.OCEAN_PAYLOAD</code>)<a class="headerlink" href="#render-payload-windowocean_payload" title="Permanent link">&para;</a></h3>
 <p>The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by <strong>RFC-002 → ADR (pending)</strong>.</p>
+<h3 id="creative-state-technical-parameters">creative state → technical parameters<a class="headerlink" href="#creative-state-technical-parameters" title="Permanent link">&para;</a></h3>
+<p>Maps mood presets and creative controls (energy×presence, colour character, temporal weight) to render parameters (colormap, opacity, particle_count, etc.). Implemented identically in TypeScript (<code>gallery/src/lib/creativeMapping.ts</code>) and Python (<code>pipeline/src/oceancanvas/creative_mapping.py</code>). Both must produce identical outputs — divergence is a bug. Used by the Recipe Editor to translate artistic intent into p5.js render config, and by the pipeline when processing recipes authored via the editor.</p>
 <h3 id="manifestjson">manifest.json<a class="headerlink" href="#manifestjson" title="Permanent link">&para;</a></h3>
 <p>The gallery index. Lists all recipes, all render dates, dimensions and metadata for each. Rebuilt from scratch by pipeline Task 06 (Index). Read by the React gallery and the video editor. No partial updates — full rebuild each day.</p>
 <hr />
