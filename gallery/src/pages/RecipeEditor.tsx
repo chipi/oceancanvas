@@ -6,7 +6,7 @@ import type { CreativeState } from '../lib/creativeMapping';
 import { MOOD_PRESETS, creativeToTechnical } from '../lib/creativeMapping';
 import type { OceanPayload, ProcessedData } from '../lib/payloadBuilder';
 import { buildPreviewPayload } from '../lib/payloadBuilder';
-import { CREATIVE_MARKER, detectState, parseRecipeYaml, type RecipeState } from '../lib/yamlParser';
+import { CREATIVE_MARKER, detectState, extractRenderParams, parseRecipeYaml, type RecipeState } from '../lib/yamlParser';
 import styles from './RecipeEditor.module.css';
 
 const DEFAULT_STATE: CreativeState = { ...MOOD_PRESETS['Becalmed'] };
@@ -23,6 +23,7 @@ export function RecipeEditor() {
   const [processedData, setProcessedData] = useState<ProcessedData | null>(null);
   const [recipeName, setRecipeName] = useState(id || 'new-recipe');
   const [renderType, setRenderType] = useState('field');
+  const [loadedParams, setLoadedParams] = useState<Record<string, unknown> | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
@@ -67,6 +68,9 @@ export function RecipeEditor() {
           setRecipeName(id);
           const typeMatch = text.match(/type:\s*(\w+)/);
           if (typeMatch) setRenderType(typeMatch[1]);
+          // Extract actual render params so preview matches the pipeline render
+          const params = extractRenderParams(text);
+          if (Object.keys(params).length > 0) setLoadedParams(params);
         })
         .catch(() => {});
     }
@@ -81,13 +85,13 @@ export function RecipeEditor() {
       {
         id: recipeName,
         name: recipeName,
-        render: { type: renderType, seed: 42, ...technical },
+        render: { type: renderType, seed: 42, ...(loadedParams || technical) },
         render_date: processedData.date,
       },
       region,
       { full: true },
     );
-  }, [processedData, recipeName, technical, region, renderType]);
+  }, [processedData, recipeName, technical, region, renderType, loadedParams]);
 
   // Sync creative → YAML
   useEffect(() => {
@@ -147,6 +151,10 @@ export function RecipeEditor() {
         <span className={styles.topbarMeta}>
           {renderType} · {technical.colormap} · {processedData?.date || ''}
         </span>
+        <div className={styles.topbarNav}>
+          {!isNew && <a href={`/gallery/${recipeName}`} className={styles.navLink}>view ↗</a>}
+          <a href="/" className={styles.navLink}>gallery ↗</a>
+        </div>
       </header>
 
       {/* Body: render left, controls right */}
@@ -188,7 +196,7 @@ export function RecipeEditor() {
           {/* Creative or YAML */}
           <div className={styles.controlBody}>
             {mode === 'creative' ? (
-              <CreativeControls state={creativeState} onChange={setCreativeState} />
+              <CreativeControls state={creativeState} onChange={(s) => { setLoadedParams(null); setCreativeState(s); }} />
             ) : (
               <div className={styles.yamlEditor}>
                 <pre className={styles.yamlPre}>

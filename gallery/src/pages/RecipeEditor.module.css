@@ -33,9 +33,24 @@
 }
 
 .topbarMeta {
-  margin-left: auto;
   font-size: 11px;
   color: var(--text-secondary);
+}
+
+.topbarNav {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+}
+
+.navLink {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--text);
 }
 
 /* Body: render left, controls right — matches detail view proportions */
