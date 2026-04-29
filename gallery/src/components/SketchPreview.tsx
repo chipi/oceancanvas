@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { OceanPayload } from '../lib/payloadBuilder';
 import styles from './SketchPreview.module.css';
 
@@ -8,116 +8,93 @@ interface SketchPreviewProps {
 }
 
 /**
- * Renders a p5.js sketch in a sandboxed iframe.
+ * Renders a p5.js sketch in an iframe using srcdoc.
  *
- * Loads shared.js + {render_type}.js from /sketches/, injects the payload
- * as window.OCEAN_PAYLOAD. Re-renders on payload change with 200ms debounce.
- *
- * Completion detection: the sketch sets window.__RENDER_COMPLETE = true,
- * then the injected observer script posts a message to the parent.
+ * Each payload change produces a new srcdoc string, forcing a full
+ * iframe reload. This ensures p5.js setup() runs fresh each time.
+ * Debounced at 500ms to avoid thrashing during rapid control changes.
  */
 export function SketchPreview({ payload, className }: SketchPreviewProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const [debouncedPayload, setDebouncedPayload] = useState<OceanPayload | null>(null);
 
-  // Listen for completion message from iframe
-  useEffect(() => {
-    function handleMessage(e: MessageEvent) {
-      if (e.data === 'OCEAN_RENDER_COMPLETE') {
-        setStatus('ready');
-      }
-    }
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
+  // Debounce payload changes
   useEffect(() => {
     if (!payload) {
-      setStatus('loading');
+      setDebouncedPayload(null);
       return;
     }
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      renderSketch(payload);
-    }, 200);
-
+      setDebouncedPayload(payload);
+      setStatus('loading');
+    }, 500);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [payload]);
 
-  function renderSketch(p: OceanPayload) {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
+  // Listen for completion message from iframe
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (e.data === 'OCEAN_RENDER_COMPLETE') setStatus('ready');
+      if (e.data === 'OCEAN_RENDER_TIMEOUT') setStatus('error');
+    }
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
-    setStatus('loading');
-    setErrorMsg(null);
+  // Build srcdoc HTML — inline everything so no external script loading issues
+  const srcdoc = useMemo(() => {
+    if (!debouncedPayload) return '';
 
-    const renderType = p.recipe.render.type || 'field';
+    const renderType = debouncedPayload.recipe.render.type || 'field';
 
-    // Observer script: watches for __RENDER_COMPLETE and posts message to parent
-    const observer = `
-      (function() {
-        var checks = 0;
-        var iv = setInterval(function() {
-          checks++;
-          if (window.__RENDER_COMPLETE) {
-            clearInterval(iv);
-            parent.postMessage('OCEAN_RENDER_COMPLETE', '*');
-          } else if (checks > 600) {
-            clearInterval(iv);
-            parent.postMessage('OCEAN_RENDER_TIMEOUT', '*');
-          }
-        }, 100);
-      })();
-    `;
-
-    const html = `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
-<style>body { margin: 0; overflow: hidden; background: var(--canvas, #030B10); }</style>
-<script src="/sketches/shared.js"><\/script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"><\/script>
+<style>body{margin:0;overflow:hidden;background:#030B10}</style>
 </head><body>
-<script>window.OCEAN_PAYLOAD = ${JSON.stringify(p)};<\/script>
-<script src="/sketches/${renderType}.js"><\/script>
-<script>${observer}<\/script>
+<script>
+window.OCEAN_PAYLOAD = ${JSON.stringify(debouncedPayload)};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<script src="/sketches/shared.js"></script>
+<script src="/sketches/${renderType}.js"></script>
+<script>
+// Observer: notify parent when render completes
+(function(){
+  var n=0,iv=setInterval(function(){
+    n++;
+    if(window.__RENDER_COMPLETE){clearInterval(iv);parent.postMessage("OCEAN_RENDER_COMPLETE","*")}
+    else if(n>300){clearInterval(iv);parent.postMessage("OCEAN_RENDER_TIMEOUT","*")}
+  },100);
+})();
+</script>
 </body></html>`;
-
-    const doc = iframe.contentDocument;
-    if (doc) {
-      doc.open();
-      doc.write(html);
-      doc.close();
-    }
-
-    // Timeout fallback
-    setTimeout(() => {
-      if (status === 'loading') {
-        setStatus('error');
-        setErrorMsg('Render timed out');
-      }
-    }, 60000);
-  }
+  }, [debouncedPayload]);
 
   const width = payload?.output.width ?? 960;
   const height = payload?.output.height ?? 540;
 
   return (
     <div className={`${styles.container} ${className ?? ''}`}>
-      <iframe
-        ref={iframeRef}
-        className={styles.iframe}
-        style={{ aspectRatio: `${width} / ${height}` }}
-        sandbox="allow-scripts allow-same-origin"
-        title="Sketch preview"
-      />
-      {status === 'loading' && <div className={styles.shimmer} />}
+      {srcdoc ? (
+        <iframe
+          key={srcdoc.length}
+          className={styles.iframe}
+          style={{ aspectRatio: `${width} / ${height}` }}
+          srcDoc={srcdoc}
+          sandbox="allow-scripts allow-same-origin"
+          title="Sketch preview"
+        />
+      ) : (
+        <div className={styles.shimmer} style={{ aspectRatio: `${width} / ${height}` }} />
+      )}
+      {status === 'loading' && srcdoc && <div className={styles.shimmer} />}
       {status === 'error' && (
-        <div className={styles.error}>{errorMsg || 'Render failed'}</div>
+        <div className={styles.error}>Render timed out — try simplifying the recipe</div>
       )}
     </div>
   );
