@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { creativeToTechnical, MOOD_PRESETS, isMatched } from './creativeMapping';
+import { creativeToTechnical, technicalToCreative, MOOD_PRESETS, isMatched } from './creativeMapping';
 
 describe('creativeToTechnical', () => {
   it('returns valid params for Becalmed preset', () => {
@@ -72,5 +72,39 @@ describe('isMatched', () => {
     const state = MOOD_PRESETS['Becalmed'];
     const tech = { ...creativeToTechnical(state), opacity: 0.99 };
     expect(isMatched(state, tech)).toBe(false);
+  });
+});
+
+describe('technicalToCreative', () => {
+  it('round-trips all presets approximately', () => {
+    for (const [name, preset] of Object.entries(MOOD_PRESETS)) {
+      const tech = creativeToTechnical(preset);
+      const reversed = technicalToCreative(tech);
+      // energy_x, energy_y should be close (within 0.15)
+      expect(Math.abs(reversed.energy_x - preset.energy_x)).toBeLessThan(0.15);
+      expect(Math.abs(reversed.energy_y - preset.energy_y)).toBeLessThan(0.15);
+      expect(Math.abs(reversed.temporal_weight - preset.temporal_weight)).toBeLessThan(0.15);
+    }
+  });
+
+  it('maps thermal colormap to mid colour_character', () => {
+    const result = technicalToCreative({ colormap: 'thermal', opacity: 0.7, speed_scale: 1.0, particle_count: 2000, tail_length: 12 });
+    expect(result.colour_character).toBe(0.5);
+  });
+
+  it('maps arctic colormap to low colour_character', () => {
+    const result = technicalToCreative({ colormap: 'arctic', opacity: 0.7, speed_scale: 1.0, particle_count: 2000, tail_length: 12 });
+    expect(result.colour_character).toBe(0.15);
+  });
+
+  it('maps otherworldly colormap to high colour_character', () => {
+    const result = technicalToCreative({ colormap: 'otherworldly', opacity: 0.7, speed_scale: 1.0, particle_count: 2000, tail_length: 12 });
+    expect(result.colour_character).toBe(0.85);
+  });
+
+  it('returns mood=saved for non-preset params', () => {
+    const result = technicalToCreative({ colormap: 'thermal', opacity: 0.85, speed_scale: 1.0, particle_count: 3000, tail_length: 12 });
+    // These hand-authored params don't match any preset
+    expect(result.mood).toBe('custom');
   });
 });
