@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { OceanPayload } from '../lib/payloadBuilder';
 import styles from './SketchPreview.module.css';
 
