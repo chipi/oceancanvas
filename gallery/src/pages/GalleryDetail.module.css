@@ -66,14 +66,13 @@
 
 .overlay {
   position: absolute;
-  bottom: 0;
+  bottom: 24px; /* sit above the baked-in PNG attribution text */
   left: 0;
   right: 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 24px;
-  background: linear-gradient(transparent, var(--overlay));
+  padding: 0 24px;
 }
 
 .overlayLeft {}
