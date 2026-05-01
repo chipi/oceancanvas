@@ -256,5 +256,153 @@ def index_rebuild() -> None:
     console.print(f"[green]Manifest rebuilt: {len(recipes)} recipes → {manifest_path}[/green]")
 
 
+@app.command("run")
+def run_pipeline(
+    via_server: bool = typer.Option(False, "--via-server", help="Dispatch to Prefect server"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would run"),
+) -> None:
+    """Run the full daily pipeline."""
+    if dry_run:
+        console.print("[dim]Dry run — resolving what would execute...[/dim]")
+        console.print(f"  DATA_DIR:    {DATA_DIR}")
+        console.print(f"  RECIPES_DIR: {RECIPES_DIR}")
+        console.print(f"  RENDERS_DIR: {RENDERS_DIR}")
+
+        if RECIPES_DIR.exists():
+            recipes = sorted(RECIPES_DIR.glob("*.yaml"))
+            console.print(f"  Recipes:     {len(recipes)}")
+            for r in recipes:
+                console.print(f"    - {r.stem}")
+        return
+
+    if via_server:
+        console.print("[yellow]Server dispatch not yet implemented.[/yellow]")
+
+    from oceancanvas.flow import daily_ocean_pipeline
+
+    console.print("[cyan]Starting daily pipeline...[/cyan]")
+    daily_ocean_pipeline(test_mode=False)
+    console.print("[green]Pipeline complete.[/green]")
+
+
+@app.command("backfill")
+def run_backfill(
+    recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
+    from_date: str = typer.Option(..., "--from", help="Start date (YYYY-MM or YYYY-MM-DD)"),
+    to_date: str = typer.Option(None, "--to", help="End date (default: today)"),
+    cadence: str = typer.Option("monthly", "--cadence", "-c", help="monthly or daily"),
+    via_server: bool = typer.Option(False, "--via-server", help="Dispatch to Prefect server"),
+) -> None:
+    """Run historical backfill for a recipe over a date range."""
+    from datetime import date as date_cls
+
+    from oceancanvas.backfill import _generate_dates, validate_backfill
+
+    if to_date is None:
+        to_date = date_cls.today().isoformat()
+
+    # Validate recipe exists
+    recipe_path = RECIPES_DIR / f"{recipe}.yaml"
+    if not recipe_path.exists():
+        console.print(f"[red]Recipe not found: {recipe_path}[/red]")
+        raise typer.Exit(1)
+
+    # Generate and validate dates
+    try:
+        dates = _generate_dates(from_date, to_date, cadence)
+    except ValueError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(1)
+
+    to_render, already_done, missing_data = validate_backfill(
+        recipe, dates, DATA_DIR, RECIPES_DIR, RENDERS_DIR
+    )
+
+    console.print(f"\n[bold]Backfill · {recipe}[/bold]")
+    console.print(f"  Range:    {from_date} → {to_date}")
+    console.print(f"  Cadence:  {cadence}")
+    console.print(f"  Dates:    {len(dates)} total")
+    console.print(f"  Render:   {len(to_render)}")
+    console.print(f"  Skip:     {len(already_done)} (already done)")
+    console.print(f"  Missing:  {len(missing_data)} (no processed data)")
+
+    if missing_data:
+        console.print(f"\n[red]Cannot proceed: {len(missing_data)} dates lack data.[/red]")
+        for d in missing_data[:10]:
+            console.print(f"  [dim]{d}[/dim]")
+        if len(missing_data) > 10:
+            console.print(f"  [dim]... and {len(missing_data) - 10} more[/dim]")
+        raise typer.Exit(1)
+
+    if not to_render:
+        console.print("\n[green]Nothing to render — all dates complete.[/green]")
+        return
+
+    if via_server:
+        console.print("[yellow]Server dispatch not yet implemented.[/yellow]")
+
+    from oceancanvas.backfill import backfill_flow
+
+    console.print(f"\n[cyan]Rendering {len(to_render)} frames...[/cyan]")
+    results = backfill_flow(recipe, from_date, to_date, cadence)
+    console.print(f"[green]Backfill complete: {len(results)} rendered.[/green]")
+
+
+@app.command("render")
+def render_single(
+    recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
+    date: str = typer.Option(..., "--date", "-d", help="Date (YYYY-MM-DD)"),
+    force: bool = typer.Option(False, "--force", help="Re-render even if exists"),
+) -> None:
+    """Render a single frame. Fails fast if processed data is missing."""
+    recipe_path = RECIPES_DIR / f"{recipe}.yaml"
+    if not recipe_path.exists():
+        console.print(f"[red]Recipe not found: {recipe_path}[/red]")
+        raise typer.Exit(1)
+
+    # Check processed data
+    try:
+        with recipe_path.open() as f:
+            recipe_data = yaml.safe_load(f)
+        source_id = recipe_data.get("sources", {}).get("primary", "oisst")
+    except Exception as e:
+        console.print(f"[red]Failed to read recipe: {e}[/red]")
+        raise typer.Exit(1)
+
+    processed_path = DATA_DIR / "processed" / source_id / f"{date}.json"
+    if not processed_path.exists():
+        console.print(f"[red]No processed data: {processed_path}[/red]")
+        console.print("Run the full pipeline first: [bold]oceancanvas run[/bold]")
+        raise typer.Exit(1)
+
+    output_path = RENDERS_DIR / recipe / f"{date}.png"
+    if output_path.exists() and not force:
+        console.print(f"[yellow]Render already exists: {output_path}[/yellow]")
+        console.print("Use --force to re-render.")
+        return
+
+    if output_path.exists() and force:
+        output_path.unlink()
+
+    from oceancanvas.tasks.build_payload import build_one_payload
+    from oceancanvas.tasks.render import render_one
+
+    console.print(f"[cyan]Building payload for {recipe} / {date}...[/cyan]")
+    payload_path = build_one_payload.fn(recipe_path, DATA_DIR, RENDERS_DIR, date=date)
+
+    if not payload_path:
+        console.print("[red]Payload build returned nothing.[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"[cyan]Rendering {recipe} / {date}...[/cyan]")
+    result = render_one.fn(payload_path, RENDERS_DIR)
+
+    if result:
+        console.print(f"[green]Rendered: {result}[/green]")
+    else:
+        console.print("[red]Render failed.[/red]")
+        raise typer.Exit(1)
+
+
 if __name__ == "__main__":
     app()
