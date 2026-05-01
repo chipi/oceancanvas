@@ -19,7 +19,7 @@ from oceancanvas.tasks.discover import discover
 from oceancanvas.tasks.fetch import fetch
 from oceancanvas.tasks.index import index
 from oceancanvas.tasks.process import process
-from oceancanvas.tasks.render import render, render_one
+from oceancanvas.tasks.render import cleanup_workers, render, render_one
 
 
 @flow(name="daily_ocean_pipeline", log_prints=True, task_runner=ConcurrentTaskRunner())
@@ -97,12 +97,15 @@ def _parallel_build_and_render(
         for payload_path in payload_paths
     ]
 
-    # Collect results, log failures
-    for future in render_futures:
-        try:
-            future.result()
-        except Exception as e:
-            logger.error("Render task failed: %s", e)
+    # Collect results, log failures, then clean up workers
+    try:
+        for future in render_futures:
+            try:
+                future.result()
+            except Exception as e:
+                logger.error("Render task failed: %s", e)
+    finally:
+        cleanup_workers()
 
 
 if __name__ == "__main__":
