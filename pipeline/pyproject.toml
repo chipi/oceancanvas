@@ -14,7 +14,12 @@ dependencies = [
     "pyyaml>=6.0",
     "numpy>=1.26",
     "pillow>=10.0",
+    "typer[all]>=0.12",
+    "rich>=13",
 ]
+
+[project.scripts]
+oceancanvas = "oceancanvas.cli:app"
 
 [project.optional-dependencies]
 dev = [

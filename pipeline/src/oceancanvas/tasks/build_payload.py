@@ -189,15 +189,55 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
     atomic_write_text(output_path, json.dumps(payload))
 
 
-@task(name="build_payload")
-def build_payload(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> list[Path]:
-    """Build render payload per recipe for the latest processed date.
+@task(name="build_one_payload")
+def build_one_payload(
+    recipe_path: Path,
+    data_dir: Path,
+    renders_dir: Path,
+    date: str | None = None,
+) -> Path | None:
+    """Build render payload for one recipe.
 
-    Returns list of payload file paths written.
+    Designed for parallel dispatch via .submit() in the flow.
+    If date is None, uses the latest processed date for the source.
     """
     logger = get_logger()
     processed_dir = data_dir / "processed"
     payloads_dir = data_dir / "payloads"
+
+    try:
+        recipe = _load_recipe(recipe_path)
+    except (jsonschema.ValidationError, yaml.YAMLError) as e:
+        logger.warning("Skipping invalid recipe %s: %s", recipe_path.name, e)
+        return None
+
+    source_id = recipe["sources"]["primary"]
+    render_date = date or _find_latest_date(processed_dir, source_id)
+    if not render_date:
+        logger.info("No processed data for %s, skipping %s", source_id, recipe["name"])
+        return None
+
+    # Skip if render already exists for this date
+    render_path = renders_dir / recipe["name"] / f"{render_date}.png"
+    if render_path.exists():
+        logger.info("Render exists for %s/%s, skipping payload", recipe["name"], render_date)
+        return None
+
+    output = payloads_dir / f"{recipe['name']}__{render_date}.json"
+    if output.exists():
+        logger.info("Payload already built for %s/%s", recipe["name"], render_date)
+        return output
+
+    logger.info("Building payload for %s / %s", recipe["name"], render_date)
+    _build_one_payload(recipe, processed_dir, render_date, output)
+    return output
+
+
+# Legacy wrapper for backward compatibility with tests and direct invocation
+@task(name="build_payload")
+def build_payload(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> list[Path]:
+    """Build render payloads for all recipes sequentially. Used in test mode."""
+    logger = get_logger()
 
     if not recipes_dir.exists():
         logger.info("No recipes directory found")
@@ -209,34 +249,8 @@ def build_payload(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> list[
         return []
 
     payload_paths: list[Path] = []
-
     for recipe_path in recipe_files:
-        try:
-            recipe = _load_recipe(recipe_path)
-        except (jsonschema.ValidationError, yaml.YAMLError) as e:
-            logger.warning("Skipping invalid recipe %s: %s", recipe_path.name, e)
-            continue
-
-        source_id = recipe["sources"]["primary"]
-        date = _find_latest_date(processed_dir, source_id)
-        if not date:
-            logger.info("No processed data for %s, skipping %s", source_id, recipe["name"])
-            continue
-
-        # Skip if render already exists for this date
-        render_path = renders_dir / recipe["name"] / f"{date}.png"
-        if render_path.exists():
-            logger.info("Render already exists for %s/%s, skipping payload", recipe["name"], date)
-            continue
-
-        output = payloads_dir / f"{recipe['name']}__{date}.json"
-        if output.exists():
-            logger.info("Payload already built for %s/%s", recipe["name"], date)
-            payload_paths.append(output)
-            continue
-
-        logger.info("Building payload for %s / %s", recipe["name"], date)
-        _build_one_payload(recipe, processed_dir, date, output)
-        payload_paths.append(output)
-
+        result = build_one_payload.fn(recipe_path, data_dir, renders_dir)
+        if result:
+            payload_paths.append(result)
     return payload_paths

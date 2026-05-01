@@ -1,7 +1,7 @@
 """Tests for the pipeline flow wiring."""
 
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -31,34 +31,47 @@ def _flow_env(tmp_path):
 @patch("oceancanvas.flow.process")
 @patch("oceancanvas.flow.fetch")
 @patch("oceancanvas.flow.discover")
-def test_flow_calls_all_tasks_in_order(
+def test_flow_test_mode_calls_sequential_tasks(
     mock_discover, mock_fetch, mock_process, mock_build, mock_render, mock_index
 ):
-    """All six tasks are called in the correct sequence."""
-    mock_discover.return_value = {"oisst": "2026-01-15"}
+    """test_mode=True uses sequential wrappers for all six tasks."""
+    daily_ocean_pipeline.fn(test_mode=True)
 
-    manager = MagicMock()
-    manager.attach_mock(mock_discover, "discover")
-    manager.attach_mock(mock_fetch, "fetch")
-    manager.attach_mock(mock_process, "process")
-    manager.attach_mock(mock_build, "build_payload")
-    manager.attach_mock(mock_render, "render")
-    manager.attach_mock(mock_index, "index")
-
-    daily_ocean_pipeline.fn(test_mode=False)
-
-    call_names = [c[0] for c in manager.method_calls]
-    assert call_names == ["discover", "fetch", "process", "build_payload", "render", "index"]
+    mock_discover.assert_not_called()
+    mock_fetch.assert_not_called()
+    mock_process.assert_called_once()
+    mock_build.assert_called_once()
+    mock_render.assert_called_once()
+    mock_index.assert_called_once()
 
 
 @patch("oceancanvas.flow.index")
-@patch("oceancanvas.flow.render")
-@patch("oceancanvas.flow.build_payload")
+@patch("oceancanvas.flow._parallel_build_and_render")
+@patch("oceancanvas.flow.process")
+@patch("oceancanvas.flow.fetch")
+@patch("oceancanvas.flow.discover")
+def test_flow_normal_mode_calls_parallel_path(
+    mock_discover, mock_fetch, mock_process, mock_parallel, mock_index
+):
+    """Normal mode calls discover → fetch → process → parallel build+render → index."""
+    mock_discover.return_value = {"oisst": "2026-01-15"}
+
+    daily_ocean_pipeline.fn(test_mode=False)
+
+    mock_discover.assert_called_once()
+    mock_fetch.assert_called_once()
+    mock_process.assert_called_once()
+    mock_parallel.assert_called_once()
+    mock_index.assert_called_once()
+
+
+@patch("oceancanvas.flow.index")
+@patch("oceancanvas.flow._parallel_build_and_render")
 @patch("oceancanvas.flow.process")
 @patch("oceancanvas.flow.fetch")
 @patch("oceancanvas.flow.discover")
 def test_flow_passes_discover_dates_to_fetch(
-    mock_discover, mock_fetch, mock_process, mock_build, mock_render, mock_index
+    mock_discover, mock_fetch, mock_process, mock_parallel, mock_index
 ):
     """Discover output is passed as dates_to_fetch to fetch."""
     mock_discover.return_value = {"oisst": "2026-04-13"}
