@@ -78,7 +78,13 @@ nav:
           - Processed JSON: adr/ADR-015-processed-json-format.md
           - Single Author: adr/ADR-016-single-author-phase-1.md
           - One Layout Per Source: adr/ADR-017-one-layout-per-source.md
-      - Open Questions (RFCs):
+          - Recipe YAML Schema: adr/ADR-018-recipe-yaml-schema.md
+          - Render Payload Schema: adr/ADR-019-render-payload-schema.md
+          - Live Preview: adr/ADR-020-live-preview-architecture.md
+          - YAML Round-tripping: adr/ADR-021-yaml-round-tripping.md
+          - CLI Entry Point: adr/ADR-022-cli-entry-point.md
+          - Pipeline Parallelisation: adr/ADR-023-pipeline-parallelisation.md
+      - RFCs:
           - rfc/index.md
           - Recipe YAML: rfc/RFC-001-recipe-yaml-schema.md
           - Render Payload: rfc/RFC-002-render-payload-format.md
@@ -87,4 +93,6 @@ nav:
           - YAML Round-tripping: rfc/RFC-005-yaml-round-tripping.md
           - Audio System: rfc/RFC-006-audio-system.md
           - Key Moments: rfc/RFC-007-key-moment-detection.md
+          - Pipeline Parallelisation: rfc/RFC-008-v2.md
+          - Pipeline CLI: rfc/RFC-009.md
       - Conventions: claude.md

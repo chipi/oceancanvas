@@ -19,14 +19,15 @@ This file is the orientation document for any AI assistant working on the codeba
 - `docs/rfc/` — Tech, moving tier. Open technical questions with alternatives and trade-offs. Closes into ADRs.
 - `docs/adr/` — Tech, settled tier. `OC_TA.md` is the reference doc (components, contracts, constraints, stack, state map). `ADR-NNN-name.md` files lock individual decisions. Append-only — superseded by new ADRs, never edited in place.
 
-**Code (added during Phase 3, structure to be confirmed as built).**
+**Code.**
 
-- `pipeline/` — Python 3.12 + Prefect + dlt + xarray. Six tasks: discover, fetch, process, build payload, render, index.
+- `pipeline/` — Python 3.12 + Prefect + dlt + xarray. Six tasks: discover, fetch, process, build payload, render, index. CLI via `oceancanvas` console script (typer).
 - `gallery/` — React + Vite. deck.gl + MapLibre + Observable Plot. Static build served by Caddy. `gallery/server/` has the Node.js recipe save endpoint.
+- `sketches/` — p5.js sketch files (shared.js, field.js, particles.js, scatter.js). Mounted into both pipeline and gallery containers.
 - `recipes/` — YAML files; the authored works.
 - `data/` — Three-layer store. `data/sources/` (raw), `data/processed/` (browser-friendly), not committed to git.
 - `renders/` — Daily PNG outputs per recipe. Not committed to git.
-- `docker-compose.yml` — Four containers: pipeline, gallery, prefect-server, postgres (Prefect state DB).
+- `docker-compose.yml` — Five containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint).
 
 ---
 
@@ -105,7 +106,7 @@ Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
 - React 18, Vite, TypeScript.
 - Format: `prettier`. Lint: `eslint`.
 - State management: nothing global yet. Component state + URL state via React Router. No Redux, no Zustand in Phase 1 — add only when an ADR justifies it.
-- Styling: CSS modules. Design tokens from UXS docs as CSS custom properties in a single `tokens.css` file at the gallery root.
+- Styling: CSS modules. Design tokens from UXS docs as CSS custom properties in a single `tokens.css` file at `gallery/src/tokens.css`.
 - Component naming: PascalCase files, kebab-case routes.
 - Tests: Vitest + React Testing Library. Visual regression via Playwright (deferred until first surface ships).
 
@@ -196,7 +197,7 @@ Code identifiers (variables, functions, classes) follow standard language conven
 
 ### Don't
 
-- Don't introduce a new dependency without an ADR. Even small ones. The locked stack is locked for reasons captured in 17 ADRs.
+- Don't introduce a new dependency without an ADR. Even small ones. The locked stack is locked for reasons captured in ADRs.
 - Don't add a database. ADR-005 says no database in v1 unless the manifest grows enough to need SQLite. "It would be cleaner with Postgres" is not a v1 argument.
 - Don't add authentication. ADR-016 + the no-auth constraint together mean Phase 1 is open by default.
 - Don't add cloud-only services to the critical path. Cloudflare R2 is permitted as Phase 2 enhancement, optional even when added.
@@ -215,7 +216,7 @@ Three default moves when you're unsure how to proceed:
 
 1. **Re-read the PRD or RFC the work serves.** If the work doesn't serve any PRD or RFC, ask whether the work should happen at all in Phase 1.
 2. **Check `OC_TA.md §constraints`.** If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.
-3. **Look for a similar existing artifact.** All five PRDs are in template shape. All seventeen ADRs follow the same structure. If you're writing something new, the precedent likely exists.
+3. **Look for a similar existing artifact.** All five PRDs are in template shape. All ADRs follow the same structure. If you're writing something new, the precedent likely exists.
 
 If none of those resolve the question, write an RFC. Open questions are a normal state — captured in writing, they make decisions explicit; left in your head, they leak into code as inconsistency.
 

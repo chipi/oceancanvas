@@ -10,6 +10,7 @@ from oceancanvas.tasks.build_payload import (
     _build_one_payload,
     _find_latest_date,
     _load_recipe,
+    build_one_payload,
     build_payload,
 )
 from oceancanvas.tasks.process import _process_oisst
@@ -199,3 +200,91 @@ class TestBuildPayload:
             tmp_data_dir / "data", tmp_data_dir / "recipes", tmp_data_dir / "renders"
         )
         assert result == []
+
+
+class TestBuildOnePayloadTask:
+    """Tests for the per-recipe build_one_payload subtask."""
+
+    def test_builds_payload_for_valid_recipe(self, tmp_data_dir: Path):
+        nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
+        if not nc_path.exists():
+            pytest.skip("fixture not generated")
+
+        processed = tmp_data_dir / "data" / "processed" / "oisst"
+        _process_oisst(nc_path, processed, "2026-01-15")
+
+        recipes = tmp_data_dir / "recipes"
+        recipes.mkdir(exist_ok=True)
+        shutil.copy(FIXTURES_DIR / "recipes" / "test-field.yaml", recipes / "test-field.yaml")
+
+        result = build_one_payload.fn(
+            recipes / "test-field.yaml", tmp_data_dir / "data", tmp_data_dir / "renders"
+        )
+
+        assert result is not None
+        assert result.exists()
+        payload = json.loads(result.read_text())
+        assert payload["recipe"]["id"] == "test-field"
+
+    def test_returns_none_for_invalid_recipe(self, tmp_data_dir: Path):
+        recipes = tmp_data_dir / "recipes"
+        recipes.mkdir(exist_ok=True)
+        (recipes / "bad.yaml").write_text("name: BAD NAME\n")
+
+        result = build_one_payload.fn(
+            recipes / "bad.yaml", tmp_data_dir / "data", tmp_data_dir / "renders"
+        )
+        assert result is None
+
+    def test_returns_none_when_no_processed_data(self, tmp_data_dir: Path):
+        recipes = tmp_data_dir / "recipes"
+        recipes.mkdir(exist_ok=True)
+        shutil.copy(FIXTURES_DIR / "recipes" / "test-field.yaml", recipes / "test-field.yaml")
+
+        result = build_one_payload.fn(
+            recipes / "test-field.yaml", tmp_data_dir / "data", tmp_data_dir / "renders"
+        )
+        assert result is None
+
+    def test_returns_none_when_render_exists(self, tmp_data_dir: Path):
+        nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
+        if not nc_path.exists():
+            pytest.skip("fixture not generated")
+
+        processed = tmp_data_dir / "data" / "processed" / "oisst"
+        _process_oisst(nc_path, processed, "2026-01-15")
+
+        recipes = tmp_data_dir / "recipes"
+        recipes.mkdir(exist_ok=True)
+        shutil.copy(FIXTURES_DIR / "recipes" / "test-field.yaml", recipes / "test-field.yaml")
+
+        # Pre-create the render
+        render_dir = tmp_data_dir / "renders" / "test-field"
+        render_dir.mkdir(parents=True)
+        (render_dir / "2026-01-15.png").write_bytes(b"fake")
+
+        result = build_one_payload.fn(
+            recipes / "test-field.yaml", tmp_data_dir / "data", tmp_data_dir / "renders"
+        )
+        assert result is None
+
+    def test_with_explicit_date(self, tmp_data_dir: Path):
+        nc_path = FIXTURES_DIR / "oisst" / "2026-01-15.nc"
+        if not nc_path.exists():
+            pytest.skip("fixture not generated")
+
+        processed = tmp_data_dir / "data" / "processed" / "oisst"
+        _process_oisst(nc_path, processed, "2026-01-15")
+
+        recipes = tmp_data_dir / "recipes"
+        recipes.mkdir(exist_ok=True)
+        shutil.copy(FIXTURES_DIR / "recipes" / "test-field.yaml", recipes / "test-field.yaml")
+
+        result = build_one_payload.fn(
+            recipes / "test-field.yaml",
+            tmp_data_dir / "data",
+            tmp_data_dir / "renders",
+            date="2026-01-15",
+        )
+        assert result is not None
+        assert "2026-01-15" in result.name

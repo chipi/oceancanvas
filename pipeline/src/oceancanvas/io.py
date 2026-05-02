@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import logging
 from pathlib import Path
-
-logger = logging.getLogger("oceancanvas.io")
 
 
 def atomic_write_text(path: Path, content: str) -> None:

@@ -250,9 +250,10 @@ def index_rebuild() -> None:
         "recipes": recipes,
     }
 
+    from oceancanvas.io import atomic_write_text
+
     manifest_path = RENDERS_DIR / "manifest.json"
-    manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    manifest_path.write_text(json.dumps(manifest, indent=2))
+    atomic_write_text(manifest_path, json.dumps(manifest, indent=2))
     console.print(f"[green]Manifest rebuilt: {len(recipes)} recipes → {manifest_path}[/green]")
 
 

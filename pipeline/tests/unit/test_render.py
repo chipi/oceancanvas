@@ -7,7 +7,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from oceancanvas.tasks.render import PNG_HEADER, _render_one, render
+from oceancanvas.tasks.render import (
+    PNG_HEADER,
+    _render_one,
+    cleanup_workers,
+    render,
+    render_one,
+)
 
 # A minimal valid PNG (1x1 transparent pixel)
 FAKE_PNG = PNG_HEADER + b"\x00" * 50
@@ -174,3 +180,78 @@ class TestRender:
 
         # One succeeded, one failed — should get 1 result
         assert len(result) == 1
+
+
+class TestRenderOneTask:
+    """Tests for the per-recipe render_one subtask."""
+
+    def test_renders_payload_successfully(self, tmp_data_dir: Path):
+        payload_path = _make_payload_file(tmp_data_dir / "data", "test-recipe", "2026-01-15")
+        renders_dir = tmp_data_dir / "renders"
+
+        mock_result = MagicMock()
+        mock_result.returncode = 0
+        mock_result.stdout = FAKE_PNG
+        mock_result.stderr = b""
+
+        with patch("oceancanvas.tasks.render.subprocess.run", return_value=mock_result):
+            with patch("oceancanvas.tasks.render._USE_WORKERS", False):
+                result = render_one.fn(payload_path, renders_dir)
+
+        assert result is not None
+        assert result.name == "2026-01-15.png"
+        assert result.exists()
+
+    def test_skips_existing_render(self, tmp_data_dir: Path):
+        payload_path = _make_payload_file(tmp_data_dir / "data", "test-recipe", "2026-01-15")
+        renders_dir = tmp_data_dir / "renders"
+
+        # Pre-create the render
+        render_dir = renders_dir / "test-recipe"
+        render_dir.mkdir(parents=True)
+        (render_dir / "2026-01-15.png").write_bytes(FAKE_PNG)
+
+        with patch("oceancanvas.tasks.render.subprocess.run") as mock_run:
+            with patch("oceancanvas.tasks.render._USE_WORKERS", False):
+                result = render_one.fn(payload_path, renders_dir)
+
+        mock_run.assert_not_called()
+        assert result is not None
+
+    def test_returns_none_for_bad_filename(self, tmp_path: Path):
+        # Create payload with no __ separator
+        payloads_dir = tmp_path / "payloads"
+        payloads_dir.mkdir()
+        bad_path = payloads_dir / "nodelimiter.json"
+        bad_path.write_text("{}")
+
+        with patch("oceancanvas.tasks.render._USE_WORKERS", False):
+            result = render_one.fn(bad_path, tmp_path / "renders")
+
+        assert result is None
+
+    def test_raises_on_render_failure(self, tmp_data_dir: Path):
+        payload_path = _make_payload_file(tmp_data_dir / "data", "test-recipe", "2026-01-15")
+
+        mock_result = MagicMock()
+        mock_result.returncode = 1
+        mock_result.stdout = b""
+        mock_result.stderr = b"error"
+
+        with patch("oceancanvas.tasks.render.subprocess.run", return_value=mock_result):
+            with patch("oceancanvas.tasks.render._USE_WORKERS", False):
+                with pytest.raises(RuntimeError):
+                    render_one.fn(payload_path, tmp_data_dir / "renders")
+
+
+class TestCleanupWorkers:
+    def test_clears_worker_dict(self):
+        from oceancanvas.tasks.render import _thread_workers
+
+        # Ensure dict starts empty (or clear it)
+        _thread_workers.clear()
+        assert len(_thread_workers) == 0
+
+        # cleanup_workers on empty dict is a no-op
+        cleanup_workers()
+        assert len(_thread_workers) == 0
