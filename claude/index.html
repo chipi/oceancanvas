@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://chipi.github.io/oceancanvas/claude/">
       
       
-        <link rel="prev" href="../rfc/RFC-007-key-moment-detection/">
+        <link rel="prev" href="../rfc/RFC-009/">
       
       
       
@@ -801,6 +801,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1326,6 +1338,174 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-018-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe YAML Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-019-render-payload-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Payload Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-020-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-021-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YAML Round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-022-cli-entry-point/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Entry Point
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-023-pipeline-parallelisation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Parallelisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1361,6 +1541,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1380,7 +1564,7 @@
   <span class="md-ellipsis">
     
   
-    Open Questions (RFCs)
+    RFCs
   
 
     
@@ -1402,7 +1586,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Open Questions (RFCs)
+    RFCs
   
 
           </label>
@@ -1593,6 +1777,62 @@
     
   
     Key Moments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-008-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Parallelisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-009/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline CLI
   
 
     
@@ -1981,14 +2221,15 @@
 <li><code>docs/rfc/</code> — Tech, moving tier. Open technical questions with alternatives and trade-offs. Closes into ADRs.</li>
 <li><code>docs/adr/</code> — Tech, settled tier. <code>OC_TA.md</code> is the reference doc (components, contracts, constraints, stack, state map). <code>ADR-NNN-name.md</code> files lock individual decisions. Append-only — superseded by new ADRs, never edited in place.</li>
 </ul>
-<p><strong>Code (added during Phase 3, structure to be confirmed as built).</strong></p>
+<p><strong>Code.</strong></p>
 <ul>
-<li><code>pipeline/</code> — Python 3.12 + Prefect + dlt + xarray. Six tasks: discover, fetch, process, build payload, render, index.</li>
+<li><code>pipeline/</code> — Python 3.12 + Prefect + dlt + xarray. Six tasks: discover, fetch, process, build payload, render, index. CLI via <code>oceancanvas</code> console script (typer).</li>
 <li><code>gallery/</code> — React + Vite. deck.gl + MapLibre + Observable Plot. Static build served by Caddy. <code>gallery/server/</code> has the Node.js recipe save endpoint.</li>
+<li><code>sketches/</code> — p5.js sketch files (shared.js, field.js, particles.js, scatter.js). Mounted into both pipeline and gallery containers.</li>
 <li><code>recipes/</code> — YAML files; the authored works.</li>
 <li><code>data/</code> — Three-layer store. <code>data/sources/</code> (raw), <code>data/processed/</code> (browser-friendly), not committed to git.</li>
 <li><code>renders/</code> — Daily PNG outputs per recipe. Not committed to git.</li>
-<li><code>docker-compose.yml</code> — Four containers: pipeline, gallery, prefect-server, postgres (Prefect state DB).</li>
+<li><code>docker-compose.yml</code> — Five containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint).</li>
 </ul>
 <hr />
 <h2 id="the-locked-stack">The locked stack</h2>
@@ -2126,7 +2367,7 @@
 <li>React 18, Vite, TypeScript.</li>
 <li>Format: <code>prettier</code>. Lint: <code>eslint</code>.</li>
 <li>State management: nothing global yet. Component state + URL state via React Router. No Redux, no Zustand in Phase 1 — add only when an ADR justifies it.</li>
-<li>Styling: CSS modules. Design tokens from UXS docs as CSS custom properties in a single <code>tokens.css</code> file at the gallery root.</li>
+<li>Styling: CSS modules. Design tokens from UXS docs as CSS custom properties in a single <code>tokens.css</code> file at <code>gallery/src/tokens.css</code>.</li>
 <li>Component naming: PascalCase files, kebab-case routes.</li>
 <li>Tests: Vitest + React Testing Library. Visual regression via Playwright (deferred until first surface ships).</li>
 </ul>
@@ -2234,7 +2475,7 @@
 </ul>
 <h3 id="dont">Don't</h3>
 <ul>
-<li>Don't introduce a new dependency without an ADR. Even small ones. The locked stack is locked for reasons captured in 17 ADRs.</li>
+<li>Don't introduce a new dependency without an ADR. Even small ones. The locked stack is locked for reasons captured in ADRs.</li>
 <li>Don't add a database. ADR-005 says no database in v1 unless the manifest grows enough to need SQLite. "It would be cleaner with Postgres" is not a v1 argument.</li>
 <li>Don't add authentication. ADR-016 + the no-auth constraint together mean Phase 1 is open by default.</li>
 <li>Don't add cloud-only services to the critical path. Cloudflare R2 is permitted as Phase 2 enhancement, optional even when added.</li>
@@ -2251,7 +2492,7 @@
 <ol>
 <li><strong>Re-read the PRD or RFC the work serves.</strong> If the work doesn't serve any PRD or RFC, ask whether the work should happen at all in Phase 1.</li>
 <li><strong>Check <code>OC_TA.md §constraints</code>.</strong> If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.</li>
-<li><strong>Look for a similar existing artifact.</strong> All five PRDs are in template shape. All seventeen ADRs follow the same structure. If you're writing something new, the precedent likely exists.</li>
+<li><strong>Look for a similar existing artifact.</strong> All five PRDs are in template shape. All ADRs follow the same structure. If you're writing something new, the precedent likely exists.</li>
 </ol>
 <p>If none of those resolve the question, write an RFC. Open questions are a normal state — captured in writing, they make decisions explicit; left in your head, they leak into code as inconsistency.</p>
 <hr />
