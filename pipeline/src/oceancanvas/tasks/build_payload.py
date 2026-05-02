@@ -10,6 +10,7 @@ Payload shape follows RFC-002.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import jsonschema
@@ -185,6 +186,21 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
         if context_path.exists():
             context_data = json.loads(context_path.read_text())
             payload["data"]["context"] = _crop_to_region(context_data, region["lat"], region["lon"])
+
+    # Load coastline GeoJSON if available (shared across all scatter renders)
+    # Check common locations: project root sketches/, Docker /sketches/
+    coastline_path = None
+    for candidate in [
+        Path(__file__).parent.parent.parent.parent.parent.parent / "sketches" / "coastline.json",
+        Path("/sketches/coastline.json"),
+        Path(os.environ.get("SKETCHES_DIR", "/sketches")) / "coastline.json",
+    ]:
+        if candidate.exists():
+            coastline_path = candidate
+            break
+    if coastline_path and render.get("type") == "scatter":
+        coastline = json.loads(coastline_path.read_text())
+        payload["data"]["coastline"] = coastline.get("features", [])
 
     atomic_write_text(output_path, json.dumps(payload))
 

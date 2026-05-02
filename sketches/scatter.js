@@ -23,6 +23,8 @@ function setup() {
   const markerSize = payload.recipe?.render?.marker_size || 4;
   const markerOpacity = (payload.recipe?.render?.marker_opacity ?? 0.75) * 255;
   const colormapName = payload.recipe?.render?.colormap || 'thermal';
+  // Context layer: 'coastline' (default), 'bathymetry', 'none'
+  const contextLayer = payload.recipe?.render?.context_layer || 'coastline';
 
   createCanvas(w, h);
   randomSeed(seed);
@@ -56,10 +58,16 @@ function setup() {
     img.pixels[i + 3] = 255;
   }
 
-  // Draw bathymetry context (GEBCO) if present — subtle depth shading
+  // Draw context layer
   const ctx = payload.data?.context;
-  if (ctx && ctx.data && ctx.shape && ctx.shape.length === 2) {
+  if (contextLayer === 'bathymetry' && ctx && ctx.data && ctx.shape && ctx.shape.length === 2) {
     drawBathymetryToBuffer(img, ctx, w, h, latMin, latMax, lonMin, lonMax);
+  }
+
+  // Coastline overlay — drawn after bathymetry, before points
+  const coastline = payload.data?.coastline;
+  if (contextLayer !== 'none' && coastline) {
+    drawCoastlineToBuffer(img, coastline, w, h, latMin, latMax, lonMin, lonMax);
   }
 
   if (Array.isArray(primary.data) && primary.data.length > 0 &&
@@ -173,6 +181,46 @@ function drawBathymetryToBuffer(img, ctx, w, h, latMin, latMax, lonMin, lonMax) 
         img.pixels[pi] = Math.round(3 + t * 8);
         img.pixels[pi + 1] = Math.round(11 + t * 25);
         img.pixels[pi + 2] = Math.round(16 + t * 40);
+      }
+    }
+  }
+}
+
+/**
+ * Draw coastline outlines from GeoJSON features into the pixel buffer.
+ * Uses Bresenham-style line drawing between consecutive coordinates.
+ */
+function drawCoastlineToBuffer(img, features, w, h, latMin, latMax, lonMin, lonMax) {
+  const cr = 40, cg = 70, cb = 85; // visible teal-grey coastline
+  const alpha = 0.8;
+
+  for (const feat of features) {
+    const geom = feat.geometry;
+    if (!geom) continue;
+    const coordSets = geom.type === 'MultiLineString' ? geom.coordinates : [geom.coordinates];
+
+    for (const coords of coordSets) {
+      for (let i = 1; i < coords.length; i++) {
+        const [lon0, lat0] = coords[i - 1];
+        const [lon1, lat1] = coords[i];
+
+        const x0 = Math.round((lon0 - lonMin) / (lonMax - lonMin) * w);
+        const y0 = Math.round((latMax - lat0) / (latMax - latMin) * h);
+        const x1 = Math.round((lon1 - lonMin) / (lonMax - lonMin) * w);
+        const y1 = Math.round((latMax - lat1) / (latMax - latMin) * h);
+
+        // Simple line rasterization
+        const steps = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) || 1;
+        for (let s = 0; s <= steps; s++) {
+          const t = s / steps;
+          const px = Math.round(x0 + (x1 - x0) * t);
+          const py = Math.round(y0 + (y1 - y0) * t);
+          if (px < 0 || px >= w || py < 0 || py >= h) continue;
+          const pi = (py * w + px) * 4;
+          img.pixels[pi] = img.pixels[pi] * (1 - alpha) + cr * alpha;
+          img.pixels[pi + 1] = img.pixels[pi + 1] * (1 - alpha) + cg * alpha;
+          img.pixels[pi + 2] = img.pixels[pi + 2] * (1 - alpha) + cb * alpha;
+        }
       }
     }
   }
