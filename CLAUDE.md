@@ -129,6 +129,18 @@ Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
 - Feature work in short-lived branches named `feat/recipe-yaml-parser`, `fix/process-task-shape-mismatch`. Merge via PR, squash on merge.
 - No long-lived dev/staging branches in Phase 1.
 
+### Testing strategy
+
+Three tiers, each validating different boundaries:
+
+**Tier 1 — Unit tests** (`pipeline/tests/unit/`, `gallery/src/**/*.test.ts`). Test individual functions in isolation. Mock external dependencies (fetch, subprocess, filesystem). Fastest feedback loop. Run via `uv run pytest` and `npm test`.
+
+**Tier 2 — Cross-validation** (`tests/cross-validation/`). Shared JSON fixtures validated independently by Python and TypeScript. Confirms implementations that must be identical (creative mapping) produce the same outputs.
+
+**Tier 3 — End-to-end** (`e2e/tests/`). Playwright tests against the full Docker Compose stack (`docker-compose.test.yml`). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.
+
+Key boundary: the e2e tests validate that pipeline output (renders, manifest) is correctly served by Caddy and consumed by the React gallery. Unit tests cannot cover this boundary.
+
 ---
 
 ## Doc-system rules
