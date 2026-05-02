@@ -233,11 +233,29 @@
 
 /* Timeline scrubber */
 .scrubber {
-  height: 52px;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 8px 24px 0;
+  padding: 8px 24px 12px;
   flex-shrink: 0;
+}
+
+.scrubberControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.scrubberDate {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--intent-teal);
+  letter-spacing: 0.04em;
+}
+
+.scrubberCount {
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
 .scrubberInput {

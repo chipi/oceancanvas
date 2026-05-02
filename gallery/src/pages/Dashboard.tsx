@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 
@@ -13,22 +13,33 @@ interface SstMeta {
   lon_range?: [number, number];
 }
 
-function useSstData() {
+interface ManifestRecipe {
+  name: string;
+  render_type: string;
+  source: string;
+  dates: string[];
+  latest: string;
+  count: number;
+}
+
+export function Dashboard() {
+  const navigate = useNavigate();
   const [meta, setMeta] = useState<SstMeta | null>(null);
-  const [latestDate, setLatestDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dates, setDates] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [hoverCoords, setHoverCoords] = useState<string | null>(null);
 
   useEffect(() => {
-    // Find latest date from manifest, then load meta
     fetch('/renders/manifest.json')
       .then((r) => r.json())
       .then((manifest) => {
-        const oisst = manifest.recipes?.['north-atlantic-sst'];
-        if (oisst?.latest) {
-          setLatestDate(oisst.latest);
+        const oisst = manifest.recipes?.['north-atlantic-sst'] as ManifestRecipe | undefined;
+        if (oisst) {
+          setDates(oisst.dates);
+          setSelectedDate(oisst.latest);
           return fetch(`/data/processed/oisst/${oisst.latest}.meta.json`);
         }
-        // Fallback: try a known date pattern
         return null;
       })
       .then((r) => r?.json())
@@ -36,21 +47,22 @@ function useSstData() {
       .catch((e) => setError(e.message));
   }, []);
 
-  return { meta, latestDate, error };
-}
-
-export function Dashboard() {
-  const { meta, latestDate, error } = useSstData();
-  const navigate = useNavigate();
-  const [hoverCoords, setHoverCoords] = useState<string | null>(null);
+  // Load meta for selected date
+  const handleDateChange = useCallback((date: string) => {
+    setSelectedDate(date);
+    fetch(`/data/processed/oisst/${date}.meta.json`)
+      .then((r) => r.json())
+      .then((m) => { if (m) setMeta(m); })
+      .catch(() => {});
+  }, []);
 
   if (error) {
     return <div className={styles.page}><div className={styles.error}>Data unavailable: {error}</div></div>;
   }
 
-  // 1981–2010 OISST climatological mean for North Atlantic (approximate)
   const CLIMATOLOGY_MEAN = 13.8;
   const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
+  const selectedIdx = selectedDate ? dates.indexOf(selectedDate) : -1;
 
   return (
     <div className={styles.page}>
@@ -60,7 +72,7 @@ export function Dashboard() {
         <span className={styles.topbarPath}>
           /sea surface temperature <span className={styles.topbarMuted}>⊓ NOAA OISST</span>
         </span>
-        <span className={styles.topbarTime}>{latestDate || ''} / 06:00 UTC</span>
+        <span className={styles.topbarTime}>{selectedDate || ''}</span>
         <nav className={styles.topbarNav}>
           <a href="/" className={styles.topbarLink}>← gallery</a>
           <a href="/dashboard/oisst/explorer" className={styles.topbarLink}>data explorer</a>
@@ -72,21 +84,20 @@ export function Dashboard() {
         <nav className={styles.sourceRail}>
           <div className={styles.sourceActive}>SST</div>
           <div className={styles.sourceLabel}>sea surface temp</div>
-          <div className={styles.sourceInactive}>Sea level</div>
-          <div className={styles.sourceInactive}>Salinity</div>
-          <div className={styles.sourceInactive}>Sea ice</div>
-          <div className={styles.sourceInactive}>Chlorophyll</div>
+          <div className={styles.sourceInactive}>Argo floats</div>
+          <div className={styles.sourceInactive}>Whale shark</div>
+          <div className={styles.sourceInactive}>Leatherback</div>
+          <div className={styles.sourceInactive}>Elephant seal</div>
         </nav>
 
-        {/* Map area */}
+        {/* Map area — show the actual render PNG */}
         <div className={styles.mapArea}>
-          {latestDate ? (
+          {selectedDate ? (
             <img
               className={styles.heatmap}
-              src={`/data/processed/oisst/${latestDate}.png`}
-              alt="SST heatmap"
+              src={`/renders/north-atlantic-sst/${selectedDate}.png`}
+              alt={`SST ${selectedDate}`}
               onMouseMove={(e) => {
-                // Coords from processed metadata lat/lon range
                 const latRange = meta?.lat_range ?? [20, 75];
                 const lonRange = meta?.lon_range ?? [-90, 10];
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -102,7 +113,6 @@ export function Dashboard() {
             <div className={styles.loading}>Loading SST data...</div>
           )}
 
-          {/* Hover coordinates */}
           {hoverCoords && (
             <div className={styles.hoverCoords}>{hoverCoords}</div>
           )}
@@ -137,7 +147,6 @@ export function Dashboard() {
             </div>
           )}
 
-          {/* Region select → Recipe Editor handoff */}
           <button
             className={styles.createRecipe}
             onClick={() => {
@@ -152,29 +161,27 @@ export function Dashboard() {
       </div>
 
       {/* Timeline scrubber */}
-      <div className={styles.scrubber}>
-        <input
-          type="range"
-          min="1981"
-          max="2026"
-          value={parseInt(latestDate?.substring(0, 4) || '2026')}
-          className={styles.scrubberInput}
-          aria-label="Year selection"
-          readOnly
-          title="Historical scrubber — data navigation coming in full Dashboard build"
-        />
-        <div className={styles.scrubberLabels}>
-          <span>1981</span><span>1990</span><span>2000</span><span>2010</span><span>2020</span><span>2026</span>
-        </div>
-      </div>
-
-      {/* Mini sparkline */}
-      {meta && (
-        <div className={styles.sparkline}>
-          <div className={styles.sparklineLabel}>
-            NORTH ATLANTIC MEAN SST ⊓ LATEST
+      {dates.length > 1 && (
+        <div className={styles.scrubber}>
+          <div className={styles.scrubberControls}>
+            <span className={styles.scrubberDate}>{selectedDate}</span>
+            <span className={styles.scrubberCount}>
+              {selectedIdx + 1} / {dates.length}
+            </span>
           </div>
-          <div className={styles.sparklineValue}>{meta.mean.toFixed(1)} °C</div>
+          <input
+            type="range"
+            min={0}
+            max={dates.length - 1}
+            value={selectedIdx >= 0 ? selectedIdx : dates.length - 1}
+            className={styles.scrubberInput}
+            onChange={(e) => handleDateChange(dates[parseInt(e.target.value, 10)])}
+          />
+          <div className={styles.scrubberLabels}>
+            <span>{dates[0]?.substring(0, 4)}</span>
+            <span>{dates[Math.floor(dates.length / 2)]?.substring(0, 4)}</span>
+            <span>{dates[dates.length - 1]?.substring(0, 4)}</span>
+          </div>
         </div>
       )}
 
