@@ -1,0 +1,135 @@
+[
+  {
+    "name": "Becalmed",
+    "input": {
+      "energy_x": 0.2,
+      "energy_y": 0.6,
+      "colour_character": 0.3,
+      "temporal_weight": 0.4
+    },
+    "expected": {
+      "colormap": "arctic",
+      "opacity": 0.72,
+      "smooth": true,
+      "particle_count": 3200,
+      "tail_length": 11,
+      "speed_scale": 0.56,
+      "marker_size": 6,
+      "marker_opacity": 0.66
+    }
+  },
+  {
+    "name": "Deep current",
+    "input": {
+      "energy_x": 0.4,
+      "energy_y": 0.8,
+      "colour_character": 0.4,
+      "temporal_weight": 0.7
+    },
+    "expected": {
+      "colormap": "thermal",
+      "opacity": 0.86,
+      "smooth": true,
+      "particle_count": 4100,
+      "tail_length": 18,
+      "speed_scale": 0.92,
+      "marker_size": 7,
+      "marker_opacity": 0.78
+    }
+  },
+  {
+    "name": "Storm surge",
+    "input": {
+      "energy_x": 0.9,
+      "energy_y": 0.3,
+      "colour_character": 0.5,
+      "temporal_weight": 0.6
+    },
+    "expected": {
+      "colormap": "thermal",
+      "opacity": 0.51,
+      "smooth": false,
+      "particle_count": 1850,
+      "tail_length": 16,
+      "speed_scale": 1.82,
+      "marker_size": 4,
+      "marker_opacity": 0.48
+    }
+  },
+  {
+    "name": "Surface shimmer",
+    "input": {
+      "energy_x": 0.5,
+      "energy_y": 0.5,
+      "colour_character": 0.6,
+      "temporal_weight": 0.3
+    },
+    "expected": {
+      "colormap": "thermal",
+      "opacity": 0.65,
+      "smooth": false,
+      "particle_count": 2750,
+      "tail_length": 9,
+      "speed_scale": 1.1,
+      "marker_size": 5,
+      "marker_opacity": 0.6
+    }
+  },
+  {
+    "name": "Arctic still",
+    "input": {
+      "energy_x": 0.1,
+      "energy_y": 0.9,
+      "colour_character": 0.0,
+      "temporal_weight": 0.8
+    },
+    "expected": {
+      "colormap": "arctic",
+      "opacity": 0.93,
+      "smooth": true,
+      "particle_count": 4550,
+      "tail_length": 20,
+      "speed_scale": 0.38,
+      "marker_size": 7,
+      "marker_opacity": 0.84
+    }
+  },
+  {
+    "name": "all-zero",
+    "input": {
+      "energy_x": 0.0,
+      "energy_y": 0.0,
+      "colour_character": 0.0,
+      "temporal_weight": 0.0
+    },
+    "expected": {
+      "colormap": "arctic",
+      "opacity": 0.3,
+      "smooth": true,
+      "particle_count": 500,
+      "tail_length": 3,
+      "speed_scale": 0.2,
+      "marker_size": 2,
+      "marker_opacity": 0.3
+    }
+  },
+  {
+    "name": "all-one",
+    "input": {
+      "energy_x": 1.0,
+      "energy_y": 1.0,
+      "colour_character": 1.0,
+      "temporal_weight": 1.0
+    },
+    "expected": {
+      "colormap": "otherworldly",
+      "opacity": 1.0,
+      "smooth": false,
+      "particle_count": 5000,
+      "tail_length": 24,
+      "speed_scale": 2.0,
+      "marker_size": 8,
+      "marker_opacity": 0.9
+    }
+  }
+]

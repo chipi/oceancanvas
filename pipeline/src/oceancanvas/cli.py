@@ -256,6 +256,31 @@ def index_rebuild() -> None:
     console.print(f"[green]Manifest rebuilt: {len(recipes)} recipes → {manifest_path}[/green]")
 
 
+def _dispatch_via_server(deployment_name: str) -> None:
+    """Submit a flow run to the Prefect server."""
+    try:
+        from prefect.deployments import run_deployment
+    except ImportError:
+        console.print("[red]Prefect client not available.[/red]")
+        raise typer.Exit(1)
+
+    api_url = os.environ.get("PREFECT_API_URL", "http://localhost:4200/api")
+    console.print(f"[cyan]Dispatching to Prefect server at {api_url}...[/cyan]")
+
+    try:
+        flow_run = run_deployment(
+            name=f"daily-ocean-pipeline/{deployment_name}",
+            timeout=0,
+        )
+        run_id = flow_run.id
+        console.print("[green]Flow run submitted[/green]")
+        console.print(f"  View: http://localhost:4200/flow-runs/{run_id}")
+    except Exception as e:
+        console.print(f"[red]Server dispatch failed: {e}[/red]")
+        console.print("Is the Prefect server running? Try without --via-server.")
+        raise typer.Exit(1)
+
+
 @app.command("run")
 def run_pipeline(
     via_server: bool = typer.Option(False, "--via-server", help="Dispatch to Prefect server"),
@@ -276,7 +301,8 @@ def run_pipeline(
         return
 
     if via_server:
-        console.print("[yellow]Server dispatch not yet implemented.[/yellow]")
+        _dispatch_via_server("daily-06utc")
+        return
 
     from oceancanvas.flow import daily_ocean_pipeline
 
@@ -339,7 +365,7 @@ def run_backfill(
         return
 
     if via_server:
-        console.print("[yellow]Server dispatch not yet implemented.[/yellow]")
+        console.print("[yellow]Backfill via server not supported. Using direct.[/yellow]")
 
     from oceancanvas.backfill import backfill_flow
 

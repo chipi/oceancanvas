@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { describe, it, expect } from 'vitest';
 import { creativeToTechnical, technicalToCreative, MOOD_PRESETS, isMatched } from './creativeMapping';
 
@@ -107,4 +109,26 @@ describe('technicalToCreative', () => {
     // These hand-authored params don't match any preset
     expect(result.mood).toBe('custom');
   });
+});
+
+// ═══════════════════════════════════════════════
+// Cross-validation: TS ↔ Python parity
+// Uses shared fixture file validated by both implementations
+// ═══════════════════════════════════════════════
+
+describe('cross-validation: TS matches Python mapping', () => {
+  const fixturesPath = join(__dirname, '..', '..', '..', 'tests', 'cross-validation', 'creative_mapping_fixtures.json');
+  const fixtures = JSON.parse(readFileSync(fixturesPath, 'utf-8'));
+
+  for (const fixture of fixtures) {
+    it(`matches Python output for "${fixture.name}"`, () => {
+      const result = creativeToTechnical({
+        mood: fixture.name,
+        ...fixture.input,
+      });
+      for (const [key, expected] of Object.entries(fixture.expected)) {
+        expect(result[key as keyof typeof result]).toBe(expected);
+      }
+    });
+  }
 });

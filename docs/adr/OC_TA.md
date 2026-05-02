@@ -145,6 +145,8 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [RFC-005](../rfc/RFC-005-yaml-round-tripping.md) | YAML round-tripping | Decided | [ADR-021](ADR-021-yaml-round-tripping.md) |
 | [RFC-006](../rfc/RFC-006-audio-system.md) | Audio system design | Draft v0.1 | Multiple ADRs (pending) |
 | [RFC-007](../rfc/RFC-007-key-moment-detection.md) | Key moment detection | Draft v0.1 | ADR (pending) |
+| [RFC-008](../rfc/RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](ADR-023-pipeline-parallelisation.md) |
+| [RFC-009](../rfc/RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](ADR-022-cli-entry-point.md) |
 
 ### ADRs · [folder index](index.md)
 
@@ -171,6 +173,8 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [ADR-019](ADR-019-render-payload-schema.md) | Render payload JSON schema | Accepted |
 | [ADR-020](ADR-020-live-preview-architecture.md) | Live preview architecture | Accepted |
 | [ADR-021](ADR-021-yaml-round-tripping.md) | YAML round-tripping | Accepted |
+| [ADR-022](ADR-022-cli-entry-point.md) | CLI entry point, invocation model, dependencies | Accepted |
+| [ADR-023](ADR-023-pipeline-parallelisation.md) | Pipeline parallelisation and render concurrency | Accepted |
 
 ---
 

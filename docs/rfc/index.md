@@ -30,6 +30,8 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 | [RFC-005](RFC-005-yaml-round-tripping.md) | YAML round-tripping | Decided | [ADR-021](../adr/ADR-021-yaml-round-tripping.md) | §contracts/recipe-yaml |
 | [RFC-006](RFC-006-audio-system.md) | Audio system design | Draft v0.1 | Multiple ADRs (pending) | §components/render-system |
 | [RFC-007](RFC-007-key-moment-detection.md) | Key moment detection | Draft v0.1 | ADR (pending) | §components/render-system |
+| [RFC-008](RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](../adr/ADR-023-pipeline-parallelisation.md) | §components/pipeline |
+| [RFC-009](RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](../adr/ADR-022-cli-entry-point.md) | §components/pipeline |
 
 ## State map
 

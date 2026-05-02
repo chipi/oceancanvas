@@ -44,6 +44,8 @@ If the decision needs deliberation first, write an [RFC](../rfc/index.md). If th
 | [ADR-019](ADR-019-render-payload-schema.md) | Render payload JSON schema | Accepted | §contracts/render-payload |
 | [ADR-020](ADR-020-live-preview-architecture.md) | Live preview architecture | Accepted | §components/render-system · §components/web-frontend |
 | [ADR-021](ADR-021-yaml-round-tripping.md) | YAML round-tripping | Accepted | §contracts/recipe-yaml · §components/web-frontend |
+| [ADR-022](ADR-022-cli-entry-point.md) | CLI entry point, invocation model, dependencies | Accepted | §components/pipeline · §stack |
+| [ADR-023](ADR-023-pipeline-parallelisation.md) | Pipeline parallelisation and render concurrency | Accepted | §components/pipeline · §components/render-system |
 
 ## State map
 
