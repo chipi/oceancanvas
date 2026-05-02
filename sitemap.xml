@@ -2,246 +2,262 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://chipi.github.io/oceancanvas/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/claude/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/data-sources/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/get-started/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/implementation/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/project-readme/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-001-prefect-orchestration/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-002-dlt-rest-ingestion/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-003-xarray-netcdf/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-004-three-layer-data-store/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-005-no-database-v1/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-006-p5js-sketch-language/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-007-puppeteer-renderer/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-008-shared-payload-format/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-009-deck-gl-maplibre/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-010-observable-plot/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-011-docker-compose/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-012-caddy-static-server/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-013-github-actions-code-only/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-014-synthetic-e2e-gate/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-015-processed-json-format/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-016-single-author-phase-1/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-017-one-layout-per-source/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-018-recipe-yaml-schema/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-019-render-payload-schema/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-020-live-preview-architecture/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR-021-yaml-round-tripping/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-022-cli-entry-point/</loc>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/adr/ADR-023-pipeline-parallelisation/</loc>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/ADR_TEMPLATE/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/adr/OC_TA/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/00-package-introduction/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/01-vision/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/02-project-concept/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/03-data-catalog/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/04-technical-architecture/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/concept/05-design-system/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/OC_PA/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD-001-recipe/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD-002-dashboard/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD-003-recipe-editor/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD-004-gallery/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD-005-video-editor/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/prd/PRD_TEMPLATE/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-001-recipe-yaml-schema/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-002-render-payload-format/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-003-recipe-lifecycle/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-004-live-preview-architecture/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-005-yaml-round-tripping/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-006-audio-system/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC-007-key-moment-detection/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/rfc/RFC-008-v2/</loc>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://chipi.github.io/oceancanvas/rfc/RFC-009/</loc>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/rfc/RFC_TEMPLATE/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/OC_IA/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS-001-dashboard-sst/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS-002-dashboard-sealevel/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS-003-recipe-editor/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS-004-gallery/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS-005-video-editor/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
     <url>
          <loc>https://chipi.github.io/oceancanvas/uxs/UXS_TEMPLATE/</loc>
-         <lastmod>2026-05-01</lastmod>
+         <lastmod>2026-05-02</lastmod>
     </url>
 </urlset>

@@ -1,0 +1,1902 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative ocean art that the data performs daily">
+      
+      
+      
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/rfc/RFC-009/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>RFC-009 — Pipeline CLI Interface - OceanCanvas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rfc-009-pipeline-cli-interface" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OceanCanvas" class="md-header__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OceanCanvas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RFC-009 — Pipeline CLI Interface
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OceanCanvas" class="md-nav__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OceanCanvas
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Internals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project Internals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/04-technical-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How It Works
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/05-design-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/OC_TA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/OC_PA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/OC_IA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Information Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Contracts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visual Contracts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-001-dashboard-sst/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard SST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-002-dashboard-sealevel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard Sea Level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../adr/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-001-prefect-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-002-dlt-rest-ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dlt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-003-xarray-netcdf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    xarray
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-004-three-layer-data-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-005-no-database-v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    No Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-006-p5js-sketch-language/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    p5.js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-007-puppeteer-renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Puppeteer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-008-shared-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-009-deck-gl-maplibre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    deck.gl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-010-observable-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observable Plot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-011-docker-compose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-012-caddy-static-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caddy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-013-github-actions-code-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-014-synthetic-e2e-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synthetic e2e
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-015-processed-json-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Processed JSON
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-016-single-author-phase-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Single Author
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-017-one-layout-per-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    One Layout Per Source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open Questions (RFCs)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Open Questions (RFCs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-001-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe YAML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-002-render-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-003-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-004-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-005-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YAML Round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-006-audio-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-007-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="rfc-009-pipeline-cli-interface">RFC-009 — Pipeline CLI Interface</h1>
+<blockquote>
+<p><strong>Status</strong> · Decided · closed 2026-05-02 → <a href="../../adr/ADR-022-cli-entry-point/">ADR-022</a>
+<strong>TA anchor</strong> · §pipeline/tasks · §deployment · §constraints
+<strong>Related</strong> · OC-04 §six-pipeline-tasks · OC-04 §deployment · RFC-008 (parallelisation)
+<strong>Closes into</strong> · <a href="../../adr/ADR-022-cli-entry-point/">ADR-022</a>
+<strong>Why this is an RFC</strong> · The pipeline currently has no defined entry point for ad-hoc invocation. The Prefect server handles the scheduled daily run, but there is no sanctioned way to trigger a backfill, re-render a single date, or inspect pipeline state without going through Docker internals or the Prefect UI directly. Adding a CLI requires deciding how it relates to the Prefect server — whether it calls flows directly, dispatches through the server, or both — and that relationship determines how observability is split across invocation modes. This is a genuine design question with real trade-offs between simplicity and visibility.</p>
+</blockquote>
+<hr />
+<h2 id="the-question">The question</h2>
+<p>The pipeline runs on a daily schedule via Prefect Server inside Docker Compose. That covers the production cadence, but it leaves a gap: there is no clean way to invoke the pipeline outside that schedule. Triggering a backfill, re-rendering a failed date, validating a new recipe, or inspecting what has and has not been rendered all require either navigating the Prefect UI, running <code>docker compose exec</code> commands, or writing ad-hoc scripts.</p>
+<p>A CLI closes that gap. The design question is how the CLI relates to the Prefect Server. Prefect flows can be invoked in two modes: directly as Python functions (the <code>@flow</code> decorator works without a running server — caching and retries still operate via the filesystem), or dispatched to the server (the run appears in the UI, is logged to Prefect's database, and is observable in the dashboard at <code>localhost:4200</code>).</p>
+<p>These two modes have different characteristics. Direct invocation is simpler, always available, and gives immediate terminal feedback. Server dispatch provides structured run history, task-level timing, and error traces in the Prefect UI — the observability layer that makes the daily production run legible over time. The RFC proposes a design that uses both, with the invocation mode as an explicit flag rather than a hidden implementation detail.</p>
+<hr />
+<h2 id="use-cases">Use cases</h2>
+<p><strong>Backfill.</strong> Running the 45-year historical dataset (RFC-008) is the primary motivation. The user needs to invoke <code>backfill</code> with a recipe name, date range, and cadence, then watch progress in the terminal. This is a long-running job — up to 30 minutes for 540 frames — that does not need the Prefect UI but does need structured terminal output so the user can see which frames have completed and which have failed.</p>
+<p><strong>Single render.</strong> After editing a recipe YAML and wanting to see the result immediately, the user runs a single render for today's date without triggering the full pipeline (no fetch, no process — just payload build and render). This is the tightest feedback loop in the creative workflow.</p>
+<p><strong>Recipe validation.</strong> Before committing a new recipe, the user validates it: schema check, region sanity check, source availability check. Currently no tooling exists for this.</p>
+<p><strong>Status inspection.</strong> The user wants to know: which recipes have been rendered, what date range each covers, what is missing, and when the last successful run was. This is a read-only operation that should work without the Prefect server running.</p>
+<p><strong>Production run management.</strong> The scheduled daily run goes through the Prefect server and is visible in the UI. The user may want to trigger an out-of-schedule run through the server (e.g. after a source was unavailable at 06:00 UTC and has since recovered) and have it appear in the run history alongside the scheduled runs.</p>
+<hr />
+<h2 id="goals">Goals</h2>
+<p>The CLI must:</p>
+<ul>
+<li>provide a clean <code>oc</code> entry point usable from any terminal session, inside or outside Docker</li>
+<li>cover the full operational surface: run, backfill, render, status, recipes, index</li>
+<li>distinguish between direct invocation (always available, terminal output) and server dispatch (requires running stack, UI visibility) via an explicit <code>--via-server</code> flag</li>
+<li>stream structured progress to the terminal for long-running operations (backfill)</li>
+<li>work without the Prefect server running for all read operations and direct-invocation commands</li>
+<li>integrate cleanly with RFC-008's backfill flow — <code>oc backfill</code> is the primary entry point for historical renders</li>
+<li>be declared in <code>pyproject.toml</code> as a console script so <code>oc</code> is available as a command after <code>pip install -e .</code></li>
+</ul>
+<hr />
+<h2 id="constraints">Constraints</h2>
+<p>From OC-04 §constraints and §deployment:</p>
+<ul>
+<li>The pipeline container runs Python + Node + Chromium inside Docker Compose. The CLI runs inside this container; <code>docker compose exec pipeline oc &lt;command&gt;</code> is the invocation pattern from the host.</li>
+<li>Alternatively, if the CLI is installed in the host Python environment (outside Docker), it can connect to the pipeline's file system via mounted volumes. This is a secondary invocation path, not the primary.</li>
+<li>Prefect Server runs as a separate container in Docker Compose at <code>localhost:4200</code>. It is always running when the stack is up but must not be a hard dependency for direct-invocation commands.</li>
+<li>CLAUDE.md must document which entry point is canonical for each use case (scheduled run vs ad-hoc run vs backfill) to prevent two invocation paths producing divergent pipeline state.</li>
+</ul>
+<hr />
+<h2 id="proposed-approach">Proposed approach</h2>
+<p>A <code>typer</code>-based CLI installed as the <code>oc</code> console script. Two invocation modes unified under one interface, with <code>--via-server</code> as the explicit switch for server dispatch. The scheduled daily run continues to go through the Prefect server as before — the CLI does not replace or interfere with it.</p>
+<h3 id="command-surface">Command surface</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>oc run [--via-server] [--dry-run]
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    Run the full daily pipeline for today&#39;s date.
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    Default: direct invocation, output to terminal.
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    --via-server: dispatch to Prefect Server, visible in UI at localhost:4200.
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    --dry-run: resolve what would run without executing.
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>oc backfill --recipe NAME --from DATE [--to DATE] [--cadence monthly|daily]
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>             [--concurrency N] [--via-server]
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    Run the backfill flow for a recipe over a date range.
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    DATE format: YYYY-MM or YYYY-MM-DD depending on cadence.
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    --concurrency: override RENDER_CONCURRENCY for this run (RFC-008).
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    Streams per-frame progress to terminal. Skips already-rendered dates
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    (Prefect cache). Exits with non-zero code if any frame fails.
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>oc render --recipe NAME --date DATE [--force]
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    Render a single frame. Skips fetch and process — reads from
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    data/processed/ directly. Fails fast if processed data is absent.
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    --force: re-render even if renders/{recipe}/{date}.png exists.
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    Primary use: recipe iteration during the creative loop.
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>oc status [--recipe NAME]
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    Print pipeline state to terminal. No server required.
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    Without --recipe: summary table of all recipes — frame count,
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    date range, last render timestamp, missing-date gaps.
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    With --recipe: detailed view for one recipe including gap analysis.
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>oc recipes list
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    List all recipes in recipes/ with name, render type, source, region.
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>oc recipes validate NAME
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    Validate a recipe YAML: schema check, lat/lon sanity, source
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    availability check against data/processed/. Prints pass/fail per check.
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>oc index --rebuild
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    Manually rebuild manifest.json from renders/. Idempotent.
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    Use after manual file operations or a partial pipeline failure.
+</code></pre></div>
+<h3 id="invocation-modes-in-detail">Invocation modes in detail</h3>
+<p><strong>Direct invocation (default)</strong></p>
+<p><code>oc run</code> calls <code>daily_pipeline()</code> as a plain Python function. Prefect's <code>@task</code> decorator still applies — result caching operates on the filesystem (<code>data/processed/</code> cache hits are respected), retries fire on network failure. The run does not appear in the Prefect UI. Output is streamed to the terminal with a simple structured format:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[06:14:22] discover     ✓  3 sources · latest dates resolved
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>[06:14:23] fetch        ✓  oisst 2026-04-30 · 2.1 MB
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>[06:14:31] process      ✓  oisst · 720×1440 grid · 0.3% NaN
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>[06:14:31] build        ✓  north_atlantic_sst · gulf_stream_thermal
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>[06:14:33] render       ✓  north_atlantic_sst · 11.2s
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>[06:14:46] render       ✓  gulf_stream_thermal · 13.0s
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>[06:14:46] index        ✓  manifest.json · 2 recipes · 127 frames total
+</code></pre></div>
+<p><strong>Server dispatch (<code>--via-server</code>)</strong></p>
+<p><code>oc run --via-server</code> submits a flow run to the Prefect Server via the Prefect client API. The run appears in the UI at <code>localhost:4200</code>, is logged to Prefect's database, and contributes to run history alongside the scheduled daily runs. The terminal shows the flow run ID and a URL to the run detail page:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Flow run submitted → http://localhost:4200/flow-runs/abc123
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Watching run... (Ctrl+C to detach, run continues in server)
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>[06:14:22] discover  ✓
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>[06:14:31] fetch     ✓
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>...
+</code></pre></div>
+<p><strong>Scheduled daily run (unchanged)</strong></p>
+<p>The 06:00 UTC daily run is declared as a Prefect deployment in Docker Compose. It goes through the server, appears in run history, and is unaffected by the CLI. This is the production path. The CLI's <code>oc run --via-server</code> produces an identical run via the same deployment, just triggered on demand rather than on schedule.</p>
+<h3 id="terminal-output-for-backfill">Terminal output for backfill</h3>
+<p>Backfill is the only long-running command. Progress is streamed as a compact per-frame line, with a live summary bar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>oc backfill --recipe gulf_stream_thermal --from 1981-01 --cadence monthly
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Backfill · gulf_stream_thermal · 1981-01 → 2026-04 · 544 frames · concurrency 6
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>[████████████░░░░░░░░░░░░░░░░░░] 203/544  37%  ~18m remaining
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>✓ 1981-01   8.9s      ✓ 1981-02   9.1s      ✓ 1981-03  11.2s
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>✓ 1981-04   9.8s      ✓ 1981-05   8.7s      ✗ 1981-06  FAILED
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>✓ 1981-07  10.1s      ...
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>Completed: 202   Failed: 1   Skipped (cached): 0
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>Failed dates: 1981-06  →  re-run with: oc render --recipe gulf_stream_thermal --date 1981-06-01
+</code></pre></div>
+<p>Failed frames are surfaced immediately with the exact re-run command, so fixing a single failed render requires one follow-up invocation rather than re-running the entire backfill.</p>
+<h3 id="library-and-installation">Library and installation</h3>
+<p><code>typer</code> with rich output (<code>rich</code> library for progress bars and coloured terminal output). Declared in <code>pyproject.toml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[project.scripts]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">oc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;oceancanvas.cli:app&quot;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">[project.optional-dependencies]</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">cli</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;typer[all]&gt;=0.12&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rich&gt;=13&quot;</span><span class="p">]</span>
+</code></pre></div>
+<p>Installed inside the pipeline container at build time. Available on the host if the project is installed with <code>pip install -e ".[cli]"</code>.</p>
+<hr />
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<p><strong>Makefile targets instead of a CLI.</strong> <code>make run</code>, <code>make backfill DATE=1981-01</code> etc. Simple, zero dependencies. Rejected: Makefiles do not compose well (no <code>--help</code>, no argument validation, no progress streaming), are awkward to call from inside Docker, and produce no structured output. A CLI is the right abstraction at this project's complexity level.</p>
+<p><strong>Prefect's own CLI (<code>prefect run flow --name ...</code>).</strong> Prefect ships a CLI that can trigger flow runs against the server. Rejected as the primary interface: it requires the server to be running for all invocations, has no knowledge of OceanCanvas-specific concepts (recipes, backfill cadence, gap analysis), and cannot do direct invocation. It remains available as a power-user escape hatch.</p>
+<p><strong>Click instead of typer.</strong> Click is the underlying library typer wraps. Rejected in favour of typer: typer's type-annotation-driven argument parsing eliminates boilerplate, produces better <code>--help</code> output automatically, and handles the <code>--via-server</code> flag pattern cleanly. The only cost is a thin wrapper dependency; acceptable.</p>
+<p><strong>Always dispatch through the server (no direct invocation).</strong> Simpler mental model — one invocation path, everything visible in the UI. Rejected: this makes the backfill and single-render commands dependent on the Prefect server being healthy, adds latency to every invocation, and means <code>oc render --recipe X --date Y</code> cannot be used when iterating quickly on a recipe with the full Docker stack down. Direct invocation must be the default.</p>
+<hr />
+<h2 id="trade-offs">Trade-offs</h2>
+<p>Direct invocation bypasses Prefect Server's run database. Ad-hoc <code>oc run</code> and <code>oc backfill</code> executions are not recorded in the UI's run history. This is acceptable because the primary historical record — the daily production run — goes through the server. Ad-hoc runs are operational actions, not production events.</p>
+<p>Two invocation paths (direct and server dispatch) must produce identical output — the same PNGs in the same locations, the same manifest.json. The risk is drift: a bug in the server-dispatch path that does not appear in direct invocation, or vice versa. Mitigation: both paths call the same Prefect flow functions. The only difference is the Python call site. The e2e CI test (GitHub Actions) runs in direct invocation mode; a separate smoke test should confirm server dispatch reaches the same result.</p>
+<p>The <code>--via-server</code> flag name must be documented clearly in CLAUDE.md to prevent a future developer from treating direct invocation as the "real" pipeline and server dispatch as an optional extra. The production daily run goes through the server; the flag exists to bring ad-hoc runs into that same observable record when needed.</p>
+<hr />
+<h2 id="open-questions">Open questions</h2>
+<ol>
+<li>
+<p><strong>Host vs container installation.</strong> Should <code>oc</code> be installable on the host (outside Docker) and connect to the pipeline's volumes via mounts? This would allow <code>oc status</code> without <code>docker compose exec</code>. The volume mount paths would need to be configurable. Defer to implementation — start with container-only, add host support if it proves useful.</p>
+</li>
+<li>
+<p><strong><code>oc render</code> and missing processed data.</strong> If <code>oc render --recipe X --date 1985-03</code> is called but <code>data/processed/oisst/1985-03-01.json</code> does not exist, the command must fail clearly. Should it offer to fetch-and-process first, or fail-fast and tell the user to run <code>oc run --date 1985-03</code> first? Lean toward fail-fast with a clear message — auto-fetching in a render command is surprising behaviour.</p>
+</li>
+<li>
+<p><strong><code>oc status</code> gap analysis.</strong> Detecting missing dates requires knowing the expected date range per recipe. The recipe YAML does not currently declare a <code>start_date</code>. Should it? Without it, gap analysis can only infer the expected range from the first and last rendered frames, which is approximate. This may be a recipe schema question (RFC-001).</p>
+</li>
+<li>
+<p><strong>Colour and rich output in Docker logs.</strong> <code>rich</code> output with ANSI colour codes looks correct in an interactive terminal but produces noise in Docker log output. The CLI should detect TTY attachment and fall back to plain text in non-interactive contexts (e.g. when <code>oc run</code> is called from a cron job or CI).</p>
+</li>
+</ol>
+<hr />
+<h2 id="how-this-closes">How this closes</h2>
+<p><strong>ADR-NNN — CLI entry point and invocation model.</strong> Locks <code>typer</code> as the CLI library, <code>oc</code> as the console script name, and the direct/server-dispatch dual-mode design. Closes once the command surface is agreed and the <code>pyproject.toml</code> entry is committed.</p>
+<p><strong>ADR-NNN — Prefect server role clarification.</strong> Locks the definition: Prefect Server handles the scheduled daily run and server-dispatch invocations; direct invocation is the default for all ad-hoc CLI commands. Updates CLAUDE.md with the canonical entry point per use case. Closes alongside the ADR above.</p>
+<hr />
+<h2 id="links">Links</h2>
+<ul>
+<li>OC-04 Technical Architecture — §six-pipeline-tasks, §deployment, §tech-stack</li>
+<li>RFC-008 — Pipeline Parallelisation Strategy (backfill flow, RENDER_CONCURRENCY)</li>
+<li>RFC-001 — Recipe YAML schema (open question 3: start_date field)</li>
+<li>Prefect docs — flow invocation without server, client API for server dispatch</li>
+<li>typer docs — console scripts, argument validation, rich integration</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      MIT License · OceanCanvas contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.top", "search.highlight", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
