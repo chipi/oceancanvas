@@ -2,11 +2,15 @@
 
 Downloads raw source data to data/sources/.
 OISST fetched as NetCDF via ERDDAP griddap URL (xarray + requests per ADR-003).
+
+Historical fetch: robust multi-date download with exponential backoff,
+configurable delay between requests, and skip-existing logic.
 """
 
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
 
 import requests
@@ -31,18 +35,106 @@ def _build_oisst_url(date: str) -> str:
     )
 
 
-def _fetch_oisst(date: str, output_path: Path) -> None:
-    """Download one day of OISST NetCDF from ERDDAP."""
-    url = _build_oisst_url(date)
-    resp = requests.get(url, timeout=120, stream=True)
-    resp.raise_for_status()
+def _fetch_oisst(
+    date: str,
+    output_path: Path,
+    max_retries: int = 3,
+    backoff_base: float = 5.0,
+) -> None:
+    """Download one day of OISST NetCDF from ERDDAP.
 
+    Retries with exponential backoff on transient failures (5xx, timeouts,
+    connection errors). Atomic write via .tmp → rename.
+    """
+    url = _build_oisst_url(date)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = output_path.with_suffix(".tmp")
-    with tmp.open("wb") as f:
-        for chunk in resp.iter_content(chunk_size=8192):
-            f.write(chunk)
-    tmp.rename(output_path)
+
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.get(url, timeout=120, stream=True)
+            resp.raise_for_status()
+
+            tmp = output_path.with_suffix(".tmp")
+            with tmp.open("wb") as f:
+                for chunk in resp.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            tmp.rename(output_path)
+            return
+
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+            if attempt == max_retries:
+                raise
+            wait = backoff_base * (2**attempt)
+            logger = get_logger()
+            logger.warning(
+                "OISST %s attempt %d failed (%s), retrying in %.0fs",
+                date, attempt + 1, e, wait,
+            )
+            time.sleep(wait)
+
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code >= 500:
+                if attempt == max_retries:
+                    raise
+                wait = backoff_base * (2**attempt)
+                logger = get_logger()
+                logger.warning(
+                    "OISST %s server error %d, retrying in %.0fs",
+                    date, e.response.status_code, wait,
+                )
+                time.sleep(wait)
+            else:
+                raise  # 4xx errors are not retryable
+
+
+def fetch_historical_oisst(
+    dates: list[str],
+    data_dir: Path,
+    delay: float = 1.0,
+    max_retries: int = 3,
+) -> tuple[list[str], list[str]]:
+    """Fetch multiple OISST dates with rate limiting and skip-existing.
+
+    Args:
+        dates: List of date strings (YYYY-MM-DD).
+        data_dir: Pipeline data directory (files go to data/sources/oisst/).
+        delay: Seconds between requests (rate limiting).
+        max_retries: Max retries per date on transient failure.
+
+    Returns:
+        (fetched, skipped) — lists of date strings.
+    """
+    logger = get_logger()
+    sources_dir = data_dir / "sources" / "oisst"
+    sources_dir.mkdir(parents=True, exist_ok=True)
+
+    fetched: list[str] = []
+    skipped: list[str] = []
+
+    for i, date in enumerate(dates):
+        output_path = sources_dir / f"{date}.nc"
+
+        if output_path.exists():
+            skipped.append(date)
+            continue
+
+        logger.info(
+            "Fetching OISST %s (%d/%d)...", date, i + 1, len(dates)
+        )
+        _fetch_oisst(date, output_path, max_retries=max_retries)
+        size_kb = output_path.stat().st_size / 1024
+        logger.info("OISST %s saved (%.0f KB)", date, size_kb)
+        fetched.append(date)
+
+        # Rate limit — don't hammer ERDDAP
+        if i < len(dates) - 1:
+            time.sleep(delay)
+
+    logger.info(
+        "Historical fetch complete: %d fetched, %d skipped (already on disk)",
+        len(fetched), len(skipped),
+    )
+    return fetched, skipped
 
 
 @task(name="fetch", retries=3, retry_delay_seconds=60)

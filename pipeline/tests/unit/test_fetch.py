@@ -5,7 +5,12 @@ from unittest.mock import MagicMock, patch
 
 import requests
 
-from oceancanvas.tasks.fetch import _build_oisst_url, _fetch_oisst, fetch
+from oceancanvas.tasks.fetch import (
+    _build_oisst_url,
+    _fetch_oisst,
+    fetch,
+    fetch_historical_oisst,
+)
 
 
 class TestBuildOisstUrl:
@@ -127,3 +132,131 @@ class TestFetch:
             dates_to_fetch=None,
         )
         assert result == {}
+
+
+class TestFetchOisstRetry:
+    """Verify retry + backoff behavior on transient failures."""
+
+    def test_retries_on_timeout(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-01-01.nc"
+        call_count = 0
+
+        def mock_get(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 3:
+                raise requests.Timeout("timeout")
+            resp = MagicMock()
+            resp.raise_for_status = lambda: None
+            resp.iter_content.return_value = [b"data"]
+            return resp
+
+        with patch("oceancanvas.tasks.fetch.requests.get", side_effect=mock_get):
+            with patch("oceancanvas.tasks.fetch.time.sleep"):
+                _fetch_oisst("2026-01-01", output, max_retries=3, backoff_base=0.01)
+
+        assert output.exists()
+        assert call_count == 3
+
+    def test_gives_up_after_max_retries(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-01-01.nc"
+
+        with patch("oceancanvas.tasks.fetch.requests.get") as mock_get:
+            mock_get.side_effect = requests.Timeout("timeout")
+            with patch("oceancanvas.tasks.fetch.time.sleep"):
+                try:
+                    _fetch_oisst("2026-01-01", output, max_retries=2, backoff_base=0.01)
+                    assert False, "Should have raised"
+                except requests.Timeout:
+                    pass
+
+        assert not output.exists()
+
+    def test_retries_on_server_error(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-01-01.nc"
+        call_count = 0
+
+        def mock_get(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            resp = MagicMock()
+            if call_count < 2:
+                resp.raise_for_status.side_effect = requests.HTTPError(
+                    response=MagicMock(status_code=503)
+                )
+                return resp
+            resp.raise_for_status = lambda: None
+            resp.iter_content.return_value = [b"data"]
+            return resp
+
+        with patch("oceancanvas.tasks.fetch.requests.get", side_effect=mock_get):
+            with patch("oceancanvas.tasks.fetch.time.sleep"):
+                _fetch_oisst("2026-01-01", output, max_retries=3, backoff_base=0.01)
+
+        assert output.exists()
+
+    def test_no_retry_on_client_error(self, tmp_path: Path):
+        output = tmp_path / "oisst" / "2026-01-01.nc"
+
+        mock_resp = MagicMock()
+        mock_resp.status_code = 404
+        error = requests.HTTPError(response=mock_resp)
+        mock_resp.raise_for_status.side_effect = error
+
+        with patch("oceancanvas.tasks.fetch.requests.get", return_value=mock_resp):
+            try:
+                _fetch_oisst("2026-01-01", output, max_retries=3, backoff_base=0.01)
+                assert False, "Should have raised"
+            except requests.HTTPError:
+                pass
+
+
+class TestFetchHistoricalOisst:
+    def test_fetches_multiple_dates(self, tmp_path: Path):
+        data_dir = tmp_path / "data"
+        data_dir.mkdir()
+
+        call_dates = []
+
+        def mock_fetch(date, output_path, **kwargs):
+            call_dates.append(date)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_bytes(b"nc")
+
+        with patch("oceancanvas.tasks.fetch._fetch_oisst", side_effect=mock_fetch):
+            with patch("oceancanvas.tasks.fetch.time.sleep"):
+                fetched, skipped = fetch_historical_oisst(
+                    ["2026-01-01", "2026-02-01"], data_dir, delay=0
+                )
+
+        assert fetched == ["2026-01-01", "2026-02-01"]
+        assert skipped == []
+        assert call_dates == ["2026-01-01", "2026-02-01"]
+
+    def test_skips_existing(self, tmp_path: Path):
+        data_dir = tmp_path / "data"
+        oisst_dir = data_dir / "sources" / "oisst"
+        oisst_dir.mkdir(parents=True)
+        (oisst_dir / "2026-01-01.nc").write_bytes(b"existing")
+
+        def mock_fetch(date, output_path, **kwargs):
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_bytes(b"nc")
+
+        with patch("oceancanvas.tasks.fetch._fetch_oisst", side_effect=mock_fetch) as mock:
+            with patch("oceancanvas.tasks.fetch.time.sleep"):
+                fetched, skipped = fetch_historical_oisst(
+                    ["2026-01-01", "2026-02-01"], data_dir, delay=0
+                )
+
+        # Only 2026-02-01 should be fetched
+        assert mock.call_count == 1
+        assert skipped == ["2026-01-01"]
+        assert fetched == ["2026-02-01"]
+
+    def test_empty_dates_list(self, tmp_path: Path):
+        data_dir = tmp_path / "data"
+        data_dir.mkdir()
+        fetched, skipped = fetch_historical_oisst([], data_dir)
+        assert fetched == []
+        assert skipped == []

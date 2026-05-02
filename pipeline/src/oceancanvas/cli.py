@@ -312,15 +312,86 @@ def run_pipeline(
     console.print("[green]Pipeline complete.[/green]")
 
 
-@app.command("backfill")
-def run_backfill(
-    recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
+@app.command("fetch-historical")
+def fetch_historical(
+    source: str = typer.Option("oisst", "--source", "-s", help="Source ID"),
     from_date: str = typer.Option(..., "--from", help="Start date (YYYY-MM or YYYY-MM-DD)"),
     to_date: str = typer.Option(None, "--to", help="End date (default: today)"),
     cadence: str = typer.Option("monthly", "--cadence", "-c", help="monthly or daily"),
+    delay: float = typer.Option(1.0, "--delay", help="Seconds between requests"),
+    process: bool = typer.Option(False, "--process", help="Also process after fetching"),
+) -> None:
+    """Fetch historical source data for a date range."""
+    from datetime import date as date_cls
+
+    from oceancanvas.backfill import _generate_dates
+
+    if to_date is None:
+        to_date = date_cls.today().isoformat()
+
+    try:
+        dates = _generate_dates(from_date, to_date, cadence)
+    except ValueError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"\n[bold]Fetch historical · {source}[/bold]")
+    console.print(f"  Range:   {from_date} → {to_date}")
+    console.print(f"  Cadence: {cadence}")
+    console.print(f"  Dates:   {len(dates)}")
+    console.print(f"  Delay:   {delay}s between requests")
+
+    if source == "oisst":
+        from oceancanvas.tasks.fetch import fetch_historical_oisst
+
+        fetched, skipped = fetch_historical_oisst(
+            dates, DATA_DIR, delay=delay
+        )
+        console.print(
+            f"\n[green]Done: {len(fetched)} fetched, {len(skipped)} skipped[/green]"
+        )
+
+        if process and fetched:
+            console.print("\n[cyan]Processing fetched dates...[/cyan]")
+            _process_dates(source, fetched)
+            console.print("[green]Processing complete.[/green]")
+    else:
+        console.print(f"[red]Unknown source: {source}[/red]")
+        raise typer.Exit(1)
+
+
+def _process_dates(source_id: str, dates: list[str]) -> None:
+    """Process fetched source data for specific dates."""
+    from oceancanvas.tasks.process import _process_oisst
+
+    sources_dir = DATA_DIR / "sources" / source_id
+    processed_dir = DATA_DIR / "processed" / source_id
+    processed_dir.mkdir(parents=True, exist_ok=True)
+
+    for date in dates:
+        nc_path = sources_dir / f"{date}.nc"
+        if not nc_path.exists():
+            continue
+        out_path = processed_dir / f"{date}.json"
+        if out_path.exists():
+            continue
+        _process_oisst(nc_path, processed_dir, date)
+
+
+@app.command("backfill")
+def run_backfill(
+    recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
+    from_date: str = typer.Option(..., "--from", help="Start date"),
+    to_date: str = typer.Option(None, "--to", help="End date (default: today)"),
+    cadence: str = typer.Option("monthly", "--cadence", "-c", help="monthly or daily"),
+    fetch: bool = typer.Option(False, "--fetch", help="Fetch + process before rendering"),
     via_server: bool = typer.Option(False, "--via-server", help="Dispatch to Prefect server"),
 ) -> None:
-    """Run historical backfill for a recipe over a date range."""
+    """Run historical backfill for a recipe over a date range.
+
+    Use --fetch to download and process source data before rendering.
+    Without --fetch, processed data must already exist.
+    """
     from datetime import date as date_cls
 
     from oceancanvas.backfill import _generate_dates, validate_backfill
@@ -353,12 +424,38 @@ def run_backfill(
     console.print(f"  Skip:     {len(already_done)} (already done)")
     console.print(f"  Missing:  {len(missing_data)} (no processed data)")
 
+    if missing_data and fetch:
+        # Fetch + process missing dates before rendering
+        console.print(f"\n[cyan]Fetching {len(missing_data)} missing dates...[/cyan]")
+
+        # Read source from recipe
+        with (RECIPES_DIR / f"{recipe}.yaml").open() as f:
+            recipe_yaml = yaml.safe_load(f)
+        source_id = recipe_yaml.get("sources", {}).get("primary", "oisst")
+
+        if source_id == "oisst":
+            from oceancanvas.tasks.fetch import fetch_historical_oisst
+
+            fetched, _ = fetch_historical_oisst(missing_data, DATA_DIR)
+            console.print(f"  Fetched {len(fetched)} files")
+
+            console.print("[cyan]Processing...[/cyan]")
+            _process_dates(source_id, fetched)
+            console.print("[green]Fetch + process complete.[/green]")
+
+            # Re-validate now that data exists
+            to_render, already_done, missing_data = validate_backfill(
+                recipe, dates, DATA_DIR, RECIPES_DIR, RENDERS_DIR
+            )
+
     if missing_data:
         console.print(f"\n[red]Cannot proceed: {len(missing_data)} dates lack data.[/red]")
         for d in missing_data[:10]:
             console.print(f"  [dim]{d}[/dim]")
         if len(missing_data) > 10:
             console.print(f"  [dim]... and {len(missing_data) - 10} more[/dim]")
+        if not fetch:
+            console.print("\nTip: use [bold]--fetch[/bold] to download missing data.")
         raise typer.Exit(1)
 
     if not to_render:
