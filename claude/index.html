@@ -2031,6 +2031,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2390,6 +2401,12 @@
 <li>Feature work in short-lived branches named <code>feat/recipe-yaml-parser</code>, <code>fix/process-task-shape-mismatch</code>. Merge via PR, squash on merge.</li>
 <li>No long-lived dev/staging branches in Phase 1.</li>
 </ul>
+<h3 id="testing-strategy">Testing strategy</h3>
+<p>Three tiers, each validating different boundaries:</p>
+<p><strong>Tier 1 — Unit tests</strong> (<code>pipeline/tests/unit/</code>, <code>gallery/src/**/*.test.ts</code>). Test individual functions in isolation. Mock external dependencies (fetch, subprocess, filesystem). Fastest feedback loop. Run via <code>uv run pytest</code> and <code>npm test</code>.</p>
+<p><strong>Tier 2 — Cross-validation</strong> (<code>tests/cross-validation/</code>). Shared JSON fixtures validated independently by Python and TypeScript. Confirms implementations that must be identical (creative mapping) produce the same outputs.</p>
+<p><strong>Tier 3 — End-to-end</strong> (<code>e2e/tests/</code>). Playwright tests against the full Docker Compose stack (<code>docker-compose.test.yml</code>). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.</p>
+<p>Key boundary: the e2e tests validate that pipeline output (renders, manifest) is correctly served by Caddy and consumed by the React gallery. Unit tests cannot cover this boundary.</p>
 <hr />
 <h2 id="doc-system-rules">Doc-system rules</h2>
 <p>The mechanics of how PRDs / RFCs / ADRs / UXSes interact, in operational form.</p>
