@@ -41,38 +41,59 @@
 }
 .topbarLink:hover { color: var(--intent-teal); }
 
-.sourcePills {
+.body {
   display: flex;
-  gap: 8px;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--border);
+  flex: 1;
+  overflow: hidden;
+}
+
+.sourceRail {
+  width: 140px;
   background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.pill, .pillActive {
+.sourceActive,
+.sourceInactive {
   font-size: 11px;
-  padding: 5px 14px;
-  border-radius: 16px;
-  cursor: pointer;
-  border: 1px solid var(--border);
   letter-spacing: 0.04em;
-  transition: all 0.15s;
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  text-align: left;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
 }
 
-.pill {
-  background: transparent;
+.sourceActive {
+  font-weight: 600;
+  color: var(--intent-teal);
+  border-left-color: var(--intent-teal);
+}
+
+.sourceInactive {
   color: var(--text-muted);
 }
-.pill:hover {
-  color: var(--text);
-  border-color: var(--text-muted);
+.sourceInactive:hover {
+  color: var(--text-secondary);
 }
 
-.pillActive {
-  background: var(--intent-teal);
-  color: var(--canvas);
-  border-color: var(--intent-teal);
-  font-weight: 600;
+.sourceLabel {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .topbarChip {

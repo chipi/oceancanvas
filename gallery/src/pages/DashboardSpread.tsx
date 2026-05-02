@@ -95,19 +95,24 @@ export function DashboardSpread() {
         </nav>
       </header>
 
-      {/* Source selector pills */}
-      <div className={styles.sourcePills}>
-        {SOURCES.map((s, i) => (
-          <button
-            key={s.id}
-            className={i === activeIdx ? styles.pillActive : styles.pill}
-            onClick={() => setActiveIdx(i)}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
+      {/* Body: source rail left, content right */}
+      <div className={styles.body}>
+        {/* Source rail — same pattern as Dashboard */}
+        <nav className={styles.sourceRail}>
+          {SOURCES.map((s, i) => (
+            <button
+              key={s.id}
+              className={i === activeIdx ? styles.sourceActive : styles.sourceInactive}
+              onClick={() => setActiveIdx(i)}
+            >
+              <div>{s.label}</div>
+              <div className={styles.sourceLabel}>{s.sub}</div>
+            </button>
+          ))}
+        </nav>
 
+        {/* Main content area */}
+        <div className={styles.content}>
       {/* Hero section */}
       <div className={styles.hero}>
         <div className={styles.heroLeft}>
@@ -204,6 +209,9 @@ export function DashboardSpread() {
       <footer className={styles.citation}>
         {active.sub} · {active.label} · {entry?.dates?.[0]?.substring(0, 4) || ''}–{entry?.latest?.substring(0, 4) || ''} · OceanCanvas
       </footer>
+
+        </div>{/* /content */}
+      </div>{/* /body */}
     </div>
   );
 }
