@@ -69,8 +69,10 @@ function setup() {
         img.pixels[pi + 2] = CANVAS_BG[2];
         img.pixels[pi + 3] = 255;
       } else {
-        // Normalise and apply gamma for contrast
+        // Normalise and apply gamma for contrast.
+        // Clamp before pow — float precision can produce tiny negatives.
         let t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
+        t = constrain(t, 0, 1);
         t = Math.pow(t, gamma);
         const [cr, cg, cb] = colorFromStops(stops, t);
         // Apply brightness

@@ -14,6 +14,7 @@ persistent Chromium worker, reused across all renders on that thread.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import threading
 from pathlib import Path
@@ -33,8 +34,10 @@ PNG_HEADER = b"\x89PNG\r\n\x1a\n"
 # Semaphore bounds concurrent Chromium instances across threads.
 _render_semaphore = threading.Semaphore(RENDER_CONCURRENCY)
 
-# Whether to use persistent workers (disabled in tests via _USE_WORKERS = False).
-_USE_WORKERS = True
+# Whether to use persistent workers.
+# Disabled by default — worker mode needs further stabilization (#46).
+# Enable via RENDER_USE_WORKERS=1 env var once validated in Docker.
+_USE_WORKERS = os.environ.get("RENDER_USE_WORKERS", "0") == "1"
 
 
 class ChromiumWorker:
@@ -192,12 +195,24 @@ def _render_one(payload_path: Path, output_path: Path) -> None:
 
 
 def _render_with_worker(payload_path: Path, output_path: Path) -> None:
-    """Render using a persistent Chromium worker (worker mode)."""
-    worker = _get_worker()
+    """Render using a persistent Chromium worker (worker mode).
+
+    Falls back to single mode if worker cannot be started (e.g. no
+    Chromium binary outside Docker).
+    """
+    try:
+        worker = _get_worker()
+    except RuntimeError:
+        # Worker spawn failed — fall back to single mode
+        logger = get_logger()
+        logger.info("Worker mode unavailable, falling back to single mode")
+        _render_one(payload_path, output_path)
+        return
+
     try:
         worker.render(payload_path, output_path)
     except RuntimeError:
-        # Worker crashed — remove it so a new one is created on retry
+        # Worker crashed mid-render — remove it so a new one is created on retry
         tid = threading.get_ident()
         with _worker_lock:
             if tid in _thread_workers:

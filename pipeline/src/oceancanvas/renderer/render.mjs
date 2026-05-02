@@ -11,34 +11,36 @@
  *   writes length-prefixed PNG responses to stdout. Stays alive until
  *   a {"__done":true} sentinel or stdin closes.
  *
- * Invoked by the Python render task as a subprocess.
+ * All scripts (p5.js, shared.js, sketches) are loaded from the local
+ * SKETCHES_DIR — no CDN dependency. p5.min.js must be present in
+ * the sketches directory.
  */
 
 import puppeteer from 'puppeteer-core';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 
 const CHROMIUM = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium';
-const SKETCHES_DIR = process.env.SKETCHES_DIR || '/sketches';
+const SKETCHES_DIR = resolve(process.env.SKETCHES_DIR || '/sketches');
 
-// Cache sketch code to avoid re-reading files per render
+// Pre-read ALL scripts at startup — no I/O or network during rendering.
+const P5_CODE = readFileSync(join(SKETCHES_DIR, 'p5.min.js'), 'utf-8');
+const SHARED_CODE = readFileSync(join(SKETCHES_DIR, 'shared.js'), 'utf-8');
+
 const sketchCache = {};
 function getSketchCode(sketchType) {
   if (!sketchCache[sketchType]) {
-    const sharedPath = join(SKETCHES_DIR, 'shared.js');
-    const sketchPath = join(SKETCHES_DIR, `${sketchType}.js`);
-    sketchCache[sketchType] = {
-      shared: readFileSync(sharedPath, 'utf-8'),
-      sketch: readFileSync(sketchPath, 'utf-8'),
-    };
+    sketchCache[sketchType] = readFileSync(
+      join(SKETCHES_DIR, `${sketchType}.js`), 'utf-8'
+    );
   }
   return sketchCache[sketchType];
 }
 
 async function renderPayload(browser, payload) {
   const sketchType = payload.recipe?.render?.type || 'field';
-  const { shared, sketch } = getSketchCode(sketchType);
+  const sketchCode = getSketchCode(sketchType);
 
   const width = payload.output?.width || 1920;
   const height = payload.output?.height || 1080;
@@ -47,16 +49,33 @@ async function renderPayload(browser, payload) {
   try {
     await page.setViewport({ width, height });
 
-    const html = `<!DOCTYPE html>
+    // No CDN — all scripts bundled locally.
+    // Write a temp HTML file with everything inlined (payload, p5, shared, sketch).
+    // Navigate via file:// to get proper window lifecycle (load event fires naturally).
+    // p5.js in <head> so it parses first; setup()/draw() in body so they're
+    // available when p5 triggers on load.
+
+    const { writeFileSync, unlinkSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const tmpFile = join(tmpdir(), `oc-render-${Date.now()}.html`);
+
+    const htmlContent = `<!DOCTYPE html>
 <html><head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<script>${P5_CODE}</script>
 </head><body style="margin:0">
 <script>window.OCEAN_PAYLOAD = ${JSON.stringify(payload)};</script>
-<script>${shared}</script>
-<script>${sketch}</script>
+<script>${SHARED_CODE}</script>
+<script>${sketchCode}</script>
 </body></html>`;
 
-    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+    writeFileSync(tmpFile, htmlContent);
+    try {
+      await page.goto(`file://${tmpFile}`, { waitUntil: 'load' });
+    } finally {
+      try { unlinkSync(tmpFile); } catch {}
+    }
+
+    // Wait for sketch to signal completion
     await page.waitForFunction(
       () => window.__RENDER_COMPLETE === true,
       { timeout: 60000 },
