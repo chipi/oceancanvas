@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ObservationTimeline } from '../components/ObservationTimeline';
 import { SstHistogram } from '../components/SstHistogram';
 import { SstTimeSeries } from '../components/SstTimeSeries';
 import styles from './DashboardSpread.module.css';
@@ -40,6 +41,7 @@ export function DashboardSpread() {
   const [meta, setMeta] = useState<MetaData | null>(null);
   const [sstData, setSstData] = useState<number[]>([]);
   const [monthlySeries, setMonthlySeries] = useState<Array<{date: string; mean: number; min: number; max: number}>>([]);
+  const [obsSeries, setObsSeries] = useState<Array<{date: string; count: number}>>([]);
 
   const active = SOURCES[activeIdx];
   const entry = manifest?.[active.id];
@@ -57,11 +59,12 @@ export function DashboardSpread() {
     setMeta(null);
     setSstData([]);
     setMonthlySeries([]);
+    setObsSeries([]);
 
     const sourceDir = active.source;
 
-    // Meta (OISST only)
     if (sourceDir === 'oisst') {
+      // SST: meta + grid data + monthly series
       fetch(`/data/processed/oisst/${entry.latest}.meta.json`)
         .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
         .then((m) => setMeta(m))
@@ -77,6 +80,12 @@ export function DashboardSpread() {
         .then((s) => { if (Array.isArray(s)) setMonthlySeries(s); })
         .catch(() => {});
     }
+
+    // All sources: observation count time series
+    fetch(`/data/processed/${sourceDir}/time-series.json`)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((s) => { if (Array.isArray(s)) setObsSeries(s); })
+      .catch(() => {});
   }, [activeIdx, entry?.latest]);
 
   const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
@@ -158,52 +167,87 @@ export function DashboardSpread() {
       </div>
 
       {/* Data strip */}
-      {isOisst && meta && (
-        <div className={styles.dataStrip}>
-          <div className={styles.dataCol}>
-            <div className={styles.dataValue}>{meta.max.toFixed(1)}°</div>
-            <div className={styles.dataLabel}>REGION MAX</div>
-          </div>
-          <div className={styles.dataCol}>
-            <div className={styles.dataValue}>{meta.min.toFixed(1)}°</div>
-            <div className={styles.dataLabel}>REGION MIN</div>
-          </div>
-          <div className={styles.dataCol}>
-            <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
-            <div className={styles.dataLabel}>BASELINE</div>
-          </div>
-          <div className={styles.dataCol}>
-            <div className={styles.dataValue}>{entry?.count || 0}</div>
-            <div className={styles.dataLabel}>TOTAL RENDERS</div>
-          </div>
+      <div className={styles.dataStrip}>
+        {isOisst && meta ? (
+          <>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{meta.max.toFixed(1)}°</div>
+              <div className={styles.dataLabel}>REGION MAX</div>
+            </div>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{meta.min.toFixed(1)}°</div>
+              <div className={styles.dataLabel}>REGION MIN</div>
+            </div>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
+              <div className={styles.dataLabel}>BASELINE</div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{obsSeries.reduce((s, d) => s + d.count, 0).toLocaleString()}</div>
+              <div className={styles.dataLabel}>TOTAL RECORDS</div>
+            </div>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{entry?.dates?.length || 0}</div>
+              <div className={styles.dataLabel}>TIME PERIODS</div>
+            </div>
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{entry?.dates?.[0]?.substring(0, 4) || '—'}</div>
+              <div className={styles.dataLabel}>EARLIEST</div>
+            </div>
+          </>
+        )}
+        <div className={styles.dataCol}>
+          <div className={styles.dataValue}>{entry?.count || 0}</div>
+          <div className={styles.dataLabel}>RENDERS</div>
         </div>
-      )}
+      </div>
 
-      {/* Charts — OISST only for now */}
-      {isOisst && (
-        <div className={styles.chartsSection}>
-          <div className={styles.chartPlaceholder}>
-            <div className={styles.chartTitle}>SST DISTRIBUTION ⊓ {entry?.latest || ''}</div>
-            <div className={styles.chartBody}>
-              {sstData.length > 0 ? (
-                <SstHistogram data={sstData} />
-              ) : (
-                'Loading...'
-              )}
-            </div>
+      {/* Charts */}
+      <div className={styles.chartsSection}>
+        {/* Chart 1: SST histogram or observation timeline */}
+        <div className={styles.chartPlaceholder}>
+          <div className={styles.chartTitle}>
+            {isOisst ? `SST DISTRIBUTION ⊓ ${entry?.latest || ''}` : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
           </div>
-          <div className={styles.chartPlaceholder}>
-            <div className={styles.chartTitle}>MEAN SST ⊓ 1981→2026</div>
-            <div className={styles.chartBody}>
-              {monthlySeries.length > 0 ? (
-                <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
-              ) : (
-                'Loading...'
-              )}
-            </div>
+          <div className={styles.chartBody}>
+            {isOisst ? (
+              sstData.length > 0 ? <SstHistogram data={sstData} /> : 'Loading...'
+            ) : (
+              obsSeries.length > 0 ? (
+                <ObservationTimeline data={obsSeries} label="Records" color="#5DCAA5" />
+              ) : 'Loading...'
+            )}
           </div>
         </div>
-      )}
+
+        {/* Chart 2: SST time series or observation timeline for SST */}
+        <div className={styles.chartPlaceholder}>
+          <div className={styles.chartTitle}>
+            {isOisst ? 'MEAN SST ⊓ 1981→2026' : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
+          </div>
+          <div className={styles.chartBody}>
+            {isOisst ? (
+              monthlySeries.length > 0 ? (
+                <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
+              ) : 'Loading...'
+            ) : (
+              obsSeries.length > 0 ? (
+                <ObservationTimeline
+                  data={obsSeries.map((d) => ({
+                    date: d.date,
+                    count: Math.round(obsSeries.slice(0, obsSeries.indexOf(d) + 1).reduce((s, x) => s + x.count, 0)),
+                  }))}
+                  label="Cumulative"
+                  color="#EF9F27"
+                />
+              ) : 'Loading...'
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Citation */}
       <footer className={styles.citation}>
