@@ -59,10 +59,14 @@ export function Dashboard() {
   const dates = entry?.dates || [];
 
   function loadMeta(source: string, date: string) {
-    // Try to load meta — only OISST has .meta.json files
-    const sourceDir = source.startsWith('obis-') ? source : source === 'argo' ? 'argo' : 'oisst';
+    // Only OISST has .meta.json files — other sources clear meta
+    const sourceDir = source === 'oisst' ? 'oisst' : null;
+    if (!sourceDir) {
+      setMeta(null);
+      return;
+    }
     fetch(`/data/processed/${sourceDir}/${date}.meta.json`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('not found'); return r.json(); })
       .then((m) => { if (m) setMeta(m); })
       .catch(() => setMeta(null));
   }
