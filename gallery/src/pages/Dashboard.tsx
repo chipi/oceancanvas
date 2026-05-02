@@ -151,35 +151,54 @@ export function Dashboard() {
             <div className={styles.hoverCoords}>{hoverCoords}</div>
           )}
 
-          {/* Legend strip */}
-          <div className={styles.legend}>
-            <span className={styles.legendLabel}>{meta ? `${Math.round(meta.max)}°C` : ''}</span>
-            <div className={styles.legendBar} />
-            <span className={styles.legendLabel}>{meta ? `${Math.round(meta.min)}°C` : ''}</span>
-          </div>
-
-          {/* Stats overlay */}
-          {meta && (
-            <div className={styles.stats}>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>{meta.mean.toFixed(1)}°</div>
-                <div className={styles.statLabel}>REGION MEAN</div>
-                {anomaly !== null && (
-                  <div className={anomaly >= 0 ? styles.statAnomaly : styles.statAnomalyCool}>
-                    {anomaly >= 0 ? '+' : ''}{anomaly.toFixed(1)}° vs climatology
-                  </div>
-                )}
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>{meta.max.toFixed(1)}°</div>
-                <div className={styles.statLabel}>REGION MAX</div>
-              </div>
-              <div className={styles.statCard}>
-                <div className={styles.statValue}>{meta.min.toFixed(1)}°</div>
-                <div className={styles.statLabel}>REGION MIN</div>
-              </div>
+          {/* Legend strip — SST only */}
+          {meta && entry?.source === 'oisst' && (
+            <div className={styles.legend}>
+              <span className={styles.legendLabel}>{`${Math.round(meta.max)}°C`}</span>
+              <div className={styles.legendBar} />
+              <span className={styles.legendLabel}>{`${Math.round(meta.min)}°C`}</span>
             </div>
           )}
+
+          {/* Stats overlay — adapted per source */}
+          <div className={styles.stats}>
+            {meta && entry?.source === 'oisst' ? (
+              <>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{meta.mean.toFixed(1)}°</div>
+                  <div className={styles.statLabel}>REGION MEAN</div>
+                  {anomaly !== null && (
+                    <div className={anomaly >= 0 ? styles.statAnomaly : styles.statAnomalyCool}>
+                      {anomaly >= 0 ? '+' : ''}{anomaly.toFixed(1)}° vs climatology
+                    </div>
+                  )}
+                </div>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{meta.max.toFixed(1)}°</div>
+                  <div className={styles.statLabel}>REGION MAX</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{meta.min.toFixed(1)}°</div>
+                  <div className={styles.statLabel}>REGION MIN</div>
+                </div>
+              </>
+            ) : entry ? (
+              <>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{entry.count}</div>
+                  <div className={styles.statLabel}>RENDERS</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{entry.dates.length}</div>
+                  <div className={styles.statLabel}>TIME PERIODS</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{entry.dates[0]?.substring(0, 4) || '—'}</div>
+                  <div className={styles.statLabel}>EARLIEST</div>
+                </div>
+              </>
+            ) : null}
+          </div>
 
           <button
             className={styles.createRecipe}

@@ -169,7 +169,7 @@
 /* Stats overlay */
 .stats {
   position: absolute;
-  bottom: 16px;
+  bottom: 40px;
   left: 16px;
   display: flex;
   flex-direction: column;
