@@ -376,15 +376,22 @@ def fetch_historical(
 
     elif source.startswith("obis-"):
         species = source.replace("obis-", "")
-        from oceancanvas.tasks.obis import fetch_obis, process_obis
+        from oceancanvas.tasks.obis import fetch_obis_all, process_obis
 
-        raw_path = DATA_DIR / "sources" / source / "latest.json"
-        count = fetch_obis(species, raw_path)
-        console.print(f"\n[green]Fetched {count} {species} records[/green]")
+        console.print(f"\n[cyan]Fetching all {species} records from OBIS...[/cyan]")
+        new_years, skipped = fetch_obis_all(species, DATA_DIR)
+        console.print(
+            f"[green]Done: {len(new_years)} new years, {len(skipped)} skipped[/green]"
+        )
 
-        if process:
+        if process and new_years:
+            console.print(f"\n[cyan]Processing {len(new_years)} years...[/cyan]")
             processed_dir = DATA_DIR / "processed"
-            process_obis(raw_path, processed_dir, species)
+            sources_dir = DATA_DIR / "sources" / source
+            for year_date in new_years:
+                src = sources_dir / f"{year_date}.json"
+                if src.exists():
+                    process_obis(src, processed_dir, species, date=year_date)
             console.print("[green]Processing complete.[/green]")
     else:
         console.print(f"[red]Unknown source: {source}[/red]")
