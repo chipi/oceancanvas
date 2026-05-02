@@ -3,55 +3,84 @@ import { SstHistogram } from '../components/SstHistogram';
 import { SstTimeSeries } from '../components/SstTimeSeries';
 import styles from './DashboardSpread.module.css';
 
-interface SstMeta {
+interface ManifestRecipe {
+  name: string;
+  render_type: string;
+  source: string;
+  dates: string[];
+  latest: string;
+  count: number;
+}
+
+interface MetaData {
   date: string;
   source_id: string;
   min: number;
   max: number;
   mean: number;
-  nan_pct: number;
+  nan_pct?: number;
+  profile_count?: number;
   lat_range?: [number, number];
   lon_range?: [number, number];
 }
 
-// 1981–2010 climatological mean (approximate)
+const SOURCES = [
+  { id: 'north-atlantic-sst', label: 'SST', source: 'oisst', sub: 'NOAA OISST' },
+  { id: 'argo-global', label: 'Argo Floats', source: 'argo', sub: 'ifremer GDAC' },
+  { id: 'whale-shark', label: 'Whale Shark', source: 'obis-whale-shark', sub: 'OBIS' },
+  { id: 'leatherback-turtle', label: 'Leatherback', source: 'obis-leatherback-turtle', sub: 'OBIS' },
+  { id: 'elephant-seal', label: 'Elephant Seal', source: 'obis-elephant-seal', sub: 'OBIS' },
+];
+
 const CLIMATOLOGY_MEAN = 13.8;
 
 export function DashboardSpread() {
-  const [meta, setMeta] = useState<SstMeta | null>(null);
-  const [latestDate, setLatestDate] = useState<string | null>(null);
+  const [manifest, setManifest] = useState<Record<string, ManifestRecipe> | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [meta, setMeta] = useState<MetaData | null>(null);
   const [sstData, setSstData] = useState<number[]>([]);
   const [monthlySeries, setMonthlySeries] = useState<Array<{date: string; mean: number; min: number; max: number}>>([]);
+
+  const active = SOURCES[activeIdx];
+  const entry = manifest?.[active.id];
 
   useEffect(() => {
     fetch('/renders/manifest.json')
       .then((r) => r.json())
-      .then((manifest) => {
-        const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
-        const oisst = recipes.find((r) => r.source === 'oisst');
-        if (oisst?.latest) {
-          setLatestDate(oisst.latest);
-          // Fetch metadata
-          fetch(`/data/processed/oisst/${oisst.latest}.meta.json`)
-            .then((r) => r.json())
-            .then((m) => { if (m) setMeta(m); })
-            .catch(() => {});
-          // Fetch full data for histogram
-          fetch(`/data/processed/oisst/${oisst.latest}.json`)
-            .then((r) => r.json())
-            .then((d) => { if (d?.data) setSstData(d.data); })
-            .catch(() => {});
-          // Fetch monthly time series for trend chart
-          fetch('/data/processed/oisst/sst-monthly-series.json')
-            .then((r) => r.json())
-            .then((s) => { if (Array.isArray(s)) setMonthlySeries(s); })
-            .catch(() => {});
-        }
-      })
+      .then((m) => setManifest(m.recipes || {}))
       .catch(() => {});
   }, []);
 
+  // Load data when source changes
+  useEffect(() => {
+    if (!entry) return;
+    setMeta(null);
+    setSstData([]);
+    setMonthlySeries([]);
+
+    const sourceDir = active.source;
+
+    // Meta (OISST only)
+    if (sourceDir === 'oisst') {
+      fetch(`/data/processed/oisst/${entry.latest}.meta.json`)
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+        .then((m) => setMeta(m))
+        .catch(() => {});
+
+      fetch(`/data/processed/oisst/${entry.latest}.json`)
+        .then((r) => r.json())
+        .then((d) => { if (d?.data) setSstData(d.data); })
+        .catch(() => {});
+
+      fetch('/data/processed/oisst/sst-monthly-series.json')
+        .then((r) => r.json())
+        .then((s) => { if (Array.isArray(s)) setMonthlySeries(s); })
+        .catch(() => {});
+    }
+  }, [activeIdx, entry?.latest]);
+
   const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
+  const isOisst = active.source === 'oisst';
 
   return (
     <div className={styles.page}>
@@ -59,94 +88,121 @@ export function DashboardSpread() {
       <header className={styles.topbar}>
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <span className={styles.topbarLabel}>/DATA EXPLORER</span>
-        <span className={styles.topbarChip}>SST ⊓ NOAA OISST</span>
+        <span className={styles.topbarChip}>{active.label} ⊓ {active.sub}</span>
+        <nav className={styles.topbarNav}>
+          <a href="/" className={styles.topbarLink}>← gallery</a>
+          <a href="/dashboard" className={styles.topbarLink}>dashboard</a>
+        </nav>
       </header>
 
-      {/* Hero section — two columns */}
+      {/* Source selector pills */}
+      <div className={styles.sourcePills}>
+        {SOURCES.map((s, i) => (
+          <button
+            key={s.id}
+            className={i === activeIdx ? styles.pillActive : styles.pill}
+            onClick={() => setActiveIdx(i)}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Hero section */}
       <div className={styles.hero}>
         <div className={styles.heroLeft}>
           <div className={styles.eyebrow}>
-            North Atlantic · {latestDate || ''}
+            {active.label} · {entry?.latest || ''}
           </div>
-          <div className={styles.heroNumber}>
-            {meta ? meta.mean.toFixed(1) : '—'}°
-          </div>
-          <div className={styles.heroSubtitle}>
-            Mean SST across the North Atlantic basin, 20°N–75°N
-          </div>
-          {anomaly !== null && (
-            <div className={anomaly >= 0 ? styles.anomalyWarm : styles.anomalyCool}>
-              {anomaly >= 0 ? '+' : ''}{anomaly.toFixed(1)}° above 1981–2010 climatology
-            </div>
+          {isOisst && meta ? (
+            <>
+              <div className={styles.heroNumber}>{meta.mean.toFixed(1)}°</div>
+              <div className={styles.heroSubtitle}>
+                Mean SST across the North Atlantic basin
+              </div>
+              {anomaly !== null && (
+                <div className={anomaly >= 0 ? styles.anomalyWarm : styles.anomalyCool}>
+                  {anomaly >= 0 ? '+' : ''}{anomaly.toFixed(1)}° above 1981–2010 climatology
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className={styles.heroNumber}>{entry?.count || '—'}</div>
+              <div className={styles.heroSubtitle}>
+                {active.source.startsWith('obis') ? 'occurrence records' : 'float profiles'}
+                {' '}· {entry?.dates?.length || 0} time periods
+              </div>
+            </>
           )}
           <div className={styles.metaRow}>
-            <span>41yr record</span>
-            <span>0.25° resolution</span>
-            <span>2d latency</span>
+            <span>{entry?.count || 0} renders</span>
+            <span>{entry?.dates?.[0]?.substring(0, 4) || ''} → {entry?.latest?.substring(0, 4) || ''}</span>
+            <span>{active.sub}</span>
           </div>
         </div>
         <div className={styles.heroRight}>
-          {latestDate && (
+          {entry?.latest && (
             <img
               className={styles.heroHeatmap}
-              src={`/data/processed/oisst/${latestDate}.png`}
-              alt="SST heatmap"
+              src={`/renders/${active.id}/${entry.latest}.png`}
+              alt={active.label}
             />
           )}
         </div>
       </div>
 
       {/* Data strip */}
-      <div className={styles.dataStrip}>
-        <div className={styles.dataCol}>
-          <div className={styles.dataValue}>{meta?.max.toFixed(1) ?? '—'}°</div>
-          <div className={styles.dataLabel}>REGION MAX</div>
-          <div className={styles.dataSub}>Gulf Stream core</div>
+      {isOisst && meta && (
+        <div className={styles.dataStrip}>
+          <div className={styles.dataCol}>
+            <div className={styles.dataValue}>{meta.max.toFixed(1)}°</div>
+            <div className={styles.dataLabel}>REGION MAX</div>
+          </div>
+          <div className={styles.dataCol}>
+            <div className={styles.dataValue}>{meta.min.toFixed(1)}°</div>
+            <div className={styles.dataLabel}>REGION MIN</div>
+          </div>
+          <div className={styles.dataCol}>
+            <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
+            <div className={styles.dataLabel}>BASELINE</div>
+          </div>
+          <div className={styles.dataCol}>
+            <div className={styles.dataValue}>{entry?.count || 0}</div>
+            <div className={styles.dataLabel}>TOTAL RENDERS</div>
+          </div>
         </div>
-        <div className={styles.dataCol}>
-          <div className={styles.dataValue}>{meta?.min.toFixed(1) ?? '—'}°</div>
-          <div className={styles.dataLabel}>REGION MIN</div>
-          <div className={styles.dataSub}>Labrador Sea</div>
-        </div>
-        <div className={styles.dataCol}>
-          <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
-          <div className={styles.dataLabel}>1981–2010 MEAN</div>
-          <div className={styles.dataSub}>baseline</div>
-        </div>
-        <div className={styles.dataCol}>
-          <div className={styles.dataValue}>2023</div>
-          <div className={styles.dataLabel}>HOTTEST YEAR</div>
-          <div className={styles.dataSub}>+1.7° above baseline</div>
-        </div>
-      </div>
+      )}
 
-      {/* Charts */}
-      <div className={styles.chartsSection}>
-        <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>SST DISTRIBUTION ⊓ {latestDate || ''}</div>
-          <div className={styles.chartBody}>
-            {sstData.length > 0 ? (
-              <SstHistogram data={sstData} />
-            ) : (
-              'Loading temperature distribution...'
-            )}
+      {/* Charts — OISST only for now */}
+      {isOisst && (
+        <div className={styles.chartsSection}>
+          <div className={styles.chartPlaceholder}>
+            <div className={styles.chartTitle}>SST DISTRIBUTION ⊓ {entry?.latest || ''}</div>
+            <div className={styles.chartBody}>
+              {sstData.length > 0 ? (
+                <SstHistogram data={sstData} />
+              ) : (
+                'Loading...'
+              )}
+            </div>
+          </div>
+          <div className={styles.chartPlaceholder}>
+            <div className={styles.chartTitle}>MEAN SST ⊓ 1981→2026</div>
+            <div className={styles.chartBody}>
+              {monthlySeries.length > 0 ? (
+                <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
+              ) : (
+                'Loading...'
+              )}
+            </div>
           </div>
         </div>
-        <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>MEAN SST ⊓ 1981→2026</div>
-          <div className={styles.chartBody}>
-            {monthlySeries.length > 0 ? (
-              <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
-            ) : (
-              'Loading 45-year time series...'
-            )}
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Citation */}
       <footer className={styles.citation}>
-        NOAA OISST · 0.25° · DAILY · 1981–2026
+        {active.sub} · {active.label} · {entry?.dates?.[0]?.substring(0, 4) || ''}–{entry?.latest?.substring(0, 4) || ''} · OceanCanvas
       </footer>
     </div>
   );

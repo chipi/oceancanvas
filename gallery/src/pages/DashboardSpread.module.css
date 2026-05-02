@@ -28,6 +28,53 @@
   color: var(--text-secondary);
 }
 
+.topbarNav {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.topbarLink {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.topbarLink:hover { color: var(--intent-teal); }
+
+.sourcePills {
+  display: flex;
+  gap: 8px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.pill, .pillActive {
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+
+.pill {
+  background: transparent;
+  color: var(--text-muted);
+}
+.pill:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+.pillActive {
+  background: var(--intent-teal);
+  color: var(--canvas);
+  border-color: var(--intent-teal);
+  font-weight: 600;
+}
+
 .topbarChip {
   margin-left: auto;
   font-size: 10px;
