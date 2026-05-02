@@ -1,0 +1,89 @@
+.scrubber {
+  padding: 8px 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.btn {
+  background: rgba(93, 202, 165, 0.1);
+  border: 1px solid rgba(93, 202, 165, 0.2);
+  color: rgba(220, 230, 240, 0.85);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn:hover { background: rgba(93, 202, 165, 0.2); }
+.btn:disabled { opacity: 0.3; cursor: default; }
+
+.dateLabel {
+  color: var(--ocean-teal, #5DCAA5);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.countLabel {
+  color: rgba(220, 230, 240, 0.5);
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.yearLabel {
+  color: rgba(220, 230, 240, 0.5);
+  font-size: 10px;
+  min-width: 30px;
+}
+
+.slider {
+  flex: 1;
+  accent-color: #5DCAA5;
+  height: 4px;
+}
+
+.strip {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(93, 202, 165, 0.2) transparent;
+  padding-bottom: 4px;
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 27px;
+  border: 1px solid rgba(93, 202, 165, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  opacity: 0.5;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.thumb:hover { opacity: 0.8; }
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbActive {
+  opacity: 1;
+  border-color: var(--ocean-teal, #5DCAA5);
+  box-shadow: 0 0 6px rgba(93, 202, 165, 0.3);
+}

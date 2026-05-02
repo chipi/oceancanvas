@@ -1,5 +1,6 @@
-import { type SyntheticEvent, useEffect } from 'react';
+import { type SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { TimelineScrubber } from '../components/TimelineScrubber';
 import { useManifest } from '../hooks/useManifest';
 import { getSourceInfo } from '../lib/sourceInfo';
 import styles from './GalleryDetail.module.css';
@@ -15,6 +16,16 @@ export function GalleryDetail() {
 
   const entry = manifest?.recipes?.[recipe || ''];
   const source = getSourceInfo(entry?.source || '');
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // Default to latest date
+  useEffect(() => {
+    if (entry?.latest && !selectedDate) setSelectedDate(entry.latest);
+  }, [entry, selectedDate]);
+
+  const handleDateSelect = useCallback((date: string) => {
+    setSelectedDate(date);
+  }, []);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -35,7 +46,8 @@ export function GalleryDetail() {
     );
   }
 
-  const renderUrl = `/renders/${entry.name}/${entry.latest}.png`;
+  const displayDate = selectedDate || entry.latest;
+  const renderUrl = `/renders/${entry.name}/${displayDate}.png`;
 
   return (
     <div className={styles.page}>
@@ -47,7 +59,7 @@ export function GalleryDetail() {
           <a href={`/recipes/${entry.name}`} className={styles.action}>recipe ↗</a>
           <a
             href={renderUrl}
-            download={`${entry.name}_${entry.latest}_oceancanvas.png`}
+            download={`${entry.name}_${displayDate}_oceancanvas.png`}
             className={styles.actionPrimary}
           >
             download
@@ -63,7 +75,7 @@ export function GalleryDetail() {
             <img
               className={styles.renderImage}
               src={renderUrl}
-              alt={`${entry.name} — ${entry.latest}`}
+              alt={`${entry.name} — ${displayDate}`}
               onError={handleImgError}
             />
             <div className={styles.overlay}>
@@ -74,27 +86,14 @@ export function GalleryDetail() {
             </div>
           </div>
 
-          {/* 14-day strip — directly under the image */}
-          {entry.dates.length > 0 && (
-            <div className={styles.strip}>
-              <div className={styles.stripLabel}>
-                LAST {Math.min(14, entry.dates.length)} DAYS
-              </div>
-              <div className={styles.stripRow}>
-                {entry.dates.slice(-14).map((date) => (
-                  <div key={date} className={`${styles.stripThumb} ${date === entry.latest ? styles.stripActive : ''}`}>
-                    <img
-                      src={`/renders/${entry.name}/${date}.png`}
-                      alt={date}
-                      title={date}
-                      loading="lazy"
-                      onError={handleImgError}
-                    />
-                    <span className={styles.stripDate}>{date.substring(5)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Timeline scrubber — browse all historical renders */}
+          {entry.dates.length > 1 && (
+            <TimelineScrubber
+              dates={entry.dates}
+              selected={displayDate}
+              recipeName={entry.name}
+              onSelect={handleDateSelect}
+            />
           )}
         </div>
 
