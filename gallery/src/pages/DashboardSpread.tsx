@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SstHistogram } from '../components/SstHistogram';
 import styles from './DashboardSpread.module.css';
 
 interface SstMeta {
@@ -18,6 +19,7 @@ const CLIMATOLOGY_MEAN = 13.8;
 export function DashboardSpread() {
   const [meta, setMeta] = useState<SstMeta | null>(null);
   const [latestDate, setLatestDate] = useState<string | null>(null);
+  const [sstData, setSstData] = useState<number[]>([]);
 
   useEffect(() => {
     fetch('/renders/manifest.json')
@@ -27,12 +29,18 @@ export function DashboardSpread() {
         const oisst = recipes.find((r) => r.source === 'oisst');
         if (oisst?.latest) {
           setLatestDate(oisst.latest);
-          return fetch(`/data/processed/oisst/${oisst.latest}.meta.json`);
+          // Fetch metadata
+          fetch(`/data/processed/oisst/${oisst.latest}.meta.json`)
+            .then((r) => r.json())
+            .then((m) => { if (m) setMeta(m); })
+            .catch(() => {});
+          // Fetch full data for histogram
+          fetch(`/data/processed/oisst/${oisst.latest}.json`)
+            .then((r) => r.json())
+            .then((d) => { if (d?.data) setSstData(d.data); })
+            .catch(() => {});
         }
-        return null;
       })
-      .then((r) => r?.json())
-      .then((m) => { if (m) setMeta(m); })
       .catch(() => {});
   }, []);
 
@@ -105,12 +113,16 @@ export function DashboardSpread() {
         </div>
       </div>
 
-      {/* Charts placeholder */}
+      {/* Charts */}
       <div className={styles.chartsSection}>
         <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>ANNUAL MEAN SST ⊓ NORTH ATLANTIC 1981→2026</div>
+          <div className={styles.chartTitle}>SST DISTRIBUTION ⊓ {latestDate || ''}</div>
           <div className={styles.chartBody}>
-            Observable Plot trend chart — coming when historical data is loaded
+            {sstData.length > 0 ? (
+              <SstHistogram data={sstData} />
+            ) : (
+              'Loading temperature distribution...'
+            )}
           </div>
         </div>
         <div className={styles.chartPlaceholder}>

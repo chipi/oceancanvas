@@ -355,6 +355,18 @@ def fetch_historical(
             console.print("\n[cyan]Processing fetched dates...[/cyan]")
             _process_dates(source, fetched)
             console.print("[green]Processing complete.[/green]")
+    elif source.startswith("obis-"):
+        species = source.replace("obis-", "")
+        from oceancanvas.tasks.obis import fetch_obis, process_obis
+
+        raw_path = DATA_DIR / "sources" / source / "latest.json"
+        count = fetch_obis(species, raw_path)
+        console.print(f"\n[green]Fetched {count} {species} records[/green]")
+
+        if process:
+            processed_dir = DATA_DIR / "processed"
+            process_obis(raw_path, processed_dir, species)
+            console.print("[green]Processing complete.[/green]")
     else:
         console.print(f"[red]Unknown source: {source}[/red]")
         raise typer.Exit(1)
