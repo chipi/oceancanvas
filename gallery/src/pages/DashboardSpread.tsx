@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SstHistogram } from '../components/SstHistogram';
+import { SstTimeSeries } from '../components/SstTimeSeries';
 import styles from './DashboardSpread.module.css';
 
 interface SstMeta {
@@ -20,6 +21,7 @@ export function DashboardSpread() {
   const [meta, setMeta] = useState<SstMeta | null>(null);
   const [latestDate, setLatestDate] = useState<string | null>(null);
   const [sstData, setSstData] = useState<number[]>([]);
+  const [monthlySeries, setMonthlySeries] = useState<Array<{date: string; mean: number; min: number; max: number}>>([]);
 
   useEffect(() => {
     fetch('/renders/manifest.json')
@@ -38,6 +40,11 @@ export function DashboardSpread() {
           fetch(`/data/processed/oisst/${oisst.latest}.json`)
             .then((r) => r.json())
             .then((d) => { if (d?.data) setSstData(d.data); })
+            .catch(() => {});
+          // Fetch monthly time series for trend chart
+          fetch('/data/processed/oisst/sst-monthly-series.json')
+            .then((r) => r.json())
+            .then((s) => { if (Array.isArray(s)) setMonthlySeries(s); })
             .catch(() => {});
         }
       })
@@ -126,9 +133,13 @@ export function DashboardSpread() {
           </div>
         </div>
         <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>ANOMALY ⊓ LAST 10 YEARS</div>
+          <div className={styles.chartTitle}>MEAN SST ⊓ 1981→2026</div>
           <div className={styles.chartBody}>
-            Anomaly bar chart — coming when historical data is loaded
+            {monthlySeries.length > 0 ? (
+              <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
+            ) : (
+              'Loading 45-year time series...'
+            )}
           </div>
         </div>
       </div>
