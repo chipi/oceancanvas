@@ -7,6 +7,7 @@ region:
   name: Global tropics
 sources:
   primary: obis-whale-shark
+  context: gebco
 schedule: daily
 
 # ⊓ creative controls ⊓

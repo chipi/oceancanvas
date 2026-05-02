@@ -56,6 +56,12 @@ function setup() {
     img.pixels[i + 3] = 255;
   }
 
+  // Draw bathymetry context (GEBCO) if present — subtle depth shading
+  const ctx = payload.data?.context;
+  if (ctx && ctx.data && ctx.shape && ctx.shape.length === 2) {
+    drawBathymetryToBuffer(img, ctx, w, h, latMin, latMax, lonMin, lonMax);
+  }
+
   if (Array.isArray(primary.data) && primary.data.length > 0 &&
       typeof primary.data[0] === 'object' && 'lat' in primary.data[0]) {
     drawPointsToBuffer(img, primary.data, w, h, latMin, latMax, lonMin, lonMax,
@@ -119,6 +125,56 @@ function drawPointsToBuffer(img, points, w, h, latMin, latMax, lonMin, lonMax,
     const t = tMax !== tMin ? (val - tMin) / (tMax - tMin) : 0.5;
     const [cr, cg, cb] = colorFromStops(stops, t);
     stampDot(img, w, h, Math.round(sx), Math.round(sy), radius, cr, cg, cb, opacity);
+  }
+}
+
+/**
+ * Draw GEBCO bathymetry as subtle depth shading behind scatter points.
+ * Deep ocean = slightly lighter navy, land = dark. Gives spatial context
+ * without overwhelming the scatter data.
+ */
+function drawBathymetryToBuffer(img, ctx, w, h, latMin, latMax, lonMin, lonMax) {
+  const dataArr = ctx.data;
+  const [rows, cols] = ctx.shape;
+  const vmin = ctx.min;
+  const vmax = ctx.max;
+  const dataLatMin = ctx.lat_range?.[0] ?? latMin;
+  const dataLatMax = ctx.lat_range?.[1] ?? latMax;
+  const dataLonMin = ctx.lon_range?.[0] ?? lonMin;
+  const dataLonMax = ctx.lon_range?.[1] ?? lonMax;
+
+  // Depth palette: land (>0) = dark, shallow = mid blue, deep = navy
+  for (let py = 0; py < h; py++) {
+    for (let px = 0; px < w; px++) {
+      const lat = latMax - (py / h) * (latMax - latMin);
+      const lon = lonMin + (px / w) * (lonMax - lonMin);
+
+      // Map pixel to data grid
+      const gr = (lat - dataLatMin) / (dataLatMax - dataLatMin) * (rows - 1);
+      const gc = (lon - dataLonMin) / (dataLonMax - dataLonMin) * (cols - 1);
+      const r = Math.round(gr);
+      const c = Math.round(gc);
+      if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+
+      const val = dataArr[r * cols + c];
+      if (val === NAN_VALUE) continue;
+
+      const pi = (py * w + px) * 4;
+
+      if (val >= 0) {
+        // Land — dark brown/grey
+        img.pixels[pi] = 12;
+        img.pixels[pi + 1] = 14;
+        img.pixels[pi + 2] = 16;
+      } else {
+        // Ocean — depth-shaded blue, subtle
+        const depth = Math.min(1, Math.abs(val) / 6000);
+        const t = Math.sqrt(depth); // compress deep end
+        img.pixels[pi] = Math.round(3 + t * 8);
+        img.pixels[pi + 1] = Math.round(11 + t * 25);
+        img.pixels[pi + 2] = Math.round(16 + t * 40);
+      }
+    }
   }
 }
 
