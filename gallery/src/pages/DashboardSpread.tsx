@@ -1,8 +1,18 @@
-import { useEffect, useState } from 'react';
+import { Component, type ErrorInfo, type ReactNode, useEffect, useState } from 'react';
 import { ObservationTimeline } from '../components/ObservationTimeline';
 import { SstHistogram } from '../components/SstHistogram';
 import { SstTimeSeries } from '../components/SstTimeSeries';
 import styles from './DashboardSpread.module.css';
+
+class ChartErrorBoundary extends Component<{children: ReactNode}, {error: string | null}> {
+  state = { error: null as string | null };
+  static getDerivedStateFromError(error: Error) { return { error: error.message }; }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error('Chart error:', error, info); }
+  render() {
+    if (this.state.error) return <div style={{color: 'rgba(220,230,240,0.5)', padding: 12}}>Chart error: {this.state.error}</div>;
+    return this.props.children;
+  }
+}
 
 interface ManifestRecipe {
   name: string;
@@ -81,11 +91,13 @@ export function DashboardSpread() {
         .catch(() => {});
     }
 
-    // All sources: observation count time series
-    fetch(`/data/processed/${sourceDir}/time-series.json`)
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((s) => { if (Array.isArray(s)) setObsSeries(s); })
-      .catch(() => {});
+    // All non-OISST sources: observation count time series
+    if (sourceDir !== 'oisst') {
+      fetch(`/data/processed/${sourceDir}/time-series.json`)
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+        .then((s) => { if (Array.isArray(s)) setObsSeries(s); })
+        .catch(() => setObsSeries([]));
+    }
   }, [activeIdx, entry?.latest]);
 
   const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
@@ -161,6 +173,7 @@ export function DashboardSpread() {
               className={styles.heroHeatmap}
               src={`/renders/${active.id}/${entry.latest}.png`}
               alt={active.label}
+              onError={(e) => { e.currentTarget.style.opacity = '0.3'; }}
             />
           )}
         </div>
@@ -213,6 +226,7 @@ export function DashboardSpread() {
             {isOisst ? `SST DISTRIBUTION ⊓ ${entry?.latest || ''}` : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
           </div>
           <div className={styles.chartBody}>
+            <ChartErrorBoundary>
             {isOisst ? (
               sstData.length > 0 ? <SstHistogram data={sstData} /> : 'Loading...'
             ) : (
@@ -220,6 +234,7 @@ export function DashboardSpread() {
                 <ObservationTimeline data={obsSeries} label="Records" color="#5DCAA5" />
               ) : 'Loading...'
             )}
+            </ChartErrorBoundary>
           </div>
         </div>
 
@@ -229,6 +244,7 @@ export function DashboardSpread() {
             {isOisst ? 'MEAN SST ⊓ 1981→2026' : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
           </div>
           <div className={styles.chartBody}>
+            <ChartErrorBoundary>
             {isOisst ? (
               monthlySeries.length > 0 ? (
                 <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
@@ -236,15 +252,17 @@ export function DashboardSpread() {
             ) : (
               obsSeries.length > 0 ? (
                 <ObservationTimeline
-                  data={obsSeries.map((d) => ({
-                    date: d.date,
-                    count: Math.round(obsSeries.slice(0, obsSeries.indexOf(d) + 1).reduce((s, x) => s + x.count, 0)),
-                  }))}
+                  data={obsSeries.reduce<Array<{date: string; count: number}>>((acc, d) => {
+                    const prev = acc.length > 0 ? acc[acc.length - 1].count : 0;
+                    acc.push({ date: d.date, count: prev + d.count });
+                    return acc;
+                  }, [])}
                   label="Cumulative"
                   color="#EF9F27"
                 />
               ) : 'Loading...'
             )}
+            </ChartErrorBoundary>
           </div>
         </div>
       </div>
