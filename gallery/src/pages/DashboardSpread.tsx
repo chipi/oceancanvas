@@ -226,7 +226,7 @@ export function DashboardSpread() {
             {isOisst ? `SST DISTRIBUTION ⊓ ${entry?.latest || ''}` : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
           </div>
           <div className={styles.chartBody}>
-            <ChartErrorBoundary>
+            <ChartErrorBoundary key={activeIdx}>
             {isOisst ? (
               sstData.length > 0 ? <SstHistogram data={sstData} /> : 'Loading...'
             ) : (
@@ -244,7 +244,7 @@ export function DashboardSpread() {
             {isOisst ? 'MEAN SST ⊓ 1981→2026' : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
           </div>
           <div className={styles.chartBody}>
-            <ChartErrorBoundary>
+            <ChartErrorBoundary key={activeIdx}>
             {isOisst ? (
               monthlySeries.length > 0 ? (
                 <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />

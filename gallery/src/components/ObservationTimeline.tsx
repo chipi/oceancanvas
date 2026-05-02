@@ -16,7 +16,7 @@ interface Props {
 
 /**
  * Observation count over time — works for any source.
- * Shows how data density changes across the historical record.
+ * Uses area + line marks (not bars) to avoid band/utc scale conflict.
  */
 export function ObservationTimeline({
   data,
@@ -48,18 +48,20 @@ export function ObservationTimeline({
       x: { label: null, type: 'utc' },
       y: { label, grid: true },
       marks: [
-        Plot.barY(parsed, {
+        Plot.areaY(parsed, {
           x: 'date',
           y: 'count',
           fill: color,
-          fillOpacity: 0.6,
+          fillOpacity: 0.3,
+          curve: 'step',
         } as Record<string, unknown>),
-        Plot.lineY(parsed, Plot.windowY(3, {
+        Plot.lineY(parsed, {
           x: 'date',
           y: 'count',
-          stroke: '#EF9F27',
+          stroke: color,
           strokeWidth: 1.5,
-        })),
+          curve: 'step',
+        } as Record<string, unknown>),
         Plot.ruleY([0]),
       ],
     });
