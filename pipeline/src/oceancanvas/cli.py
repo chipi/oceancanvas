@@ -355,6 +355,25 @@ def fetch_historical(
             console.print("\n[cyan]Processing fetched dates...[/cyan]")
             _process_dates(source, fetched)
             console.print("[green]Processing complete.[/green]")
+    elif source == "argo":
+        from oceancanvas.tasks.argo import fetch_argo_historical, process_argo
+
+        console.print("\n[cyan]Downloading full Argo index (one request)...[/cyan]")
+        new_months, skipped = fetch_argo_historical(DATA_DIR)
+        console.print(
+            f"[green]Done: {len(new_months)} new months, {len(skipped)} skipped[/green]"
+        )
+
+        if process and new_months:
+            console.print(f"\n[cyan]Processing {len(new_months)} months...[/cyan]")
+            processed_dir = DATA_DIR / "processed" / "argo"
+            sources_dir = DATA_DIR / "sources" / "argo"
+            for month in new_months:
+                src = sources_dir / f"{month}.json"
+                if src.exists():
+                    process_argo(src, processed_dir, month)
+            console.print("[green]Processing complete.[/green]")
+
     elif source.startswith("obis-"):
         species = source.replace("obis-", "")
         from oceancanvas.tasks.obis import fetch_obis, process_obis

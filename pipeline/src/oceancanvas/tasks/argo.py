@@ -95,6 +95,108 @@ def fetch_argo(date: str, output_path: Path, max_days: int = 30) -> int:
     return len(profiles)
 
 
+def fetch_argo_historical(
+    data_dir: Path,
+    max_retries: int = 3,
+    backoff_base: float = 10.0,
+) -> tuple[list[str], list[str]]:
+    """Download the full Argo index once, slice into monthly files.
+
+    Append-mode: only writes months that don't already exist on disk.
+    Each month file contains all profiles from that calendar month
+    within the processing region.
+
+    Returns (new_months, skipped_months).
+    """
+    import time
+    from collections import defaultdict
+
+    logger = get_logger()
+    r = PROCESSING_REGION
+    sources_dir = data_dir / "sources" / "argo"
+    sources_dir.mkdir(parents=True, exist_ok=True)
+
+    # Find which months already exist
+    existing = {f.stem for f in sources_dir.glob("*.json")}
+
+    # Download the full index (one large request, ~200MB)
+    logger.info("Downloading full Argo index from %s...", ARGO_INDEX_URL)
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.get(ARGO_INDEX_URL, timeout=300, stream=True)
+            resp.raise_for_status()
+            break
+        except (requests.Timeout, requests.ConnectionError) as e:
+            if attempt == max_retries:
+                raise
+            wait = backoff_base * (2**attempt)
+            logger.warning("Argo index download failed (%s), retry in %.0fs", e, wait)
+            time.sleep(wait)
+
+    # Parse and group profiles by month
+    monthly: dict[str, list[dict]] = defaultdict(list)
+    total_lines = 0
+
+    for line in resp.iter_lines(decode_unicode=True):
+        if not line or line.startswith("#") or line.startswith("file,"):
+            continue
+        total_lines += 1
+
+        parts = line.split(",")
+        if len(parts) < 5:
+            continue
+
+        date_str = parts[1][:8]
+        if len(date_str) < 8:
+            continue
+
+        try:
+            lat = float(parts[2])
+            lon = float(parts[3])
+        except (ValueError, IndexError):
+            continue
+
+        # Filter to processing region
+        if not (r["lat_min"] <= lat <= r["lat_max"]):
+            continue
+        if not (r["lon_min"] <= lon <= r["lon_max"]):
+            continue
+
+        # Group by first-of-month
+        month_key = f"{date_str[:4]}-{date_str[4:6]}-01"
+        monthly[month_key].append({
+            "lat": round(lat, 3),
+            "lon": round(lon, 3),
+            "date": f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}",
+            "file": parts[0],
+        })
+
+    logger.info(
+        "Argo index: %d lines, %d months, %d in region",
+        total_lines, len(monthly), sum(len(v) for v in monthly.values()),
+    )
+
+    # Write only new months
+    new_months: list[str] = []
+    skipped: list[str] = []
+
+    for month_date in sorted(monthly.keys()):
+        if month_date in existing:
+            skipped.append(month_date)
+            continue
+
+        profiles = monthly[month_date]
+        output_path = sources_dir / f"{month_date}.json"
+        atomic_write_text(output_path, json.dumps(profiles))
+        new_months.append(month_date)
+
+    logger.info(
+        "Argo historical: %d new months written, %d skipped (existing)",
+        len(new_months), len(skipped),
+    )
+    return new_months, skipped
+
+
 def process_argo(source_path: Path, output_dir: Path, date: str) -> None:
     """Process Argo source JSON into the scatter-compatible format.
 
