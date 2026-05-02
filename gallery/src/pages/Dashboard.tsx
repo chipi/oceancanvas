@@ -22,39 +22,64 @@ interface ManifestRecipe {
   count: number;
 }
 
+// Dashboard sources — each maps to a recipe in the manifest
+const SOURCES = [
+  { id: 'north-atlantic-sst', label: 'SST', sub: 'sea surface temp' },
+  { id: 'argo-global', label: 'Argo', sub: 'float profiles' },
+  { id: 'whale-shark', label: 'Whale shark', sub: 'biologging' },
+  { id: 'leatherback-turtle', label: 'Leatherback', sub: 'biologging' },
+  { id: 'elephant-seal', label: 'Elephant seal', sub: 'biologging' },
+];
+
 export function Dashboard() {
   const navigate = useNavigate();
+  const [manifest, setManifest] = useState<Record<string, ManifestRecipe> | null>(null);
+  const [activeSource, setActiveSource] = useState(SOURCES[0].id);
   const [meta, setMeta] = useState<SstMeta | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [dates, setDates] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [hoverCoords, setHoverCoords] = useState<string | null>(null);
 
+  // Load manifest once
   useEffect(() => {
     fetch('/renders/manifest.json')
       .then((r) => r.json())
-      .then((manifest) => {
-        const oisst = manifest.recipes?.['north-atlantic-sst'] as ManifestRecipe | undefined;
-        if (oisst) {
-          setDates(oisst.dates);
-          setSelectedDate(oisst.latest);
-          return fetch(`/data/processed/oisst/${oisst.latest}.meta.json`);
+      .then((m) => {
+        setManifest(m.recipes || {});
+        const first = m.recipes?.['north-atlantic-sst'];
+        if (first) {
+          setSelectedDate(first.latest);
+          loadMeta(first.source, first.latest);
         }
-        return null;
       })
-      .then((r) => r?.json())
-      .then((m) => { if (m) setMeta(m); })
       .catch((e) => setError(e.message));
   }, []);
 
-  // Load meta for selected date
-  const handleDateChange = useCallback((date: string) => {
-    setSelectedDate(date);
-    fetch(`/data/processed/oisst/${date}.meta.json`)
+  const entry = manifest?.[activeSource];
+  const dates = entry?.dates || [];
+
+  function loadMeta(source: string, date: string) {
+    // Try to load meta — only OISST has .meta.json files
+    const sourceDir = source.startsWith('obis-') ? source : source === 'argo' ? 'argo' : 'oisst';
+    fetch(`/data/processed/${sourceDir}/${date}.meta.json`)
       .then((r) => r.json())
       .then((m) => { if (m) setMeta(m); })
-      .catch(() => {});
-  }, []);
+      .catch(() => setMeta(null));
+  }
+
+  const handleSourceChange = useCallback((sourceId: string) => {
+    setActiveSource(sourceId);
+    const recipe = manifest?.[sourceId];
+    if (recipe) {
+      setSelectedDate(recipe.latest);
+      loadMeta(recipe.source, recipe.latest);
+    }
+  }, [manifest]);
+
+  const handleDateChange = useCallback((date: string) => {
+    setSelectedDate(date);
+    if (entry) loadMeta(entry.source, date);
+  }, [entry]);
 
   if (error) {
     return <div className={styles.page}><div className={styles.error}>Data unavailable: {error}</div></div>;
@@ -70,7 +95,8 @@ export function Dashboard() {
       <header className={styles.topbar}>
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <span className={styles.topbarPath}>
-          /sea surface temperature <span className={styles.topbarMuted}>⊓ NOAA OISST</span>
+          /{SOURCES.find((s) => s.id === activeSource)?.label || activeSource}
+          <span className={styles.topbarMuted}> ⊓ {entry?.source || ''}</span>
         </span>
         <span className={styles.topbarTime}>{selectedDate || ''}</span>
         <nav className={styles.topbarNav}>
@@ -82,12 +108,16 @@ export function Dashboard() {
       <div className={styles.body}>
         {/* Source rail */}
         <nav className={styles.sourceRail}>
-          <div className={styles.sourceActive}>SST</div>
-          <div className={styles.sourceLabel}>sea surface temp</div>
-          <div className={styles.sourceInactive}>Argo floats</div>
-          <div className={styles.sourceInactive}>Whale shark</div>
-          <div className={styles.sourceInactive}>Leatherback</div>
-          <div className={styles.sourceInactive}>Elephant seal</div>
+          {SOURCES.map((s) => (
+            <button
+              key={s.id}
+              className={activeSource === s.id ? styles.sourceActive : styles.sourceInactive}
+              onClick={() => handleSourceChange(s.id)}
+            >
+              <div>{s.label}</div>
+              <div className={styles.sourceLabel}>{s.sub}</div>
+            </button>
+          ))}
         </nav>
 
         {/* Map area — show the actual render PNG */}
@@ -95,8 +125,8 @@ export function Dashboard() {
           {selectedDate ? (
             <img
               className={styles.heatmap}
-              src={`/renders/north-atlantic-sst/${selectedDate}.png`}
-              alt={`SST ${selectedDate}`}
+              src={`/renders/${activeSource}/${selectedDate}.png`}
+              alt={`${activeSource} ${selectedDate}`}
               onMouseMove={(e) => {
                 const latRange = meta?.lat_range ?? [20, 75];
                 const lonRange = meta?.lon_range ?? [-90, 10];

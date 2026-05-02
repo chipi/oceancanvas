@@ -72,24 +72,37 @@
   flex-shrink: 0;
 }
 
-.sourceActive {
+.sourceActive,
+.sourceInactive {
   font-size: 11px;
-  font-weight: 500;
-  color: var(--domain-sst-accent);
   letter-spacing: 0.04em;
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  text-align: left;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.sourceActive {
+  font-weight: 600;
+  color: var(--intent-teal);
+  border-left-color: var(--intent-teal);
+}
+
+.sourceInactive {
+  color: var(--text-muted);
+}
+.sourceInactive:hover {
+  color: var(--text-secondary);
 }
 
 .sourceLabel {
   font-size: 9px;
   color: var(--text-muted);
   letter-spacing: 0.06em;
-  margin-top: -8px;
-}
-
-.sourceInactive {
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: default;
+  margin-top: 2px;
 }
 
 /* Map area */
