@@ -58,6 +58,11 @@ export function Gallery() {
             </button>
           ))}
         </div>
+        <nav className={styles.nav}>
+          <a href="/dashboard" className={styles.navLink}>dashboard</a>
+          <a href="/dashboard/oisst/explorer" className={styles.navLink}>data explorer</a>
+          <a href="/recipes/new" className={styles.navLink}>new recipe</a>
+        </nav>
       </header>
 
       {/* Masonry grid */}

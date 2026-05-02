@@ -61,6 +61,10 @@ export function Dashboard() {
           /sea surface temperature <span className={styles.topbarMuted}>⊓ NOAA OISST</span>
         </span>
         <span className={styles.topbarTime}>{latestDate || ''} / 06:00 UTC</span>
+        <nav className={styles.topbarNav}>
+          <a href="/" className={styles.topbarLink}>← gallery</a>
+          <a href="/dashboard/oisst/explorer" className={styles.topbarLink}>data explorer</a>
+        </nav>
       </header>
 
       <div className={styles.body}>

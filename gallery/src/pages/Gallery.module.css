@@ -29,6 +29,22 @@
   gap: 8px;
 }
 
+.nav {
+  display: flex;
+  gap: 16px;
+}
+
+.navLink {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
+}
+.navLink:hover {
+  color: var(--intent-teal);
+}
+
 .filter {
   font-size: 11px;
   padding: 4px 12px;
