@@ -394,6 +394,8 @@ export function VideoEditor() {
                     onChange={(e) => setAudioTheme(e.target.value)}
                   >
                     <option value="ocean">Ocean</option>
+                    <option value="dramatic">Dramatic</option>
+                    <option value="deep">Deep</option>
                     <option value="">Silent</option>
                   </select>
                 </div>
@@ -409,12 +411,14 @@ export function VideoEditor() {
                     className={styles.volumeSlider}
                   />
                 </div>
-                <div className={styles.field}>
-                  <span className={styles.fieldLabel}>Status</span>
-                  <span className={styles.fieldValue}>
-                    {audioReady ? '🔊 ready' : '⏳ loading...'}
-                  </span>
-                </div>
+                {audioTheme && (
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Status</span>
+                    <span className={styles.fieldValue}>
+                      {audioReady ? '🔊 ready' : '⏳ loading...'}
+                    </span>
+                  </div>
+                )}
               </>
             )}
           </div>
