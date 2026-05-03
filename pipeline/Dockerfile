@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs npm wget \
     chromium \
+    ffmpeg \
     libhdf5-dev libnetcdf-dev \
     && rm -rf /var/lib/apt/lists/*
 

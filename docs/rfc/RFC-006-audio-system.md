@@ -1,9 +1,9 @@
 # RFC-006 — Audio system design
 
-> **Status** · Draft v0.1 · April 2026
+> **Status** · Decided · closed 2026-05-03 → [ADR-026](../adr/ADR-026-audio-stem-system.md)
 > **TA anchor** · §components/render-system · §contracts (audio scalars in payload)
 > **Related** · PRD-005 Video Editor · RFC-002 Render payload format · RFC-007 Key moment detection
-> **Closes into** · Multiple ADRs (pending)
+> **Closes into** · [ADR-026](../adr/ADR-026-audio-stem-system.md)
 > **Why this is an RFC** · The audio system is the most ambitious piece of OceanCanvas's enrichment surface, and the one where "decoration vs. data" is hardest to get right (PRD-005 sharpest threat). Multiple plausible architectures exist with real trade-offs around fidelity, dependency cost, and authorship. This is the meatiest RFC in the system.
 
 ---

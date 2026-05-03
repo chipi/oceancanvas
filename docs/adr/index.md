@@ -48,6 +48,7 @@ If the decision needs deliberation first, write an [RFC](../rfc/index.md). If th
 | [ADR-023](ADR-023-pipeline-parallelisation.md) | Pipeline parallelisation and render concurrency | Accepted | §components/pipeline · §components/render-system |
 | [ADR-024](ADR-024-key-moment-detection.md) | Key moment detection algorithm | Accepted | §components/render-system |
 | [ADR-025](ADR-025-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Accepted | §components/pipeline · §constraints |
+| [ADR-026](ADR-026-audio-stem-system.md) | Audio stem system | Accepted | §components/render-system |
 
 ## State map
 

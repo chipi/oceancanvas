@@ -86,6 +86,7 @@ nav:
           - Pipeline Parallelisation: adr/ADR-023-pipeline-parallelisation.md
           - Key Moment Detection: adr/ADR-024-key-moment-detection.md
           - Recipe Lifecycle: adr/ADR-025-recipe-lifecycle.md
+          - Audio Stem System: adr/ADR-026-audio-stem-system.md
       - RFCs:
           - rfc/index.md
           - Recipe YAML: rfc/RFC-001-recipe-yaml-schema.md
