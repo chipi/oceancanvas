@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useManifest } from '../hooks/useManifest';
 import styles from './VideoEditor.module.css';
@@ -18,6 +18,8 @@ export function VideoEditor() {
 
   const [selectedFrame, setSelectedFrame] = useState(0);
   const [fps, setFps] = useState(12);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [overlays, setOverlays] = useState({
     date: true,
     anomaly: true,
@@ -28,21 +30,43 @@ export function VideoEditor() {
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const playRef = useRef<number | null>(null);
 
   const dates = entry?.dates || [];
   const currentDate = dates[selectedFrame] || '';
   const duration = dates.length / fps;
 
+  // Playback loop
+  useEffect(() => {
+    if (!isPlaying || dates.length === 0) return;
+    const interval = 1000 / (fps * playbackSpeed);
+    playRef.current = window.setInterval(() => {
+      setSelectedFrame((f) => {
+        if (f >= dates.length - 1) {
+          setIsPlaying(false);
+          return f;
+        }
+        return f + 1;
+      });
+    }, interval);
+    return () => { if (playRef.current) clearInterval(playRef.current); };
+  }, [isPlaying, fps, playbackSpeed, dates.length]);
+
+  const togglePlay = useCallback(() => {
+    if (selectedFrame >= dates.length - 1) setSelectedFrame(0);
+    setIsPlaying((p) => !p);
+  }, [selectedFrame, dates.length]);
+
   // Keyboard navigation
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') setSelectedFrame((f) => Math.max(0, f - 1));
-      if (e.key === 'ArrowRight') setSelectedFrame((f) => Math.min(dates.length - 1, f + 1));
-      if (e.key === ' ') { e.preventDefault(); /* playback toggle — future */ }
+      if (e.key === 'ArrowLeft') { setIsPlaying(false); setSelectedFrame((f) => Math.max(0, f - 1)); }
+      if (e.key === 'ArrowRight') { setIsPlaying(false); setSelectedFrame((f) => Math.min(dates.length - 1, f + 1)); }
+      if (e.key === ' ') { e.preventDefault(); togglePlay(); }
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [dates.length]);
+  }, [dates.length, togglePlay]);
 
   const handleExport = useCallback(async () => {
     if (!recipe) return;
@@ -119,11 +143,20 @@ export function VideoEditor() {
       <div className={styles.body}>
         {/* Preview area */}
         <div className={styles.preview}>
-          <img
-            className={styles.previewImage}
-            src={`/renders/${recipe}/${currentDate}.png`}
-            alt={`${recipe} ${currentDate}`}
-          />
+          {exportState.status === 'done' ? (
+            <video
+              className={styles.previewVideo}
+              src={`/api/export/${recipe}/download`}
+              controls
+              autoPlay
+            />
+          ) : (
+            <img
+              className={styles.previewImage}
+              src={`/renders/${recipe}/${currentDate}.png`}
+              alt={`${recipe} ${currentDate}`}
+            />
+          )}
           <div className={styles.previewOverlay}>
             <span className={styles.previewDate}>{currentDate}</span>
             <span className={styles.previewFrame}>
@@ -131,15 +164,33 @@ export function VideoEditor() {
             </span>
           </div>
 
-          {/* Timeline ribbon */}
+          {/* Playback controls + timeline ribbon */}
           <div className={styles.ribbon}>
+            <div className={styles.playControls}>
+              <button className={styles.playBtn} onClick={togglePlay}>
+                {isPlaying ? '⏸' : '▶'}
+              </button>
+              <select
+                className={styles.speedSelect}
+                value={playbackSpeed}
+                onChange={(e) => setPlaybackSpeed(parseFloat(e.target.value))}
+              >
+                <option value={0.5}>0.5x</option>
+                <option value={1}>1x</option>
+                <option value={2}>2x</option>
+                <option value={4}>4x</option>
+              </select>
+              <span className={styles.playTime}>
+                {(selectedFrame / fps).toFixed(1)}s / {duration.toFixed(1)}s
+              </span>
+            </div>
             <input
               type="range"
               min={0}
               max={dates.length - 1}
               value={selectedFrame}
               className={styles.ribbonSlider}
-              onChange={(e) => setSelectedFrame(parseInt(e.target.value, 10))}
+              onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
             />
             <div className={styles.ribbonLabels}>
               <span>{dates[0]?.substring(0, 4)}</span>

@@ -106,11 +106,51 @@
   color: var(--text-muted);
 }
 
+.previewVideo {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: #000;
+}
+
 /* Timeline ribbon */
 .ribbon {
   padding: 8px 16px 12px;
   background: var(--surface);
   border-top: 1px solid var(--border);
+}
+
+.playControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.playBtn {
+  background: rgba(93, 202, 165, 0.15);
+  border: 1px solid rgba(93, 202, 165, 0.3);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.playBtn:hover { background: rgba(93, 202, 165, 0.25); }
+
+.speedSelect {
+  background: rgba(93, 202, 165, 0.1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.playTime {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
 }
 
 .ribbonSlider {
