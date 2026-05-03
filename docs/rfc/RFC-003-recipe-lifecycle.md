@@ -1,9 +1,9 @@
 # RFC-003 — Recipe lifecycle on source unavailability
 
-> **Status** · Draft v0.1 · April 2026
+> **Status** · Decided · closed 2026-05-03 → [ADR-025](../adr/ADR-025-recipe-lifecycle.md)
 > **TA anchor** · §components/pipeline · §constraints (determinism, attribution)
 > **Related** · PRD-001 Recipe · OC-03 Data Catalog
-> **Closes into** · ADR (pending)
+> **Closes into** · [ADR-025](../adr/ADR-025-recipe-lifecycle.md)
 > **Why this is an RFC** · Recipes are durable — they run forever once authored (PA §principles/recipes-are-durable). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do *something*. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.
 
 ---

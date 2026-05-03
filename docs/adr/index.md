@@ -46,6 +46,8 @@ If the decision needs deliberation first, write an [RFC](../rfc/index.md). If th
 | [ADR-021](ADR-021-yaml-round-tripping.md) | YAML round-tripping | Accepted | §contracts/recipe-yaml · §components/web-frontend |
 | [ADR-022](ADR-022-cli-entry-point.md) | CLI entry point, invocation model, dependencies | Accepted | §components/pipeline · §stack |
 | [ADR-023](ADR-023-pipeline-parallelisation.md) | Pipeline parallelisation and render concurrency | Accepted | §components/pipeline · §components/render-system |
+| [ADR-024](ADR-024-key-moment-detection.md) | Key moment detection algorithm | Accepted | §components/render-system |
+| [ADR-025](ADR-025-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Accepted | §components/pipeline · §constraints |
 
 ## State map
 

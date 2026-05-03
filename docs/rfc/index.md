@@ -25,11 +25,11 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 |---|---|---|---|---|
 | [RFC-001](RFC-001-recipe-yaml-schema.md) | Recipe YAML schema | Decided | [ADR-018](../adr/ADR-018-recipe-yaml-schema.md) | §contracts/recipe-yaml |
 | [RFC-002](RFC-002-render-payload-format.md) | Render payload format | Decided | ADR-008 + [ADR-019](../adr/ADR-019-render-payload-schema.md) | §contracts/render-payload |
-| [RFC-003](RFC-003-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Draft v0.1 | ADR (pending) | §components/pipeline · §constraints |
+| [RFC-003](RFC-003-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Decided | [ADR-025](../adr/ADR-025-recipe-lifecycle.md) | §components/pipeline · §constraints |
 | [RFC-004](RFC-004-live-preview-architecture.md) | Live preview architecture | Decided | [ADR-020](../adr/ADR-020-live-preview-architecture.md) | §components/render-system · §components/web-frontend |
 | [RFC-005](RFC-005-yaml-round-tripping.md) | YAML round-tripping | Decided | [ADR-021](../adr/ADR-021-yaml-round-tripping.md) | §contracts/recipe-yaml |
 | [RFC-006](RFC-006-audio-system.md) | Audio system design | Draft v0.1 | Multiple ADRs (pending) | §components/render-system |
-| [RFC-007](RFC-007-key-moment-detection.md) | Key moment detection | Draft v0.1 | ADR (pending) | §components/render-system |
+| [RFC-007](RFC-007-key-moment-detection.md) | Key moment detection | Decided | [ADR-024](../adr/ADR-024-key-moment-detection.md) | §components/render-system |
 | [RFC-008](RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](../adr/ADR-023-pipeline-parallelisation.md) | §components/pipeline |
 | [RFC-009](RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](../adr/ADR-022-cli-entry-point.md) | §components/pipeline |
 

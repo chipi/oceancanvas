@@ -84,6 +84,8 @@ nav:
           - YAML Round-tripping: adr/ADR-021-yaml-round-tripping.md
           - CLI Entry Point: adr/ADR-022-cli-entry-point.md
           - Pipeline Parallelisation: adr/ADR-023-pipeline-parallelisation.md
+          - Key Moment Detection: adr/ADR-024-key-moment-detection.md
+          - Recipe Lifecycle: adr/ADR-025-recipe-lifecycle.md
       - RFCs:
           - rfc/index.md
           - Recipe YAML: rfc/RFC-001-recipe-yaml-schema.md
