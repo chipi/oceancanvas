@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useManifest } from '../hooks/useManifest';
+import { type MomentEvent, detectMoments } from '../lib/moments';
 import styles from './VideoEditor.module.css';
 
 interface ExportState {
@@ -30,11 +31,35 @@ export function VideoEditor() {
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const [moments, setMoments] = useState<MomentEvent[]>([]);
+  // intensity array available for future audio crossfading UI
+  const [, setIntensity] = useState<number[]>([]);
   const playRef = useRef<number | null>(null);
 
   const dates = entry?.dates || [];
   const currentDate = dates[selectedFrame] || '';
   const duration = dates.length / fps;
+
+  // Load time series and compute key moments
+  useEffect(() => {
+    if (!entry) return;
+    const source = entry.source || 'oisst';
+    const sourceDir = source === 'oisst' ? 'oisst' : source;
+    // Try time-series.json (non-OISST) or sst-monthly-series.json (OISST)
+    const url = source === 'oisst'
+      ? '/data/processed/oisst/sst-monthly-series.json'
+      : `/data/processed/${sourceDir}/time-series.json`;
+
+    fetch(url)
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((series: Array<{mean?: number; count?: number}>) => {
+        const values = series.map((d) => d.mean ?? d.count ?? 0);
+        const signal = detectMoments(values);
+        setMoments(signal.events);
+        setIntensity(signal.intensity);
+      })
+      .catch(() => { setMoments([]); setIntensity([]); });
+  }, [entry?.source]);
 
   // Playback loop
   useEffect(() => {
@@ -184,14 +209,29 @@ export function VideoEditor() {
                 {(selectedFrame / fps).toFixed(1)}s / {duration.toFixed(1)}s
               </span>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={dates.length - 1}
-              value={selectedFrame}
-              className={styles.ribbonSlider}
-              onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
-            />
+            <div className={styles.ribbonTrack}>
+              <input
+                type="range"
+                min={0}
+                max={dates.length - 1}
+                value={selectedFrame}
+                className={styles.ribbonSlider}
+                onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
+              />
+              {/* Key moment markers */}
+              {moments.map((m) => (
+                <div
+                  key={m.frame}
+                  className={styles.momentMarker}
+                  style={{
+                    left: `${(m.frame / Math.max(1, dates.length - 1)) * 100}%`,
+                    backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666',
+                  }}
+                  title={`${m.label} (frame ${m.frame})`}
+                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                />
+              ))}
+            </div>
             <div className={styles.ribbonLabels}>
               <span>{dates[0]?.substring(0, 4)}</span>
               <span>{dates[Math.floor(dates.length / 2)]?.substring(0, 4)}</span>
@@ -246,6 +286,30 @@ export function VideoEditor() {
               </label>
             ))}
           </div>
+
+          {/* Key moments */}
+          {moments.length > 0 && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>KEY MOMENTS ({moments.length})</div>
+              {moments.slice(0, 10).map((m) => (
+                <div
+                  key={m.frame}
+                  className={styles.momentRow}
+                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                >
+                  <span
+                    className={styles.momentDot}
+                    style={{ backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666' }}
+                  />
+                  <span className={styles.momentLabel}>{m.label}</span>
+                  <span className={styles.momentFrame}>fr.{m.frame}</span>
+                </div>
+              ))}
+              {moments.length > 10 && (
+                <div className={styles.momentMore}>+{moments.length - 10} more</div>
+              )}
+            </div>
+          )}
 
           {/* Export status */}
           {exportState.status !== 'idle' && (
