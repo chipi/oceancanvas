@@ -1,0 +1,89 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.canvas {
+  width: 100%;
+  height: 50px;
+  background: rgba(93, 202, 165, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: crosshair;
+  outline: none;
+  display: block;
+}
+
+.canvas:focus-visible {
+  border-color: var(--intent-teal);
+  box-shadow: 0 0 0 1px var(--intent-teal) inset;
+}
+
+.canvasDisabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.midline {
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.curve {
+  stroke: rgba(93, 202, 165, 0.85);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.handle {
+  fill: var(--intent-info, #5DCAA5);
+  stroke: var(--canvas, #030B10);
+  stroke-width: 1.5;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pill {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.pill:hover {
+  color: var(--text-secondary);
+  border-color: var(--text-muted);
+}
+
+.pillActive {
+  color: var(--intent-teal);
+  border-color: var(--intent-teal);
+  background: rgba(93, 202, 165, 0.06);
+}
+
+.pinRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.pinRow input[type='checkbox'] {
+  accent-color: var(--intent-teal);
+  cursor: pointer;
+}
