@@ -32,6 +32,7 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 | [RFC-007](RFC-007-key-moment-detection.md) | Key moment detection | Decided | [ADR-024](../adr/ADR-024-key-moment-detection.md) | §components/render-system |
 | [RFC-008](RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](../adr/ADR-023-pipeline-parallelisation.md) | §components/pipeline |
 | [RFC-009](RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](../adr/ADR-022-cli-entry-point.md) | §components/pipeline |
+| [RFC-010](RFC-010-generative-audio-composition.md) | Generative audio composition | Draft v0.1 | ADR (pending — supersedes ADR-026) | §components/render-system |
 
 ## State map
 
