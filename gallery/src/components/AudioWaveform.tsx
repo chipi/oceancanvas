@@ -93,7 +93,20 @@ export function AudioWaveform({ channels, width = 280, height = 80, isPlaying }:
     };
   }, [channels, width, height, isPlaying]);
 
-  return <canvas ref={canvasRef} className="audio-waveform" />;
+  return (
+    <div style={{ position: 'relative' }}>
+      <canvas ref={canvasRef} />
+      <div style={{
+        position: 'absolute', bottom: 4, right: 6,
+        display: 'flex', gap: 8, fontSize: 8, letterSpacing: '0.04em',
+      }}>
+        <span style={{ color: 'rgba(93,202,165,0.7)' }}>drone</span>
+        <span style={{ color: 'rgba(239,159,39,0.6)' }}>pulse</span>
+        <span style={{ color: 'rgba(216,90,48,0.9)' }}>accent</span>
+        <span style={{ color: 'rgba(93,202,165,0.25)' }}>texture</span>
+      </div>
+    </div>
+  );
 }
 
 function drawWave(
