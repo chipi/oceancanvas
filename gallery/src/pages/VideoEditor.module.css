@@ -58,6 +58,19 @@
 .exportBtn:hover { opacity: 0.9; }
 .exportBtn:disabled { opacity: 0.5; cursor: default; }
 
+.downloadBtn {
+  font-size: 11px;
+  padding: 5px 16px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--intent-teal);
+  border: 1px solid var(--intent-teal);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.downloadBtn:hover { background: rgba(93, 202, 165, 0.1); }
+
 .empty {
   padding: 60px;
   text-align: center;
@@ -155,7 +168,6 @@
 
 .ribbonTrack {
   position: relative;
-  margin-bottom: 4px;
 }
 
 .ribbonSlider {
@@ -180,12 +192,10 @@
   transform: translateX(-3px) scale(1.5);
 }
 
-.ribbonLabels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 9px;
+.ribbonYear {
+  font-size: 10px;
   color: var(--text-muted);
-  margin-top: 4px;
+  letter-spacing: 0.04em;
 }
 
 /* Control panel */
@@ -235,6 +245,17 @@
   padding: 3px 8px;
   border-radius: 4px;
   font-size: 12px;
+}
+
+.audioReady {
+  font-size: 11px;
+  color: var(--intent-teal);
+  font-weight: 500;
+}
+
+.audioLoading {
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .volumeSlider {

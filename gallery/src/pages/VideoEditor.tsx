@@ -245,22 +245,21 @@ export function VideoEditor() {
         </span>
         <div className={styles.topbarActions}>
           <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← gallery</a>
-          {exportState.status === 'done' ? (
+          <button
+            className={styles.exportBtn}
+            onClick={handleExport}
+            disabled={exportState.status === 'exporting'}
+          >
+            {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
+          </button>
+          {exportState.status === 'done' && (
             <a
               href={`/api/export/${recipe}/download`}
-              className={styles.exportBtn}
+              className={styles.downloadBtn}
               download
             >
-              download MP4
+              download
             </a>
-          ) : (
-            <button
-              className={styles.exportBtn}
-              onClick={handleExport}
-              disabled={exportState.status === 'exporting'}
-            >
-              {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
-            </button>
           )}
         </div>
       </header>
@@ -290,7 +289,7 @@ export function VideoEditor() {
             </span>
           </div>
 
-          {/* Playback controls + timeline ribbon */}
+          {/* Timeline ribbon + controls */}
           <div className={styles.ribbon}>
             <div className={styles.playControls}>
               <button className={styles.playBtn} onClick={togglePlay}>
@@ -306,9 +305,11 @@ export function VideoEditor() {
                 <option value={2}>2x</option>
                 <option value={4}>4x</option>
               </select>
+              <span className={styles.ribbonYear}>{dates[0]?.substring(0, 4)}</span>
               <span className={styles.playTime}>
                 {(selectedFrame / fps).toFixed(1)}s / {duration.toFixed(1)}s
               </span>
+              <span className={styles.ribbonYear}>{dates[dates.length - 1]?.substring(0, 4)}</span>
             </div>
             <div className={styles.ribbonTrack}>
               <input
@@ -319,7 +320,6 @@ export function VideoEditor() {
                 className={styles.ribbonSlider}
                 onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
               />
-              {/* Key moment markers */}
               {moments.map((m) => (
                 <div
                   key={m.frame}
@@ -332,11 +332,6 @@ export function VideoEditor() {
                   onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
                 />
               ))}
-            </div>
-            <div className={styles.ribbonLabels}>
-              <span>{dates[0]?.substring(0, 4)}</span>
-              <span>{dates[Math.floor(dates.length / 2)]?.substring(0, 4)}</span>
-              <span>{dates[dates.length - 1]?.substring(0, 4)}</span>
             </div>
           </div>
         </div>
@@ -414,8 +409,8 @@ export function VideoEditor() {
                 {audioTheme && (
                   <div className={styles.field}>
                     <span className={styles.fieldLabel}>Status</span>
-                    <span className={styles.fieldValue}>
-                      {audioReady ? '🔊 ready' : '⏳ loading...'}
+                    <span className={audioReady ? styles.audioReady : styles.audioLoading}>
+                      {audioReady ? 'ready' : 'loading...'}
                     </span>
                   </div>
                 )}
