@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const STEM_URLS = [
   'stem_0_calm.mp3',
@@ -10,7 +10,7 @@ const STEM_URLS = [
 
 /**
  * Audio playback hook — plays stems using HTML5 Audio elements.
- * All stems loop simultaneously; volume crossfades based on intensity.
+ * Returns master volume state + setter for UI control.
  */
 export function useAudioPlayback(
   theme: string,
@@ -20,12 +20,13 @@ export function useAudioPlayback(
   currentFrame: number,
 ) {
   const audiosRef = useRef<HTMLAudioElement[]>([]);
-  const readyRef = useRef(false);
+  const [masterVolume, setMasterVolume] = useState(0.7);
+  const [audioReady, setAudioReady] = useState(false);
 
   // Create audio elements once
   useEffect(() => {
     if (!enabled || !theme) {
-      readyRef.current = false;
+      setAudioReady(false);
       return;
     }
 
@@ -38,12 +39,15 @@ export function useAudioPlayback(
     });
     audiosRef.current = audios;
 
-    // Wait for all to be loadable
     let loaded = 0;
     audios.forEach((a) => {
       a.addEventListener('canplaythrough', () => {
         loaded++;
-        if (loaded === audios.length) readyRef.current = true;
+        if (loaded === audios.length) setAudioReady(true);
+      }, { once: true });
+      // Also handle load errors
+      a.addEventListener('error', () => {
+        console.warn('Audio stem failed to load:', a.src);
       }, { once: true });
     });
 
@@ -53,37 +57,51 @@ export function useAudioPlayback(
         a.src = '';
       });
       audiosRef.current = [];
-      readyRef.current = false;
+      setAudioReady(false);
     };
   }, [theme, enabled]);
 
-  // Play/pause all stems together
+  // Play/pause + set initial volume
   useEffect(() => {
     const audios = audiosRef.current;
     if (!audios.length) return;
 
     if (isPlaying) {
+      // Set initial volumes before playing
+      const level = intensity[currentFrame] ?? 0;
+      updateVolumes(audios, level, masterVolume);
+
       audios.forEach((a) => {
-        a.play().catch(() => {});
+        a.play().catch((err) => {
+          console.warn('Audio play blocked:', err.message);
+        });
       });
     } else {
       audios.forEach((a) => a.pause());
     }
-  }, [isPlaying]);
+  }, [isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Crossfade volumes based on intensity
+  // Crossfade volumes on frame change
   useEffect(() => {
     const audios = audiosRef.current;
-    if (!audios.length) return;
+    if (!audios.length || !isPlaying) return;
 
     const level = intensity[currentFrame] ?? 0;
-    const count = audios.length;
-    const active = Math.min(count - 1, Math.floor(level * count));
+    updateVolumes(audios, level, masterVolume);
+  }, [currentFrame, intensity, masterVolume, isPlaying]);
 
-    audios.forEach((a, i) => {
-      if (i === active) a.volume = 0.7;
-      else if (Math.abs(i - active) === 1) a.volume = 0.15;
-      else a.volume = 0;
-    });
-  }, [currentFrame, intensity]);
+  return { masterVolume, setMasterVolume, audioReady };
+}
+
+function updateVolumes(audios: HTMLAudioElement[], level: number, master: number) {
+  const count = audios.length;
+  const active = Math.min(count - 1, Math.floor(level * count));
+
+  audios.forEach((a, i) => {
+    let stemVol: number;
+    if (i === active) stemVol = 1.0;
+    else if (Math.abs(i - active) === 1) stemVol = 0.2;
+    else stemVol = 0;
+    a.volume = Math.min(1, stemVol * master);
+  });
 }

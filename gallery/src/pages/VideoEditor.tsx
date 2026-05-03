@@ -130,7 +130,9 @@ export function VideoEditor() {
   const duration = dates.length / fps;
 
   // Audio playback — stems crossfade based on intensity signal
-  useAudioPlayback(audioTheme, audioEnabled, isPlaying, intensity, selectedFrame);
+  const { masterVolume, setMasterVolume, audioReady } = useAudioPlayback(
+    audioTheme, audioEnabled, isPlaying, intensity, selectedFrame,
+  );
 
   // Load time series and compute key moments
   useEffect(() => {
@@ -385,17 +387,37 @@ export function VideoEditor() {
               <span>Enable audio</span>
             </label>
             {audioEnabled && (
-              <div className={styles.field}>
-                <span className={styles.fieldLabel}>Theme</span>
-                <select
-                  className={styles.select}
-                  value={audioTheme}
-                  onChange={(e) => setAudioTheme(e.target.value)}
-                >
-                  <option value="ocean">Ocean</option>
-                  <option value="">Silent</option>
-                </select>
-              </div>
+              <>
+                <div className={styles.field}>
+                  <span className={styles.fieldLabel}>Theme</span>
+                  <select
+                    className={styles.select}
+                    value={audioTheme}
+                    onChange={(e) => setAudioTheme(e.target.value)}
+                  >
+                    <option value="ocean">Ocean</option>
+                    <option value="">Silent</option>
+                  </select>
+                </div>
+                <div className={styles.field}>
+                  <span className={styles.fieldLabel}>Volume</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={masterVolume}
+                    onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
+                    className={styles.volumeSlider}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <span className={styles.fieldLabel}>Status</span>
+                  <span className={styles.fieldValue}>
+                    {audioReady ? '🔊 ready' : '⏳ loading...'}
+                  </span>
+                </div>
+              </>
             )}
           </div>
 

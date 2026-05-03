@@ -237,6 +237,12 @@
   font-size: 12px;
 }
 
+.volumeSlider {
+  width: 100px;
+  accent-color: #5DCAA5;
+  height: 4px;
+}
+
 .overlayRow {
   display: flex;
   align-items: center;
