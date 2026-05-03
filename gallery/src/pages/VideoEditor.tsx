@@ -289,8 +289,49 @@ export function VideoEditor() {
             </span>
           </div>
 
-          {/* Timeline ribbon + controls */}
+          {/* Timeline ribbon */}
           <div className={styles.ribbon}>
+            {/* Year ticks + key moment markers above the slider */}
+            <div className={styles.ribbonAnnotations}>
+              {/* Year labels at evenly spaced positions */}
+              {(() => {
+                const yearSet = new Set<string>();
+                const ticks: Array<{year: string; pct: number}> = [];
+                for (let i = 0; i < dates.length; i++) {
+                  const y = dates[i]?.substring(0, 4);
+                  if (y && !yearSet.has(y) && parseInt(y) % 5 === 0) {
+                    yearSet.add(y);
+                    ticks.push({ year: y, pct: (i / Math.max(1, dates.length - 1)) * 100 });
+                  }
+                }
+                return ticks.map((t) => (
+                  <span key={t.year} className={styles.yearTick} style={{ left: `${t.pct}%` }}>{t.year}</span>
+                ));
+              })()}
+              {/* Key moment markers */}
+              {moments.map((m) => (
+                <div
+                  key={m.frame}
+                  className={styles.momentMarker}
+                  style={{
+                    left: `${(m.frame / Math.max(1, dates.length - 1)) * 100}%`,
+                    backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666',
+                  }}
+                  title={`${m.label} (frame ${m.frame})`}
+                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                />
+              ))}
+            </div>
+            {/* Slider */}
+            <input
+              type="range"
+              min={0}
+              max={dates.length - 1}
+              value={selectedFrame}
+              className={styles.ribbonSlider}
+              onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
+            />
+            {/* Playback controls below */}
             <div className={styles.playControls}>
               <button className={styles.playBtn} onClick={togglePlay}>
                 {isPlaying ? '⏸' : '▶'}
@@ -305,33 +346,10 @@ export function VideoEditor() {
                 <option value={2}>2x</option>
                 <option value={4}>4x</option>
               </select>
-              <span className={styles.ribbonYear}>{dates[0]?.substring(0, 4)}</span>
+              <span className={styles.playDate}>{currentDate}</span>
               <span className={styles.playTime}>
                 {(selectedFrame / fps).toFixed(1)}s / {duration.toFixed(1)}s
               </span>
-              <span className={styles.ribbonYear}>{dates[dates.length - 1]?.substring(0, 4)}</span>
-            </div>
-            <div className={styles.ribbonTrack}>
-              <input
-                type="range"
-                min={0}
-                max={dates.length - 1}
-                value={selectedFrame}
-                className={styles.ribbonSlider}
-                onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
-              />
-              {moments.map((m) => (
-                <div
-                  key={m.frame}
-                  className={styles.momentMarker}
-                  style={{
-                    left: `${(m.frame / Math.max(1, dates.length - 1)) * 100}%`,
-                    backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666',
-                  }}
-                  title={`${m.label} (frame ${m.frame})`}
-                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
-                />
-              ))}
             </div>
           </div>
         </div>
