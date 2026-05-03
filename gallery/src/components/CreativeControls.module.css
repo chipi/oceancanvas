@@ -64,12 +64,12 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  max-width: 100%;
+  max-width: 200px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 2px;
   cursor: crosshair;
-  margin: 8px 0 24px;
+  margin: 8px auto 12px;
 }
 
 .quadrantGrid {
