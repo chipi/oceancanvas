@@ -64,8 +64,10 @@ gallery-lint: ## Lint gallery code
 gallery-test: ## Run gallery tests
 	cd gallery && npx vitest run
 
-gallery-dev: ## Start Vite dev server + save server
-	RECIPES_DIR=$$PWD/recipes node gallery/server/save-recipe.mjs & cd gallery && npx vite
+gallery-dev: ## Start Vite dev server + save server + export server
+	RECIPES_DIR=$$PWD/recipes node gallery/server/save-recipe.mjs & \
+	RENDERS_DIR=$$PWD/renders RECIPES_DIR=$$PWD/recipes DATA_DIR=$$PWD/data EXPORT_PORT=3002 PIPELINE_DIR=$$PWD/pipeline node gallery/server/export-video.mjs & \
+	cd gallery && npx vite
 
 gallery-build: ## Build gallery for production
 	cp pipeline/src/oceancanvas/schemas/recipe-schema.json gallery/src/schemas/

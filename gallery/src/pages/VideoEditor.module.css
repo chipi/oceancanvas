@@ -248,6 +248,13 @@
 }
 .overlayRow input { accent-color: #5DCAA5; }
 
+.overlayNote {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
 .momentRow {
   display: flex;
   align-items: center;

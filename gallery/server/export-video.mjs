@@ -17,7 +17,11 @@ import { existsSync, statSync, createReadStream } from 'node:fs';
 import { join } from 'node:path';
 
 const RENDERS_DIR = process.env.RENDERS_DIR || '/renders';
+const RECIPES_DIR = process.env.RECIPES_DIR || '/recipes';
+const DATA_DIR = process.env.DATA_DIR || '/data';
 const PORT = parseInt(process.env.EXPORT_PORT || '3002', 10);
+// In dev, use uv run from pipeline dir; in Docker, oceancanvas is in PATH
+const PIPELINE_DIR = process.env.PIPELINE_DIR || join(import.meta.dirname, '..', '..', 'pipeline');
 
 const server = createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,16 +47,20 @@ const server = createServer(async (req, res) => {
       const fps = opts.fps || 12;
       const outputPath = join(RENDERS_DIR, `${recipe}.mp4`);
 
-      // Spawn the CLI command
-      const proc = spawn('oceancanvas', [
-        'export-video',
-        '--recipe', recipe,
-        '--fps', String(fps),
-        '--output', outputPath,
-      ], {
+      // Spawn the CLI command — use uv run in dev, oceancanvas directly in Docker
+      const useUv = !process.env.DOCKER;
+      const cmd = useUv ? 'uv' : 'oceancanvas';
+      const args = useUv
+        ? ['run', 'oceancanvas', 'export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath]
+        : ['export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath];
+
+      const proc = spawn(cmd, args, {
+        cwd: useUv ? PIPELINE_DIR : undefined,
         env: {
           ...process.env,
           RENDERS_DIR,
+          RECIPES_DIR,
+          DATA_DIR,
         },
       });
 

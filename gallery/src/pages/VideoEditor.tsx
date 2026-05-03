@@ -21,13 +21,10 @@ export function VideoEditor() {
   const [fps, setFps] = useState(12);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [audioTheme, setAudioTheme] = useState('ocean');
   const [overlays, setOverlays] = useState({
     date: true,
-    anomaly: true,
-    events: true,
-    record: true,
-    sparkline: true,
-    ribbon: true,
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
@@ -100,7 +97,10 @@ export function VideoEditor() {
       const resp = await fetch(`/api/export/${recipe}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fps }),
+        body: JSON.stringify({
+          fps,
+          audio_theme: audioEnabled ? audioTheme : null,
+        }),
       });
       const result = await resp.json();
       if (result.ok) {
@@ -272,9 +272,36 @@ export function VideoEditor() {
             </div>
           </div>
 
-          {/* Overlays */}
+          {/* Audio */}
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>OVERLAYS</div>
+            <div className={styles.sectionTitle}>AUDIO</div>
+            <label className={styles.overlayRow}>
+              <input
+                type="checkbox"
+                checked={audioEnabled}
+                onChange={() => setAudioEnabled((e) => !e)}
+              />
+              <span>Enable audio</span>
+            </label>
+            {audioEnabled && (
+              <div className={styles.field}>
+                <span className={styles.fieldLabel}>Theme</span>
+                <select
+                  className={styles.select}
+                  value={audioTheme}
+                  onChange={(e) => setAudioTheme(e.target.value)}
+                >
+                  <option value="ocean">Ocean</option>
+                  <option value="">Silent</option>
+                </select>
+              </div>
+            )}
+          </div>
+
+          {/* Overlays — what gets baked into export */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>EXPORT OVERLAYS</div>
+            <div className={styles.overlayNote}>Baked into exported MP4</div>
             {Object.entries(overlays).map(([key, enabled]) => (
               <label key={key} className={styles.overlayRow}>
                 <input
@@ -282,7 +309,7 @@ export function VideoEditor() {
                   checked={enabled}
                   onChange={() => toggleOverlay(key)}
                 />
-                <span>{key}</span>
+                <span>{key === 'date' ? 'Date stamp' : 'Source attribution'}</span>
               </label>
             ))}
           </div>
