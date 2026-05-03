@@ -815,6 +815,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1508,6 +1512,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-024-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moment Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-025-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2122,10 +2182,10 @@
 
 <h1 id="rfc-007-key-moment-detection">RFC-007 — Key moment detection</h1>
 <blockquote>
-<p><strong>Status</strong> · Draft v0.1 · April 2026
+<p><strong>Status</strong> · Decided · closed 2026-05-03 → <a href="../../adr/ADR-024-key-moment-detection/">ADR-024</a>
 <strong>TA anchor</strong> · §components/render-system · §contracts (audio scalars in payload)
 <strong>Related</strong> · PRD-005 Video Editor · RFC-006 Audio system
-<strong>Closes into</strong> · ADR (pending)
+<strong>Closes into</strong> · <a href="../../adr/ADR-024-key-moment-detection/">ADR-024</a>
 <strong>Why this is an RFC</strong> · Audio swells and overlay markers must fire at the same frames — when the music swells, the record-flash appears, the anomaly bar peaks. PRD-005's sharpest threat (audio reads as decorative) is defeated specifically when the visual and audio events are demonstrably synchronised. They share a single per-frame intensity signal. The algorithm that produces that signal is open: multiple plausible approaches, each detecting different kinds of "moment."</p>
 </blockquote>
 <hr />

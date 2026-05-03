@@ -815,6 +815,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1508,6 +1512,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-024-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moment Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-025-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2122,10 +2182,10 @@
 
 <h1 id="rfc-003-recipe-lifecycle-on-source-unavailability">RFC-003 — Recipe lifecycle on source unavailability</h1>
 <blockquote>
-<p><strong>Status</strong> · Draft v0.1 · April 2026
+<p><strong>Status</strong> · Decided · closed 2026-05-03 → <a href="../../adr/ADR-025-recipe-lifecycle/">ADR-025</a>
 <strong>TA anchor</strong> · §components/pipeline · §constraints (determinism, attribution)
 <strong>Related</strong> · PRD-001 Recipe · OC-03 Data Catalog
-<strong>Closes into</strong> · ADR (pending)
+<strong>Closes into</strong> · <a href="../../adr/ADR-025-recipe-lifecycle/">ADR-025</a>
 <strong>Why this is an RFC</strong> · Recipes are durable — they run forever once authored (PA §principles/recipes-are-durable). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do <em>something</em>. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.</p>
 </blockquote>
 <hr />

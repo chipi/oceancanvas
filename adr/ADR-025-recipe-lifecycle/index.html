@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://chipi.github.io/oceancanvas/adr/ADR-001-prefect-orchestration/">
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/adr/ADR-025-recipe-lifecycle/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../ADR-024-key-moment-detection/">
       
       
-        <link rel="next" href="../ADR-002-dlt-rest-ingestion/">
+        <link rel="next" href="../../rfc/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Prefect - OceanCanvas</title>
+        <title>Recipe Lifecycle - OceanCanvas</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#adr-001-prefect-as-orchestration" class="md-skip">
+        <a href="#adr-025-recipe-lifecycle-on-source-unavailability" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prefect
+              Recipe Lifecycle
             
           </span>
         </div>
@@ -874,37 +874,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prefect
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ADR-001-prefect-orchestration/" class="md-nav__link">
         
   
   
@@ -920,92 +893,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Context
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rationale" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Rationale
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alternatives-considered" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Alternatives considered
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Consequences
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementation-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Implementation notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1659,10 +1546,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ADR-025-recipe-lifecycle/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1678,6 +1592,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rationale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2086,39 +2064,30 @@
   
 
 
-<h1 id="adr-001-prefect-as-orchestration">ADR-001 — Prefect as orchestration</h1>
+<h1 id="adr-025-recipe-lifecycle-on-source-unavailability">ADR-025 — Recipe lifecycle on source unavailability</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
-<strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/pipeline · §stack
-<strong>Related PRDs</strong> — PRD-001 Recipe (the pipeline executes recipes daily)</p>
+<strong>Date</strong> · 2026-05-03
+<strong>TA anchor</strong> · §components/pipeline · §constraints
+<strong>Related RFC</strong> · RFC-003 (closes)</p>
 </blockquote>
 <h2 id="context">Context</h2>
-<p>The pipeline is a six-task daily flow: discover → fetch → process → build payload → render → index. Each task can fail, retry, and produce intermediate artifacts. The system needs scheduling, retry policies, result caching, structured logging, and a UI for inspecting flow runs.</p>
-<p>OceanCanvas v1 has six tasks, not hundreds. The orchestrator must be light enough not to dominate the deployment but rich enough to give observability.</p>
+<p>When a data source becomes temporarily or permanently unavailable, the pipeline must handle gaps in the render timeline gracefully. The Video Editor must handle missing frames without misleading forward-fills.</p>
 <h2 id="decision">Decision</h2>
-<p>Use Prefect for orchestration. All pipeline tasks are <code>@task</code> functions; the daily run is a <code>@flow</code>. Prefect Server runs as a Docker Compose container with its own Postgres for state.</p>
-<h2 id="rationale">Rationale</h2>
-<p>Prefect's <code>@task</code> / <code>@flow</code> decorator model maps cleanly onto Python fetcher functions without rewriting them. Retry policies, result caching, and a UI at <code>localhost:4200</code> come built-in. Self-hosted Prefect Server keeps everything local — no external dependency.</p>
-<h2 id="alternatives-considered">Alternatives considered</h2>
+<p>Three-state lifecycle: <code>active</code> → <code>paused</code> → <code>broken</code>.</p>
 <ul>
-<li><strong>Airflow</strong> — designed for hundreds of tasks across enterprise pipelines. Too heavy for six tasks; the operational overhead of an Airflow deployment exceeds the value.</li>
-<li><strong>Bare cron</strong> — gives no retry, no caching, no logs, no UI. Acceptable at 1 task; insufficient at 6 and brittle as the project grows.</li>
-<li><strong>Prefect Cloud (managed)</strong> — adds an external dependency that breaks the self-hostable constraint (TA §constraints).</li>
+<li><strong>active</strong>: normal operation, pipeline fetches and renders daily</li>
+<li><strong>paused</strong>: single fetch failed; skip render for that date, retry next day; after 3 consecutive paused days, escalate to broken</li>
+<li><strong>broken</strong>: source permanently unavailable; pipeline stops attempting</li>
 </ul>
-<h2 id="consequences">Consequences</h2>
-<p><strong>Positive:</strong>
-- Retry, caching, observability come for free.
-- The <code>@task</code> decorator is non-invasive — fetcher functions remain testable in isolation.
-- Same compose.yml works locally and on the VPS.</p>
-<p><strong>Negative:</strong>
-- One more container in the stack (prefect-server + Postgres).
-- Engineers unfamiliar with Prefect need a brief on-ramp.</p>
+<p>No fallback rendering. Missing frames create visible gaps in timelapses, not misleading substitutions. The Video Editor skips missing frames rather than interpolating.</p>
+<h2 id="rationale">Rationale</h2>
+<p>Forward-filling (repeating the last frame) or interpolating between frames disguises data gaps as continuity. For a project about data integrity, visible gaps are honest. The 3-day escalation threshold balances transient outages against permanent failures.</p>
 <h2 id="implementation-notes">Implementation notes</h2>
 <ul>
-<li>Pipeline source code in <code>pipeline/</code>.</li>
-<li>Prefect Server container in <code>docker-compose.yml</code>.</li>
-<li>Daily schedule defined in <code>pipeline/src/oceancanvas/deploy.py</code> (uses <code>flow.serve()</code> with cron).</li>
+<li>Recipe state tracked in manifest.json (future: add <code>state</code> field per recipe)</li>
+<li>Video assembly (<code>video.py</code>) already skips missing PNGs in sequence</li>
+<li>Pipeline fetch tasks already have retry logic (3 retries with backoff)</li>
 </ul>
 
 

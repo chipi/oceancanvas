@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://chipi.github.io/oceancanvas/adr/ADR-001-prefect-orchestration/">
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/adr/ADR-024-key-moment-detection/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../ADR-023-pipeline-parallelisation/">
       
       
-        <link rel="next" href="../ADR-002-dlt-rest-ingestion/">
+        <link rel="next" href="../ADR-025-recipe-lifecycle/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Prefect - OceanCanvas</title>
+        <title>Key Moment Detection - OceanCanvas</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#adr-001-prefect-as-orchestration" class="md-skip">
+        <a href="#adr-024-key-moment-detection-algorithm" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prefect
+              Key Moment Detection
             
           </span>
         </div>
@@ -874,37 +874,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prefect
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ADR-001-prefect-orchestration/" class="md-nav__link">
         
   
   
@@ -920,92 +893,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Context
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rationale" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Rationale
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alternatives-considered" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Alternatives considered
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Consequences
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementation-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Implementation notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1631,10 +1518,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ADR-024-key-moment-detection/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moment Detection
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1650,6 +1564,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rationale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2086,39 +2064,31 @@
   
 
 
-<h1 id="adr-001-prefect-as-orchestration">ADR-001 — Prefect as orchestration</h1>
+<h1 id="adr-024-key-moment-detection-algorithm">ADR-024 — Key moment detection algorithm</h1>
 <blockquote>
 <p><strong>Status</strong> · Accepted
-<strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/pipeline · §stack
-<strong>Related PRDs</strong> — PRD-001 Recipe (the pipeline executes recipes daily)</p>
+<strong>Date</strong> · 2026-05-03
+<strong>TA anchor</strong> · §components/render-system
+<strong>Related RFC</strong> · RFC-007 (closes)</p>
 </blockquote>
 <h2 id="context">Context</h2>
-<p>The pipeline is a six-task daily flow: discover → fetch → process → build payload → render → index. Each task can fail, retry, and produce intermediate artifacts. The system needs scheduling, retry policies, result caching, structured logging, and a UI for inspecting flow runs.</p>
-<p>OceanCanvas v1 has six tasks, not hundreds. The orchestrator must be light enough not to dominate the deployment but rich enough to give observability.</p>
+<p>The Video Editor needs a per-frame intensity signal to drive audio crossfading and overlay markers. The signal must identify frames where something interesting happens in the data — anomalies, records, threshold crossings, trend reversals.</p>
 <h2 id="decision">Decision</h2>
-<p>Use Prefect for orchestration. All pipeline tasks are <code>@task</code> functions; the daily run is a <code>@flow</code>. Prefect Server runs as a Docker Compose container with its own Postgres for state.</p>
-<h2 id="rationale">Rationale</h2>
-<p>Prefect's <code>@task</code> / <code>@flow</code> decorator model maps cleanly onto Python fetcher functions without rewriting them. Retry policies, result caching, and a UI at <code>localhost:4200</code> come built-in. Self-hosted Prefect Server keeps everything local — no external dependency.</p>
-<h2 id="alternatives-considered">Alternatives considered</h2>
+<p>Four-detector weighted model producing a per-frame intensity [0.0–1.0]:</p>
 <ul>
-<li><strong>Airflow</strong> — designed for hundreds of tasks across enterprise pipelines. Too heavy for six tasks; the operational overhead of an Airflow deployment exceeds the value.</li>
-<li><strong>Bare cron</strong> — gives no retry, no caching, no logs, no UI. Acceptable at 1 task; insufficient at 6 and brittle as the project grows.</li>
-<li><strong>Prefect Cloud (managed)</strong> — adds an external dependency that breaks the self-hostable constraint (TA §constraints).</li>
+<li><strong>Peaks</strong> (w=0.4): z-score above mean, scaled to [0,1] at 2σ</li>
+<li><strong>Records</strong> (w=0.3): 1.0 when new all-time high, decaying after</li>
+<li><strong>Threshold</strong> (w=0.2): 1.0 on user-defined boundary crossing</li>
+<li><strong>Inflection</strong> (w=0.1): rate-of-change reversals</li>
 </ul>
-<h2 id="consequences">Consequences</h2>
-<p><strong>Positive:</strong>
-- Retry, caching, observability come for free.
-- The <code>@task</code> decorator is non-invasive — fetcher functions remain testable in isolation.
-- Same compose.yml works locally and on the VPS.</p>
-<p><strong>Negative:</strong>
-- One more container in the stack (prefect-server + Postgres).
-- Engineers unfamiliar with Prefect need a brief on-ramp.</p>
+<p>Temporal smoothing via 3-frame moving average. Events labelled when combined score exceeds 0.7.</p>
+<h2 id="rationale">Rationale</h2>
+<p>Records are weighted higher than peaks because they carry narrative meaning. Four detectors capture different aspects of "interesting" without over-relying on any one signal. Smoothing prevents single-frame jitter.</p>
 <h2 id="implementation-notes">Implementation notes</h2>
 <ul>
-<li>Pipeline source code in <code>pipeline/</code>.</li>
-<li>Prefect Server container in <code>docker-compose.yml</code>.</li>
-<li>Daily schedule defined in <code>pipeline/src/oceancanvas/deploy.py</code> (uses <code>flow.serve()</code> with cron).</li>
+<li>Module: <code>pipeline/src/oceancanvas/moments.py</code></li>
+<li>Tests: <code>pipeline/tests/unit/test_moments.py</code> (15 tests)</li>
+<li>Used by: Video Editor timeline ribbon + future audio crossfading</li>
 </ul>
 
 
