@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AudioWaveform } from '../components/AudioWaveform';
-import { useAudioPlayback } from '../hooks/useAudioPlayback';
+import { useGenerativeAudio } from '../hooks/useGenerativeAudio';
 import { useManifest } from '../hooks/useManifest';
+import { PRESET_GROUPS, AUDIO_PRESETS, getPreset, presetFromAudioParams, type AudioPreset } from '../lib/audioPresets';
+import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, type ChannelMix, type EqSettings } from '../lib/audioEngineTypes';
 import { type MomentEvent, detectMoments } from '../lib/moments';
+import { extractAudioParams } from '../lib/yamlParser';
 import styles from './VideoEditor.module.css';
 
 /** Extract truly significant moments — all-time records, decade highs/lows, major anomalies. */
@@ -116,24 +119,62 @@ export function VideoEditor() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [audioTheme, setAudioTheme] = useState('ocean');
+  // '' = silent, 'recipe' = use recipe's audio: block, otherwise = named preset override
+  const [audioTheme, setAudioTheme] = useState<string>('recipe');
+  const [recipePreset, setRecipePreset] = useState<AudioPreset | null>(null);
+  const [channelMix, setChannelMix] = useState<ChannelMix>(DEFAULT_CHANNEL_MIX);
+  const [audioEq, setAudioEq] = useState<EqSettings>(DEFAULT_EQ);
   const [overlays, setOverlays] = useState({
     date: true,
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const [exportOpen, setExportOpen] = useState(false);
   const [moments, setMoments] = useState<MomentEvent[]>([]);
   const [intensity, setIntensity] = useState<number[]>([]);
+  const [values, setValues] = useState<number[]>([]);
   const playRef = useRef<number | null>(null);
 
   const dates = entry?.dates || [];
   const currentDate = dates[selectedFrame] || '';
   const duration = dates.length / fps;
 
-  // Audio playback — stems crossfade based on intensity signal
-  const { masterVolume, setMasterVolume, audioReady } = useAudioPlayback(
-    audioTheme, audioEnabled, isPlaying, intensity, selectedFrame,
-  );
+  // Resolve preset: 'recipe' = derived from YAML audio block (falls back to ocean if absent)
+  // ''        = silent
+  // other     = named preset override
+  const resolvedPreset: AudioPreset | null =
+    audioTheme === '' ? null :
+    audioTheme === 'recipe' ? (recipePreset ?? getPreset('ocean')) :
+    getPreset(audioTheme);
+
+  // Generative audio engine — RFC-010 four-layer composition
+  const { masterVolume, setMasterVolume, audioReady, liveChannels } = useGenerativeAudio({
+    preset: resolvedPreset,
+    enabled: audioEnabled,
+    isPlaying,
+    intensity,
+    values,
+    dates,
+    moments,
+    currentFrame: selectedFrame,
+    fps,
+    channelMix,
+    eq: audioEq,
+  });
+
+  // Fetch recipe YAML and derive its preset from the audio: block
+  useEffect(() => {
+    if (!recipe) { setRecipePreset(null); return; }
+    fetch(`/recipes/${recipe}.yaml`)
+      .then((r) => r.ok ? r.text() : '')
+      .then((yaml) => {
+        if (!yaml) { setRecipePreset(null); return; }
+        const audio = extractAudioParams(yaml);
+        if (Object.keys(audio).length === 0) { setRecipePreset(null); return; }
+        setRecipePreset(presetFromAudioParams(audio, recipe));
+      })
+      .catch(() => setRecipePreset(null));
+  }, [recipe]);
 
   // Load time series and compute key moments
   useEffect(() => {
@@ -148,16 +189,17 @@ export function VideoEditor() {
     fetch(url)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((series: Array<{mean?: number; count?: number}>) => {
-        const values = series.map((d) => d.mean ?? d.count ?? 0);
-        // Compute intensity signal for audio crossfading
-        const signal = detectMoments(values, undefined, 5, 0.3);
+        const seriesValues = series.map((d) => d.mean ?? d.count ?? 0);
+        setValues(seriesValues);
+        // Compute intensity signal for audio + visualizer
+        const signal = detectMoments(seriesValues, undefined, 5, 0.3);
         setIntensity(signal.intensity);
 
         // Extract truly significant moments — not per-frame noise
-        const significant = extractSignificantMoments(values, dates);
+        const significant = extractSignificantMoments(seriesValues, dates);
         setMoments(significant);
       })
-      .catch(() => { setMoments([]); setIntensity([]); });
+      .catch(() => { setMoments([]); setIntensity([]); setValues([]); });
   }, [entry?.source]);
 
   // Playback loop
@@ -245,7 +287,16 @@ export function VideoEditor() {
           /timelapse editor / {recipe}
         </span>
         <div className={styles.topbarActions}>
-          <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← gallery</a>
+          <a href="/" className={styles.topbarLink}>← gallery</a>
+          <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← view</a>
+          <a href={`/recipes/${recipe}`} className={styles.topbarLink}>← recipe</a>
+          <button
+            type="button"
+            className={styles.actionPrimary}
+            onClick={() => setExportOpen(true)}
+          >
+            download
+          </button>
         </div>
       </header>
 
@@ -390,14 +441,19 @@ export function VideoEditor() {
                     value={audioTheme}
                     onChange={(e) => setAudioTheme(e.target.value)}
                   >
-                    <option value="ocean">Ocean</option>
-                    <option value="dramatic">Dramatic</option>
-                    <option value="deep">Deep</option>
+                    <option value="recipe">From recipe</option>
+                    {PRESET_GROUPS.map((group) => (
+                      <optgroup key={group.engine} label={group.label}>
+                        {group.ids.map((id) => (
+                          <option key={id} value={id}>{AUDIO_PRESETS[id].name}</option>
+                        ))}
+                      </optgroup>
+                    ))}
                     <option value="">Silent</option>
                   </select>
                   {audioTheme && (
                     <span className={audioReady ? styles.audioReady : styles.audioLoading}>
-                      {audioReady ? 'ready' : 'loading...'}
+                      {audioReady ? 'ready' : isPlaying ? 'loading...' : 'press play'}
                     </span>
                   )}
                   <input
@@ -411,36 +467,17 @@ export function VideoEditor() {
                   />
                 </div>
 
-                {/* Waveform visualisation — RFC-010 channels */}
+                {/* Waveform + interactive 4-channel mixer + 3-band EQ */}
                 <AudioWaveform
                   isPlaying={isPlaying}
-                  channels={{
-                    drone: intensity[selectedFrame] ?? 0,
-                    pulse: selectedFrame > 0
-                      ? Math.min(1, Math.abs((intensity[selectedFrame] ?? 0) - (intensity[selectedFrame - 1] ?? 0)) * 10)
-                      : 0,
-                    accent: moments.some((m) => Math.abs(m.frame - selectedFrame) < 2),
-                    texture: 0.3 + Math.sin((selectedFrame / 12) * Math.PI * 2) * 0.2,
-                  }}
+                  channels={liveChannels}
+                  mix={channelMix}
+                  onMixChange={setChannelMix}
+                  eq={audioEq}
+                  onEqChange={setAudioEq}
                 />
               </>
             )}
-          </div>
-
-          {/* Overlays — what gets baked into export */}
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>EXPORT OVERLAYS</div>
-            <div className={styles.overlayNote}>Baked into exported MP4</div>
-            {Object.entries(overlays).map(([key, enabled]) => (
-              <label key={key} className={styles.overlayRow}>
-                <input
-                  type="checkbox"
-                  checked={enabled}
-                  onChange={() => toggleOverlay(key)}
-                />
-                <span>{key === 'date' ? 'Date stamp' : 'Source attribution'}</span>
-              </label>
-            ))}
           </div>
 
           {/* Key moments */}
@@ -466,39 +503,63 @@ export function VideoEditor() {
             </div>
           )}
 
-          {/* Export */}
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>EXPORT</div>
-            <button
-              className={styles.exportBtn}
-              onClick={handleExport}
-              disabled={exportState.status === 'exporting'}
-            >
-              {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
-            </button>
-            {exportState.status === 'exporting' && (
-              <div className={styles.exportProgress}>{exportState.progress}</div>
-            )}
-            {exportState.status === 'done' && (
-              <>
-                <div className={styles.exportDone}>
-                  Ready ({((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
-                </div>
+        </aside>
+      </div>
+
+      {exportOpen && (
+        <div className={styles.exportBackdrop} onClick={() => setExportOpen(false)}>
+          <div className={styles.exportPopup} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.exportPopupTitle}>EXPORT MP4</div>
+            <div className={styles.exportPopupNote}>Baked into the exported video</div>
+            {Object.entries(overlays).map(([key, enabled]) => (
+              <label key={key} className={styles.overlayRow}>
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={() => toggleOverlay(key)}
+                  disabled={exportState.status === 'exporting'}
+                />
+                <span>{key === 'date' ? 'Date stamp' : 'Source attribution'}</span>
+              </label>
+            ))}
+            <div className={styles.exportPopupActions}>
+              {exportState.status === 'idle' && (
+                <button className={styles.exportBtn} onClick={handleExport}>
+                  Render & download
+                </button>
+              )}
+              {exportState.status === 'exporting' && (
+                <button className={styles.exportBtn} disabled>
+                  Rendering…
+                </button>
+              )}
+              {exportState.status === 'done' && (
                 <a
                   href={`/api/export/${recipe}/download`}
-                  className={styles.downloadBtn}
+                  className={styles.exportBtn}
                   download
+                  onClick={() => setTimeout(() => setExportOpen(false), 150)}
                 >
-                  download MP4
+                  Download MP4 ({((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
                 </a>
-              </>
+              )}
+              <button
+                type="button"
+                className={styles.exportPopupClose}
+                onClick={() => setExportOpen(false)}
+              >
+                close
+              </button>
+            </div>
+            {exportState.status === 'exporting' && exportState.progress && (
+              <div className={styles.exportProgress}>{exportState.progress}</div>
             )}
             {exportState.status === 'error' && (
               <div className={styles.exportError}>{exportState.error}</div>
             )}
           </div>
-        </aside>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

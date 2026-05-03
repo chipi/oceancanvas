@@ -147,6 +147,7 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [RFC-007](../rfc/RFC-007-key-moment-detection.md) | Key moment detection | Decided | [ADR-024](ADR-024-key-moment-detection.md) |
 | [RFC-008](../rfc/RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](ADR-023-pipeline-parallelisation.md) |
 | [RFC-009](../rfc/RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](ADR-022-cli-entry-point.md) |
+| [RFC-010](../rfc/RFC-010-generative-audio-composition.md) | Generative audio composition | Decided | [ADR-027](ADR-027-generative-audio-composition.md) |
 
 ### ADRs · [folder index](index.md)
 
@@ -177,7 +178,8 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [ADR-023](ADR-023-pipeline-parallelisation.md) | Pipeline parallelisation and render concurrency | Accepted |
 | [ADR-024](ADR-024-key-moment-detection.md) | Key moment detection algorithm | Accepted |
 | [ADR-025](ADR-025-recipe-lifecycle.md) | Recipe lifecycle on source unavailability | Accepted |
-| [ADR-026](ADR-026-audio-stem-system.md) | Audio stem system | Accepted |
+| [ADR-026](ADR-026-audio-stem-system.md) | Audio stem system | Superseded by ADR-027 |
+| [ADR-027](ADR-027-generative-audio-composition.md) | Generative audio composition | Accepted |
 
 ---
 

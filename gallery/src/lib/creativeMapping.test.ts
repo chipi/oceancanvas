@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { describe, it, expect } from 'vitest';
-import { creativeToTechnical, technicalToCreative, MOOD_PRESETS, isMatched } from './creativeMapping';
+import { creativeToTechnical, creativeToAudio, technicalToCreative, MOOD_PRESETS, isMatched } from './creativeMapping';
 
 describe('creativeToTechnical', () => {
   it('returns valid params for Becalmed preset', () => {
@@ -108,6 +108,40 @@ describe('technicalToCreative', () => {
     const result = technicalToCreative({ colormap: 'thermal', opacity: 0.85, speed_scale: 1.0, particle_count: 3000, tail_length: 12 });
     // These hand-authored params don't match any preset
     expect(result.mood).toBe('custom');
+  });
+});
+
+describe('creativeToAudio', () => {
+  it('Becalmed produces sine drone + chime accents', () => {
+    const audio = creativeToAudio(MOOD_PRESETS['Becalmed']);
+    expect(audio.drone_waveform).toBe('sine');
+    expect(audio.accent_style).toBe('chime');
+    expect(audio.drone_glide).toBeCloseTo(0.4, 2);
+  });
+
+  it('Storm surge produces aggressive pulse + ping accents', () => {
+    const audio = creativeToAudio(MOOD_PRESETS['Storm surge']);
+    expect(audio.pulse_sensitivity).toBeCloseTo(0.9, 2);
+    expect(audio.accent_style).toBe('ping');
+  });
+
+  it('Arctic still produces sine drone + drop accents', () => {
+    const audio = creativeToAudio(MOOD_PRESETS['Arctic still']);
+    expect(audio.drone_waveform).toBe('sine');
+    expect(audio.accent_style).toBe('drop');
+    expect(audio.pulse_sensitivity).toBeLessThan(0.2);
+  });
+
+  it('colour_character drives drone waveform across three buckets', () => {
+    expect(creativeToAudio({ ...MOOD_PRESETS['Becalmed'], colour_character: 0.1 }).drone_waveform).toBe('sine');
+    expect(creativeToAudio({ ...MOOD_PRESETS['Becalmed'], colour_character: 0.5 }).drone_waveform).toBe('triangle');
+    expect(creativeToAudio({ ...MOOD_PRESETS['Becalmed'], colour_character: 0.9 }).drone_waveform).toBe('sawtooth');
+  });
+
+  it('is deterministic', () => {
+    const a = creativeToAudio(MOOD_PRESETS['Surface shimmer']);
+    const b = creativeToAudio(MOOD_PRESETS['Surface shimmer']);
+    expect(a).toEqual(b);
   });
 });
 

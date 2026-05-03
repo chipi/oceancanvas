@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { CreativeControls } from '../components/CreativeControls';
 import { SketchPreview } from '../components/SketchPreview';
 import type { CreativeState } from '../lib/creativeMapping';
-import { MOOD_PRESETS, creativeToTechnical, technicalToCreative } from '../lib/creativeMapping';
+import { MOOD_PRESETS, creativeToAudio, creativeToTechnical, technicalToCreative } from '../lib/creativeMapping';
 import type { OceanPayload, ProcessedData } from '../lib/payloadBuilder';
 import { buildPreviewPayload } from '../lib/payloadBuilder';
 import { CREATIVE_MARKER, detectState, extractRenderParams, parseRecipeYaml, type RecipeState } from '../lib/yamlParser';
@@ -92,6 +92,7 @@ export function RecipeEditor() {
   }, [id, isNew]);
 
   const technical = useMemo(() => creativeToTechnical(creativeState), [creativeState]);
+  const audio = useMemo(() => creativeToAudio(creativeState), [creativeState]);
 
   // Don't build payload until recipe is loaded (for existing recipes)
   const recipeReady = isNew || loadedParams !== null || userEdited;
@@ -128,11 +129,13 @@ export function RecipeEditor() {
         `  type: ${renderType}`,
         ...Object.entries(technical).map(([k, v]) => `  ${k}: ${v}`),
         `  seed: 42`,
+        `audio:`,
+        ...Object.entries(audio).map(([k, v]) => `  ${k}: ${v}`),
       ].join('\n');
       setYamlText(yaml);
       setRecipeState('matched');
     }
-  }, [creativeState, mode, recipeName, region, technical, renderType]);
+  }, [creativeState, mode, recipeName, region, technical, audio, renderType]);
 
   const handleModeSwitch = useCallback((newMode: 'creative' | 'yaml') => {
     if (newMode === 'creative' && mode === 'yaml') {
@@ -170,8 +173,9 @@ export function RecipeEditor() {
           {renderType} · {technical.colormap} · {processedData?.date || ''}
         </span>
         <div className={styles.topbarNav}>
-          {!isNew && <a href={`/gallery/${recipeName}`} className={styles.navLink}>view ↗</a>}
-          <a href="/" className={styles.navLink}>gallery ↗</a>
+          <a href="/" className={styles.navLink}>← gallery</a>
+          {!isNew && <a href={`/gallery/${recipeName}`} className={styles.navLink}>← view</a>}
+          {!isNew && <a href={`/timelapse/${recipeName}`} className={styles.navLink}>timelapse ↗</a>}
         </div>
       </header>
 
@@ -224,27 +228,39 @@ export function RecipeEditor() {
           {/* Creative or YAML */}
           <div className={styles.controlBody}>
             {mode === 'creative' ? (
-              <CreativeControls
-                state={creativeState}
-                onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}
-                originalState={originalCreative}
-                onReset={() => {
-                  setUserEdited(false);
-                  if (originalCreative) {
-                    setCreativeState({ ...originalCreative, mood: 'saved' });
-                    // Reload loadedParams from recipe
-                    if (!isNew && id) {
-                      fetch(`/recipes/${id}.yaml`)
-                        .then((r) => r.text())
-                        .then((text) => {
-                          const params = extractRenderParams(text);
-                          if (Object.keys(params).length > 0) setLoadedParams(params);
-                        })
-                        .catch(() => {});
+              <>
+                <CreativeControls
+                  state={creativeState}
+                  onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}
+                  originalState={originalCreative}
+                  onReset={() => {
+                    setUserEdited(false);
+                    if (originalCreative) {
+                      setCreativeState({ ...originalCreative, mood: 'saved' });
+                      if (!isNew && id) {
+                        fetch(`/recipes/${id}.yaml`)
+                          .then((r) => r.text())
+                          .then((text) => {
+                            const params = extractRenderParams(text);
+                            if (Object.keys(params).length > 0) setLoadedParams(params);
+                          })
+                          .catch(() => {});
+                      }
                     }
-                  }
-                }}
-              />
+                  }}
+                />
+                <div className={styles.audioPanel}>
+                  <div className={styles.audioPanelTitle}>AUDIO (derived)</div>
+                  <div className={styles.audioGrid}>
+                    {Object.entries(audio).map(([k, v]) => (
+                      <div key={k} className={styles.audioRow}>
+                        <span className={styles.audioKey}>{k.replace(/_/g, ' ')}</span>
+                        <span className={styles.audioVal}>{String(v)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
             ) : (
               <div className={styles.yamlEditor}>
                 <pre className={styles.yamlPre}>

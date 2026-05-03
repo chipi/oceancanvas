@@ -29,12 +29,22 @@ export interface RenderParams {
   [key: string]: unknown;
 }
 
+export interface AudioParamsBlock {
+  drone_waveform?: string;
+  drone_glide?: number;
+  pulse_sensitivity?: number;
+  presence?: number;
+  accent_style?: string;
+  texture_density?: number;
+}
+
 export interface OceanPayload {
   version: number;
   recipe: {
     id: string;
     name: string;
     render: RenderParams;
+    audio?: AudioParamsBlock;
     render_date: string;
   };
   region: {
@@ -149,7 +159,7 @@ export interface BuildOptions {
  */
 export function buildPreviewPayload(
   primary: ProcessedData,
-  recipe: { id: string; name: string; render: RenderParams; render_date: string },
+  recipe: { id: string; name: string; render: RenderParams; audio?: AudioParamsBlock; render_date: string },
   region: RecipeRegion,
   options: BuildOptions = {},
   context?: ProcessedData,
@@ -178,6 +188,7 @@ export function buildPreviewPayload(
       id: recipe.id,
       name: recipe.name,
       render: recipe.render,
+      audio: recipe.audio,
       render_date: recipe.render_date,
     },
     region: {

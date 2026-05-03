@@ -17,3 +17,10 @@ render:
   marker_size: 6
   marker_opacity: 0.7
   seed: 42
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.43
+  pulse_sensitivity: 0.44
+  presence: 0.62
+  accent_style: chime
+  texture_density: 0.35

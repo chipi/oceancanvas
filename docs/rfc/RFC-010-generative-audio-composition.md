@@ -1,9 +1,9 @@
 # RFC-010 — Generative Audio Composition
 
-> **Status** · Draft v0.1 · May 2026
+> **Status** · Decided · closes into [ADR-027](../adr/ADR-027-generative-audio-composition.md)
 > **TA anchor** · §components/render-system · §contracts (audio scalars in payload)
 > **Related** · PRD-005 Video Editor · ADR-026 Audio stem system · ADR-024 Key moment detection
-> **Closes into** · ADR (pending — supersedes ADR-026 if accepted)
+> **Closes into** · [ADR-027](../adr/ADR-027-generative-audio-composition.md) (supersedes ADR-026)
 > **Why this is an RFC** · ADR-026 shipped a stem-switching system that loops a single audio file for long stretches. The result is ambient wallpaper, not data-driven composition. The audio doesn't follow the video — it sits beside it. This RFC proposes a multi-layer generative approach where the data performs the music, borrowing from electronic composition techniques. The architecture is genuinely open: multiple plausible layer designs, synthesis methods, and mapping strategies exist.
 
 ---

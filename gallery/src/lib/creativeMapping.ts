@@ -27,6 +27,19 @@ export interface TechnicalParams {
   marker_opacity: number;
 }
 
+export type AccentStyle = 'chime' | 'bell' | 'ping' | 'drop';
+export type DroneWaveform = 'sine' | 'triangle' | 'sawtooth' | 'square';
+
+/** Audio parameters derived from creative state — RFC-010 §"Creative state → audio parameters". */
+export interface AudioParams {
+  drone_waveform: DroneWaveform;
+  drone_glide: number;        // 0 = instant, 1 = very slow portamento
+  pulse_sensitivity: number;  // 0 = subtle, 1 = aggressive
+  presence: number;           // 0 = barely audible, 1 = full mix
+  accent_style: AccentStyle;
+  texture_density: number;    // 0 = sparse, 1 = dense
+}
+
 /** Five mood presets — named starting points that set the full parameter space. */
 export const MOOD_PRESETS: Record<string, CreativeState> = {
   'Becalmed': {
@@ -128,6 +141,59 @@ export function creativeToTechnical(state: CreativeState): TechnicalParams {
 export function isMatched(state: CreativeState, technical: TechnicalParams): boolean {
   const expected = creativeToTechnical(state);
   return JSON.stringify(expected) === JSON.stringify(technical);
+}
+
+/**
+ * Map creative state to audio parameters per RFC-010 §"Creative state → audio parameters".
+ *
+ *   colour_character → drone waveform (sine → triangle → sawtooth)
+ *   temporal_weight  → drone glide (instant → slow portamento)
+ *   energy_x         → pulse sensitivity (subtle → aggressive)
+ *   energy_y         → presence (ghost → full mix) and texture density
+ *
+ * Accent style is set by the mood preset's character (Becalmed = soft chimes, Storm surge = sharp pings, etc.).
+ * For custom states, accent_style derives from the energy quadrant.
+ *
+ * Pure function — must produce the same outputs as the Python equivalent.
+ */
+export function creativeToAudio(state: CreativeState): AudioParams {
+  const { mood, energy_x, energy_y, colour_character, temporal_weight } = state;
+
+  // Drone waveform — three buckets matching the colormap split
+  let drone_waveform: DroneWaveform;
+  if (colour_character < 0.33) drone_waveform = 'sine';
+  else if (colour_character < 0.66) drone_waveform = 'triangle';
+  else drone_waveform = 'sawtooth';
+
+  const drone_glide = clamp(temporal_weight, 0, 1);
+  const pulse_sensitivity = clamp(energy_x, 0, 1);
+  const presence = clamp(lerp(0.3, 1.0, energy_y), 0.1, 1.0);
+  const texture_density = clamp(lerp(0.15, 0.6, energy_y), 0, 1);
+
+  // Mood-driven accent style; fall back to energy-quadrant heuristic for custom moods.
+  const accent_style: AccentStyle =
+    mood === 'Becalmed' ? 'chime' :
+    mood === 'Deep current' ? 'bell' :
+    mood === 'Storm surge' ? 'ping' :
+    mood === 'Surface shimmer' ? 'ping' :
+    mood === 'Arctic still' ? 'drop' :
+    energy_x > 0.6 ? 'ping' :
+    energy_y > 0.6 ? 'bell' :
+    energy_y < 0.3 ? 'drop' :
+    'chime';
+
+  return {
+    drone_waveform,
+    drone_glide: round2(drone_glide),
+    pulse_sensitivity: round2(pulse_sensitivity),
+    presence: round2(presence),
+    accent_style,
+    texture_density: round2(texture_density),
+  };
+}
+
+function round2(v: number): number {
+  return Math.round(v * 100) / 100;
 }
 
 /**

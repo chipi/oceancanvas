@@ -33,7 +33,7 @@
 .topbarActions {
   margin-left: auto;
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
   flex-shrink: 0;
 }
@@ -42,10 +42,82 @@
   font-size: 11px;
   color: var(--text-muted);
   text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
 }
 .topbarLink:hover { color: var(--intent-teal); }
 
+.actionPrimary {
+  font-size: 11px;
+  color: var(--intent-info);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  font-family: inherit;
+}
+.actionPrimary:hover { opacity: 0.85; }
+
+/* Export popup */
+.exportBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 56px 24px 0 0;
+}
+
+.exportPopup {
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.exportPopupTitle {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.exportPopupNote {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.exportPopupActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.exportPopupClose {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  letter-spacing: 0.04em;
+  font-family: inherit;
+  align-self: center;
+}
+.exportPopupClose:hover { color: var(--text-secondary); }
+
 .exportBtn {
+  display: block;
   width: 100%;
   padding: 8px 16px;
   border-radius: 4px;
@@ -56,28 +128,12 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  margin-bottom: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-family: inherit;
 }
 .exportBtn:hover { opacity: 0.9; }
 .exportBtn:disabled { opacity: 0.5; cursor: default; }
-
-.downloadBtn {
-  display: block;
-  width: 100%;
-  padding: 8px 16px;
-  border-radius: 4px;
-  background: transparent;
-  color: #5DCAA5;
-  border: 1px solid #5DCAA5;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  margin-top: 8px;
-  box-sizing: border-box;
-}
-.downloadBtn:hover { background: rgba(93, 202, 165, 0.1); }
 
 .empty {
   padding: 60px;
@@ -217,13 +273,16 @@
   width: 340px;
   background: var(--surface);
   border-left: 1px solid var(--border);
-  overflow-y: auto;
+  overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .section {
-  padding: 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .sectionTitle {
@@ -231,7 +290,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .field {
@@ -332,7 +391,7 @@
 }
 
 .momentList {
-  max-height: 200px;
+  max-height: 110px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(93, 202, 165, 0.2) transparent;
@@ -377,17 +436,13 @@
 .momentToggle:hover { opacity: 0.8; }
 
 .exportProgress {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--intent-teal);
-}
-
-.exportDone {
-  font-size: 12px;
-  color: #5DCAA5;
-  font-weight: 500;
+  margin-top: 8px;
 }
 
 .exportError {
-  font-size: 12px;
+  font-size: 11px;
   color: #D85A30;
+  margin-top: 8px;
 }

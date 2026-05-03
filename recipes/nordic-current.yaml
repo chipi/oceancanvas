@@ -19,3 +19,10 @@ render:
   tail_length: 16
   speed_scale: 1.2
   seed: 404
+audio:
+  drone_waveform: sine
+  drone_glide: 0.62
+  pulse_sensitivity: 0.56
+  presence: 0.87
+  accent_style: bell
+  texture_density: 0.52

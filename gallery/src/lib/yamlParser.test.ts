@@ -5,6 +5,8 @@ import {
   CREATIVE_MARKER,
   detectState,
   ensureMarker,
+  extractAudioParams,
+  extractRenderParams,
 } from './yamlParser';
 import { MOOD_PRESETS, creativeToTechnical } from './creativeMapping';
 
@@ -62,6 +64,43 @@ describe('ensureMarker', () => {
     const result = ensureMarker(noMarker);
     expect(result).toContain(CREATIVE_MARKER);
     expect(result.indexOf(CREATIVE_MARKER)).toBeLessThan(result.indexOf('render:'));
+  });
+});
+
+describe('extractAudioParams', () => {
+  const WITH_AUDIO = `${SAMPLE_YAML}
+audio:
+  drone_waveform: sawtooth
+  drone_glide: 0.7
+  pulse_sensitivity: 0.85
+  presence: 0.6
+  accent_style: ping
+  texture_density: 0.4
+`;
+
+  it('returns {} when no audio block exists', () => {
+    expect(extractAudioParams(SAMPLE_YAML)).toEqual({});
+  });
+
+  it('parses every key with correct types', () => {
+    const audio = extractAudioParams(WITH_AUDIO);
+    expect(audio.drone_waveform).toBe('sawtooth');
+    expect(audio.drone_glide).toBe(0.7);
+    expect(audio.pulse_sensitivity).toBe(0.85);
+    expect(audio.accent_style).toBe('ping');
+  });
+
+  it('only reads keys inside audio: block, not render: block', () => {
+    const audio = extractAudioParams(WITH_AUDIO);
+    expect(audio.opacity).toBeUndefined();
+    expect(audio.colormap).toBeUndefined();
+  });
+
+  it('render extraction still works when audio block follows', () => {
+    const render = extractRenderParams(WITH_AUDIO);
+    expect(render.colormap).toBe('thermal');
+    expect(render.opacity).toBe(0.71);
+    expect(render.drone_waveform).toBeUndefined();
   });
 });
 

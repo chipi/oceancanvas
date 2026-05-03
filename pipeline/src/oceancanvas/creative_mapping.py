@@ -102,3 +102,51 @@ def creative_state_to_technical(state: dict) -> dict:
         colour_character=state["colour_character"],
         temporal_weight=state["temporal_weight"],
     )
+
+
+def creative_to_audio(state: dict) -> dict:
+    """Map creative state to audio parameters.
+
+    Mirrors creativeToAudio() in gallery/src/lib/creativeMapping.ts.
+    Cross-validation fixture verifies parity with the TS implementation.
+    """
+    mood = state.get("mood", "custom")
+    energy_x = state["energy_x"]
+    energy_y = state["energy_y"]
+    colour_character = state["colour_character"]
+    temporal_weight = state["temporal_weight"]
+
+    if colour_character < 0.33:
+        drone_waveform = "sine"
+    elif colour_character < 0.66:
+        drone_waveform = "triangle"
+    else:
+        drone_waveform = "sawtooth"
+
+    if mood == "Becalmed":
+        accent_style = "chime"
+    elif mood == "Deep current":
+        accent_style = "bell"
+    elif mood == "Storm surge":
+        accent_style = "ping"
+    elif mood == "Surface shimmer":
+        accent_style = "ping"
+    elif mood == "Arctic still":
+        accent_style = "drop"
+    elif energy_x > 0.6:
+        accent_style = "ping"
+    elif energy_y > 0.6:
+        accent_style = "bell"
+    elif energy_y < 0.3:
+        accent_style = "drop"
+    else:
+        accent_style = "chime"
+
+    return {
+        "drone_waveform": drone_waveform,
+        "drone_glide": round(_clamp(temporal_weight, 0.0, 1.0) * 100) / 100,
+        "pulse_sensitivity": round(_clamp(energy_x, 0.0, 1.0) * 100) / 100,
+        "presence": round(_clamp(_lerp(0.3, 1.0, energy_y), 0.1, 1.0) * 100) / 100,
+        "accent_style": accent_style,
+        "texture_density": round(_clamp(_lerp(0.15, 0.6, energy_y), 0.0, 1.0) * 100) / 100,
+    }

@@ -67,3 +67,51 @@ class TestCreativeToTechnical:
         assert creative_to_technical(0.5, 0.5, 0.65, 0.5)["colormap"] == "thermal"
         assert creative_to_technical(0.5, 0.5, 0.67, 0.5)["colormap"] == "otherworldly"
         assert creative_to_technical(0.5, 0.5, 1.0, 0.5)["colormap"] == "otherworldly"
+
+
+# ─── creative_to_audio (RFC-010) ───────────────────────────────────────────
+from oceancanvas.creative_mapping import creative_to_audio  # noqa: E402
+
+
+class TestCreativeToAudio:
+    def test_becalmed_produces_sine_chime(self):
+        audio = creative_to_audio(MOOD_PRESETS["Becalmed"])
+        assert audio["drone_waveform"] == "sine"
+        assert audio["accent_style"] == "chime"
+
+    def test_storm_surge_produces_aggressive_pulse_ping(self):
+        audio = creative_to_audio(MOOD_PRESETS["Storm surge"])
+        assert audio["pulse_sensitivity"] == 0.9
+        assert audio["accent_style"] == "ping"
+
+    def test_arctic_still_produces_sine_drop(self):
+        audio = creative_to_audio(MOOD_PRESETS["Arctic still"])
+        assert audio["drone_waveform"] == "sine"
+        assert audio["accent_style"] == "drop"
+        assert audio["pulse_sensitivity"] < 0.2
+
+    def test_drone_waveform_buckets(self):
+        base = MOOD_PRESETS["Becalmed"]
+        assert creative_to_audio({**base, "colour_character": 0.1})["drone_waveform"] == "sine"
+        assert creative_to_audio({**base, "colour_character": 0.5})["drone_waveform"] == "triangle"
+        assert creative_to_audio({**base, "colour_character": 0.9})["drone_waveform"] == "sawtooth"
+
+    def test_deterministic(self):
+        a = creative_to_audio(MOOD_PRESETS["Surface shimmer"])
+        b = creative_to_audio(MOOD_PRESETS["Surface shimmer"])
+        assert a == b
+
+    def test_matches_typescript_output(self):
+        """Cross-validation: Python and TS must produce identical audio block.
+
+        TS output for Becalmed (verified manually):
+          drone_waveform=sine, drone_glide=0.4, pulse_sensitivity=0.2,
+          presence=0.72, accent_style=chime, texture_density=0.42
+        """
+        py = creative_to_audio(MOOD_PRESETS["Becalmed"])
+        assert py["drone_waveform"] == "sine"
+        assert py["drone_glide"] == 0.4
+        assert py["pulse_sensitivity"] == 0.2
+        assert py["presence"] == 0.72
+        assert py["accent_style"] == "chime"
+        assert py["texture_density"] == 0.42

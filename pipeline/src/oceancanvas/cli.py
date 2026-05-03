@@ -571,8 +571,20 @@ def export_video(
     recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
     fps: int = typer.Option(12, "--fps", help="Frames per second"),
     output: str = typer.Option(None, "--output", "-o", help="Output MP4 path"),
+    silent: bool = typer.Option(False, "--silent", help="Skip generative audio"),
 ) -> None:
-    """Export a timelapse MP4 from a recipe's renders."""
+    """Export a timelapse MP4 from a recipe's renders.
+
+    Audio synthesis (RFC-010) reads:
+      - the recipe's audio: block (drone waveform, pulse sensitivity, etc.)
+      - the source's processed time-series (data values per frame)
+      - moments derived from the time-series for accent triggers
+    All deterministic; same recipe + same data = same composition.
+    """
+    import json
+
+    from oceancanvas.audio import AudioParams
+    from oceancanvas.moments import detect_moments
     from oceancanvas.video import assemble_video, get_video_info
 
     info = get_video_info(recipe, RENDERS_DIR)
@@ -588,12 +600,57 @@ def export_video(
     console.print(f"  Duration: {duration:.1f}s")
 
     out_path = Path(output) if output else RENDERS_DIR / f"{recipe}.mp4"
+
+    audio_params: AudioParams | None = None
+    audio_values: list[float] | None = None
+    audio_dates: list[str] | None = None
+    audio_moments: list[dict] | None = None
+
+    if not silent:
+        recipe_path = RECIPES_DIR / f"{recipe}.yaml"
+        if recipe_path.exists():
+            with recipe_path.open() as f:
+                recipe_yaml = yaml.safe_load(f) or {}
+            audio_params = AudioParams.from_dict(recipe_yaml.get("audio"))
+            source_id = recipe_yaml.get("sources", {}).get("primary", "oisst")
+            series_path = (
+                DATA_DIR / "processed" / "oisst" / "sst-monthly-series.json"
+                if source_id == "oisst"
+                else DATA_DIR / "processed" / source_id / "time-series.json"
+            )
+            if series_path.exists():
+                with series_path.open() as sf:
+                    series = json.load(sf)
+                # Align series with frame dates
+                date_to_value = {
+                    s["date"]: s.get("mean", s.get("count", 0.0))
+                    for s in series if "date" in s
+                }
+                audio_dates = info["dates"]
+                audio_values = [float(date_to_value.get(d, 0.0)) for d in audio_dates]
+                # Compute moments from the values
+                signal = detect_moments(audio_values)
+                audio_moments = [
+                    {"frame": e.frame, "type": e.type, "label": e.label, "score": e.score}
+                    for e in signal.events
+                ]
+                console.print(f"  Audio:    {audio_params.drone_waveform} drone · {audio_params.accent_style} accents · {len(audio_moments)} moments")
+            else:
+                console.print("  [yellow]Audio: time-series not found, exporting silent[/yellow]")
+                audio_params = None
+        else:
+            console.print(f"  [yellow]Audio: {recipe_path.name} not found, exporting silent[/yellow]")
+
     console.print("\n[cyan]Assembling video...[/cyan]")
 
     try:
         result = assemble_video(
             recipe, RENDERS_DIR, out_path, fps=fps,
             overlay_date=False, overlay_attribution=False,
+            audio_params=audio_params,
+            audio_values=audio_values,
+            audio_dates=audio_dates,
+            audio_moments=audio_moments,
         )
         size_mb = result.stat().st_size / 1024 / 1024
         console.print(f"[green]Exported: {result} ({size_mb:.1f} MB)[/green]")

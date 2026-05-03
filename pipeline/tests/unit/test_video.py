@@ -84,7 +84,7 @@ class TestAssembleVideo:
             result = assemble_video(
                 "test", tmp_path, out,
                 overlay_date=False, overlay_attribution=False,
-                audio_theme=None,
+                audio_params=None,
             )
 
         assert result == out

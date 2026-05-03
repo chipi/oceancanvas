@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { ChannelKey, ChannelMix, EqBand, EqSettings } from '../lib/audioEngineTypes';
 
 interface ChannelState {
   drone: number;    // 0-1 intensity
@@ -12,13 +13,41 @@ interface Props {
   width?: number;
   height?: number;
   isPlaying: boolean;
+  mix?: ChannelMix;
+  onMixChange?: (mix: ChannelMix) => void;
+  eq?: EqSettings;
+  onEqChange?: (eq: EqSettings) => void;
 }
 
+interface ChannelMeta {
+  key: ChannelKey;
+  label: string;
+  color: string;
+}
+
+// Channel labelled "pad" since the engine voices it as a minor-triad chord pad now,
+// not a single sustained drone. Internal key stays 'drone' for code stability.
+const CHANNEL_META: ChannelMeta[] = [
+  { key: 'drone',   label: 'pad',     color: 'rgba(93, 202, 165, 0.85)' },
+  { key: 'pulse',   label: 'pulse',   color: 'rgba(239, 159, 39, 0.85)' },
+  { key: 'accent',  label: 'accent',  color: 'rgba(216, 90, 48, 0.95)' },
+  { key: 'texture', label: 'texture', color: 'rgba(93, 202, 165, 0.45)' },
+];
+
+const EQ_META: Array<{ key: EqBand; label: string }> = [
+  { key: 'bass',   label: 'bass'   },
+  { key: 'mid',    label: 'mid'    },
+  { key: 'treble', label: 'treble' },
+];
+
 /**
- * Synthesizer-style waveform display — overlapping coloured waves
- * at different frequencies, amplitude driven by channel intensity.
+ * Synthesizer-style waveform display + 4-channel mixer.
+ *
+ * The legend rows are interactive: click a label to mute/unmute a channel,
+ * drag the slider beside it to set its volume. Mute toggles parent state via
+ * `onMixChange`; the engine picks up the new mix and re-applies bus gains.
  */
-export function AudioWaveform({ channels, width = 280, height = 80, isPlaying }: Props) {
+export function AudioWaveform({ channels, width = 280, height = 80, isPlaying, mix, onMixChange, eq, onEqChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef(0);
   const animRef = useRef<number>(0);
@@ -93,17 +122,96 @@ export function AudioWaveform({ channels, width = 280, height = 80, isPlaying }:
     };
   }, [channels, width, height, isPlaying]);
 
+  const mixInteractive = !!(mix && onMixChange);
+  const eqInteractive = !!(eq && onEqChange);
+
+  function updateMix(key: ChannelKey, patch: { volume?: number; muted?: boolean }) {
+    if (!mix || !onMixChange) return;
+    onMixChange({ ...mix, [key]: { ...mix[key], ...patch } });
+  }
+
+  function updateEq(key: EqBand, value: number) {
+    if (!eq || !onEqChange) return;
+    onEqChange({ ...eq, [key]: value });
+  }
+
+  const rowStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 6 };
+  const sliderStyle: React.CSSProperties = { flex: 1, height: 2, cursor: mixInteractive ? 'pointer' : 'default' };
+  const labelBase: React.CSSProperties = {
+    display: 'inline-flex', alignItems: 'center', gap: 4,
+    background: 'transparent', border: 'none', padding: 0,
+    fontSize: 9, letterSpacing: '0.04em', fontFamily: 'inherit',
+    minWidth: 44, textAlign: 'left',
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <canvas ref={canvasRef} />
       <div style={{
-        position: 'absolute', bottom: 4, right: 6,
-        display: 'flex', gap: 8, fontSize: 8, letterSpacing: '0.04em',
+        marginTop: 6, display: 'grid', gridTemplateColumns: '1fr 1fr',
+        columnGap: 14, fontSize: 9, letterSpacing: '0.04em',
       }}>
-        <span style={{ color: 'rgba(93,202,165,0.7)' }}>drone</span>
-        <span style={{ color: 'rgba(239,159,39,0.6)' }}>pulse</span>
-        <span style={{ color: 'rgba(216,90,48,0.9)' }}>accent</span>
-        <span style={{ color: 'rgba(93,202,165,0.25)' }}>texture</span>
+        {/* Column 1 — channel mixer (4 stacked rows) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {CHANNEL_META.map((c) => {
+            const cm = mix?.[c.key];
+            const muted = !!cm?.muted;
+            const volume = cm?.volume ?? 1;
+            return (
+              <div key={c.key} style={rowStyle}>
+                <button
+                  type="button"
+                  onClick={() => mixInteractive && updateMix(c.key, { muted: !muted })}
+                  disabled={!mixInteractive}
+                  title={mixInteractive ? (muted ? 'unmute' : 'mute') : undefined}
+                  style={{
+                    ...labelBase,
+                    cursor: mixInteractive ? 'pointer' : 'default',
+                    color: muted ? 'rgba(255,255,255,0.25)' : c.color,
+                    textDecoration: muted ? 'line-through' : 'none',
+                  }}
+                >
+                  <span style={{
+                    width: 6, height: 6, borderRadius: '50%',
+                    background: muted ? 'rgba(255,255,255,0.15)' : c.color,
+                    display: 'inline-block',
+                  }} />
+                  {c.label}
+                </button>
+                <input
+                  type="range" min={0} max={1.5} step={0.05} value={volume}
+                  disabled={!mixInteractive || muted}
+                  onChange={(e) => updateMix(c.key, { volume: parseFloat(e.target.value) })}
+                  style={{ ...sliderStyle, opacity: muted ? 0.3 : 0.85 }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Column 2 — 3-band EQ (bass / mid / treble), gain in dB [-12..+12] */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {EQ_META.map((band) => {
+            const value = eq?.[band.key] ?? 0;
+            return (
+              <div key={band.key} style={rowStyle}>
+                <span style={{ ...labelBase, color: 'rgba(180, 200, 220, 0.7)' }}>{band.label}</span>
+                <input
+                  type="range" min={-12} max={12} step={0.5} value={value}
+                  disabled={!eqInteractive}
+                  onChange={(e) => updateEq(band.key, parseFloat(e.target.value))}
+                  style={{ ...sliderStyle, opacity: 0.85 }}
+                />
+                <span style={{
+                  fontSize: 8, color: 'rgba(180, 200, 220, 0.55)',
+                  fontFamily: 'ui-monospace, monospace', minWidth: 22, textAlign: 'right',
+                }}>
+                  {value > 0 ? '+' : ''}{value.toFixed(0)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

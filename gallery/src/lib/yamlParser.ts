@@ -50,34 +50,46 @@ export function reconstructYaml(lines: TaggedLine[]): string {
  * Returns key-value pairs from the render: section.
  */
 export function extractRenderParams(yaml: string): Record<string, unknown> {
+  return extractBlock(yaml, 'render');
+}
+
+/**
+ * Extract the audio block values from YAML text (below the marker).
+ * Returns key-value pairs from the audio: section, or {} if no block exists.
+ */
+export function extractAudioParams(yaml: string): Record<string, unknown> {
+  return extractBlock(yaml, 'audio');
+}
+
+function extractBlock(yaml: string, blockName: string): Record<string, unknown> {
   const lines = parseRecipeYaml(yaml);
   const creativeLines = lines
     .filter((l) => l.type === 'creative')
     .map((l) => l.text);
 
   const params: Record<string, unknown> = {};
-  let inRender = false;
+  let inBlock = false;
 
   for (const line of creativeLines) {
     const trimmed = line.trim();
-    if (trimmed.startsWith('render:')) {
-      inRender = true;
+    if (trimmed === `${blockName}:` || trimmed.startsWith(`${blockName}:`)) {
+      inBlock = true;
       continue;
     }
-    if (inRender && trimmed && !trimmed.startsWith('#')) {
+    // Leaving the block: a non-indented, non-empty, non-comment line ends it
+    if (inBlock && trimmed && !line.startsWith(' ') && !line.startsWith('\t') && !trimmed.startsWith('#')) {
+      inBlock = false;
+      continue;
+    }
+    if (inBlock && trimmed && !trimmed.startsWith('#')) {
       const match = trimmed.match(/^(\w+):\s*(.+)$/);
       if (match) {
         const [, key, val] = match;
-        // Parse value
         if (val === 'true') params[key] = true;
         else if (val === 'false') params[key] = false;
         else if (!isNaN(Number(val))) params[key] = Number(val);
-        else params[key] = val;
+        else params[key] = val.replace(/^["']|["']$/g, '');
       }
-    }
-    // Stop parsing render block if we hit a non-indented line
-    if (inRender && trimmed && !line.startsWith(' ') && !line.startsWith('\t') && !trimmed.startsWith('render:')) {
-      inRender = false;
     }
   }
 

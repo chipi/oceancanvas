@@ -17,3 +17,10 @@ render:
   opacity: 0.85
   smooth: true
   seed: 101
+audio:
+  drone_waveform: sine
+  drone_glide: 0.43
+  pulse_sensitivity: 0.44
+  presence: 0.69
+  accent_style: chime
+  texture_density: 0.4
