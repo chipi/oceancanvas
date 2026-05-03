@@ -38,6 +38,15 @@ export interface AudioParamsBlock {
   texture_density?: number;
 }
 
+/** Tension arc spec — RFC-011. Consumers expand to a per-frame array via tensionArc.ts / arc.py. */
+export interface TensionArcBlock {
+  preset?: string;
+  peak_position?: number;
+  peak_height?: number;
+  release_steepness?: number;
+  pin_key_moment?: boolean;
+}
+
 export interface OceanPayload {
   version: number;
   recipe: {
@@ -45,6 +54,7 @@ export interface OceanPayload {
     name: string;
     render: RenderParams;
     audio?: AudioParamsBlock;
+    tension_arc?: TensionArcBlock;
     render_date: string;
   };
   region: {
@@ -159,7 +169,14 @@ export interface BuildOptions {
  */
 export function buildPreviewPayload(
   primary: ProcessedData,
-  recipe: { id: string; name: string; render: RenderParams; audio?: AudioParamsBlock; render_date: string },
+  recipe: {
+    id: string;
+    name: string;
+    render: RenderParams;
+    audio?: AudioParamsBlock;
+    tension_arc?: TensionArcBlock;
+    render_date: string;
+  },
   region: RecipeRegion,
   options: BuildOptions = {},
   context?: ProcessedData,
@@ -183,12 +200,13 @@ export function buildPreviewPayload(
   }
 
   const payload: OceanPayload = {
-    version: 1,
+    version: 2,
     recipe: {
       id: recipe.id,
       name: recipe.name,
       render: recipe.render,
       audio: recipe.audio,
+      tension_arc: recipe.tension_arc,
       render_date: recipe.render_date,
     },
     region: {

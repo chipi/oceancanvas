@@ -155,15 +155,23 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
 
     region = recipe["region"]
     render = recipe.get("render", {})
+    audio = recipe.get("audio")
+    tension_arc = recipe.get("tension_arc")
+
+    recipe_block: dict = {
+        "id": recipe["name"],
+        "name": recipe["name"],
+        "render": render,
+        "render_date": date,
+    }
+    if audio is not None:
+        recipe_block["audio"] = audio
+    if tension_arc is not None:
+        recipe_block["tension_arc"] = tension_arc
 
     payload = {
-        "version": 1,
-        "recipe": {
-            "id": recipe["name"],
-            "name": recipe["name"],
-            "render": render,
-            "render_date": date,
-        },
+        "version": 2,
+        "recipe": recipe_block,
         "region": {
             "lat_min": region["lat"][0],
             "lat_max": region["lat"][1],

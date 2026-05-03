@@ -16,3 +16,9 @@ render:
   opacity: 0.8
   smooth: true
   seed: 42
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 1.0
+  release_steepness: 0.7
+  pin_key_moment: true

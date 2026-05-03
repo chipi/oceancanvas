@@ -145,7 +145,7 @@ class TestBuildOnePayload:
         assert output.exists()
         payload = json.loads(output.read_text())
 
-        assert payload["version"] == 1
+        assert payload["version"] == 2
         assert payload["recipe"]["id"] == "test-field"
         assert payload["recipe"]["render_date"] == "2026-01-15"
         assert payload["recipe"]["render"]["type"] == "field"
@@ -153,6 +153,10 @@ class TestBuildOnePayload:
         assert payload["region"]["lat_max"] == 65
         assert payload["output"]["width"] == 1920
         assert "data" in payload["data"]["primary"]
+        # tension_arc spec round-trips through the payload (RFC-011)
+        assert payload["recipe"]["tension_arc"]["preset"] == "classic"
+        assert payload["recipe"]["tension_arc"]["peak_position"] == 0.65
+        assert payload["recipe"]["tension_arc"]["pin_key_moment"] is True
 
     def test_raises_on_missing_data(self, tmp_path: Path):
         recipe = _load_recipe(FIXTURES_DIR / "recipes" / "test-field.yaml")

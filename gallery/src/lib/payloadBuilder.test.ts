@@ -22,15 +22,35 @@ const RECIPE = {
 const REGION = { lat: [25, 65] as [number, number], lon: [-80, 0] as [number, number] };
 
 describe('buildPreviewPayload', () => {
-  it('produces valid payload structure', () => {
+  it('produces valid payload structure with v2', () => {
     const p = buildPreviewPayload(SAMPLE_DATA, RECIPE, REGION);
-    expect(p.version).toBe(1);
+    expect(p.version).toBe(2);
     expect(p.recipe.id).toBe('test');
     expect(p.region.lat_min).toBe(25);
     expect(p.region.lon_max).toBe(0);
     expect(p.output.width).toBe(960);
     expect(p.output.height).toBe(540);
     expect(p.data.primary).toBeDefined();
+  });
+
+  it('round-trips a tension_arc spec', () => {
+    const recipeWithArc = {
+      ...RECIPE,
+      tension_arc: {
+        preset: 'classic',
+        peak_position: 0.65,
+        peak_height: 1.0,
+        release_steepness: 0.7,
+        pin_key_moment: true,
+      },
+    };
+    const p = buildPreviewPayload(SAMPLE_DATA, recipeWithArc, REGION);
+    expect(p.recipe.tension_arc).toEqual(recipeWithArc.tension_arc);
+  });
+
+  it('omits tension_arc when not provided (backwards-compat)', () => {
+    const p = buildPreviewPayload(SAMPLE_DATA, RECIPE, REGION);
+    expect(p.recipe.tension_arc).toBeUndefined();
   });
 
   it('full mode uses pipeline resolution', () => {
