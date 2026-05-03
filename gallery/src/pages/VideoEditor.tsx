@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AudioWaveform } from '../components/AudioWaveform';
+import { ArcEditor } from '../components/ArcEditor';
 import { useGenerativeAudio } from '../hooks/useGenerativeAudio';
 import { useManifest } from '../hooks/useManifest';
 import { PRESET_GROUPS, AUDIO_PRESETS, getPreset, presetFromAudioParams, type AudioPreset } from '../lib/audioPresets';
 import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, type ChannelMix, type EqSettings } from '../lib/audioEngineTypes';
 import { type MomentEvent, detectMoments } from '../lib/moments';
-import { extractAudioParams } from '../lib/yamlParser';
+import { DEFAULT_ARC_SPEC, expandArc, type TensionArcSpec } from '../lib/tensionArc';
+import { extractAudioParams, extractTensionArc } from '../lib/yamlParser';
 import styles from './VideoEditor.module.css';
 
 /** Extract truly significant moments — all-time records, decade highs/lows, major anomalies. */
@@ -124,6 +126,7 @@ export function VideoEditor() {
   const [recipePreset, setRecipePreset] = useState<AudioPreset | null>(null);
   const [channelMix, setChannelMix] = useState<ChannelMix>(DEFAULT_CHANNEL_MIX);
   const [audioEq, setAudioEq] = useState<EqSettings>(DEFAULT_EQ);
+  const [arcSpec, setArcSpec] = useState<TensionArcSpec>(DEFAULT_ARC_SPEC);
   const [overlays, setOverlays] = useState({
     date: true,
     attribution: true,
@@ -147,7 +150,17 @@ export function VideoEditor() {
     audioTheme === 'recipe' ? (recipePreset ?? getPreset('ocean')) :
     getPreset(audioTheme);
 
-  // Generative audio engine — RFC-010 four-layer composition
+  // Dominant moment frame — the highest-scoring event, used to pin the arc peak.
+  const dominantMomentFrame = moments.length > 0
+    ? moments.reduce((a, b) => (a.score >= b.score ? a : b)).frame
+    : null;
+
+  // Tension arc — RFC-011. Expanded once per spec/totalFrames/momentFrame change.
+  const tensionArc = dates.length > 0
+    ? expandArc(arcSpec, dates.length, dominantMomentFrame)
+    : [];
+
+  // Generative audio engine — RFC-010 four-layer composition + RFC-011 arc envelope
   const { masterVolume, setMasterVolume, audioReady, liveChannels } = useGenerativeAudio({
     preset: resolvedPreset,
     enabled: audioEnabled,
@@ -160,20 +173,29 @@ export function VideoEditor() {
     fps,
     channelMix,
     eq: audioEq,
+    tensionArc,
   });
 
-  // Fetch recipe YAML and derive its preset from the audio: block
+  // Fetch recipe YAML — derive audio preset and tension arc spec from it
   useEffect(() => {
-    if (!recipe) { setRecipePreset(null); return; }
+    if (!recipe) { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); return; }
     fetch(`/recipes/${recipe}.yaml`)
       .then((r) => r.ok ? r.text() : '')
       .then((yaml) => {
-        if (!yaml) { setRecipePreset(null); return; }
+        if (!yaml) { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); return; }
         const audio = extractAudioParams(yaml);
-        if (Object.keys(audio).length === 0) { setRecipePreset(null); return; }
-        setRecipePreset(presetFromAudioParams(audio, recipe));
+        if (Object.keys(audio).length === 0) {
+          setRecipePreset(null);
+        } else {
+          setRecipePreset(presetFromAudioParams(audio, recipe));
+        }
+        const arc = extractTensionArc(yaml);
+        setArcSpec({
+          ...DEFAULT_ARC_SPEC,
+          ...(arc as Partial<TensionArcSpec>),
+        });
       })
-      .catch(() => setRecipePreset(null));
+      .catch(() => { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); });
   }, [recipe]);
 
   // Load time series and compute key moments
@@ -475,6 +497,16 @@ export function VideoEditor() {
                   onMixChange={setChannelMix}
                   eq={audioEq}
                   onEqChange={setAudioEq}
+                  arc={tensionArc}
+                  currentFrame={selectedFrame}
+                />
+
+                {/* Tension arc editor — RFC-011 / PRD-006 */}
+                <ArcEditor
+                  spec={arcSpec}
+                  onChange={setArcSpec}
+                  totalFrames={dates.length}
+                  dominantMomentFrame={dominantMomentFrame}
                 />
               </>
             )}

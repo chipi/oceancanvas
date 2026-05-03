@@ -17,6 +17,10 @@ interface Props {
   onMixChange?: (mix: ChannelMix) => void;
   eq?: EqSettings;
   onEqChange?: (eq: EqSettings) => void;
+  /** Per-frame tension arc (RFC-011); painted as a faint guide line over the canvas. */
+  arc?: number[];
+  /** Current playback frame — used to position the live arc value indicator. */
+  currentFrame?: number;
 }
 
 interface ChannelMeta {
@@ -47,7 +51,11 @@ const EQ_META: Array<{ key: EqBand; label: string }> = [
  * drag the slider beside it to set its volume. Mute toggles parent state via
  * `onMixChange`; the engine picks up the new mix and re-applies bus gains.
  */
-export function AudioWaveform({ channels, width = 280, height = 80, isPlaying, mix, onMixChange, eq, onEqChange }: Props) {
+export function AudioWaveform({
+  channels, width = 280, height = 80, isPlaying,
+  mix, onMixChange, eq, onEqChange,
+  arc, currentFrame = 0,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef(0);
   const animRef = useRef<number>(0);
@@ -105,6 +113,30 @@ export function AudioWaveform({ channels, width = 280, height = 80, isPlaying, m
       ctx.lineTo(width, midY);
       ctx.stroke();
 
+      // Tension arc overlay — faint guide showing the authored shape over time
+      if (arc && arc.length > 1) {
+        ctx.strokeStyle = 'rgba(180, 220, 255, 0.28)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const stepX = width / (arc.length - 1);
+        for (let i = 0; i < arc.length; i++) {
+          const x = i * stepX;
+          const y = (1 - clamp01(arc[i])) * height;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Live indicator dot at currentFrame
+        const idx = Math.max(0, Math.min(arc.length - 1, currentFrame));
+        const x = idx * stepX;
+        const y = (1 - clamp01(arc[idx])) * height;
+        ctx.fillStyle = 'rgba(180, 220, 255, 0.9)';
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       if (isPlaying) {
         animRef.current = requestAnimationFrame(draw);
       }
@@ -120,7 +152,7 @@ export function AudioWaveform({ channels, width = 280, height = 80, isPlaying, m
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, [channels, width, height, isPlaying]);
+  }, [channels, width, height, isPlaying, arc, currentFrame]);
 
   const mixInteractive = !!(mix && onMixChange);
   const eqInteractive = !!(eq && onEqChange);
@@ -262,4 +294,8 @@ function drawBurst(
     else ctx.lineTo(x, y);
   }
   ctx.stroke();
+}
+
+function clamp01(v: number): number {
+  return Math.max(0, Math.min(1, v));
 }
