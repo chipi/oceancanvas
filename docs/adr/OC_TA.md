@@ -148,6 +148,7 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [RFC-008](../rfc/RFC-008-v2.md) | Pipeline parallelisation strategy | Decided | [ADR-023](ADR-023-pipeline-parallelisation.md) |
 | [RFC-009](../rfc/RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](ADR-022-cli-entry-point.md) |
 | [RFC-010](../rfc/RFC-010-generative-audio-composition.md) | Generative audio composition | Decided | [ADR-027](ADR-027-generative-audio-composition.md) |
+| [RFC-011](../rfc/RFC-011-tension-arc.md) | Tension arc as shared primitive | Draft v0.1 | ADR-028 (pending) |
 
 ### ADRs · [folder index](index.md)
 

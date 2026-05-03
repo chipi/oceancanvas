@@ -25,10 +25,11 @@ All PRDs anchor to a shared reference document that holds audiences, promises, a
 | [PRD-003](PRD-003-recipe-editor.md) | Recipe Editor | Draft v0.1 | artist |
 | [PRD-004](PRD-004-gallery.md) | Gallery | Draft v0.2 | curious-person, climate-communicator |
 | [PRD-005](PRD-005-video-editor.md) | Video Editor | Draft v0.3 | climate-communicator, artist |
+| [PRD-006](PRD-006-piece.md) | The piece (audio-video as one designed work) | Draft v0.1 | artist, climate-communicator, curious-person |
 
 ## Numbering
 
-Fresh 1–5, replacing the earlier 1–10 list. The pipeline, processing, rendering, audio, and overlay items in the original index are not PRDs; they live as RFCs and ADRs.
+Fresh 1–6. PRD-001 through PRD-005 cover the four customer-facing surfaces and the recipe primitive itself. PRD-006 argues for the next iteration of the Video Editor surface — a single authored curve shaping image and sound as one piece. Pipeline, processing, rendering, audio, and overlay mechanics are not PRDs; they live as RFCs and ADRs.
 
 ## Template
 
