@@ -1,0 +1,220 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useManifest } from '../hooks/useManifest';
+import styles from './VideoEditor.module.css';
+
+interface ExportState {
+  status: 'idle' | 'exporting' | 'done' | 'error';
+  progress?: string;
+  path?: string;
+  size?: number;
+  error?: string;
+}
+
+export function VideoEditor() {
+  const { recipe } = useParams<{ recipe: string }>();
+  const { manifest } = useManifest();
+  const entry = manifest?.recipes?.[recipe || ''];
+
+  const [selectedFrame, setSelectedFrame] = useState(0);
+  const [fps, setFps] = useState(12);
+  const [overlays, setOverlays] = useState({
+    date: true,
+    anomaly: true,
+    events: true,
+    record: true,
+    sparkline: true,
+    ribbon: true,
+    attribution: true,
+  });
+  const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+
+  const dates = entry?.dates || [];
+  const currentDate = dates[selectedFrame] || '';
+  const duration = dates.length / fps;
+
+  // Keyboard navigation
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowLeft') setSelectedFrame((f) => Math.max(0, f - 1));
+      if (e.key === 'ArrowRight') setSelectedFrame((f) => Math.min(dates.length - 1, f + 1));
+      if (e.key === ' ') { e.preventDefault(); /* playback toggle — future */ }
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [dates.length]);
+
+  const handleExport = useCallback(async () => {
+    if (!recipe) return;
+    setExportState({ status: 'exporting', progress: 'Starting ffmpeg...' });
+    try {
+      const resp = await fetch(`/api/export/${recipe}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fps }),
+      });
+      const result = await resp.json();
+      if (result.ok) {
+        setExportState({
+          status: 'done',
+          path: result.path,
+          size: result.size,
+        });
+      } else {
+        setExportState({ status: 'error', error: result.error });
+      }
+    } catch (e) {
+      setExportState({ status: 'error', error: (e as Error).message });
+    }
+  }, [recipe, fps]);
+
+  const toggleOverlay = useCallback((key: string) => {
+    setOverlays((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
+  }, []);
+
+  if (!entry) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.topbar}>
+          <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        </header>
+        <div className={styles.empty}>
+          {recipe ? `No renders for "${recipe}"` : 'Select a recipe'}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.page}>
+      {/* Topbar */}
+      <header className={styles.topbar}>
+        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <span className={styles.topbarPath}>
+          /timelapse editor / {recipe}
+        </span>
+        <div className={styles.topbarActions}>
+          <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← gallery</a>
+          {exportState.status === 'done' ? (
+            <a
+              href={`/api/export/${recipe}/download`}
+              className={styles.exportBtn}
+              download
+            >
+              download MP4
+            </a>
+          ) : (
+            <button
+              className={styles.exportBtn}
+              onClick={handleExport}
+              disabled={exportState.status === 'exporting'}
+            >
+              {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Body: preview left, controls right */}
+      <div className={styles.body}>
+        {/* Preview area */}
+        <div className={styles.preview}>
+          <img
+            className={styles.previewImage}
+            src={`/renders/${recipe}/${currentDate}.png`}
+            alt={`${recipe} ${currentDate}`}
+          />
+          <div className={styles.previewOverlay}>
+            <span className={styles.previewDate}>{currentDate}</span>
+            <span className={styles.previewFrame}>
+              {selectedFrame + 1} / {dates.length}
+            </span>
+          </div>
+
+          {/* Timeline ribbon */}
+          <div className={styles.ribbon}>
+            <input
+              type="range"
+              min={0}
+              max={dates.length - 1}
+              value={selectedFrame}
+              className={styles.ribbonSlider}
+              onChange={(e) => setSelectedFrame(parseInt(e.target.value, 10))}
+            />
+            <div className={styles.ribbonLabels}>
+              <span>{dates[0]?.substring(0, 4)}</span>
+              <span>{dates[Math.floor(dates.length / 2)]?.substring(0, 4)}</span>
+              <span>{dates[dates.length - 1]?.substring(0, 4)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Control panel */}
+        <aside className={styles.controls}>
+          {/* Sequence */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>SEQUENCE</div>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Recipe</span>
+              <span className={styles.fieldValue}>{recipe}</span>
+            </div>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Frames</span>
+              <span className={styles.fieldValue}>{dates.length}</span>
+            </div>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>FPS</span>
+              <select
+                className={styles.select}
+                value={fps}
+                onChange={(e) => setFps(parseInt(e.target.value, 10))}
+              >
+                <option value={6}>6</option>
+                <option value={12}>12</option>
+                <option value={24}>24</option>
+                <option value={30}>30</option>
+              </select>
+            </div>
+            <div className={styles.field}>
+              <span className={styles.fieldLabel}>Duration</span>
+              <span className={styles.fieldValue}>{duration.toFixed(1)}s</span>
+            </div>
+          </div>
+
+          {/* Overlays */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>OVERLAYS</div>
+            {Object.entries(overlays).map(([key, enabled]) => (
+              <label key={key} className={styles.overlayRow}>
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={() => toggleOverlay(key)}
+                />
+                <span>{key}</span>
+              </label>
+            ))}
+          </div>
+
+          {/* Export status */}
+          {exportState.status !== 'idle' && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>EXPORT</div>
+              {exportState.status === 'exporting' && (
+                <div className={styles.exportProgress}>{exportState.progress}</div>
+              )}
+              {exportState.status === 'done' && (
+                <div className={styles.exportDone}>
+                  Ready ({((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
+                </div>
+              )}
+              {exportState.status === 'error' && (
+                <div className={styles.exportError}>{exportState.error}</div>
+              )}
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  );
+}

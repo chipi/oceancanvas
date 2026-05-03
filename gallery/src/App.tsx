@@ -4,10 +4,7 @@ import { DashboardSpread } from './pages/DashboardSpread';
 import { Gallery } from './pages/Gallery';
 import { GalleryDetail } from './pages/GalleryDetail';
 import { RecipeEditor } from './pages/RecipeEditor';
-
-function VideoEditor() {
-  return <div style={{ color: 'var(--text-muted)', padding: 24 }}>Video Editor — coming in Slice 3</div>;
-}
+import { VideoEditor } from './pages/VideoEditor';
 
 export function App() {
   return (
