@@ -1,18 +1,16 @@
 import { useEffect, useRef } from 'react';
 
-const STEM_NAMES = [
-  'stem_0_calm',
-  'stem_1_breathing',
-  'stem_2_present',
-  'stem_3_swelling',
-  'stem_4_apex',
+const STEM_URLS = [
+  'stem_0_calm.mp3',
+  'stem_1_breathing.mp3',
+  'stem_2_present.mp3',
+  'stem_3_swelling.mp3',
+  'stem_4_apex.mp3',
 ];
 
 /**
- * Audio playback hook — plays stems based on intensity signal.
- *
- * Loads 5 WAV stems, crossfades between them based on the current
- * intensity value [0-1]. Uses Web Audio API for gapless switching.
+ * Audio playback hook — plays stems using HTML5 Audio elements.
+ * All stems loop simultaneously; volume crossfades based on intensity.
  */
 export function useAudioPlayback(
   theme: string,
@@ -21,117 +19,71 @@ export function useAudioPlayback(
   intensity: number[],
   currentFrame: number,
 ) {
-  const ctxRef = useRef<AudioContext | null>(null);
-  const gainsRef = useRef<GainNode[]>([]);
-  const sourcesRef = useRef<AudioBufferSourceNode[]>([]);
-  const buffersRef = useRef<AudioBuffer[]>([]);
-  const loadedRef = useRef(false);
+  const audiosRef = useRef<HTMLAudioElement[]>([]);
+  const readyRef = useRef(false);
 
-  // Load stems once
+  // Create audio elements once
   useEffect(() => {
     if (!enabled || !theme) {
-      loadedRef.current = false;
+      readyRef.current = false;
       return;
     }
 
-    let cancelled = false;
-    const ctx = new AudioContext();
-    ctxRef.current = ctx;
+    const audios = STEM_URLS.map((name) => {
+      const a = new Audio(`/audio/themes/${theme}/${name}`);
+      a.loop = true;
+      a.volume = 0;
+      a.preload = 'auto';
+      return a;
+    });
+    audiosRef.current = audios;
 
-    Promise.all(
-      STEM_NAMES.map(async (name) => {
-        try {
-          const resp = await fetch(`/audio/themes/${theme}/${name}.mp3`);
-          if (!resp.ok) return null;
-          const buf = await resp.arrayBuffer();
-          return await ctx.decodeAudioData(buf);
-        } catch {
-          return null;
-        }
-      }),
-    ).then((buffers) => {
-      if (cancelled) return;
-      const valid = buffers.filter((b): b is AudioBuffer => b !== null);
-      if (valid.length === 0) return;
-      buffersRef.current = valid;
-
-      const gains = valid.map(() => {
-        const g = ctx.createGain();
-        g.gain.value = 0;
-        g.connect(ctx.destination);
-        return g;
-      });
-      gainsRef.current = gains;
-      loadedRef.current = true;
-    }).catch(() => {
-      // Audio loading failed — continue without audio
-      loadedRef.current = false;
+    // Wait for all to be loadable
+    let loaded = 0;
+    audios.forEach((a) => {
+      a.addEventListener('canplaythrough', () => {
+        loaded++;
+        if (loaded === audios.length) readyRef.current = true;
+      }, { once: true });
     });
 
     return () => {
-      cancelled = true;
-      loadedRef.current = false;
-      // Stop all sources
-      sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
-      sourcesRef.current = [];
-      gainsRef.current = [];
-      buffersRef.current = [];
-      // Close context last
-      try { ctx.close(); } catch {}
-      ctxRef.current = null;
+      audios.forEach((a) => {
+        a.pause();
+        a.src = '';
+      });
+      audiosRef.current = [];
+      readyRef.current = false;
     };
   }, [theme, enabled]);
 
-  // Start/stop playback
+  // Play/pause all stems together
   useEffect(() => {
-    const ctx = ctxRef.current;
-    if (!ctx || !loadedRef.current) return;
+    const audios = audiosRef.current;
+    if (!audios.length) return;
 
     if (isPlaying) {
-      // Resume context (browsers suspend until user interaction)
-      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
-
-      // Stop existing sources
-      sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
-
-      // Start all stems looping
-      try {
-        const sources = buffersRef.current.map((buf, i) => {
-          const source = ctx.createBufferSource();
-          source.buffer = buf;
-          source.loop = true;
-          source.connect(gainsRef.current[i]);
-          source.start();
-          return source;
-        });
-        sourcesRef.current = sources;
-      } catch {
-        // Audio playback failed — silent fallback
-        sourcesRef.current = [];
-      }
+      audios.forEach((a) => {
+        a.play().catch(() => {});
+      });
     } else {
-      sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
-      sourcesRef.current = [];
+      audios.forEach((a) => a.pause());
     }
   }, [isPlaying]);
 
-  // Update gains based on current intensity
+  // Crossfade volumes based on intensity
   useEffect(() => {
-    const ctx = ctxRef.current;
-    if (!ctx || !loadedRef.current || gainsRef.current.length === 0) return;
+    const audios = audiosRef.current;
+    if (!audios.length) return;
 
     const level = intensity[currentFrame] ?? 0;
-    const stemCount = gainsRef.current.length;
-    const activeStem = Math.min(stemCount - 1, Math.floor(level * stemCount));
+    const count = audios.length;
+    const active = Math.min(count - 1, Math.floor(level * count));
 
-    try {
-      const now = ctx.currentTime;
-      gainsRef.current.forEach((g, i) => {
-        const target = i === activeStem ? 0.8 : (Math.abs(i - activeStem) === 1 ? 0.2 : 0);
-        g.gain.linearRampToValueAtTime(target, now + 0.1);
-      });
-    } catch {
-      // Gain update failed — ignore
-    }
+    audios.forEach((a, i) => {
+      if (i === active) a.volume = 0.7;
+      else if (Math.abs(i - active) === 1) a.volume = 0.15;
+      else a.volume = 0;
+    });
   }, [currentFrame, intensity]);
 }
