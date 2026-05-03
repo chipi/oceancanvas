@@ -1,0 +1,2575 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative ocean art that the data performs daily">
+      
+      
+      
+        <link rel="canonical" href="https://chipi.github.io/oceancanvas/rfc/OC03_addendum_biologging/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>OC-03 Data Catalog — Addendum A - OceanCanvas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#oc-03-data-catalog-addendum-a" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="OceanCanvas" class="md-header__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OceanCanvas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OC-03 Data Catalog — Addendum A
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="OceanCanvas" class="md-nav__button md-logo" aria-label="OceanCanvas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OceanCanvas
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/chipi/oceancanvas" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    chipi/oceancanvas
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../get-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-sources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Internals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project Internals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/04-technical-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How It Works
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concept/05-design-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/OC_TA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prd/OC_PA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/OC_IA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Information Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visual Contracts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visual Contracts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-004-gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-001-dashboard-sst/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard SST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-002-dashboard-sealevel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard Sea Level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-003-recipe-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uxs/UXS-005-video-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Video Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../adr/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-001-prefect-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-002-dlt-rest-ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dlt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-003-xarray-netcdf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    xarray
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-004-three-layer-data-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Store
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-005-no-database-v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    No Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-006-p5js-sketch-language/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    p5.js
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-007-puppeteer-renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Puppeteer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-008-shared-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-009-deck-gl-maplibre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    deck.gl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-010-observable-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observable Plot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-011-docker-compose/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Compose
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-012-caddy-static-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caddy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-013-github-actions-code-only/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-014-synthetic-e2e-gate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synthetic e2e
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-015-processed-json-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Processed JSON
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-016-single-author-phase-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Single Author
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-017-one-layout-per-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    One Layout Per Source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-018-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe YAML Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-019-render-payload-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Payload Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-020-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-021-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YAML Round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-022-cli-entry-point/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Entry Point
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-023-pipeline-parallelisation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Parallelisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-024-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moment Detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-025-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-026-audio-stem-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio Stem System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RFCs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    RFCs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-001-recipe-yaml-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe YAML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-002-render-payload-format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Render Payload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-003-recipe-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-004-live-preview-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Live Preview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-005-yaml-round-tripping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    YAML Round-tripping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-006-audio-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-007-key-moment-detection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Moments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-008-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline Parallelisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-009/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="oc-03-data-catalog-addendum-a">OC-03 Data Catalog — Addendum A</h1>
+<h2 id="biologging-data-family-obis-three-species">Biologging Data Family: OBIS + Three Species</h2>
+<p><strong>Document:</strong> OC-03 Data Catalog Addendum A<br />
+<strong>Status:</strong> Draft — for review before catalog revision<br />
+<strong>Relates to:</strong> GitHub issue <code>feat: OBIS biologging POC</code><br />
+<strong>Data family:</strong> <code>biologging</code> (new family, alongside <code>grid</code>, <code>profile</code>, <code>scalar</code>)</p>
+<hr />
+<h2 id="editorial-context">Editorial context</h2>
+<p>The ocean is not only fluid. It is habitat. The three sources catalogued here extend OceanCanvas from pure physical oceanography into biology — specifically into the movements of large marine animals tracked by satellite. The render type is the same as Argo floats (scatter), the API access is simpler than ERDDAP, and the editorial register is entirely different: these are animals, endangered in most cases, and their journeys across temperature gradients tell a story about the living ocean that SST fields and salinity profiles cannot.</p>
+<p>All three species below are accessed via the <strong>OBIS REST API</strong> — a single, unified, no-authentication endpoint that aggregates marine occurrence records from thousands of contributing institutions worldwide. GBIF serves as a secondary source for any gaps.</p>
+<hr />
+<h2 id="source-entry-obis">Source entry: OBIS</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source ID</strong></td>
+<td><code>obis</code></td>
+</tr>
+<tr>
+<td><strong>Full name</strong></td>
+<td>Ocean Biodiversity Information System</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>Intergovernmental Oceanographic Commission of UNESCO</td>
+</tr>
+<tr>
+<td><strong>Primary endpoint</strong></td>
+<td><code>https://api.obis.org/v3/occurrence</code></td>
+</tr>
+<tr>
+<td><strong>Secondary endpoint</strong></td>
+<td><code>https://api.gbif.org/v1/occurrence/search</code> (GBIF)</td>
+</tr>
+<tr>
+<td><strong>Authentication</strong></td>
+<td>None — open public API</td>
+</tr>
+<tr>
+<td><strong>License</strong></td>
+<td>CC BY (per dataset; OBIS requires attribution)</td>
+</tr>
+<tr>
+<td><strong>Update cadence</strong></td>
+<td>Continuous — records published by contributing institutions on rolling basis</td>
+</tr>
+<tr>
+<td><strong>Native format</strong></td>
+<td>JSON (paginated, max 10,000 records per request)</td>
+</tr>
+<tr>
+<td><strong>Spatial resolution</strong></td>
+<td>Point occurrences (lat/lon per observation)</td>
+</tr>
+<tr>
+<td><strong>Temporal range</strong></td>
+<td>1800s to present (quality varies by dataset; modern satellite-tagged data from 1990s–present)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-query-parameters">Key query parameters</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>scientificname   Scientific name of species (URL-encoded)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>taxonid          WoRMS AphiaID (preferred over name — avoids synonym ambiguity)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>startdate        ISO date filter (e.g. 2010-01-01)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>enddate          ISO date filter
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>geometry         WKT polygon for bounding box queries
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>size             Records per page (max 10,000)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>fields           Comma-separated field list for response trimming
+</code></pre></div>
+<h3 id="response-fields-used-by-oceancanvas">Response fields used by OceanCanvas</h3>
+<table>
+<thead>
+<tr>
+<th>OBIS field</th>
+<th>OceanCanvas mapped field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>decimalLatitude</code></td>
+<td><code>lat</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>decimalLongitude</code></td>
+<td><code>lon</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>eventDate</code></td>
+<td><code>date</code></td>
+<td>ISO 8601 string; trim to date part</td>
+</tr>
+<tr>
+<td><code>depth</code></td>
+<td><code>depth</code></td>
+<td>Metres; null for surface sightings</td>
+</tr>
+<tr>
+<td><code>scientificName</code></td>
+<td><code>species</code></td>
+<td>Canonical name from WoRMS</td>
+</tr>
+<tr>
+<td><code>datasetName</code></td>
+<td><code>source_dataset</code></td>
+<td>For citation</td>
+</tr>
+<tr>
+<td><code>occurrenceID</code></td>
+<td><code>record_id</code></td>
+<td>For deduplication</td>
+</tr>
+</tbody>
+</table>
+<h3 id="citation-format">Citation format</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>OBIS (2025) Occurrence records of [species] via Ocean Biodiversity Information
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>System. Intergovernmental Oceanographic Commission of UNESCO.
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>www.obis.org. Accessed: [date]
+</code></pre></div>
+<h3 id="access-notes">Access notes</h3>
+<p>OBIS enforces a rate limit on bulk downloads. For large queries (&gt;50,000 records), the GeoParquet snapshot on AWS S3 is preferred over the REST API. For OceanCanvas POC purposes (3 species, ~20,000 total records), the API is adequate. GBIF supplements OBIS where OBIS records are sparse; GBIF requires a DOI citation for downloaded datasets.</p>
+<hr />
+<h2 id="species-entry-1-whale-shark">Species entry 1: Whale Shark</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Common name</strong></td>
+<td>Whale Shark</td>
+</tr>
+<tr>
+<td><strong>Scientific name</strong></td>
+<td><em>Rhincodon typus</em> (Smith, 1828)</td>
+</tr>
+<tr>
+<td><strong>WoRMS AphiaID</strong></td>
+<td>105847</td>
+</tr>
+<tr>
+<td><strong>IUCN status</strong></td>
+<td>Endangered (EN)</td>
+</tr>
+<tr>
+<td><strong>OBIS records (approx.)</strong></td>
+<td>~2,500 georeferenced occurrences (2004–2024)</td>
+</tr>
+<tr>
+<td><strong>GBIF records (approx.)</strong></td>
+<td>~410</td>
+</tr>
+<tr>
+<td><strong>Date range</strong></td>
+<td>1990s–2024</td>
+</tr>
+<tr>
+<td><strong>Spatial coverage</strong></td>
+<td>Global tropical and warm-temperate oceans (±30° latitude band)</td>
+</tr>
+<tr>
+<td><strong>Depth data</strong></td>
+<td>Yes — satellite-tagged individuals have dive profiles to &gt;1,900 m</td>
+</tr>
+<tr>
+<td><strong>Primary dataset</strong></td>
+<td>ECOCEAN Whale Shark Photo-identification Library (OBIS Australia; CC BY-NC 4.0)</td>
+</tr>
+<tr>
+<td><strong>Render type</strong></td>
+<td><code>scatter</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="data-character">Data character</h3>
+<p>Occurrence records combine satellite telemetry tracks, systematic survey transects, opportunistic sightings (diver reports, fisheries observer data), and photo-ID library matches. The ECOCEAN dataset is the most curated: individual sharks are identified by spot patterns using an astronomical pattern-matching algorithm, giving each record a named individual where possible.</p>
+<p>The SST linkage is the defining editorial angle. Whale sharks are obligate followers of warm surface water (preferred range 21–30°C) and aggregate at productive fronts driven by upwelling or current convergence. An OceanCanvas scatter render overlaid against OISST will show this directly: the shark distribution traces the warm-water envelope.</p>
+<h3 id="recipe-affinity">Recipe affinity</h3>
+<table>
+<thead>
+<tr>
+<th>Overlay</th>
+<th>Narrative</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OISST SST</td>
+<td>Animals tracking thermal fronts in real time</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>OISST + Chl-a anomaly</td>
+<td>Sharks following prey blooms</td>
+<td>Secondary</td>
+</tr>
+<tr>
+<td>GEBCO bathymetry</td>
+<td>Coastal aggregation sites vs open-ocean transit routes</td>
+<td>Tertiary</td>
+</tr>
+</tbody>
+</table>
+<h3 id="access-query">Access query</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>GET https://api.obis.org/v3/occurrence
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  ?taxonid=105847
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  &amp;startdate=2000-01-01
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  &amp;size=5000
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  &amp;fields=decimalLatitude,decimalLongitude,eventDate,depth,datasetName,occurrenceID
+</code></pre></div>
+<h3 id="citation">Citation</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Norman B and Holmberg J (2008) ECOCEAN Whale Shark Photo-identification Library.
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Marine.csiro.au/ipt. Via OBIS (2025). Accessed: [date]
+</code></pre></div>
+<hr />
+<h2 id="species-entry-2-leatherback-turtle">Species entry 2: Leatherback Turtle</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Common name</strong></td>
+<td>Leatherback Sea Turtle</td>
+</tr>
+<tr>
+<td><strong>Scientific name</strong></td>
+<td><em>Dermochelys coriacea</em> (Vandelli, 1761)</td>
+</tr>
+<tr>
+<td><strong>WoRMS AphiaID</strong></td>
+<td>137209</td>
+</tr>
+<tr>
+<td><strong>IUCN status</strong></td>
+<td>Vulnerable (VU) globally; Critically Endangered in some subpopulations</td>
+</tr>
+<tr>
+<td><strong>OBIS records (approx.)</strong></td>
+<td>~5,000+ georeferenced occurrences</td>
+</tr>
+<tr>
+<td><strong>GBIF records (approx.)</strong></td>
+<td>~3,000+</td>
+</tr>
+<tr>
+<td><strong>Date range</strong></td>
+<td>1980s–2024</td>
+</tr>
+<tr>
+<td><strong>Spatial coverage</strong></td>
+<td>All ocean basins; nesting beaches in tropics, foraging grounds to sub-polar latitudes</td>
+</tr>
+<tr>
+<td><strong>Depth data</strong></td>
+<td>Partial — satellite tags record surfacing events; dive data from archival tags where available</td>
+</tr>
+<tr>
+<td><strong>Primary dataset</strong></td>
+<td>OBIS-SEAMAP Sea Turtle node (Duke University Marine Geospatial Ecology Lab; CC BY-NC)</td>
+</tr>
+<tr>
+<td><strong>Render type</strong></td>
+<td><code>scatter</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="data-character_1">Data character</h3>
+<p>Leatherbacks are the most widely distributed reptile on Earth and the deepest-diving sea turtle (recorded to &gt;1,200 m). Their migrations are the longest of any sea turtle: individuals tagged in the eastern Pacific have been recorded travelling over 10,000 km to foraging grounds off the US Pacific coast and beyond. OBIS-SEAMAP has a dedicated turtle portal with curated satellite telemetry datasets; these are the highest-quality records for OceanCanvas purposes.</p>
+<p>The render strategy differs from whale sharks: leatherbacks do not aggregate, they transit. A time-animated scatter render over a full year shows individual tracks crossing entire ocean basins — a compelling render type that is distinct from the thermal-clustering pattern of whale sharks. The editorial angle is migration and scale.</p>
+<h3 id="recipe-affinity_1">Recipe affinity</h3>
+<table>
+<thead>
+<tr>
+<th>Overlay</th>
+<th>Narrative</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OISST SST</td>
+<td>Cold current crossings — turtles entering frigid water following jellyfish</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>GEBCO bathymetry</td>
+<td>Showing transoceanic routes over abyssal plains</td>
+<td>Secondary</td>
+</tr>
+<tr>
+<td>Seasonal animation</td>
+<td>Nesting beach departure → foraging → return cycle</td>
+<td>Primary</td>
+</tr>
+</tbody>
+</table>
+<h3 id="access-query_1">Access query</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>GET https://api.obis.org/v3/occurrence
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  ?taxonid=137209
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  &amp;startdate=2000-01-01
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  &amp;size=5000
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  &amp;fields=decimalLatitude,decimalLongitude,eventDate,depth,datasetName,occurrenceID
+</code></pre></div>
+<h3 id="citation_1">Citation</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>OBIS-SEAMAP (2025) Sea Turtle occurrence records for Dermochelys coriacea.
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Duke University Marine Geospatial Ecology Lab. seamap.env.duke.edu.
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Via OBIS (2025). Accessed: [date]
+</code></pre></div>
+<hr />
+<h2 id="species-entry-3-southern-elephant-seal">Species entry 3: Southern Elephant Seal</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Common name</strong></td>
+<td>Southern Elephant Seal</td>
+</tr>
+<tr>
+<td><strong>Scientific name</strong></td>
+<td><em>Mirounga leonina</em> (Linnaeus, 1758)</td>
+</tr>
+<tr>
+<td><strong>WoRMS AphiaID</strong></td>
+<td>231414</td>
+</tr>
+<tr>
+<td><strong>IUCN status</strong></td>
+<td>Least Concern (LC) — population ~650,000</td>
+</tr>
+<tr>
+<td><strong>OBIS records (approx.)</strong></td>
+<td>~15,000+ georeferenced occurrences</td>
+</tr>
+<tr>
+<td><strong>GBIF records (approx.)</strong></td>
+<td>~12,000+</td>
+</tr>
+<tr>
+<td><strong>Date range</strong></td>
+<td>1990s–2023</td>
+</tr>
+<tr>
+<td><strong>Spatial coverage</strong></td>
+<td>Southern Ocean and sub-Antarctic; breeding colonies on South Georgia, Kerguelen, Macquarie Island</td>
+</tr>
+<tr>
+<td><strong>Depth data</strong></td>
+<td>Yes — MEOP-tagged individuals carry CTD sensors; temperature and salinity profiles at depth</td>
+</tr>
+<tr>
+<td><strong>Primary dataset</strong></td>
+<td>MEOP (Marine Mammals Exploring the Oceans Pole to Pole); OBIS-SEAMAP marine mammal node</td>
+</tr>
+<tr>
+<td><strong>Render type</strong></td>
+<td><code>scatter</code> (primary); <code>profile</code> (future — MEOP CTD data)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="data-character_2">Data character</h3>
+<p>This is the wildcard entry and the one with the most unusual data character. The MEOP program instruments southern elephant seals as oceanographic platforms: each tagged animal carries a conductivity-temperature-depth (CTD) sensor that records ocean profiles every time the animal dives and surfaces. Because seals forage under sea ice and in areas rarely visited by research vessels, MEOP data fills critical gaps in Southern Ocean physical oceanography.</p>
+<p>For OceanCanvas, this means two things. First, the scatter render shows foraging ranges from breeding colonies — visually striking because the tracks radiate outward from a few fixed points and then return, producing a distinctive star-burst pattern over the Southern Ocean. Second, the MEOP CTD profiles are a future render pathway: these are genuine ocean profiles in the exact same format as Argo floats, but collected by an animal. The editorial angle writes itself: <em>the seal is the instrument</em>.</p>
+<p>The scatter/profile duality makes this the most data-rich of the three POC species, and the one most likely to justify a dedicated recipe.</p>
+<h3 id="recipe-affinity_2">Recipe affinity</h3>
+<table>
+<thead>
+<tr>
+<th>Overlay</th>
+<th>Narrative</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OISST SST</td>
+<td>Seals foraging at polar front transitions</td>
+<td>Primary</td>
+</tr>
+<tr>
+<td>WOA salinity</td>
+<td>MEOP profiles vs gridded climatology — animal data filling gaps</td>
+<td>Secondary (future)</td>
+</tr>
+<tr>
+<td>GEBCO bathymetry</td>
+<td>Dive depth vs seafloor — showing how seals follow continental shelf edges</td>
+<td>Secondary</td>
+</tr>
+<tr>
+<td>Seasonal animation</td>
+<td>Colony departure → Southern Ocean → return; shows breeding/foraging rhythm</td>
+<td>Primary</td>
+</tr>
+</tbody>
+</table>
+<h3 id="access-query_2">Access query</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>GET https://api.obis.org/v3/occurrence
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  ?taxonid=231414
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  &amp;startdate=2000-01-01
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  &amp;size=5000
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>  &amp;fields=decimalLatitude,decimalLongitude,eventDate,depth,datasetName,occurrenceID
+</code></pre></div>
+<p>For MEOP CTD profiles specifically, the MEOP data portal at <code>meop.net</code> provides NetCDF files by deployment campaign. This is a separate fetch pathway from OBIS and is out of scope for the POC scatter render.</p>
+<h3 id="citation_2">Citation</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Roquet F et al. (2013) Estimates of the Southern Ocean general circulation
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>improved by animal-borne instruments. Geophysical Research Letters.
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>MEOP Consortium. meop.net. Via OBIS (2025). Accessed: [date]
+</code></pre></div>
+<hr />
+<h2 id="data-model-extension">Data model extension</h2>
+<p>Adding these three species requires one new source type in the OceanCanvas data model:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">source_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">biologging</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">fields</span><span class="p">:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lat</span><span class="w">           </span><span class="c1"># float</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lon</span><span class="w">           </span><span class="c1"># float</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span><span class="w">          </span><span class="c1"># ISO 8601 date string</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">depth</span><span class="w">         </span><span class="c1"># float or null (metres)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">species</span><span class="w">       </span><span class="c1"># string (scientific name)</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source_dataset</span><span class="w"> </span><span class="c1"># string (for citation)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">record_id</span><span class="w">     </span><span class="c1"># string (for deduplication)</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="nt">fetch</span><span class="p">:</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http_json</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">  </span><span class="nt">auth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">none</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="nt">pagination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cursor</span><span class="w">  </span><span class="c1"># OBIS uses offset pagination</span>
+</code></pre></div>
+<p>This is intentionally minimal — the same schema works for all three species and for any future OBIS-sourced species without modification.</p>
+<hr />
+<h2 id="access-and-licensing-summary">Access and licensing summary</h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>License</th>
+<th>Registration</th>
+<th>Cost</th>
+<th>Pipeline-friendly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OBIS API</td>
+<td>CC BY (per dataset)</td>
+<td>None</td>
+<td>Free</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>GBIF API</td>
+<td>CC BY / CC0 (per dataset)</td>
+<td>None for reads</td>
+<td>Free</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>MEOP CTD</td>
+<td>CC BY</td>
+<td>None</td>
+<td>Free</td>
+<td>Yes (NetCDF)</td>
+</tr>
+<tr>
+<td>OCEARCH</td>
+<td>IP of OCEARCH</td>
+<td>Formal agreement required</td>
+<td>Free</td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td>Movebank</td>
+<td>Varies per study</td>
+<td>Free account + per-study approval</td>
+<td>Free</td>
+<td><strong>No</strong></td>
+</tr>
+</tbody>
+</table>
+<p>OBIS is the correct access layer for OceanCanvas. It aggregates the publicly released data from Movebank, OTN, and OBIS-SEAMAP without requiring per-study approval, and returns a consistent JSON schema regardless of the underlying contributor.</p>
+<hr />
+<h2 id="open-questions-for-catalog-review">Open questions for catalog review</h2>
+<ol>
+<li>
+<p><strong>Data family naming.</strong> <code>biologging</code> is technically accurate but not necessarily the editorial term. Consider whether the gallery-facing name should be something like <code>animal tracking</code> or <code>ocean wildlife</code> — the catalog can use <code>biologging</code> internally while the UI uses a different label.</p>
+</li>
+<li>
+<p><strong>MEOP profile pathway.</strong> Southern elephant seal CTD profiles are genuinely compelling and would fit the existing <code>profile</code> render type. Noting this here so it isn't lost — it would require a separate MEOP fetch config and is explicitly out of scope for the POC.</p>
+</li>
+<li>
+<p><strong>Version drift.</strong> OBIS record counts change as contributing institutions publish new data. The figures in this addendum reflect May 2025; they should be reverified at implementation time.</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      MIT License · OceanCanvas contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.indexes", "navigation.top", "search.highlight", "content.code.copy", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
