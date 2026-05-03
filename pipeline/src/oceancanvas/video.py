@@ -1,0 +1,168 @@
+"""Video assembly — stitch PNG renders into MP4 via ffmpeg.
+
+Takes a recipe's render directory (sorted PNGs), assembles into
+an MP4 timelapse at configurable fps. Supports overlay compositing
+via ffmpeg drawtext filters.
+
+No audio in v0.4.0 — silent export. Audio stems added in v0.4.1.
+"""
+
+from __future__ import annotations
+
+import subprocess
+from pathlib import Path
+
+from oceancanvas.log import get_logger
+
+
+def assemble_video(
+    recipe_name: str,
+    renders_dir: Path,
+    output_path: Path,
+    fps: int = 12,
+    dates: list[str] | None = None,
+    overlay_date: bool = True,
+    overlay_attribution: bool = True,
+) -> Path:
+    """Assemble PNG renders into an MP4 video via ffmpeg.
+
+    Args:
+        recipe_name: Recipe slug (renders are in renders_dir/recipe_name/).
+        renders_dir: Root renders directory.
+        output_path: Where to write the MP4.
+        fps: Frames per second.
+        dates: Specific dates to include (default: all, sorted).
+        overlay_date: Burn date stamp into each frame.
+        overlay_attribution: Burn attribution footer.
+
+    Returns:
+        Path to the output MP4.
+    """
+    logger = get_logger()
+    recipe_dir = renders_dir / recipe_name
+
+    if not recipe_dir.exists():
+        msg = f"No renders directory: {recipe_dir}"
+        raise FileNotFoundError(msg)
+
+    # Collect PNG files
+    if dates:
+        png_files = [recipe_dir / f"{d}.png" for d in dates]
+        png_files = [p for p in png_files if p.exists()]
+    else:
+        png_files = sorted(recipe_dir.glob("*.png"))
+        # Exclude "latest.png" from timeline
+        png_files = [p for p in png_files if p.stem != "latest"]
+
+    if not png_files:
+        msg = f"No PNG files found in {recipe_dir}"
+        raise FileNotFoundError(msg)
+
+    logger.info(
+        "Assembling %d frames into %s at %d fps",
+        len(png_files), output_path, fps,
+    )
+
+    # Create a concat file listing all PNGs with duration
+    concat_path = output_path.with_suffix(".concat.txt")
+    frame_duration = f"{1/fps:.6f}"
+    with concat_path.open("w") as f:
+        for png in png_files:
+            f.write(f"file '{png.resolve()}'\n")
+            f.write(f"duration {frame_duration}\n")
+        # Repeat last frame to avoid ffmpeg cutting it short
+        f.write(f"file '{png_files[-1].resolve()}'\n")
+
+    # Build ffmpeg command
+    vf = _build_filters(overlay_date, overlay_attribution, png_files)
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "concat",
+        "-safe", "0",
+        "-i", str(concat_path),
+    ]
+    # Only add filter if we have drawtext support (may not be available)
+    if vf != "null":
+        cmd.extend(["-vf", vf])
+    cmd.extend([
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        "-preset", "medium",
+        "-crf", "23",
+        "-movflags", "+faststart",
+        str(output_path),
+    ])
+
+    logger.info("Running ffmpeg: %s", " ".join(cmd[:6]) + " ...")
+
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        timeout=600,
+        check=False,
+    )
+
+    # Clean up concat file
+    concat_path.unlink(missing_ok=True)
+
+    if result.returncode != 0:
+        stderr = result.stderr.decode("utf-8", errors="replace")
+        msg = f"ffmpeg failed (exit {result.returncode}): {stderr[-500:]}"
+        raise RuntimeError(msg)
+
+    size = output_path.stat().st_size
+    duration = len(png_files) / fps
+    logger.info(
+        "Video assembled: %s (%.1f MB, %.1fs at %d fps)",
+        output_path, size / 1024 / 1024, duration, fps,
+    )
+    return output_path
+
+
+def _build_filters(
+    overlay_date: bool,
+    overlay_attribution: bool,
+    png_files: list[Path],
+) -> str:
+    """Build ffmpeg filter string for overlays."""
+    filters = []
+
+    if overlay_date:
+        # Extract dates from filenames for per-frame date stamp
+        # Use ffmpeg's frame number to index into the date list
+        # Simple approach: burn the recipe name (date is in the filename)
+        filters.append(
+            "drawtext=text='%{pts\\:gmtime\\:0\\:%Y}':"
+            "fontsize=24:fontcolor=white@0.6:"
+            "x=w-tw-20:y=20:font=monospace"
+        )
+
+    if overlay_attribution:
+        filters.append(
+            "drawtext=text='OceanCanvas':"
+            "fontsize=16:fontcolor=white@0.4:"
+            "x=20:y=h-30:font=monospace"
+        )
+
+    if not filters:
+        return "null"
+    return ",".join(filters)
+
+
+def get_video_info(recipe_name: str, renders_dir: Path) -> dict:
+    """Get info about available frames for a recipe."""
+    recipe_dir = renders_dir / recipe_name
+    if not recipe_dir.exists():
+        return {"frames": 0, "dates": []}
+
+    pngs = sorted(recipe_dir.glob("*.png"))
+    pngs = [p for p in pngs if p.stem != "latest"]
+    dates = [p.stem for p in pngs]
+
+    return {
+        "recipe": recipe_name,
+        "frames": len(dates),
+        "dates": dates,
+        "first": dates[0] if dates else None,
+        "last": dates[-1] if dates else None,
+    }

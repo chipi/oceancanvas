@@ -566,5 +566,41 @@ def render_single(
         raise typer.Exit(1)
 
 
+@app.command("export-video")
+def export_video(
+    recipe: str = typer.Option(..., "--recipe", "-r", help="Recipe name"),
+    fps: int = typer.Option(12, "--fps", help="Frames per second"),
+    output: str = typer.Option(None, "--output", "-o", help="Output MP4 path"),
+) -> None:
+    """Export a timelapse MP4 from a recipe's renders."""
+    from oceancanvas.video import assemble_video, get_video_info
+
+    info = get_video_info(recipe, RENDERS_DIR)
+    if info["frames"] == 0:
+        console.print(f"[red]No renders found for {recipe}[/red]")
+        raise typer.Exit(1)
+
+    duration = info["frames"] / fps
+    console.print(f"\n[bold]Export · {recipe}[/bold]")
+    console.print(f"  Frames:   {info['frames']}")
+    console.print(f"  Range:    {info['first']} → {info['last']}")
+    console.print(f"  FPS:      {fps}")
+    console.print(f"  Duration: {duration:.1f}s")
+
+    out_path = Path(output) if output else RENDERS_DIR / f"{recipe}.mp4"
+    console.print("\n[cyan]Assembling video...[/cyan]")
+
+    try:
+        result = assemble_video(
+            recipe, RENDERS_DIR, out_path, fps=fps,
+            overlay_date=False, overlay_attribution=False,
+        )
+        size_mb = result.stat().st_size / 1024 / 1024
+        console.print(f"[green]Exported: {result} ({size_mb:.1f} MB)[/green]")
+    except Exception as e:
+        console.print(f"[red]Export failed: {e}[/red]")
+        raise typer.Exit(1)
+
+
 if __name__ == "__main__":
     app()
