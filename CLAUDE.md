@@ -27,7 +27,7 @@ This file is the orientation document for any AI assistant working on the codeba
 - `recipes/` — YAML files; the authored works.
 - `data/` — Three-layer store. `data/sources/` (raw), `data/processed/` (browser-friendly), not committed to git.
 - `renders/` — Daily PNG outputs per recipe. Not committed to git.
-- `docker-compose.yml` — Five containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint).
+- `docker-compose.yml` — Six containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint), export-server (Node.js video export).
 
 ---
 

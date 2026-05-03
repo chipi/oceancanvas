@@ -320,7 +320,21 @@ test('detail view handles unknown recipe gracefully', async ({ page }) => {
   await expect(page.locator('body')).toContainText(/(not found|OCEANCANVAS)/i);
 });
 
-test('video editor route shows coming soon', async ({ page }) => {
-  await page.goto('/timelapse/test');
-  await expect(page.locator('body')).toContainText(/video editor|slice 3/i);
+test('video editor loads for a recipe', async ({ page }) => {
+  await page.goto('/timelapse/test-field');
+  await expect(page.locator('body')).toContainText(/timelapse editor|OCEANCANVAS/i);
+});
+
+// ═══════════════════════════════════════════════
+// Dashboard source switching
+// ═══════════════════════════════════════════════
+
+test('dashboard loads SST source by default', async ({ page }) => {
+  await page.goto('/dashboard');
+  await expect(page.locator('body')).toContainText('SST');
+});
+
+test('data explorer loads and shows source selector', async ({ page }) => {
+  await page.goto('/dashboard/oisst/explorer');
+  await expect(page.locator('body')).toContainText('DATA EXPLORER');
 });

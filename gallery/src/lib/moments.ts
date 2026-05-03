@@ -42,12 +42,14 @@ export function detectMoments(
 
   const peaks = detectPeaks(values);
   const records = detectRecords(values);
+  const thresholds = new Array(values.length).fill(0); // threshold detector placeholder
   const inflections = detectInflections(values);
 
   const raw = values.map((_, i) => {
     const score =
       weights.peaks * peaks[i] +
       weights.records * records[i] +
+      weights.threshold * thresholds[i] +
       weights.inflection * inflections[i];
     return Math.max(0, Math.min(1, score));
   });

@@ -91,5 +91,19 @@ services:
       timeout: 5s
       retries: 3
 
+  export-server:
+    image: node:20-slim
+    working_dir: /app
+    command: node server/export-video.mjs
+    environment:
+      RENDERS_DIR: /renders
+      EXPORT_PORT: "3002"
+    volumes:
+      - ./gallery/server:/app/server:ro
+      - ./renders:/renders
+      - ./audio:/audio:ro
+    ports:
+      - "3002:3002"
+
 volumes:
   pgdata:
