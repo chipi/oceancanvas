@@ -245,22 +245,6 @@ export function VideoEditor() {
         </span>
         <div className={styles.topbarActions}>
           <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← gallery</a>
-          <button
-            className={styles.exportBtn}
-            onClick={handleExport}
-            disabled={exportState.status === 'exporting'}
-          >
-            {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
-          </button>
-          {exportState.status === 'done' && (
-            <a
-              href={`/api/export/${recipe}/download`}
-              className={styles.downloadBtn}
-              download
-            >
-              download
-            </a>
-          )}
         </div>
       </header>
 
@@ -475,23 +459,37 @@ export function VideoEditor() {
             </div>
           )}
 
-          {/* Export status */}
-          {exportState.status !== 'idle' && (
-            <div className={styles.section}>
-              <div className={styles.sectionTitle}>EXPORT</div>
-              {exportState.status === 'exporting' && (
-                <div className={styles.exportProgress}>{exportState.progress}</div>
-              )}
-              {exportState.status === 'done' && (
+          {/* Export */}
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>EXPORT</div>
+            <button
+              className={styles.exportBtn}
+              onClick={handleExport}
+              disabled={exportState.status === 'exporting'}
+            >
+              {exportState.status === 'exporting' ? 'exporting...' : 'export MP4'}
+            </button>
+            {exportState.status === 'exporting' && (
+              <div className={styles.exportProgress}>{exportState.progress}</div>
+            )}
+            {exportState.status === 'done' && (
+              <>
                 <div className={styles.exportDone}>
                   Ready ({((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
                 </div>
-              )}
-              {exportState.status === 'error' && (
-                <div className={styles.exportError}>{exportState.error}</div>
-              )}
-            </div>
-          )}
+                <a
+                  href={`/api/export/${recipe}/download`}
+                  className={styles.downloadBtn}
+                  download
+                >
+                  download MP4
+                </a>
+              </>
+            )}
+            {exportState.status === 'error' && (
+              <div className={styles.exportError}>{exportState.error}</div>
+            )}
+          </div>
         </aside>
       </div>
     </div>
