@@ -256,8 +256,8 @@ export function VideoEditor() {
             <video
               className={styles.previewVideo}
               src={`/api/export/${recipe}/download`}
-              controls
               autoPlay
+              loop
             />
           ) : (
             <img

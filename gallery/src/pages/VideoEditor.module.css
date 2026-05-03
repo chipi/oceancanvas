@@ -49,8 +49,8 @@
   width: 100%;
   padding: 8px 16px;
   border-radius: 4px;
-  background: var(--intent-teal);
-  color: var(--canvas);
+  background: #5DCAA5;
+  color: #030B10;
   border: none;
   cursor: pointer;
   font-size: 12px;
@@ -67,8 +67,8 @@
   padding: 8px 16px;
   border-radius: 4px;
   background: transparent;
-  color: var(--intent-teal);
-  border: 1px solid var(--intent-teal);
+  color: #5DCAA5;
+  border: 1px solid #5DCAA5;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
