@@ -26,3 +26,9 @@ audio:
   presence: 0.87
   accent_style: bell
   texture_density: 0.52
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 1.0
+  release_steepness: 0.7
+  pin_key_moment: true

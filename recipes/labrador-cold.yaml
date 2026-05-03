@@ -24,3 +24,9 @@ audio:
   presence: 0.69
   accent_style: chime
   texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 1.0
+  release_steepness: 0.7
+  pin_key_moment: true

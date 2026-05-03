@@ -7,6 +7,7 @@ import {
   ensureMarker,
   extractAudioParams,
   extractRenderParams,
+  extractTensionArc,
 } from './yamlParser';
 import { MOOD_PRESETS, creativeToTechnical } from './creativeMapping';
 
@@ -101,6 +102,54 @@ audio:
     expect(render.colormap).toBe('thermal');
     expect(render.opacity).toBe(0.71);
     expect(render.drone_waveform).toBeUndefined();
+  });
+});
+
+describe('extractTensionArc', () => {
+  const WITH_ARC = `${SAMPLE_YAML}
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 1.0
+  release_steepness: 0.7
+  pin_key_moment: true
+`;
+
+  it('returns {} when no tension_arc block exists', () => {
+    expect(extractTensionArc(SAMPLE_YAML)).toEqual({});
+  });
+
+  it('parses every key with correct types', () => {
+    const arc = extractTensionArc(WITH_ARC);
+    expect(arc.preset).toBe('classic');
+    expect(arc.peak_position).toBe(0.65);
+    expect(arc.peak_height).toBe(1);
+    expect(arc.release_steepness).toBe(0.7);
+    expect(arc.pin_key_moment).toBe(true);
+  });
+
+  it('only reads keys inside tension_arc: block, not render: or audio:', () => {
+    const arcAndAudio = `${WITH_ARC}
+audio:
+  drone_waveform: triangle
+`;
+    const arc = extractTensionArc(arcAndAudio);
+    expect(arc.drone_waveform).toBeUndefined();
+    expect(arc.colormap).toBeUndefined();
+    expect(arc.preset).toBe('classic');
+  });
+
+  it('coexists with audio block — both extract independently', () => {
+    const both = `${WITH_ARC}
+audio:
+  drone_waveform: sawtooth
+  pulse_sensitivity: 0.6
+`;
+    const arc = extractTensionArc(both);
+    const audio = extractAudioParams(both);
+    expect(arc.preset).toBe('classic');
+    expect(audio.drone_waveform).toBe('sawtooth');
+    expect(audio.pulse_sensitivity).toBe(0.6);
   });
 });
 

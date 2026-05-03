@@ -61,6 +61,15 @@ export function extractAudioParams(yaml: string): Record<string, unknown> {
   return extractBlock(yaml, 'audio');
 }
 
+/**
+ * Extract the tension_arc block values from YAML text (below the marker).
+ * Returns key-value pairs from the tension_arc: section, or {} if no block exists.
+ * RFC-011.
+ */
+export function extractTensionArc(yaml: string): Record<string, unknown> {
+  return extractBlock(yaml, 'tension_arc');
+}
+
 function extractBlock(yaml: string, blockName: string): Record<string, unknown> {
   const lines = parseRecipeYaml(yaml);
   const creativeLines = lines
