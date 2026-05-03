@@ -384,7 +384,6 @@ export function VideoEditor() {
             {audioEnabled && (
               <>
                 <div className={styles.field}>
-                  <span className={styles.fieldLabel}>Theme</span>
                   <select
                     className={styles.select}
                     value={audioTheme}
@@ -395,9 +394,11 @@ export function VideoEditor() {
                     <option value="deep">Deep</option>
                     <option value="">Silent</option>
                   </select>
-                </div>
-                <div className={styles.field}>
-                  <span className={styles.fieldLabel}>Volume</span>
+                  {audioTheme && (
+                    <span className={audioReady ? styles.audioReady : styles.audioLoading}>
+                      {audioReady ? 'ready' : 'loading...'}
+                    </span>
+                  )}
                   <input
                     type="range"
                     min={0}
@@ -408,14 +409,44 @@ export function VideoEditor() {
                     className={styles.volumeSlider}
                   />
                 </div>
-                {audioTheme && (
-                  <div className={styles.field}>
-                    <span className={styles.fieldLabel}>Status</span>
-                    <span className={audioReady ? styles.audioReady : styles.audioLoading}>
-                      {audioReady ? 'ready' : 'loading...'}
-                    </span>
+
+                {/* Channel visualisation — placeholder for RFC-010 */}
+                <div className={styles.channelViz}>
+                  <div className={styles.channelRow}>
+                    <span className={styles.channelLabel}>drone</span>
+                    <div className={styles.channelBar}>
+                      <div className={styles.channelFill} style={{ width: `${(intensity[selectedFrame] ?? 0) * 100}%` }} />
+                    </div>
                   </div>
-                )}
+                  <div className={styles.channelRow}>
+                    <span className={styles.channelLabel}>pulse</span>
+                    <div className={styles.channelBar}>
+                      <div className={styles.channelFill} style={{
+                        width: `${selectedFrame > 0 ? Math.min(100, Math.abs(((intensity[selectedFrame] ?? 0) - (intensity[selectedFrame - 1] ?? 0)) * 500)) : 0}%`,
+                        backgroundColor: '#EF9F27',
+                      }} />
+                    </div>
+                  </div>
+                  <div className={styles.channelRow}>
+                    <span className={styles.channelLabel}>accent</span>
+                    <div className={styles.channelBar}>
+                      <div className={styles.channelFill} style={{
+                        width: moments.some((m) => Math.abs(m.frame - selectedFrame) < 2) ? '100%' : '0%',
+                        backgroundColor: '#D85A30',
+                      }} />
+                    </div>
+                  </div>
+                  <div className={styles.channelRow}>
+                    <span className={styles.channelLabel}>texture</span>
+                    <div className={styles.channelBar}>
+                      <div className={styles.channelFill} style={{
+                        width: `${30 + Math.sin((selectedFrame / 12) * Math.PI * 2) * 20}%`,
+                        backgroundColor: '#5DCAA5',
+                        opacity: 0.5,
+                      }} />
+                    </div>
+                  </div>
+                </div>
               </>
             )}
           </div>

@@ -261,6 +261,41 @@
   font-size: 12px;
 }
 
+.channelViz {
+  margin-top: 8px;
+}
+
+.channelRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 14px;
+  margin-bottom: 2px;
+}
+
+.channelLabel {
+  font-size: 9px;
+  color: var(--text-muted);
+  width: 36px;
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+.channelBar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.channelFill {
+  height: 100%;
+  background: #5DCAA5;
+  border-radius: 2px;
+  transition: width 0.15s ease-out;
+}
+
 .audioReady {
   font-size: 11px;
   color: var(--intent-teal);
