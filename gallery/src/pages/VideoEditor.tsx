@@ -54,7 +54,7 @@ export function VideoEditor() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((series: Array<{mean?: number; count?: number}>) => {
         const values = series.map((d) => d.mean ?? d.count ?? 0);
-        const signal = detectMoments(values);
+        const signal = detectMoments(values, undefined, 3, 0.4);
         setMoments(signal.events);
         setIntensity(signal.intensity);
       })

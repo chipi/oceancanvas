@@ -37,7 +37,7 @@ export function useAudioPlayback(
 
     Promise.all(
       STEM_NAMES.map(async (name) => {
-        const url = `../audio/themes/${theme}/${name}.wav`;
+        const url = `/audio/themes/${theme}/${name}.wav`;
         try {
           const resp = await fetch(url);
           if (!resp.ok) return null;
