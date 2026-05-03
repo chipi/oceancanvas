@@ -583,6 +583,7 @@ def export_video(
     """
     import json
 
+    from oceancanvas.arc import TensionArcSpec, expand_arc
     from oceancanvas.audio import AudioParams
     from oceancanvas.moments import detect_moments
     from oceancanvas.video import assemble_video, get_video_info
@@ -605,6 +606,7 @@ def export_video(
     audio_values: list[float] | None = None
     audio_dates: list[str] | None = None
     audio_moments: list[dict] | None = None
+    tension_arc: list[float] | None = None
 
     if not silent:
         recipe_path = RECIPES_DIR / f"{recipe}.yaml"
@@ -634,7 +636,22 @@ def export_video(
                     {"frame": e.frame, "type": e.type, "label": e.label, "score": e.score}
                     for e in signal.events
                 ]
-                console.print(f"  Audio:    {audio_params.drone_waveform} drone · {audio_params.accent_style} accents · {len(audio_moments)} moments")
+                # Expand tension arc once for the full video — RFC-011
+                arc_spec = TensionArcSpec.from_dict(recipe_yaml.get("tension_arc"))
+                dominant_frame = (
+                    max(audio_moments, key=lambda m: m["score"])["frame"]
+                    if audio_moments
+                    else None
+                )
+                tension_arc = expand_arc(arc_spec, len(audio_values), dominant_frame)
+                console.print(
+                    f"  Audio:    {audio_params.drone_waveform} drone · "
+                    f"{audio_params.accent_style} accents · {len(audio_moments)} moments"
+                )
+                console.print(
+                    f"  Arc:      {arc_spec.preset} preset"
+                    + (f" · pinned to frame {dominant_frame}" if arc_spec.pin_key_moment and dominant_frame is not None else "")
+                )
             else:
                 console.print("  [yellow]Audio: time-series not found, exporting silent[/yellow]")
                 audio_params = None
@@ -651,6 +668,7 @@ def export_video(
             audio_values=audio_values,
             audio_dates=audio_dates,
             audio_moments=audio_moments,
+            tension_arc=tension_arc,
         )
         size_mb = result.stat().st_size / 1024 / 1024
         console.print(f"[green]Exported: {result} ({size_mb:.1f} MB)[/green]")

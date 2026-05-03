@@ -10,6 +10,7 @@ import pytest
 
 from oceancanvas.audio import (
     AudioParams,
+    _align_arc,
     _compute_intensity,
     _interp_to_samples,
     _synth_drone,
@@ -40,30 +41,68 @@ class TestSynthDrone:
     def test_drone_is_deterministic(self):
         values = np.linspace(0, 1, 30)
         intensity = np.linspace(0, 1, 30)
+        arc = np.ones(30)
         p = AudioParams()
-        a = _synth_drone(values, intensity, p, fps=12, n_samples=44100, sr=44100)
-        b = _synth_drone(values, intensity, p, fps=12, n_samples=44100, sr=44100)
+        a = _synth_drone(values, intensity, arc, p, fps=12, n_samples=44100, sr=44100)
+        b = _synth_drone(values, intensity, arc, p, fps=12, n_samples=44100, sr=44100)
         assert np.array_equal(a, b)
 
     def test_drone_amplitude_scales_with_intensity(self):
         values = np.linspace(0.5, 0.5, 30)  # constant pitch
         zero = np.zeros(30)
         full = np.ones(30)
+        arc = np.ones(30)
         p = AudioParams()
-        quiet = _synth_drone(values, zero, p, fps=12, n_samples=44100, sr=44100)
-        loud = _synth_drone(values, full, p, fps=12, n_samples=44100, sr=44100)
-        # Loud must have larger RMS than quiet
+        quiet = _synth_drone(values, zero, arc, p, fps=12, n_samples=44100, sr=44100)
+        loud = _synth_drone(values, full, arc, p, fps=12, n_samples=44100, sr=44100)
         assert np.sqrt((loud**2).mean()) > np.sqrt((quiet**2).mean()) * 1.2
 
     def test_waveform_choice_changes_spectrum(self):
         values = np.full(30, 0.5)
         intensity = np.full(30, 0.5)
-        sine = _synth_drone(values, intensity, AudioParams(drone_waveform="sine"),
+        arc = np.ones(30)
+        sine = _synth_drone(values, intensity, arc, AudioParams(drone_waveform="sine"),
                             fps=12, n_samples=44100, sr=44100)
-        saw = _synth_drone(values, intensity, AudioParams(drone_waveform="sawtooth"),
+        saw = _synth_drone(values, intensity, arc, AudioParams(drone_waveform="sawtooth"),
                            fps=12, n_samples=44100, sr=44100)
-        # Different waveforms produce different signals
         assert not np.allclose(sine, saw)
+
+    def test_arc_modulates_amplitude(self):
+        """RFC-011: arc[frame] scales drone amplitude per-frame."""
+        values = np.full(30, 0.5)
+        intensity = np.full(30, 1.0)
+        full_arc = np.ones(30)
+        half_arc = np.full(30, 0.5)
+        p = AudioParams()
+        loud = _synth_drone(values, intensity, full_arc, p, fps=12, n_samples=44100, sr=44100)
+        quiet = _synth_drone(values, intensity, half_arc, p, fps=12, n_samples=44100, sr=44100)
+        # Half-arc should be roughly half RMS
+        ratio = np.sqrt((quiet**2).mean()) / np.sqrt((loud**2).mean())
+        assert 0.4 < ratio < 0.6
+
+
+class TestAlignArc:
+    def test_none_returns_ones(self):
+        arr = _align_arc(None, 50)
+        assert len(arr) == 50
+        assert np.all(arr == 1.0)
+
+    def test_empty_returns_ones(self):
+        arr = _align_arc([], 30)
+        assert np.all(arr == 1.0)
+
+    def test_matched_length_returns_as_is(self):
+        spec = [0.1, 0.5, 0.9, 0.3, 0.7]
+        arr = _align_arc(spec, 5)
+        assert np.allclose(arr, spec)
+
+    def test_mismatched_length_interpolates(self):
+        spec = [0.0, 1.0]  # ramp up
+        arr = _align_arc(spec, 11)
+        # Should interpolate to 0.0, 0.1, 0.2, ..., 1.0
+        assert arr[0] == 0.0
+        assert abs(arr[-1] - 1.0) < 1e-9
+        assert abs(arr[5] - 0.5) < 1e-9
 
 
 class TestComputeIntensity:
@@ -147,3 +186,42 @@ class TestBuildAudioTrack:
                 tmp_path / "x.wav",
                 values=[], dates=[], moments=[], params=AudioParams(), fps=12,
             )
+
+    def test_arc_changes_synthesis_output(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """RFC-011: passing an arc with a peak should change the synthesised WAV."""
+        common = dict(
+            values=list(np.linspace(15, 25, 24)),
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[{"frame": 12, "type": "record", "label": "All-time high"}],
+            params=AudioParams(),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+        )
+        no_arc = tmp_path / "no_arc.wav"
+        with_arc = tmp_path / "with_arc.wav"
+        build_audio_track(no_arc, **common, arc=None)
+        # Arc with a sharp peak at frame 12
+        peaked = [0.1] * 12 + [1.0] + [0.1] * 11
+        build_audio_track(with_arc, **common, arc=peaked)
+        # Output should differ — arc materially shapes the mix
+        assert no_arc.read_bytes() != with_arc.read_bytes()
+
+    def test_arc_none_equals_arc_ones(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """Backwards-compat: arc=None must produce the same WAV as arc=[1,1,...]."""
+        common = dict(
+            values=list(np.linspace(15, 25, 24)),
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[{"frame": 6, "type": "peak", "label": "Hottest"}],
+            params=AudioParams(),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+        )
+        a = tmp_path / "none.wav"
+        b = tmp_path / "ones.wav"
+        build_audio_track(a, **common, arc=None)
+        build_audio_track(b, **common, arc=[1.0] * 24)
+        assert a.read_bytes() == b.read_bytes()

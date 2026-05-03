@@ -69,6 +69,7 @@ def build_audio_track(
     moments: list[dict] | None,
     params: AudioParams,
     fps: int,
+    arc: list[float] | None = None,
     samples_dir: Path | None = None,
 ) -> Path:
     """Synthesise a four-layer audio track for one recipe export.
@@ -80,6 +81,9 @@ def build_audio_track(
         moments: Key moment events from moments.py — at least {frame, type}.
         params: Recipe AudioParams (RFC-010 audio: block).
         fps: Frames per second.
+        arc: Optional per-frame [0, 1] tension arc (RFC-011). When supplied,
+            drone/pulse/accent/texture per-frame gains are multiplied by
+            arc[frame]. Pass None or [] to disable (constant 1.0).
         samples_dir: Override for sample bank location (defaults to repo).
 
     Returns:
@@ -104,13 +108,16 @@ def build_audio_track(
     # Compute moment intensity (smoothed) for drone amplitude — same as gallery moments.ts
     intensity = _compute_intensity(v_arr)
 
+    # Tension arc: align length with frames; default to constant 1.0 (no effect)
+    arc_arr = _align_arc(arc, len(v_arr))
+
     # Load samples once
     bank = _load_samples(samples_dir or GENERATIVE_DIR)
 
-    drone = _synth_drone(value_norm, intensity, params, fps, n_samples, sr)
-    pulse = _synth_pulse(v_arr, params, fps, n_samples, sr, bank)
-    accent = _synth_accent(moments or [], params, fps, n_samples, sr, bank)
-    texture = _synth_texture(value_norm, dates, params, fps, n_samples, sr, bank)
+    drone = _synth_drone(value_norm, intensity, arc_arr, params, fps, n_samples, sr)
+    pulse = _synth_pulse(v_arr, arc_arr, params, fps, n_samples, sr, bank)
+    accent = _synth_accent(moments or [], arc_arr, params, fps, n_samples, sr, bank)
+    texture = _synth_texture(value_norm, dates, arc_arr, params, fps, n_samples, sr, bank)
 
     mix = drone + pulse + accent + texture
     mix = np.clip(mix * params.presence, -1.0, 1.0)
@@ -129,6 +136,7 @@ def build_audio_track(
 def _synth_drone(
     value_norm: np.ndarray,
     intensity: np.ndarray,
+    arc: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
@@ -147,7 +155,7 @@ def _synth_drone(
 
     # Per-sample target frequency — interpolate between frames
     target_hz = f_min + value_norm * (f_max - f_min)
-    target_amp = base_gain * (0.4 + 0.6 * intensity)
+    target_amp = base_gain * (0.4 + 0.6 * intensity) * arc
     hz_per_sample = _interp_to_samples(target_hz, n_samples, fps, sr)
     amp_per_sample = _interp_to_samples(target_amp, n_samples, fps, sr)
 
@@ -191,6 +199,7 @@ def _synth_drone(
 
 def _synth_pulse(
     values: np.ndarray,
+    arc: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
@@ -202,7 +211,7 @@ def _synth_pulse(
     presence = float(p.presence)
     bpm_min = _lerp(50, 70, sensitivity)
     bpm_max = _lerp(110, 180, sensitivity)
-    gain = _lerp(0.1, 0.5, sensitivity * presence)
+    base_gain = _lerp(0.1, 0.5, sensitivity * presence)
 
     # Phase accumulator — fires when phase wraps
     out = np.zeros((n_samples, 2), dtype=np.float64)
@@ -228,13 +237,14 @@ def _synth_pulse(
                 bank["pulse_neutral"]
             )
             offset_samples = int(frame * frame_sec * sr)
-            _place_sample(out, sample, offset_samples, gain)
+            _place_sample(out, sample, offset_samples, base_gain * float(arc[frame]))
 
     return out
 
 
 def _synth_accent(
     moments: list[dict],
+    arc: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
@@ -243,7 +253,7 @@ def _synth_accent(
 ) -> np.ndarray:
     """Layer 3: one-shot sample at each key moment."""
     presence = float(p.presence)
-    gain = _lerp(0.35, 0.65, presence)
+    base_gain = _lerp(0.35, 0.65, presence)
     out = np.zeros((n_samples, 2), dtype=np.float64)
 
     for m in moments:
@@ -252,7 +262,9 @@ def _synth_accent(
             continue
         accent_type = _classify_accent(m, p.accent_style, bank)
         offset_samples = int(frame * (1.0 / fps) * sr)
-        _place_sample(out, accent_type, offset_samples, gain)
+        # Clamp arc index to bounds — moments may exceed value count in edge cases
+        arc_idx = max(0, min(len(arc) - 1, frame))
+        _place_sample(out, accent_type, offset_samples, base_gain * float(arc[arc_idx]))
 
     return out
 
@@ -260,6 +272,7 @@ def _synth_accent(
 def _synth_texture(
     value_norm: np.ndarray,
     dates: list[str],
+    arc: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
@@ -293,13 +306,27 @@ def _synth_texture(
         month_frac = (month - 1) / 12.0 if month > 0 else 0.0
         seasonal = 1 - 0.4 + 0.4 * (0.5 + 0.5 * np.cos(month_frac * np.pi * 2))
         year_ramp = 0.5 + 0.5 * (f / max(1, n_frames - 1))
-        env[f] = base_gain * density * seasonal * year_ramp
+        env[f] = base_gain * density * seasonal * year_ramp * float(arc[f])
 
     env_per_sample = _interp_to_samples(env, n_samples, fps, sr)
     return _to_stereo(looped_mono * env_per_sample)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
+
+
+def _align_arc(arc: list[float] | None, n_frames: int) -> np.ndarray:
+    """Return an n_frames-long arc array. None / empty → constant 1.0 (no effect).
+    Length mismatches stretch the arc linearly to fit n_frames."""
+    if not arc:
+        return np.ones(n_frames, dtype=np.float64)
+    a = np.asarray(arc, dtype=np.float64)
+    if len(a) == n_frames:
+        return a
+    # Linear interpolation to match frame count
+    src_xs = np.arange(len(a))
+    dst_xs = np.linspace(0, len(a) - 1, n_frames)
+    return np.interp(dst_xs, src_xs, a)
 
 
 def _classify_accent(moment: dict, style: str, bank: dict) -> np.ndarray:

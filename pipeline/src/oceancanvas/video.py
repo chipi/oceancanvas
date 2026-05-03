@@ -30,6 +30,7 @@ def assemble_video(
     audio_values: list[float] | None = None,
     audio_dates: list[str] | None = None,
     audio_moments: list[dict] | None = None,
+    tension_arc: list[float] | None = None,
 ) -> Path:
     """Assemble PNG renders into an MP4 video via ffmpeg.
 
@@ -92,6 +93,7 @@ def assemble_video(
                 moments=audio_moments or [],
                 params=audio_params,
                 fps=fps,
+                arc=tension_arc,
             )
         except Exception as e:  # noqa: BLE001
             logger.warning("Audio synthesis failed (%s) — exporting silent", e)
