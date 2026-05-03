@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { AudioWaveform } from '../components/AudioWaveform';
 import { useAudioPlayback } from '../hooks/useAudioPlayback';
 import { useManifest } from '../hooks/useManifest';
 import { type MomentEvent, detectMoments } from '../lib/moments';
@@ -410,43 +411,18 @@ export function VideoEditor() {
                   />
                 </div>
 
-                {/* Channel visualisation — placeholder for RFC-010 */}
-                <div className={styles.channelViz}>
-                  <div className={styles.channelRow}>
-                    <span className={styles.channelLabel}>drone</span>
-                    <div className={styles.channelBar}>
-                      <div className={styles.channelFill} style={{ width: `${(intensity[selectedFrame] ?? 0) * 100}%` }} />
-                    </div>
-                  </div>
-                  <div className={styles.channelRow}>
-                    <span className={styles.channelLabel}>pulse</span>
-                    <div className={styles.channelBar}>
-                      <div className={styles.channelFill} style={{
-                        width: `${selectedFrame > 0 ? Math.min(100, Math.abs(((intensity[selectedFrame] ?? 0) - (intensity[selectedFrame - 1] ?? 0)) * 500)) : 0}%`,
-                        backgroundColor: '#EF9F27',
-                      }} />
-                    </div>
-                  </div>
-                  <div className={styles.channelRow}>
-                    <span className={styles.channelLabel}>accent</span>
-                    <div className={styles.channelBar}>
-                      <div className={styles.channelFill} style={{
-                        width: moments.some((m) => Math.abs(m.frame - selectedFrame) < 2) ? '100%' : '0%',
-                        backgroundColor: '#D85A30',
-                      }} />
-                    </div>
-                  </div>
-                  <div className={styles.channelRow}>
-                    <span className={styles.channelLabel}>texture</span>
-                    <div className={styles.channelBar}>
-                      <div className={styles.channelFill} style={{
-                        width: `${30 + Math.sin((selectedFrame / 12) * Math.PI * 2) * 20}%`,
-                        backgroundColor: '#5DCAA5',
-                        opacity: 0.5,
-                      }} />
-                    </div>
-                  </div>
-                </div>
+                {/* Waveform visualisation — RFC-010 channels */}
+                <AudioWaveform
+                  isPlaying={isPlaying}
+                  channels={{
+                    drone: intensity[selectedFrame] ?? 0,
+                    pulse: selectedFrame > 0
+                      ? Math.min(1, Math.abs((intensity[selectedFrame] ?? 0) - (intensity[selectedFrame - 1] ?? 0)) * 10)
+                      : 0,
+                    accent: moments.some((m) => Math.abs(m.frame - selectedFrame) < 2),
+                    texture: 0.3 + Math.sin((selectedFrame / 12) * Math.PI * 2) * 0.2,
+                  }}
+                />
               </>
             )}
           </div>
