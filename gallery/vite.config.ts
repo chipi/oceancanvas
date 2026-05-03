@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    fs: {
+      allow: ['..'],  // allow serving audio/ from parent dir
+    },
     proxy: {
       '/data': 'http://localhost:8080',
       '/renders': 'http://localhost:8080',

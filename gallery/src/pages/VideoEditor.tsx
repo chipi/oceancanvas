@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAudioPlayback } from '../hooks/useAudioPlayback';
 import { useManifest } from '../hooks/useManifest';
 import { type MomentEvent, detectMoments } from '../lib/moments';
 import styles from './VideoEditor.module.css';
@@ -29,13 +30,15 @@ export function VideoEditor() {
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
   const [moments, setMoments] = useState<MomentEvent[]>([]);
-  // intensity array available for future audio crossfading UI
-  const [, setIntensity] = useState<number[]>([]);
+  const [intensity, setIntensity] = useState<number[]>([]);
   const playRef = useRef<number | null>(null);
 
   const dates = entry?.dates || [];
   const currentDate = dates[selectedFrame] || '';
   const duration = dates.length / fps;
+
+  // Audio playback — stems crossfade based on intensity signal
+  useAudioPlayback(audioTheme, audioEnabled, isPlaying, intensity, selectedFrame);
 
   // Load time series and compute key moments
   useEffect(() => {
