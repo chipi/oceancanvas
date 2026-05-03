@@ -24,6 +24,7 @@ import {
   DEFAULT_CHANNEL_MIX,
   DEFAULT_EQ,
   PulseScheduler,
+  arcAt,
   buildEqChain,
   channelScale,
   loadSampleBank,
@@ -65,6 +66,7 @@ export class SynthEngine implements AudioEngineInterface {
   private eqBass: BiquadFilterNode | null = null;
   private eqMid: BiquadFilterNode | null = null;
   private eqTreble: BiquadFilterNode | null = null;
+  private tensionArc: number[] = [];
 
   /** Load sample bank. Idempotent — safe to call once per session. */
   async loadSamples(): Promise<void> {
@@ -104,6 +106,10 @@ export class SynthEngine implements AudioEngineInterface {
     if (this.eqBass) this.eqBass.gain.setTargetAtTime(eq.bass, t, 0.05);
     if (this.eqMid) this.eqMid.gain.setTargetAtTime(eq.mid, t, 0.05);
     if (this.eqTreble) this.eqTreble.gain.setTargetAtTime(eq.treble, t, 0.05);
+  }
+
+  setTensionArc(arc: number[]): void {
+    this.tensionArc = arc;
   }
 
   /** Resume the audio context and start all sustained layers. Requires user gesture. */
@@ -167,12 +173,16 @@ export class SynthEngine implements AudioEngineInterface {
     const now = this.ctx.currentTime;
     const p = this.preset;
     const frameSec = 1 / this.fps;
+    const arcValue = arcAt(this.tensionArc, view.frame);
+
+    // Re-key bus gains so pulse + accent track the arc on each frame
+    this.applyPresetGains(arcValue);
 
     // ── Drone: minor triad rooted at tonic; filter+gain follow value/intensity ─
     if (this.droneOscs.length > 0 && this.droneFilter && this.droneGain) {
       const tonicHz = p.drone.minHz + (p.drone.maxHz - p.drone.minHz) * view.value;
       const targetCutoff = p.drone.filterMinHz + (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
-      const droneAmp = p.drone.gain * 0.6 * (0.4 + 0.6 * view.intensity) * channelScale(this.mix, 'drone');
+      const droneAmp = p.drone.gain * 0.6 * (0.4 + 0.6 * view.intensity) * channelScale(this.mix, 'drone') * arcValue;
       const semitones = [0, 3, 7];
       this.droneOscs.forEach((osc, i) => {
         const voiceHz = tonicHz * Math.pow(2, semitones[i] / 12);
@@ -203,7 +213,7 @@ export class SynthEngine implements AudioEngineInterface {
     if (this.textureFilter && this.textureGain) {
       const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * channelScale(this.mix, 'texture');
+      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * channelScale(this.mix, 'texture') * arcValue;
       const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.2);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.3);
@@ -322,14 +332,14 @@ export class SynthEngine implements AudioEngineInterface {
     this.textureGain = gain;
   }
 
-  private applyPresetGains(): void {
+  private applyPresetGains(arcValue = 1.0): void {
     if (!this.ctx || !this.preset) return;
     const now = this.ctx.currentTime;
     if (this.pulseGain) {
-      this.pulseGain.gain.setTargetAtTime(this.preset.pulse.gain * channelScale(this.mix, 'pulse'), now, 0.1);
+      this.pulseGain.gain.setTargetAtTime(this.preset.pulse.gain * channelScale(this.mix, 'pulse') * arcValue, now, 0.1);
     }
     if (this.accentGain) {
-      this.accentGain.gain.setTargetAtTime(this.preset.accent.gain * channelScale(this.mix, 'accent'), now, 0.1);
+      this.accentGain.gain.setTargetAtTime(this.preset.accent.gain * channelScale(this.mix, 'accent') * arcValue, now, 0.1);
     }
   }
 

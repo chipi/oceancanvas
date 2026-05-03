@@ -68,11 +68,25 @@ export interface AudioEngineInterface {
   setMasterVolume(v: number): void;
   setChannelMix(mix: ChannelMix): void;
   setEq(eq: EqSettings): void;
+  /**
+   * Set the tension arc as a per-frame `[0, 1]` array (RFC-011). The engine
+   * multiplies its per-frame layer gains by `arc[frame]` so audio dynamics
+   * follow the authored curve. Pass an empty array to disable.
+   */
+  setTensionArc(arc: number[]): void;
   start(): Promise<void>;
   stop(): void;
   setFrame(view: FrameView): void;
   getLiveChannels(): ChannelState;
   dispose(): void;
+}
+
+/** Read arc[frame] safely. Returns 1.0 if arc is empty or frame is out of bounds — no effect. */
+export function arcAt(arc: number[], frame: number): number {
+  if (arc.length === 0) return 1.0;
+  if (frame < 0) return arc[0];
+  if (frame >= arc.length) return arc[arc.length - 1];
+  return arc[frame];
 }
 
 /**

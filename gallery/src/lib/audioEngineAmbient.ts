@@ -27,6 +27,7 @@ import {
   DEFAULT_CHANNEL_MIX,
   DEFAULT_EQ,
   PulseScheduler,
+  arcAt,
   buildEqChain,
   channelScale,
   loadSampleBank,
@@ -87,6 +88,7 @@ export class AmbientEngine implements AudioEngineInterface {
   private eqBass: BiquadFilterNode | null = null;
   private eqMid: BiquadFilterNode | null = null;
   private eqTreble: BiquadFilterNode | null = null;
+  private tensionArc: number[] = [];
 
   async loadSamples(): Promise<void> {
     if (this.samples) return;
@@ -126,6 +128,10 @@ export class AmbientEngine implements AudioEngineInterface {
     if (this.eqBass) this.eqBass.gain.setTargetAtTime(eq.bass, t, 0.05);
     if (this.eqMid) this.eqMid.gain.setTargetAtTime(eq.mid, t, 0.05);
     if (this.eqTreble) this.eqTreble.gain.setTargetAtTime(eq.treble, t, 0.05);
+  }
+
+  setTensionArc(arc: number[]): void {
+    this.tensionArc = arc;
   }
 
   async start(): Promise<void> {
@@ -198,6 +204,10 @@ export class AmbientEngine implements AudioEngineInterface {
     const now = this.ctx.currentTime;
     const p = this.preset;
     const frameSec = 1 / this.fps;
+    const arcValue = arcAt(this.tensionArc, view.frame);
+
+    // Re-key sequence + accent bus gains so they track the arc
+    this.applyPresetGains(arcValue);
 
     // ── Pad: minor triad rooted at tonic (Hz follows data value) ───────
     if (this.padOscs.length > 0 && this.padFilter && this.padDryGain && this.padWetGain) {
@@ -205,7 +215,7 @@ export class AmbientEngine implements AudioEngineInterface {
       this.currentTonicHz = tonicHz;
       const baseCutoff = p.drone.filterMinHz + (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
       const droneScale = channelScale(this.mix, 'drone');
-      const padAmp = p.drone.gain * (0.6 + 0.4 * view.intensity) * droneScale;
+      const padAmp = p.drone.gain * (0.6 + 0.4 * view.intensity) * droneScale * arcValue;
       // Compensate for 3-voice triad stack (sqrt(3) ≈ 1.73× sum vs single voice)
       const wetAmp = padAmp * 0.25;
       const glide = Math.max(0.2, p.drone.glideSec * 1.4);
@@ -242,7 +252,7 @@ export class AmbientEngine implements AudioEngineInterface {
     if (this.textureFilter && this.textureGain) {
       const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * 0.85 * channelScale(this.mix, 'texture');
+      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * 0.85 * channelScale(this.mix, 'texture') * arcValue;
       const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.3);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.4);
@@ -409,15 +419,15 @@ export class AmbientEngine implements AudioEngineInterface {
     this.textureLfo = lfo;
   }
 
-  private applyPresetGains(): void {
+  private applyPresetGains(arcValue = 1.0): void {
     if (!this.ctx || !this.preset) return;
     const now = this.ctx.currentTime;
     const pulseScale = channelScale(this.mix, 'pulse');
     const accentScale = channelScale(this.mix, 'accent');
-    if (this.seqDryGain) this.seqDryGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.4 * pulseScale, now, 0.1);
-    if (this.seqWetGain) this.seqWetGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.28 * pulseScale, now, 0.1);
-    if (this.accentDryGain) this.accentDryGain.gain.setTargetAtTime(this.preset.accent.gain * 0.65 * accentScale, now, 0.1);
-    if (this.accentWetGain) this.accentWetGain.gain.setTargetAtTime(this.preset.accent.gain * 0.55 * accentScale, now, 0.1);
+    if (this.seqDryGain) this.seqDryGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.4 * pulseScale * arcValue, now, 0.1);
+    if (this.seqWetGain) this.seqWetGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.28 * pulseScale * arcValue, now, 0.1);
+    if (this.accentDryGain) this.accentDryGain.gain.setTargetAtTime(this.preset.accent.gain * 0.65 * accentScale * arcValue, now, 0.1);
+    if (this.accentWetGain) this.accentWetGain.gain.setTargetAtTime(this.preset.accent.gain * 0.55 * accentScale * arcValue, now, 0.1);
   }
 
   private fireSequenceNote(direction: 1 | 0 | -1): void {
