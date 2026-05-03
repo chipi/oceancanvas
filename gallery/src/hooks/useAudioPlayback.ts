@@ -25,8 +25,9 @@ export function useAudioPlayback(
 
   // Create audio elements once
   useEffect(() => {
-    if (!enabled || !theme) {
+    if (!enabled || !theme || theme === '') {
       setAudioReady(false);
+      audiosRef.current = [];
       return;
     }
 

@@ -155,8 +155,6 @@ export function VideoEditor() {
         // Extract truly significant moments — not per-frame noise
         const significant = extractSignificantMoments(values, dates);
         setMoments(significant);
-        setMoments(signal.events);
-        setIntensity(signal.intensity);
       })
       .catch(() => { setMoments([]); setIntensity([]); });
   }, [entry?.source]);
