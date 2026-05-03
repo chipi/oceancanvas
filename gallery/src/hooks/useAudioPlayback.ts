@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const STEM_URLS = [
+const STEM_NAMES = [
   'stem_0_calm.mp3',
   'stem_1_breathing.mp3',
   'stem_2_present.mp3',
@@ -22,87 +22,83 @@ export function useAudioPlayback(
   const audiosRef = useRef<HTMLAudioElement[]>([]);
   const [masterVolume, setMasterVolume] = useState(0.7);
   const [audioReady, setAudioReady] = useState(false);
+  const mountedRef = useRef(true);
 
-  // Create audio elements once
+  // Track mount state
   useEffect(() => {
-    if (!enabled || !theme || theme === '') {
-      setAudioReady(false);
-      audiosRef.current = [];
-      return;
-    }
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
-    const audios = STEM_URLS.map((name) => {
-      const a = new Audio(`/audio/themes/${theme}/${name}`);
+  // Create audio elements
+  useEffect(() => {
+    // Clean previous
+    audiosRef.current.forEach((a) => { a.pause(); a.removeAttribute('src'); a.load(); });
+    audiosRef.current = [];
+    setAudioReady(false);
+
+    if (!enabled || !theme) return;
+
+    const baseUrl = `/audio/themes/${theme}/`;
+    const audios: HTMLAudioElement[] = [];
+    let loadCount = 0;
+
+    for (const name of STEM_NAMES) {
+      const a = new Audio();
       a.loop = true;
       a.volume = 0;
       a.preload = 'auto';
-      return a;
-    });
-    audiosRef.current = audios;
-
-    let loaded = 0;
-    audios.forEach((a) => {
       a.addEventListener('canplaythrough', () => {
-        loaded++;
-        if (loaded === audios.length) setAudioReady(true);
+        loadCount++;
+        if (loadCount === STEM_NAMES.length && mountedRef.current) {
+          setAudioReady(true);
+        }
       }, { once: true });
-      // Also handle load errors
-      a.addEventListener('error', () => {
-        console.warn('Audio stem failed to load:', a.src);
-      }, { once: true });
-    });
+      a.src = baseUrl + name;
+      audios.push(a);
+    }
+
+    audiosRef.current = audios;
 
     return () => {
       audios.forEach((a) => {
         a.pause();
-        a.src = '';
+        a.removeAttribute('src');
+        a.load();
       });
-      audiosRef.current = [];
-      setAudioReady(false);
     };
   }, [theme, enabled]);
 
-  // Play/pause + set initial volume
+  // Play/pause
   useEffect(() => {
     const audios = audiosRef.current;
     if (!audios.length) return;
 
-    if (isPlaying) {
-      // Set initial volumes before playing
+    if (isPlaying && audioReady) {
+      // Set volumes before play
       const level = intensity[currentFrame] ?? 0;
-      updateVolumes(audios, level, masterVolume);
-
-      audios.forEach((a) => {
-        a.play().catch((err) => {
-          console.warn('Audio play blocked:', err.message);
-        });
-      });
+      setVolumes(audios, level, masterVolume);
+      audios.forEach((a) => a.play().catch(() => {}));
     } else {
       audios.forEach((a) => a.pause());
     }
-  }, [isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isPlaying, audioReady]); // eslint-disable-line
 
-  // Crossfade volumes on frame change
+  // Crossfade on frame change
   useEffect(() => {
-    const audios = audiosRef.current;
-    if (!audios.length || !isPlaying) return;
-
+    if (!isPlaying || !audiosRef.current.length) return;
     const level = intensity[currentFrame] ?? 0;
-    updateVolumes(audios, level, masterVolume);
-  }, [currentFrame, intensity, masterVolume, isPlaying]);
+    setVolumes(audiosRef.current, level, masterVolume);
+  }, [currentFrame, masterVolume]); // eslint-disable-line
 
   return { masterVolume, setMasterVolume, audioReady };
 }
 
-function updateVolumes(audios: HTMLAudioElement[], level: number, master: number) {
+function setVolumes(audios: HTMLAudioElement[], level: number, master: number) {
   const count = audios.length;
   const active = Math.min(count - 1, Math.floor(level * count));
-
   audios.forEach((a, i) => {
-    let stemVol: number;
-    if (i === active) stemVol = 1.0;
-    else if (Math.abs(i - active) === 1) stemVol = 0.2;
-    else stemVol = 0;
-    a.volume = Math.min(1, stemVol * master);
+    const w = i === active ? 1.0 : Math.abs(i - active) === 1 ? 0.2 : 0;
+    a.volume = Math.min(1, w * master);
   });
 }
