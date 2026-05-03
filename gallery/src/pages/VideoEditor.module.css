@@ -282,11 +282,16 @@
   font-size: 10px;
 }
 
-.momentMore {
+.momentToggle {
   font-size: 10px;
-  color: var(--text-muted);
-  padding-top: 4px;
+  color: var(--intent-teal);
+  padding: 4px 0 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
 }
+.momentToggle:hover { opacity: 0.8; }
 
 .exportProgress {
   font-size: 12px;

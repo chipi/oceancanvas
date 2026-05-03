@@ -29,6 +29,7 @@ export function VideoEditor() {
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const [showAllMoments, setShowAllMoments] = useState(false);
   const [moments, setMoments] = useState<MomentEvent[]>([]);
   const [intensity, setIntensity] = useState<number[]>([]);
   const playRef = useRef<number | null>(null);
@@ -54,7 +55,19 @@ export function VideoEditor() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((series: Array<{mean?: number; count?: number}>) => {
         const values = series.map((d) => d.mean ?? d.count ?? 0);
-        const signal = detectMoments(values, undefined, 3, 0.4);
+        // Use higher threshold + filter to keep only truly significant moments
+        const signal = detectMoments(values, undefined, 5, 0.35);
+        // Deduplicate: keep only the highest-scoring event per 12-frame window
+        const filtered: typeof signal.events = [];
+        for (const e of signal.events) {
+          const nearby = filtered.find((f) => Math.abs(f.frame - e.frame) < 12);
+          if (!nearby || e.score > nearby.score) {
+            if (nearby) filtered.splice(filtered.indexOf(nearby), 1);
+            filtered.push(e);
+          }
+        }
+        setMoments(filtered);
+        setIntensity(signal.intensity);
         setMoments(signal.events);
         setIntensity(signal.intensity);
       })
@@ -321,7 +334,7 @@ export function VideoEditor() {
           {moments.length > 0 && (
             <div className={styles.section}>
               <div className={styles.sectionTitle}>KEY MOMENTS ({moments.length})</div>
-              {moments.slice(0, 10).map((m) => (
+              {(showAllMoments ? moments : moments.slice(0, 8)).map((m) => (
                 <div
                   key={m.frame}
                   className={styles.momentRow}
@@ -332,11 +345,16 @@ export function VideoEditor() {
                     style={{ backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666' }}
                   />
                   <span className={styles.momentLabel}>{m.label}</span>
-                  <span className={styles.momentFrame}>fr.{m.frame}</span>
+                  <span className={styles.momentFrame}>{dates[m.frame]?.substring(0, 7) || `fr.${m.frame}`}</span>
                 </div>
               ))}
-              {moments.length > 10 && (
-                <div className={styles.momentMore}>+{moments.length - 10} more</div>
+              {moments.length > 8 && (
+                <button
+                  className={styles.momentToggle}
+                  onClick={() => setShowAllMoments((s) => !s)}
+                >
+                  {showAllMoments ? 'show less' : `show all ${moments.length}`}
+                </button>
               )}
             </div>
           )}

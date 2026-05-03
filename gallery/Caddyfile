@@ -42,6 +42,12 @@
         file_server
     }
 
+    # Serve audio stems for video editor preview
+    handle /audio/* {
+        root * /
+        file_server
+    }
+
     log {
         output stdout
         format json
