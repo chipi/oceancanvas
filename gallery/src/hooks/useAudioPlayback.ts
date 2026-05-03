@@ -9,8 +9,8 @@ const STEM_NAMES = [
 ];
 
 /**
- * Audio playback hook — plays stems using HTML5 Audio elements.
- * Returns master volume state + setter for UI control.
+ * Audio playback hook — fetches stems as blobs then plays via Audio elements.
+ * Uses the same fetch→blob→objectURL approach proven in audio-test.html.
  */
 export function useAudioPlayback(
   theme: string,
@@ -20,64 +20,55 @@ export function useAudioPlayback(
   currentFrame: number,
 ) {
   const audiosRef = useRef<HTMLAudioElement[]>([]);
-  const [masterVolume, setMasterVolume] = useState(0.7);
+  const [masterVolume, setMasterVolume] = useState(0.8);
   const [audioReady, setAudioReady] = useState(false);
-  const mountedRef = useRef(true);
 
-  // Track mount state
+  // Fetch stems as blobs and create Audio elements
   useEffect(() => {
-    mountedRef.current = true;
-    return () => { mountedRef.current = false; };
-  }, []);
-
-  // Create audio elements
-  useEffect(() => {
-    // Clean previous
-    audiosRef.current.forEach((a) => { a.pause(); a.removeAttribute('src'); a.load(); });
+    audiosRef.current.forEach((a) => a.pause());
     audiosRef.current = [];
     setAudioReady(false);
 
     if (!enabled || !theme) return;
 
-    const baseUrl = `/audio/themes/${theme}/`;
-    const audios: HTMLAudioElement[] = [];
-    let loadCount = 0;
+    let cancelled = false;
 
-    for (const name of STEM_NAMES) {
-      const a = new Audio();
-      a.loop = true;
-      a.volume = 0;
-      a.preload = 'auto';
-      a.addEventListener('canplaythrough', () => {
-        loadCount++;
-        if (loadCount === STEM_NAMES.length && mountedRef.current) {
-          setAudioReady(true);
-        }
-      }, { once: true });
-      a.src = baseUrl + name;
-      audios.push(a);
-    }
-
-    audiosRef.current = audios;
+    Promise.all(
+      STEM_NAMES.map((name) =>
+        fetch(`/audio/themes/${theme}/${name}`)
+          .then((r) => r.blob())
+          .then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = new Audio(url);
+            a.loop = true;
+            a.volume = 0;
+            return a;
+          })
+          .catch(() => null),
+      ),
+    ).then((results) => {
+      if (cancelled) return;
+      const audios = results.filter((a): a is HTMLAudioElement => a !== null);
+      if (audios.length === 0) return;
+      audiosRef.current = audios;
+      setAudioReady(true);
+    });
 
     return () => {
-      audios.forEach((a) => {
-        a.pause();
-        a.removeAttribute('src');
-        a.load();
-      });
+      cancelled = true;
+      audiosRef.current.forEach((a) => a.pause());
+      audiosRef.current = [];
     };
   }, [theme, enabled]);
 
   // Play/pause
   useEffect(() => {
     const audios = audiosRef.current;
-    if (!audios.length) return;
+    if (!audios.length || !audioReady) return;
 
-    if (isPlaying && audioReady) {
-      // Set volumes before play
+    if (isPlaying) {
       const level = intensity[currentFrame] ?? 0;
-      setVolumes(audios, level, masterVolume);
+      applyVolumes(audios, level, masterVolume);
       audios.forEach((a) => a.play().catch(() => {}));
     } else {
       audios.forEach((a) => a.pause());
@@ -87,18 +78,18 @@ export function useAudioPlayback(
   // Crossfade on frame change
   useEffect(() => {
     if (!isPlaying || !audiosRef.current.length) return;
-    const level = intensity[currentFrame] ?? 0;
-    setVolumes(audiosRef.current, level, masterVolume);
+    applyVolumes(audiosRef.current, intensity[currentFrame] ?? 0, masterVolume);
   }, [currentFrame, masterVolume]); // eslint-disable-line
 
   return { masterVolume, setMasterVolume, audioReady };
 }
 
-function setVolumes(audios: HTMLAudioElement[], level: number, master: number) {
+function applyVolumes(audios: HTMLAudioElement[], level: number, master: number) {
   const count = audios.length;
-  const active = Math.min(count - 1, Math.floor(level * count));
+  // Min stem 1 — stem 0 is too quiet to hear
+  const active = Math.max(1, Math.min(count - 1, Math.floor(level * count)));
   audios.forEach((a, i) => {
-    const w = i === active ? 1.0 : Math.abs(i - active) === 1 ? 0.2 : 0;
+    const w = i === active ? 1.0 : Math.abs(i - active) === 1 ? 0.3 : 0;
     a.volume = Math.min(1, w * master);
   });
 }
