@@ -255,6 +255,13 @@
   font-style: italic;
 }
 
+.momentList {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(93, 202, 165, 0.2) transparent;
+}
+
 .momentRow {
   display: flex;
   align-items: center;

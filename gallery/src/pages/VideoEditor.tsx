@@ -5,6 +5,98 @@ import { useManifest } from '../hooks/useManifest';
 import { type MomentEvent, detectMoments } from '../lib/moments';
 import styles from './VideoEditor.module.css';
 
+/** Extract truly significant moments — all-time records, decade highs/lows, major anomalies. */
+function extractSignificantMoments(values: number[], dates: string[]): MomentEvent[] {
+  if (values.length < 3) return [];
+
+  const events: MomentEvent[] = [];
+  let allTimeHigh = -Infinity;
+  let allTimeLow = Infinity;
+
+  for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    // All-time high
+    if (v > allTimeHigh) {
+      allTimeHigh = v;
+      // Only mark as event if it's significantly above previous record
+      if (i > 0) {
+        events.push({
+          frame: i, score: 1.0,
+          label: `All-time high (${v.toFixed(1)}°)`,
+          type: 'record',
+        });
+      }
+    }
+
+    // All-time low
+    if (v < allTimeLow) {
+      allTimeLow = v;
+      if (i > 0) {
+        events.push({
+          frame: i, score: 0.8,
+          label: `All-time low (${v.toFixed(1)}°)`,
+          type: 'record',
+        });
+      }
+    }
+  }
+
+  // Keep only the LAST all-time high (the actual record) and first all-time low
+  const finalHigh = events.filter((e) => e.label.startsWith('All-time high')).pop();
+  const finalLow = events.filter((e) => e.label.startsWith('All-time low')).pop();
+  const filtered: MomentEvent[] = [];
+  if (finalHigh) filtered.push(finalHigh);
+  if (finalLow) filtered.push(finalLow);
+
+  // Find the hottest and coldest year (max/min of annual means)
+  const annual: Record<string, number[]> = {};
+  for (let i = 0; i < values.length; i++) {
+    const year = (dates[i] || '').substring(0, 4);
+    if (!year) continue;
+    if (!annual[year]) annual[year] = [];
+    annual[year].push(values[i]);
+  }
+  const annualMeans = Object.entries(annual).map(([y, vals]) => ({
+    year: y,
+    mean: vals.reduce((s, v) => s + v, 0) / vals.length,
+    frame: dates.findIndex((d) => d.startsWith(y + '-07')) || dates.findIndex((d) => d.startsWith(y)),
+  })).filter((a) => a.frame >= 0);
+
+  if (annualMeans.length > 2) {
+    const hottest = annualMeans.reduce((a, b) => a.mean > b.mean ? a : b);
+    const coldest = annualMeans.reduce((a, b) => a.mean < b.mean ? a : b);
+    filtered.push({
+      frame: hottest.frame, score: 0.9,
+      label: `Hottest year: ${hottest.year} (${hottest.mean.toFixed(1)}°)`,
+      type: 'peak',
+    });
+    filtered.push({
+      frame: coldest.frame, score: 0.7,
+      label: `Coldest year: ${coldest.year} (${coldest.mean.toFixed(1)}°)`,
+      type: 'peak',
+    });
+
+    // Biggest year-over-year jump
+    let maxJump = 0, jumpIdx = 0;
+    for (let i = 1; i < annualMeans.length; i++) {
+      const jump = Math.abs(annualMeans[i].mean - annualMeans[i - 1].mean);
+      if (jump > maxJump) { maxJump = jump; jumpIdx = i; }
+    }
+    if (maxJump > 0.3) {
+      const j = annualMeans[jumpIdx];
+      filtered.push({
+        frame: j.frame, score: 0.6,
+        label: `Largest shift: ${j.year} (${maxJump > 0 ? '+' : ''}${maxJump.toFixed(1)}°)`,
+        type: 'inflection',
+      });
+    }
+  }
+
+  // Sort by frame
+  filtered.sort((a, b) => a.frame - b.frame);
+  return filtered;
+}
+
 interface ExportState {
   status: 'idle' | 'exporting' | 'done' | 'error';
   progress?: string;
@@ -29,7 +121,6 @@ export function VideoEditor() {
     attribution: true,
   });
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
-  const [showAllMoments, setShowAllMoments] = useState(false);
   const [moments, setMoments] = useState<MomentEvent[]>([]);
   const [intensity, setIntensity] = useState<number[]>([]);
   const playRef = useRef<number | null>(null);
@@ -55,19 +146,13 @@ export function VideoEditor() {
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((series: Array<{mean?: number; count?: number}>) => {
         const values = series.map((d) => d.mean ?? d.count ?? 0);
-        // Use higher threshold + filter to keep only truly significant moments
-        const signal = detectMoments(values, undefined, 5, 0.35);
-        // Deduplicate: keep only the highest-scoring event per 12-frame window
-        const filtered: typeof signal.events = [];
-        for (const e of signal.events) {
-          const nearby = filtered.find((f) => Math.abs(f.frame - e.frame) < 12);
-          if (!nearby || e.score > nearby.score) {
-            if (nearby) filtered.splice(filtered.indexOf(nearby), 1);
-            filtered.push(e);
-          }
-        }
-        setMoments(filtered);
+        // Compute intensity signal for audio crossfading
+        const signal = detectMoments(values, undefined, 5, 0.3);
         setIntensity(signal.intensity);
+
+        // Extract truly significant moments — not per-frame noise
+        const significant = extractSignificantMoments(values, dates);
+        setMoments(significant);
         setMoments(signal.events);
         setIntensity(signal.intensity);
       })
@@ -334,28 +419,22 @@ export function VideoEditor() {
           {moments.length > 0 && (
             <div className={styles.section}>
               <div className={styles.sectionTitle}>KEY MOMENTS ({moments.length})</div>
-              {(showAllMoments ? moments : moments.slice(0, 8)).map((m) => (
-                <div
-                  key={m.frame}
-                  className={styles.momentRow}
-                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
-                >
-                  <span
-                    className={styles.momentDot}
-                    style={{ backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666' }}
-                  />
-                  <span className={styles.momentLabel}>{m.label}</span>
-                  <span className={styles.momentFrame}>{dates[m.frame]?.substring(0, 7) || `fr.${m.frame}`}</span>
-                </div>
-              ))}
-              {moments.length > 8 && (
-                <button
-                  className={styles.momentToggle}
-                  onClick={() => setShowAllMoments((s) => !s)}
-                >
-                  {showAllMoments ? 'show less' : `show all ${moments.length}`}
-                </button>
-              )}
+              <div className={styles.momentList}>
+                {moments.map((m) => (
+                  <div
+                    key={m.frame}
+                    className={styles.momentRow}
+                    onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                  >
+                    <span
+                      className={styles.momentDot}
+                      style={{ backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666' }}
+                    />
+                    <span className={styles.momentLabel}>{m.label}</span>
+                    <span className={styles.momentFrame}>{dates[m.frame]?.substring(0, 7) || ''}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
