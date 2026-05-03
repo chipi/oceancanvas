@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const STEM_NAMES = [
   'stem_0_calm',
@@ -18,41 +18,43 @@ export function useAudioPlayback(
   theme: string,
   enabled: boolean,
   isPlaying: boolean,
-  intensity: number[], // per-frame intensity [0-1]
+  intensity: number[],
   currentFrame: number,
 ) {
   const ctxRef = useRef<AudioContext | null>(null);
   const gainsRef = useRef<GainNode[]>([]);
   const sourcesRef = useRef<AudioBufferSourceNode[]>([]);
   const buffersRef = useRef<AudioBuffer[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const loadedRef = useRef(false);
 
-  // Load stems on mount / theme change
+  // Load stems once
   useEffect(() => {
-    if (!enabled || !theme) return;
+    if (!enabled || !theme) {
+      loadedRef.current = false;
+      return;
+    }
 
+    let cancelled = false;
     const ctx = new AudioContext();
     ctxRef.current = ctx;
-    setLoaded(false);
 
     Promise.all(
       STEM_NAMES.map(async (name) => {
-        const url = `/audio/themes/${theme}/${name}.wav`;
         try {
-          const resp = await fetch(url);
+          const resp = await fetch(`/audio/themes/${theme}/${name}.wav`);
           if (!resp.ok) return null;
           const buf = await resp.arrayBuffer();
-          return ctx.decodeAudioData(buf);
+          return await ctx.decodeAudioData(buf);
         } catch {
           return null;
         }
       }),
     ).then((buffers) => {
+      if (cancelled) return;
       const valid = buffers.filter((b): b is AudioBuffer => b !== null);
       if (valid.length === 0) return;
       buffersRef.current = valid;
 
-      // Create gain nodes for crossfading
       const gains = valid.map(() => {
         const g = ctx.createGain();
         g.gain.value = 0;
@@ -60,57 +62,76 @@ export function useAudioPlayback(
         return g;
       });
       gainsRef.current = gains;
-      setLoaded(true);
+      loadedRef.current = true;
+    }).catch(() => {
+      // Audio loading failed — continue without audio
+      loadedRef.current = false;
     });
 
     return () => {
+      cancelled = true;
+      loadedRef.current = false;
+      // Stop all sources
       sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
-      ctx.close();
-      ctxRef.current = null;
-      gainsRef.current = [];
       sourcesRef.current = [];
+      gainsRef.current = [];
       buffersRef.current = [];
-      setLoaded(false);
+      // Close context last
+      try { ctx.close(); } catch {}
+      ctxRef.current = null;
     };
   }, [theme, enabled]);
 
-  // Start/stop sources when playing changes
+  // Start/stop playback
   useEffect(() => {
     const ctx = ctxRef.current;
-    if (!ctx || !loaded) return;
+    if (!ctx || !loadedRef.current) return;
 
     if (isPlaying) {
-      // Start all stems looping, control volume via gains
+      // Resume context (browsers suspend until user interaction)
+      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+      // Stop existing sources
       sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
-      const sources = buffersRef.current.map((buf, i) => {
-        const source = ctx.createBufferSource();
-        source.buffer = buf;
-        source.loop = true;
-        source.connect(gainsRef.current[i]);
-        source.start();
-        return source;
-      });
-      sourcesRef.current = sources;
-      if (ctx.state === 'suspended') ctx.resume();
+
+      // Start all stems looping
+      try {
+        const sources = buffersRef.current.map((buf, i) => {
+          const source = ctx.createBufferSource();
+          source.buffer = buf;
+          source.loop = true;
+          source.connect(gainsRef.current[i]);
+          source.start();
+          return source;
+        });
+        sourcesRef.current = sources;
+      } catch {
+        // Audio playback failed — silent fallback
+        sourcesRef.current = [];
+      }
     } else {
       sourcesRef.current.forEach((s) => { try { s.stop(); } catch {} });
       sourcesRef.current = [];
     }
-  }, [isPlaying, loaded]);
+  }, [isPlaying]);
 
   // Update gains based on current intensity
   useEffect(() => {
-    if (!loaded || gainsRef.current.length === 0) return;
+    const ctx = ctxRef.current;
+    if (!ctx || !loadedRef.current || gainsRef.current.length === 0) return;
 
     const level = intensity[currentFrame] ?? 0;
     const stemCount = gainsRef.current.length;
     const activeStem = Math.min(stemCount - 1, Math.floor(level * stemCount));
 
-    gainsRef.current.forEach((g, i) => {
-      const target = i === activeStem ? 0.8 : (Math.abs(i - activeStem) === 1 ? 0.2 : 0);
-      g.gain.linearRampToValueAtTime(target, (ctxRef.current?.currentTime ?? 0) + 0.1);
-    });
-  }, [currentFrame, intensity, loaded]);
-
-  return { loaded };
+    try {
+      const now = ctx.currentTime;
+      gainsRef.current.forEach((g, i) => {
+        const target = i === activeStem ? 0.8 : (Math.abs(i - activeStem) === 1 ? 0.2 : 0);
+        g.gain.linearRampToValueAtTime(target, now + 0.1);
+      });
+    } catch {
+      // Gain update failed — ignore
+    }
+  }, [currentFrame, intensity]);
 }
