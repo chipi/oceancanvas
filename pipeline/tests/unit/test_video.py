@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from oceancanvas.video import _build_filters, assemble_video, get_video_info
+from oceancanvas.video import _build_arc_chain, _build_filters, assemble_video, get_video_info
 
 
 class TestGetVideoInfo:
@@ -51,6 +51,39 @@ class TestBuildFilters:
     def test_attribution_overlay(self):
         result = _build_filters(False, True, [])
         assert "OceanCanvas" in result
+
+    def test_arc_chain_composes_before_overlays(self):
+        arc_chain = "sendcmd=c='0.0 eq saturation 1.0;',eq=saturation=1.0,vignette=angle=PI/5"
+        result = _build_filters(True, False, [], arc_chain)
+        assert result.startswith("sendcmd=")
+        assert "drawtext" in result
+
+
+class TestBuildArcChain:
+    def test_empty_arc_returns_empty_string(self):
+        assert _build_arc_chain([], 30) == ""
+        assert _build_arc_chain([0.5, 0.5], 0) == ""
+
+    def test_emits_sendcmd_with_eq_and_vignette(self):
+        arc = [0.0, 0.5, 1.0, 0.5, 0.0]
+        chain = _build_arc_chain(arc, 4.0)
+        assert chain.startswith("sendcmd=")
+        assert "eq saturation" in chain
+        assert "vignette angle" in chain
+        assert chain.endswith("vignette=angle=PI/5")
+
+    def test_keypoint_count_tracks_duration(self):
+        arc = [0.0] * 60
+        chain = _build_arc_chain(arc, 30.0)
+        # ceil(30) + 1 = 31 keypoints
+        assert chain.count(" eq saturation") == 31
+
+    def test_saturation_drops_at_peak(self):
+        # Arc with single peak — saturation should be lower at peak frame
+        arc = [0.0, 0.0, 1.0, 0.0, 0.0]
+        chain = _build_arc_chain(arc, 4.0)
+        # Find the peak keypoint (t=2.00) — saturation should be 1.0 - 0.35 = 0.65
+        assert "0.6500" in chain
 
 
 class TestAssembleVideo:
