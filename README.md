@@ -1,10 +1,30 @@
 # OceanCanvas
 
-Generative ocean art that the data performs daily.
+> Generative ocean art that the data performs daily.
+
+![OceanCanvas gallery — accumulated daily renders across multiple recipes](docs/concept/images/gallery_front_page.png)
 
 A pipeline runs at 06:00 UTC, fetches today's ocean data from open scientific sources, and renders it through authored recipes. Every day adds a frame. A recipe running for a year is a year of art — the same authored character, the ocean changing underneath it. The gallery walks itself forward without curation.
 
 This is not a dashboard. It is not a research tool. It is a project where the ocean's data is treated with editorial dignity, and where authorship and accumulation matter more than dashboards and metrics.
+
+---
+
+## Three ways in
+
+**👀 Just want to see it.** Run it locally and the gallery fills with renders.
+
+```bash
+git clone https://github.com/chipi/oceancanvas.git
+cd oceancanvas
+docker compose up
+```
+
+Open `http://localhost:8080`. Need help? → [`docs/quickstart.md`](docs/quickstart.md) for a 5-minute walkthrough; [`docs/get-started.md`](docs/get-started.md) for full setup including local dev and troubleshooting.
+
+**🎨 Want to author a piece.** Recipes are the authored unit — a YAML file describing region, source, render character, audio. The Recipe Editor at `/recipes/new` is the visual front door; the YAML schema is the durable form. → [`recipes/README.md`](recipes/README.md) is the field-by-field author guide with the render-type taxonomy and audio-block reference.
+
+**🛠️ Want to contribute or hack.** The project's conventions live in two documents at the root: [`CLAUDE.md`](CLAUDE.md) (firm orientation — stack, constraints, code style) and [`IMPLEMENTATION.md`](IMPLEMENTATION.md) (the Phase 1 build guide). The doc system itself is what most of the value lives in — see "How to read this repository" below.
 
 ---
 
@@ -14,24 +34,33 @@ Three concepts hold the project together.
 
 **The recipe.** A YAML file authored by a person — region, source, render type, creative parameters. Once authored, it runs forever. Tomorrow at 06:00 UTC the pipeline reads it, fetches that region's data for that source, and renders it. The recipe is the authored work; each render is the data sitting for the work that day.
 
+![Recipe Editor — creative mode with mood presets and energy × presence quadrant](docs/concept/images/editor_creative_mode.png)
+
 **The pipeline.** Six tasks in a Prefect flow, running daily. Discover the latest available date per source. Fetch raw data. Process it into a browser-friendly intermediate format. Build a render payload per recipe. Render via Puppeteer + p5.js. Rebuild the manifest. The output is one PNG per recipe per day, on disk.
+
+![Pipeline architecture — six tasks, Docker Compose stack](docs/concept/images/pipeline_architecture.png)
 
 **The gallery.** A static React app that reads the manifest. Today's renders fill the front page. The fourteen-day strip below shows recent history. The grid below that shows every active recipe. No editor curated it. No engagement metrics measure it. The pipeline ran at 06:00 UTC and the gallery reflects what it produced.
 
 The four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor — close the creative loop: read the data, author a piece, watch it accumulate, assemble a year into a film.
 
+![Video Editor — timelapse assembly with key moments and audio](docs/concept/images/video_editor_enriched.png)
+
 ---
 
 ## Status
 
-**Phase 1 — implementation in progress.** The documentation system is complete; code is being written. Phase 1 ships:
+**Phase 1 — v0.5.0 shipped May 2026.** Daily pipeline + four customer-facing surfaces + generative audio + audio-video coupling are all live. See [`CHANGELOG.md`](CHANGELOG.md) for the full history; [GitHub releases](https://github.com/chipi/oceancanvas/releases) for prose-formatted release notes.
+
+Phase 1 ships:
 
 - The pipeline running daily, self-hosted via Docker Compose
-- One source live (NOAA OISST sea surface temperature)
-- A small set of authored recipes
-- All four customer-facing surfaces
+- Sources live: NOAA OISST sea surface temperature, Argo float density, OBIS biologging (whale shark, leatherback, elephant seal)
+- 11 authored recipes accumulating monthly renders back to 1981
+- All four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor
+- Generative audio (RFC-010 → ADR-027) and tension-arc audio-video coupling (RFC-011 → ADR-028)
 
-Phase 2 (later) will add public hosting, more sources, additional editorial features. Phase 1 stays open-by-default, file-based, and self-hostable.
+Phase 2 (later) will add public hosting and additional editorial features. Phase 1 stays open-by-default, file-based, and self-hostable.
 
 ---
 
@@ -43,12 +72,12 @@ OceanCanvas's documentation has two layers — a concept package at the project 
 
 | Document | What it holds |
 |---|---|
-| `OC-00 Package Introduction` | Overview of the package and its parts |
-| `OC-01 Vision` | Why the project exists |
-| `OC-02 Project Concept` | What the surfaces are and how the creative loop works |
-| `OC-03 Data Catalog` | Which sources are integrated and which are deferred |
-| `OC-04 Pipeline Architecture` | How the pipeline is built, conceptually |
-| `OC-05 Design System & Creative Direction` | The visual character |
+| [`OC-00 Package Introduction`](docs/concept/00-package-introduction.md) | Overview of the package and its parts |
+| [`OC-01 Vision`](docs/concept/01-vision.md) | Why the project exists |
+| [`OC-02 Project Concept`](docs/concept/02-project-concept.md) | What the surfaces are and how the creative loop works |
+| [`OC-03 Data Catalog`](docs/concept/03-data-catalog.md) | Which sources are integrated and which are deferred |
+| [`OC-04 Pipeline Architecture`](docs/concept/04-pipeline-architecture.md) | How the pipeline is built, conceptually |
+| [`OC-05 Design System & Creative Direction`](docs/concept/05-design-system.md) | The visual character |
 
 Read these once or twice for the *why*. They are updated rarely.
 
@@ -76,44 +105,20 @@ Read what you need when you need it. Reference docs (PA / IA / TA) are linked in
 
 ---
 
-## How to run it
-
-```bash
-git clone https://github.com/chipi/oceancanvas.git
-cd oceancanvas
-docker compose up
-```
-
-The pipeline runs daily at 06:00 UTC. Manual runs trigger via the Prefect UI at `localhost:4200`. The gallery is at `localhost:8080`. The recipe save server runs on `localhost:3001`. Recipes live in `recipes/`; renders accumulate in `renders/`. No accounts. No API keys. No cloud dependencies.
-
-Adding a new recipe: use the Recipe Editor at `localhost:8080/recipes/new`, or drop a YAML file in `recipes/` matching the schema in `RFC-001` (`docs/rfc/`). The next pipeline run picks it up.
-
-For local development (without Docker):
-
-```bash
-python3 -m http.server 8080 &    # serves data, renders, sketches, recipes
-make gallery-dev                   # starts Vite (5173) + save server (3001)
-```
-
----
-
 ## Working on the project
 
-Two documents at the project root guide hands-on work:
-
-- **`CLAUDE.md`** — project conventions for working on the codebase. Where things live, the locked stack, the non-negotiable constraints, code conventions, what to do and what not to do. Written for AI-assisted work but readable by humans.
-- **`IMPLEMENTATION.md`** — the Phase 3 build guide. Names the slices, what each one ships, the gates between them.
-
-Phase 1 is single-author. Once Phase 1 ships, contribution conventions will be documented here.
+| Document | When to read |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Always, before working on the codebase. Stack, constraints, code style, doc rules, voice. Written for AI-assisted work; reads cleanly for humans. |
+| [`IMPLEMENTATION.md`](IMPLEMENTATION.md) | Phase 1 build guide — slices, gates, scope. |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | When proposing a change. Values + checklist. |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history at a glance. |
+| Per-package READMEs | When working in `gallery/`, `pipeline/`, `sketches/`, or `recipes/`. Each holds a focused entry-point doc. |
 
 ---
 
 ## License
 
-To be decided before public release. Phase 1 is private development; Phase 2 will ship under an open license appropriate to a project built on open scientific data.
+[MIT](LICENSE). The data this project performs is open by default; the code that performs it is too.
 
----
-
-## Acknowledgements
-
-Built on data from NOAA, ESA, NASA, NSIDC, and the broader open ocean-data ecosystem. The data is the work; this project is one way of looking at it.
+Acknowledgement of dependencies: open scientific data from NOAA, ESA, NASA, NSIDC, and the broader open ocean-data ecosystem. The data is the work; this project is one way of looking at it.

@@ -1,4 +1,23 @@
+# OceanCanvas — production stack (per ADR-011 Docker Compose deployment).
+#
+# Six services, one process per concern:
+#   • postgres        Prefect's state DB (Phase 1's only datastore — see ADR-005)
+#   • prefect-server  Orchestration UI + API at localhost:4200
+#   • pipeline        Daily flow runner (Phase 1: cron at 06:00 UTC inside Prefect)
+#   • gallery         Caddy serving the React build at localhost:8080
+#   • recipe-server   Node.js endpoint that writes recipe YAML to /recipes (port 3001)
+#   • export-server   Node.js endpoint that shells out to `oceancanvas export-video` (port 3002)
+#
+# Volume mounts colocate /data, /recipes, /renders, /sketches, /audio across
+# all services that need them. Read-only where the service shouldn't write.
+#
+# To run: `docker compose up`. To trigger a pipeline run now: `make pipeline-run`.
+# Troubleshooting common issues: see docs/get-started.md § Troubleshooting.
+
 services:
+  # ── Prefect's state DB ──────────────────────────────────────────────────
+  # Phase 1 has no application DB (per ADR-005). This is purely Prefect's
+  # bookkeeping: flow runs, task states, retries, schedules.
   postgres:
     image: postgres:16-alpine
     environment:
@@ -13,6 +32,9 @@ services:
       timeout: 3s
       retries: 5
 
+  # ── Prefect orchestration server ────────────────────────────────────────
+  # Hosts the UI at :4200. Pipeline workers register here and run flows.
+  # `prefect server start` is the minimal hosted variant (per ADR-001).
   prefect-server:
     image: prefecthq/prefect:3-python3.12
     command: prefect server start --host 0.0.0.0
@@ -29,6 +51,12 @@ services:
       timeout: 5s
       retries: 5
 
+  # ── Daily pipeline ──────────────────────────────────────────────────────
+  # Six tasks: discover → fetch → process → build_payload → render → index.
+  # Lives in pipeline/. `python -m oceancanvas.deploy` registers the daily
+  # schedule with prefect-server. Manual trigger: `make pipeline-run`.
+  # Volumes: data is mutable (sources + processed); recipes are read-only;
+  # renders accumulate; sketches are read-only (the p5.js render code).
   pipeline:
     build:
       context: .
@@ -51,6 +79,11 @@ services:
       timeout: 10s
       retries: 3
 
+  # ── Static gallery ──────────────────────────────────────────────────────
+  # Caddy serving the React build at :8080. Reads /renders/manifest.json,
+  # /data/processed/* for live preview, /sketches/* for the iframe sketch
+  # host, /recipes/*.yaml for the editor. /api/* is reverse-proxied to
+  # recipe-server (per gallery/Caddyfile). All static — no app DB.
   gallery:
     build: ./gallery
     ports:
@@ -73,6 +106,10 @@ services:
       timeout: 5s
       retries: 3
 
+  # ── Recipe save endpoint ────────────────────────────────────────────────
+  # POST /api/recipes/{slug} writes a YAML file to /recipes. Tiny Node.js
+  # HTTP server in gallery/server/save-recipe.mjs. Lives in its own
+  # container so the gallery's Caddy stays purely static.
   recipe-server:
     image: node:20-slim
     working_dir: /app
@@ -91,6 +128,11 @@ services:
       timeout: 5s
       retries: 3
 
+  # ── Video export endpoint ───────────────────────────────────────────────
+  # POST /api/export/{recipe} triggers `oceancanvas export-video` (assembled
+  # MP4 with generative audio). Mounts /audio for the sample bank used by
+  # the audio synthesis step. Renders are read+write because the export
+  # writes the MP4 alongside the PNGs.
   export-server:
     image: node:20-slim
     working_dir: /app
