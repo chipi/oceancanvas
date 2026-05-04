@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, arcAt, channelScale } from './audioEngineTypes';
+import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, arcAt, channelScale, holdAt } from './audioEngineTypes';
 
 describe('arcAt', () => {
   it('returns 1.0 for empty arc — no effect', () => {
@@ -44,5 +44,24 @@ describe('DEFAULT_EQ', () => {
     expect(DEFAULT_EQ.bass).toBe(0);
     expect(DEFAULT_EQ.mid).toBe(0);
     expect(DEFAULT_EQ.treble).toBe(0);
+  });
+});
+
+describe('holdAt', () => {
+  it('returns false for empty mask — no effect', () => {
+    expect(holdAt([], 0)).toBe(false);
+    expect(holdAt([], 100)).toBe(false);
+  });
+
+  it('returns the mask value at the requested frame', () => {
+    expect(holdAt([false, true, true, false], 0)).toBe(false);
+    expect(holdAt([false, true, true, false], 1)).toBe(true);
+    expect(holdAt([false, true, true, false], 3)).toBe(false);
+  });
+
+  it('returns false for out-of-bounds frames (no false-positive hold outside the mask)', () => {
+    const mask = [false, true, true];
+    expect(holdAt(mask, -1)).toBe(false);
+    expect(holdAt(mask, 99)).toBe(false);
   });
 });

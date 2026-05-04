@@ -30,6 +30,7 @@ import {
   arcAt,
   buildEqChain,
   channelScale,
+  holdAt,
   loadSampleBank,
   makeReverbImpulse,
 } from './audioEngineTypes';
@@ -89,6 +90,7 @@ export class AmbientEngine implements AudioEngineInterface {
   private eqMid: BiquadFilterNode | null = null;
   private eqTreble: BiquadFilterNode | null = null;
   private tensionArc: number[] = [];
+  private holdMask: boolean[] = [];
 
   async loadSamples(): Promise<void> {
     if (this.samples) return;
@@ -132,6 +134,10 @@ export class AmbientEngine implements AudioEngineInterface {
 
   setTensionArc(arc: number[]): void {
     this.tensionArc = arc;
+  }
+
+  setHoldMask(mask: boolean[]): void {
+    this.holdMask = mask;
   }
 
   async start(): Promise<void> {
@@ -205,6 +211,7 @@ export class AmbientEngine implements AudioEngineInterface {
     const p = this.preset;
     const frameSec = 1 / this.fps;
     const arcValue = arcAt(this.tensionArc, view.frame);
+    const isHeld = holdAt(this.holdMask, view.frame);
 
     // Re-key sequence + accent bus gains so they track the arc
     this.applyPresetGains(arcValue);
@@ -232,15 +239,17 @@ export class AmbientEngine implements AudioEngineInterface {
     }
 
     // ── Sequence: arpeggio note on each tick ────────────────────────────
+    // Held frames suppress NEW notes — already-playing notes ring out naturally.
     const sensitivity = p.pulse.sensitivity;
     const bpm = p.pulse.minBpm + (p.pulse.maxBpm - p.pulse.minBpm) * Math.min(1, view.delta * sensitivity * 4);
-    if (this.pulseScheduler.step(bpm, frameSec)) {
+    if (this.pulseScheduler.step(bpm, frameSec) && !isHeld) {
       this.fireSequenceNote(view.direction);
     }
     this.channels.pulse = view.delta;
 
     // ── Accent: one-shot with cooldown ────────────────────────────────
-    if (view.isAccent && now > this.accentCooldownUntil) {
+    // Suppressed during hold so the bell doesn't re-trigger inside the held second.
+    if (view.isAccent && now > this.accentCooldownUntil && !isHeld) {
       this.fireAccent(view.accentType);
       this.accentCooldownUntil = now + 0.8;
       this.channels.accent = true;
@@ -252,7 +261,8 @@ export class AmbientEngine implements AudioEngineInterface {
     if (this.textureFilter && this.textureGain) {
       const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * 0.85 * channelScale(this.mix, 'texture') * arcValue;
+      const holdScale = isHeld ? 0 : 1;
+      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * 0.85 * channelScale(this.mix, 'texture') * arcValue * holdScale;
       const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.3);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.4);

@@ -57,10 +57,10 @@ Counter-evidence we want: a viewer naming the held moment unprompted, or describ
 ## Open threads
 
 - ~~**RFC-011 — Tension arc as shared primitive.**~~ Closed v0.5.0 → [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md).
+- ~~**Audio "drop to drone only" at held moment.**~~ Implemented as a v0.5.0 follow-up: the held seconds suppress new pulse + accent firings and mute the texture layer; drone holds full. The bell that fires at the moment frame rings out naturally into the held window. The lede's gesture lands.
 - **UXS-005 update.** The Video Editor surface contract gains the arc editor block (landed in [UXS-005](../uxs/UXS-005-video-editor.md) §"Audio sidebar").
 - **PRD-007 — Modal scales.** Audio musicality, second pass. Drafts when this milestone retrospective is in.
 - **Phase 4 PRDs.** Timeframe-mixing pieces (ghost accumulation, temporal split, rewind). Each is its own PRD when the time comes; all of them build on the arc primitive locked in ADR-028.
-- **Audio "drop to drone only" at held moment.** This PRD's lede describes the music *reducing to a single sustained note* at the record frame. v0.5.0 implementation amplifies all layers at the arc peak; refining peak behaviour to suppress sequence + accent so only pad holds is a polish pass.
 
 ## Links
 

@@ -104,8 +104,10 @@ def build_audio_track(
         raise ValueError(msg)
 
     # Inject Record Moment hold — extends arrays at the held frame so the audio
-    # stays in sync with the held video frame in assemble_video.
-    values, dates, arc, moments = _inject_hold(
+    # stays in sync with the held video frame in assemble_video. The hold_mask
+    # marks inserted frames so non-drone layers (pulse, accent, texture) drop
+    # out during the hold — PRD-006's "room goes quiet for a beat" gesture.
+    values, dates, arc, moments, hold_mask = _inject_hold(
         values, dates, arc, moments, fps, hold_at_frame, hold_duration_sec,
     )
 
@@ -125,14 +127,17 @@ def build_audio_track(
 
     # Tension arc: align length with frames; default to constant 1.0 (no effect)
     arc_arr = _align_arc(arc, len(v_arr))
+    hold_arr = np.asarray(hold_mask, dtype=bool) if len(hold_mask) == len(v_arr) else np.zeros(len(v_arr), dtype=bool)
 
     # Load samples once
     bank = _load_samples(samples_dir or GENERATIVE_DIR)
 
+    # Drone holds full through the hold window — that's the sustained note PRD-006
+    # describes. The other three layers drop out during the hold.
     drone = _synth_drone(value_norm, intensity, arc_arr, params, fps, n_samples, sr)
-    pulse = _synth_pulse(v_arr, arc_arr, params, fps, n_samples, sr, bank)
-    accent = _synth_accent(moments or [], arc_arr, params, fps, n_samples, sr, bank)
-    texture = _synth_texture(value_norm, dates, arc_arr, params, fps, n_samples, sr, bank)
+    pulse = _synth_pulse(v_arr, arc_arr, hold_arr, params, fps, n_samples, sr, bank)
+    accent = _synth_accent(moments or [], arc_arr, hold_arr, params, fps, n_samples, sr, bank)
+    texture = _synth_texture(value_norm, dates, arc_arr, hold_arr, params, fps, n_samples, sr, bank)
 
     mix = drone + pulse + accent + texture
     mix = np.clip(mix * params.presence, -1.0, 1.0)
@@ -215,13 +220,16 @@ def _synth_drone(
 def _synth_pulse(
     values: np.ndarray,
     arc: np.ndarray,
+    hold: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
     sr: int,
     bank: dict,
 ) -> np.ndarray:
-    """Layer 2: scheduled tap whose rate follows |Δ value|."""
+    """Layer 2: scheduled tap whose rate follows |Δ value|.
+    Skips firing during hold frames — sequence stops, drone alone holds.
+    Already-placed taps continue playing through their natural decay."""
     sensitivity = float(p.pulse_sensitivity)
     presence = float(p.presence)
     bpm_min = _lerp(50, 70, sensitivity)
@@ -242,6 +250,10 @@ def _synth_pulse(
         phase += (bpm / 60.0) * frame_sec
         if phase >= 1.0:
             phase -= int(phase)
+            # Held frame: skip firing. Phase still advances so cadence resumes
+            # naturally after the hold — sequence doesn't bunch up at the exit.
+            if frame < len(hold) and hold[frame]:
+                continue
             direction = (
                 1 if values[frame] > prev else
                 -1 if values[frame] < prev else 0
@@ -260,13 +272,17 @@ def _synth_pulse(
 def _synth_accent(
     moments: list[dict],
     arc: np.ndarray,
+    hold: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
     sr: int,
     bank: dict,
 ) -> np.ndarray:
-    """Layer 3: one-shot sample at each key moment."""
+    """Layer 3: one-shot sample at each key moment.
+    The dominant moment frame itself is NOT in the hold window (the bell fires
+    there and rings out into the hold), but if any other moments fall inside
+    the hold span they're suppressed."""
     presence = float(p.presence)
     base_gain = _lerp(0.35, 0.65, presence)
     out = np.zeros((n_samples, 2), dtype=np.float64)
@@ -275,6 +291,8 @@ def _synth_accent(
         frame = int(m.get("frame", -1))
         if frame < 0:
             continue
+        if frame < len(hold) and hold[frame]:
+            continue  # accent suppressed inside hold
         accent_type = _classify_accent(m, p.accent_style, bank)
         offset_samples = int(frame * (1.0 / fps) * sr)
         # Clamp arc index to bounds — moments may exceed value count in edge cases
@@ -288,13 +306,16 @@ def _synth_texture(
     value_norm: np.ndarray,
     dates: list[str],
     arc: np.ndarray,
+    hold: np.ndarray,
     p: AudioParams,
     fps: int,
     n_samples: int,
     sr: int,
     bank: dict,
 ) -> np.ndarray:
-    """Layer 4: looping noise modulated by seasonal phase + timeline ramp."""
+    """Layer 4: looping noise modulated by seasonal phase + timeline ramp.
+    Texture envelope drops to zero during the hold; per-sample interpolation
+    smooths the transition so it fades rather than cutting."""
     density = float(p.texture_density)
     base_gain = _lerp(0.15, 0.4, density)
 
@@ -321,7 +342,8 @@ def _synth_texture(
         month_frac = (month - 1) / 12.0 if month > 0 else 0.0
         seasonal = 1 - 0.4 + 0.4 * (0.5 + 0.5 * np.cos(month_frac * np.pi * 2))
         year_ramp = 0.5 + 0.5 * (f / max(1, n_frames - 1))
-        env[f] = base_gain * density * seasonal * year_ramp * float(arc[f])
+        held = bool(hold[f]) if f < len(hold) else False
+        env[f] = 0.0 if held else (base_gain * density * seasonal * year_ramp * float(arc[f]))
 
     env_per_sample = _interp_to_samples(env, n_samples, fps, sr)
     return _to_stereo(looped_mono * env_per_sample)
@@ -338,17 +360,22 @@ def _inject_hold(
     fps: int,
     hold_at_frame: int | None,
     hold_duration_sec: float,
-) -> tuple[list[float], list[str], list[float] | None, list[dict] | None]:
+) -> tuple[list[float], list[str], list[float] | None, list[dict] | None, list[bool]]:
     """Extend per-frame arrays to "hold" the held frame's value for hold_duration_sec.
 
     Insertion happens immediately after ``hold_at_frame``. Moments occurring
     after the held frame get their frame indices shifted by hold_frames.
-    Returns possibly-new arrays; originals are not mutated.
+
+    Returns ``(values, dates, arc, moments, hold_mask)``. The ``hold_mask`` is
+    ``True`` for the inserted frames (PRD-006: pad holds, sequence + accent +
+    texture drop out — that "room goes quiet for a beat" gesture). Original
+    frames map to ``False``. When no hold is requested, returns the original
+    arrays plus an all-False mask the caller can pass through harmlessly.
     """
     if hold_at_frame is None or hold_duration_sec <= 0 or fps <= 0:
-        return values, dates, arc, moments
+        return values, dates, arc, moments, [False] * len(values)
     if hold_at_frame < 0 or hold_at_frame >= len(values):
-        return values, dates, arc, moments
+        return values, dates, arc, moments, [False] * len(values)
 
     hold_frames = max(1, int(round(hold_duration_sec * fps)))
     held_value = values[hold_at_frame]
@@ -387,7 +414,16 @@ def _inject_hold(
             else:
                 new_moments.append(m)
 
-    return new_values, new_dates, new_arc, new_moments
+    # Hold mask: True for the inserted frames only — the original moment frame
+    # itself is False so the accent fires there, and the bell rings out into the
+    # held seconds (its sample plays through naturally).
+    hold_mask = (
+        [False] * (hold_at_frame + 1)
+        + [True] * hold_frames
+        + [False] * (len(values) - hold_at_frame - 1)
+    )
+
+    return new_values, new_dates, new_arc, new_moments, hold_mask
 
 
 def _align_arc(arc: list[float] | None, n_frames: int) -> np.ndarray:

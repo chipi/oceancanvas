@@ -27,6 +27,7 @@ import {
   arcAt,
   buildEqChain,
   channelScale,
+  holdAt,
   loadSampleBank,
 } from './audioEngineTypes';
 
@@ -67,6 +68,7 @@ export class SynthEngine implements AudioEngineInterface {
   private eqMid: BiquadFilterNode | null = null;
   private eqTreble: BiquadFilterNode | null = null;
   private tensionArc: number[] = [];
+  private holdMask: boolean[] = [];
 
   /** Load sample bank. Idempotent — safe to call once per session. */
   async loadSamples(): Promise<void> {
@@ -110,6 +112,10 @@ export class SynthEngine implements AudioEngineInterface {
 
   setTensionArc(arc: number[]): void {
     this.tensionArc = arc;
+  }
+
+  setHoldMask(mask: boolean[]): void {
+    this.holdMask = mask;
   }
 
   /** Resume the audio context and start all sustained layers. Requires user gesture. */
@@ -174,6 +180,7 @@ export class SynthEngine implements AudioEngineInterface {
     const p = this.preset;
     const frameSec = 1 / this.fps;
     const arcValue = arcAt(this.tensionArc, view.frame);
+    const isHeld = holdAt(this.holdMask, view.frame);
 
     // Re-key bus gains so pulse + accent track the arc on each frame
     this.applyPresetGains(arcValue);
@@ -194,14 +201,16 @@ export class SynthEngine implements AudioEngineInterface {
     }
 
     // ── Pulse: scheduled tap when phase wraps ─────────────────────────
+    // Held frames suppress NEW firings; already-playing samples decay naturally.
     const bpm = p.pulse.minBpm + (p.pulse.maxBpm - p.pulse.minBpm) * Math.min(1, view.delta * p.pulse.sensitivity * 4);
-    if (this.pulseScheduler.step(bpm, frameSec)) {
+    if (this.pulseScheduler.step(bpm, frameSec) && !isHeld) {
       this.firePulse(view.direction);
     }
     this.channels.pulse = view.delta;
 
     // ── Accent: one-shot on event (with cooldown to avoid stutter) ───
-    if (view.isAccent && now > this.accentCooldownUntil) {
+    // Suppressed during hold so the bell doesn't re-trigger inside the held second.
+    if (view.isAccent && now > this.accentCooldownUntil && !isHeld) {
       this.fireAccent(view.accentType);
       this.accentCooldownUntil = now + 0.8;
       this.channels.accent = true;
@@ -213,7 +222,8 @@ export class SynthEngine implements AudioEngineInterface {
     if (this.textureFilter && this.textureGain) {
       const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * channelScale(this.mix, 'texture') * arcValue;
+      const holdScale = isHeld ? 0 : 1;
+      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * channelScale(this.mix, 'texture') * arcValue * holdScale;
       const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.2);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.3);

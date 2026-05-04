@@ -77,9 +77,15 @@ The filter graph length is bounded by duration in seconds (one keypoint per seco
 When `pin_key_moment: true` and a dominant moment frame exists, the export holds that frame for ~1 second:
 
 - The concat file gives the held frame a `duration` of `1/fps + 1.0` seconds — the visual lingers.
-- `build_audio_track` `_inject_hold` extends the per-frame inputs (values, dates, arc, moments) by `1.0 × fps` copies of the held frame's data — the audio synthesis produces a matching sustained segment so audio and video stay in sync.
+- `build_audio_track` `_inject_hold` extends the per-frame inputs (values, dates, arc, moments) by `1.0 × fps` copies of the held frame's data, AND returns a per-frame `hold_mask` marking the inserted frames.
+- `_synth_pulse` and `_synth_accent` skip firing on held frames — the sequence stops, no new accents trigger.
+- `_synth_texture` zeros its envelope on held frames — the noise layer mutes; per-sample interpolation provides natural fade at the boundaries.
+- The drone holds full through the held window — that's PRD-006's "single sustained note" gesture.
+- The bell that fires at the moment frame itself (which is NOT inside the hold mask) rings out naturally into the held seconds — its sample plays through after firing because the bus gain stays constant.
 
-Both extensions happen at the same index; total duration grows by exactly 1 second.
+Browser preview applies the same gesture for the equivalent span (`fps` frames after the moment) via the engines' `setHoldMask(mask)` method. Audio and video drift slightly during preview because the browser doesn't extend playback, but the gesture is audible and matches what the exported MP4 plays.
+
+Both extensions happen at the same index; total export duration grows by exactly 1 second.
 
 ## Rationale
 
@@ -108,6 +114,6 @@ Both extensions happen at the same index; total duration grows by exactly 1 seco
 ## Open follow-ups
 
 - **e2e coverage.** Cross-validation + unit determinism are in. A full Docker Compose e2e exercising the held-moment behaviour end-to-end is left as v0.5.x polish; the live exports verified the path manually.
-- **Audio "drop to drone only" at the held moment.** PRD-006's lede describes the music *reducing to a single sustained note* at the record frame. Current implementation amplifies all layers at the arc peak via the multiplier chain — the held moment is loud and full, not stripped. Refining peak behaviour to suppress sequence + accent (so only pad/drone holds) is a polish pass.
+- ~~**Audio "drop to drone only" at the held moment.**~~ Implemented as part of this ADR via the `hold_mask` plumbing: pulse + accent skip new firings during hold, texture mutes, drone holds full, accent bell fired at the moment frame rings out naturally. PRD-006's lede gesture lands.
 - **Modal scales.** PRD-007 candidate. The arc shapes dynamics; modes shape pitch space. Different RFC.
 - **Other timeframe-mixing video formats.** Ghost accumulation, temporal split, etc. (per the Video×Audio Creative working notes). Each is its own PRD; all build on the arc primitive locked here.

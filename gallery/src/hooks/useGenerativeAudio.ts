@@ -37,16 +37,20 @@ interface UseGenerativeAudioArgs {
   eq?: EqSettings;
   /** Per-frame tension arc array (RFC-011). Empty array = no arc. */
   tensionArc?: number[];
+  /** Per-frame hold mask (PRD-006 polish). True = "drop to drone only" frame. Empty = no hold. */
+  holdMask?: boolean[];
 }
 
 const SILENT_CHANNELS: ChannelState = { drone: 0, pulse: 0, accent: false, texture: 0 };
 const EMPTY_ARC: number[] = [];
+const EMPTY_HOLD_MASK: boolean[] = [];
 
 export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
   const { preset, enabled, isPlaying, intensity, values, dates, moments, currentFrame, fps } = args;
   const channelMix = args.channelMix ?? DEFAULT_CHANNEL_MIX;
   const eq = args.eq ?? DEFAULT_EQ;
   const tensionArc = args.tensionArc ?? EMPTY_ARC;
+  const holdMask = args.holdMask ?? EMPTY_HOLD_MASK;
 
   const engineRef = useRef<AudioEngineInterface | null>(null);
   const currentEngineKindRef = useRef<string>('');
@@ -121,6 +125,10 @@ export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
   useEffect(() => {
     engineRef.current?.setTensionArc(tensionArc);
   }, [tensionArc]);
+
+  useEffect(() => {
+    engineRef.current?.setHoldMask(holdMask);
+  }, [holdMask]);
 
   // Start/stop with isPlaying — start requires user gesture (the play button click)
   useEffect(() => {

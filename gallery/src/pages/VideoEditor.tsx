@@ -160,6 +160,24 @@ export function VideoEditor() {
     ? expandArc(arcSpec, dates.length, dominantMomentFrame)
     : [];
 
+  // Hold mask — PRD-006 "drop to drone only" gesture. In the pipeline export,
+  // frames are inserted at the moment to extend the visual hold. In the browser
+  // we don't extend playback, but we apply the same gesture for the equivalent
+  // span (~fps frames *after* the moment frame): pulse/accent stop, texture mutes,
+  // drone holds. Audio + video drift slightly during preview but the gesture
+  // is audible and matches what the exported MP4 plays. Mask matches the
+  // pipeline _inject_hold convention: moment frame itself is False (so the
+  // bell fires there), inserted/equivalent frames are True.
+  const holdSpan = fps;  // 1-second hold at current fps
+  const holdMask: boolean[] = dates.length > 0
+    ? Array.from({ length: dates.length }, (_, i) =>
+        arcSpec.pin_key_moment === true &&
+        dominantMomentFrame !== null &&
+        i > dominantMomentFrame &&
+        i <= dominantMomentFrame + holdSpan,
+      )
+    : [];
+
   // Generative audio engine — RFC-010 four-layer composition + RFC-011 arc envelope
   const { masterVolume, setMasterVolume, audioReady, liveChannels } = useGenerativeAudio({
     preset: resolvedPreset,
@@ -174,6 +192,7 @@ export function VideoEditor() {
     channelMix,
     eq: audioEq,
     tensionArc,
+    holdMask,
   });
 
   // Fetch recipe YAML — derive audio preset and tension arc spec from it

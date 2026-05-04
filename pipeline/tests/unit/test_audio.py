@@ -84,7 +84,7 @@ class TestSynthDrone:
 
 class TestInjectHold:
     def test_no_hold_returns_originals(self):
-        v, d, a, m = _inject_hold(
+        v, d, a, m, mask = _inject_hold(
             [1.0, 2.0, 3.0], ["a", "b", "c"], [0.5, 0.5, 0.5], [{"frame": 1}],
             fps=12, hold_at_frame=None, hold_duration_sec=0.0,
         )
@@ -92,9 +92,10 @@ class TestInjectHold:
         assert d == ["a", "b", "c"]
         assert a == [0.5, 0.5, 0.5]
         assert m == [{"frame": 1}]
+        assert mask == [False, False, False]  # all-False when no hold
 
     def test_hold_extends_arrays(self):
-        v, d, a, m = _inject_hold(
+        v, d, a, m, mask = _inject_hold(
             [1.0, 2.0, 3.0], ["a", "b", "c"], [0.0, 1.0, 0.0], [{"frame": 0}],
             fps=12, hold_at_frame=1, hold_duration_sec=1.0,
         )
@@ -104,8 +105,21 @@ class TestInjectHold:
         assert v[2:14] == [2.0] * 12  # held copies
         assert v[14] == 3.0  # original next frame
 
+    def test_hold_mask_marks_inserted_frames_only(self):
+        _, _, _, _, mask = _inject_hold(
+            [1.0, 2.0, 3.0], ["a", "b", "c"], None, None,
+            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+        )
+        assert len(mask) == 3 + 12
+        # Original frames (incl. the moment frame itself) are False so the
+        # bell can fire there and ring into the held seconds.
+        assert mask[0] is False
+        assert mask[1] is False  # moment frame itself — bell fires
+        assert mask[2:14] == [True] * 12  # the inserted hold frames
+        assert mask[14] is False  # original next frame after the hold
+
     def test_arc_held_at_value(self):
-        v, d, a, _ = _inject_hold(
+        v, d, a, _, _ = _inject_hold(
             [1.0, 2.0, 3.0], ["a", "b", "c"], [0.2, 0.7, 0.4], None,
             fps=12, hold_at_frame=1, hold_duration_sec=1.0,
         )
@@ -114,22 +128,21 @@ class TestInjectHold:
         assert a[2:14] == [0.7] * 12
 
     def test_moment_indices_shift(self):
-        v, d, a, m = _inject_hold(
+        v, d, a, m, _ = _inject_hold(
             [1.0, 2.0, 3.0, 4.0], ["a", "b", "c", "d"], None,
-            [{"frame": 1}, {"frame": 3}],  # one before/at, one after the held frame
+            [{"frame": 1}, {"frame": 3}],
             fps=12, hold_at_frame=1, hold_duration_sec=1.0,
         )
-        # Moment at frame 1 stays at frame 1 (it IS the held moment)
         assert m[0]["frame"] == 1
-        # Moment at frame 3 shifts by hold_frames (12)
         assert m[1]["frame"] == 15
 
     def test_invalid_frame_returns_unchanged(self):
-        v, d, a, m = _inject_hold(
+        v, _, _, _, mask = _inject_hold(
             [1.0, 2.0], ["a", "b"], None, None,
             fps=12, hold_at_frame=99, hold_duration_sec=1.0,
         )
         assert v == [1.0, 2.0]
+        assert mask == [False, False]
 
 
 class TestAlignArc:
@@ -297,6 +310,77 @@ class TestBuildAudioTrack:
         build_audio_track(a, **kwargs)
         build_audio_track(b, **kwargs)
         assert a.read_bytes() == b.read_bytes()
+
+    def test_held_moment_mutes_texture_layer(self, tmp_path: Path, synthetic_samples_dir: Path):
+        """PRD-006 lede: at the held moment, texture drops out. Direct
+        mechanism test against _synth_texture — the per-frame envelope
+        should be zero for held frames and non-zero elsewhere."""
+        from oceancanvas.audio import _synth_texture, GENERATIVE_DIR, _load_samples
+        if not (GENERATIVE_DIR / "texture_noise.mp3").exists():
+            pytest.skip("audio/generative samples not present in this environment")
+
+        bank = _load_samples(GENERATIVE_DIR)
+        n_frames = 24
+        value_norm = np.linspace(0, 1, n_frames)
+        dates = [f"2020-{(i % 12) + 1:02d}" for i in range(n_frames)]
+        arc = np.full(n_frames, 0.8)
+        # Hold frames 6..17 (a 12-frame held second at 12fps)
+        hold = np.zeros(n_frames, dtype=bool)
+        hold[6:18] = True
+        sr = 44100
+        n_samples = sr * 2  # 2s
+
+        out = _synth_texture(value_norm, dates, arc, hold,
+                             AudioParams(texture_density=1.0, presence=1.0),
+                             fps=12, n_samples=n_samples, sr=sr, bank=bank)
+
+        # Mid of held window: frame 12, sample index ~ 12 * sr/12 = sr (1s in)
+        held_mid = out[sr]
+        # Mid outside hold: frame 21, sample index ~21 * sr/12 ≈ 1.75s
+        unheld_mid = out[int(21 * sr / 12)]
+        # Sample magnitudes — held should be 0; unheld should be non-zero noise
+        assert abs(held_mid[0]) < 1e-9, f"texture should be silent in hold, got {held_mid}"
+        assert abs(unheld_mid[0]) > 0.01, f"texture should be active outside hold, got {unheld_mid}"
+
+    def test_held_moment_skips_pulse_firing(self, tmp_path: Path, synthetic_samples_dir: Path):
+        """Mechanism test for pulse: skip firing during held frames. Asserted
+        by counting non-zero samples — held window should be silent in pulse
+        output, surrounding window should have ticks."""
+        from oceancanvas.audio import _synth_pulse, GENERATIVE_DIR, _load_samples
+        if not (GENERATIVE_DIR / "pulse_tick_neutral.mp3").exists():
+            pytest.skip("audio/generative samples not present")
+
+        bank = _load_samples(GENERATIVE_DIR)
+        n_frames = 36
+        # Make values change every frame so pulse fires at max BPM
+        values = np.array([float(i % 2) for i in range(n_frames)])
+        arc = np.ones(n_frames)
+        # Hold frames 12..23
+        hold = np.zeros(n_frames, dtype=bool)
+        hold[12:24] = True
+        sr = 44100
+        n_samples = int(sr * n_frames / 12)
+
+        out = _synth_pulse(values, arc, hold,
+                           AudioParams(pulse_sensitivity=1.0, presence=1.0),
+                           fps=12, n_samples=n_samples, sr=sr, bank=bank)
+
+        # Pulse samples are ~0.1s. Hold window: 12 frames = 1s starting at frame 12.
+        # Use a window safely inside the hold (skip first 0.15s to let any tick
+        # fired at frame 11 ring out): samples [12.5/12 * sr, 23/12 * sr]
+        hold_start_sample = int(12.5 * sr / 12)
+        hold_end_sample = int(23 * sr / 12)
+        # Outside hold: samples [25/12 * sr, 35/12 * sr]
+        outside_start_sample = int(25 * sr / 12)
+        outside_end_sample = int(35 * sr / 12)
+
+        held_energy = float(np.abs(out[hold_start_sample:hold_end_sample]).max())
+        outside_energy = float(np.abs(out[outside_start_sample:outside_end_sample]).max())
+
+        # Hold window should be very quiet (no new ticks). Outside should have ticks.
+        assert held_energy < outside_energy * 0.1, (
+            f"hold pulse energy {held_energy:.4f} should be <10% of outside {outside_energy:.4f}"
+        )
 
     def test_arc_quarter_significantly_quieter_than_full(
         self, tmp_path: Path, synthetic_samples_dir: Path,

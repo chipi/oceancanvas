@@ -74,6 +74,13 @@ export interface AudioEngineInterface {
    * follow the authored curve. Pass an empty array to disable.
    */
   setTensionArc(arc: number[]): void;
+  /**
+   * Set the per-frame hold mask (RFC-011 / PRD-006 polish). Frames where
+   * `holdMask[frame]` is true are treated as "held moment" frames — pulse
+   * stops firing, accent doesn't trigger, texture mutes, drone holds full.
+   * Pass an empty array to disable.
+   */
+  setHoldMask(mask: boolean[]): void;
   start(): Promise<void>;
   stop(): void;
   setFrame(view: FrameView): void;
@@ -87,6 +94,13 @@ export function arcAt(arc: number[], frame: number): number {
   if (frame < 0) return arc[0];
   if (frame >= arc.length) return arc[arc.length - 1];
   return arc[frame];
+}
+
+/** Read holdMask[frame] safely. Returns false if mask is empty or out of bounds. */
+export function holdAt(mask: boolean[], frame: number): boolean {
+  if (mask.length === 0) return false;
+  if (frame < 0 || frame >= mask.length) return false;
+  return mask[frame];
 }
 
 /**
