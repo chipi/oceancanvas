@@ -35,3 +35,6 @@ pipeline/src/oceancanvas/renderer/node_modules/
 .pytest_cache/
 .coverage
 htmlcov/
+e2e/.tmp/
+e2e/test-results/
+e2e/playwright-report/

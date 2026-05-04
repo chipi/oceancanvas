@@ -97,6 +97,11 @@ e2e: ## Run end-to-end tests via Docker Compose
 	docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from e2e
 	docker compose -f docker-compose.test.yml down
 
+screenshots: ## Regenerate docs/concept/images/*.png from the running stack
+	@echo "Regenerating screenshots — make sure 'docker compose up' is running with rendered data"
+	cd e2e && BASE_URL=http://localhost:8080 npm run screenshots
+	@echo "Screenshots written to docs/concept/images/. Inspect, then commit."
+
 # ── Docs (MkDocs) ────────────────────────────────
 
 docs-install: ## Install docs dependencies

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "screenshots": "playwright test --config=playwright.screenshots.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.0"

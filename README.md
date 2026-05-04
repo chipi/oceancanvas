@@ -49,7 +49,7 @@ Three concepts hold the project together.
 
 The four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor — close the creative loop: read the data, author a piece, watch it accumulate, assemble a year into a film.
 
-![Video Editor — timelapse assembly with key moments and audio](docs/concept/images/video_editor_enriched.png)
+![Video Editor — timelapse assembly with mixer, EQ, and tension-arc editor](docs/concept/images/video_editor.png)
 
 ---
 
