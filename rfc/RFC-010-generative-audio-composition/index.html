@@ -13,6 +13,10 @@
         <link rel="canonical" href="https://chipi.github.io/oceancanvas/rfc/RFC-010-generative-audio-composition/">
       
       
+        <link rel="prev" href="../RFC-009/">
+      
+      
+        <link rel="next" href="../RFC-011-tension-arc/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>RFC-010 — Generative Audio Composition - OceanCanvas</title>
+        <title>Generative Audio - OceanCanvas</title>
       
     
     
@@ -110,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              RFC-010 — Generative Audio Composition
+              Generative Audio
             
           </span>
         </div>
@@ -310,8 +314,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -339,11 +345,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -364,7 +370,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -761,6 +767,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1592,6 +1602,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-027-generative-audio-composition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/ADR-028-tension-arc-shared-curve/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1603,6 +1669,8 @@
               
                 
   
+  
+    
   
   
   
@@ -1631,15 +1699,19 @@
       
         
       
+        
+      
+        
+      
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -1667,7 +1739,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1919,6 +1991,347 @@
     
   
     Pipeline CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proposed-architecture-four-layer-generative-mixer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed architecture: four-layer generative mixer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proposed architecture: four-layer generative mixer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-drone-timescale-entire-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1 — Drone (timescale: entire timeline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-2-pulse-timescale-frame-to-frame-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 2 — Pulse (timescale: frame-to-frame change)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-3-accent-timescale-key-moments-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 3 — Accent (timescale: key moments only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-4-texture-timescale-seasonalcyclical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 4 — Texture (timescale: seasonal/cyclical)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation approach
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#browser-side-preview-playback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser-side (preview playback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#server-side-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server-side (export)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recipe-as-audio-recipe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe as audio recipe
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recipe as audio recipe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creative-state-audio-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creative state → audio parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mood-audio-character" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mood → audio character
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recipe-yaml-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe YAML extension
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternatives considered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trade-offs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-this-closes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How this closes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RFC-011-tension-arc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
   
 
     

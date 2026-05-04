@@ -377,6 +377,100 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-compose-up-exits-immediately-or-hangs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docker compose up exits immediately or hangs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-never-runs-renders-never-appear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline never runs / renders never appear
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallery-loads-but-no-renders-show" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gallery loads but no renders show
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-dev-vite-or-save-server-fail-to-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local dev: Vite or save server fail to start
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audio-doesnt-play-in-the-video-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audio doesn't play in the Video Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-video-fails-produces-silent-mp4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export-video fails / produces silent MP4
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#still-stuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Still stuck
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -867,6 +961,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1698,6 +1796,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-027-generative-audio-composition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-028-tension-arc-shared-curve/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1717,6 +1871,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -2038,6 +2196,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-010-generative-audio-composition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-011-tension-arc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2206,6 +2420,50 @@
 </tbody>
 </table>
 <p>No API keys. No accounts. No cloud dependencies.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>The most common things that go wrong on first run, and how to unstick them.</p>
+<h3 id="docker-compose-up-exits-immediately-or-hangs"><code>docker compose up</code> exits immediately or hangs</h3>
+<ul>
+<li><strong>Docker Desktop not running.</strong> On macOS / Windows, the Docker daemon has to be started before any compose command. Open Docker Desktop, wait for it to say "Docker is running."</li>
+<li><strong>Permission denied on <code>/var/run/docker.sock</code> (Linux).</strong> Add your user to the <code>docker</code> group: <code>sudo usermod -aG docker $USER</code>, then log out and back in.</li>
+<li><strong>Port 8080 already in use.</strong> Another process is bound to the gallery port. Stop it (<code>lsof -i :8080</code> to find), or override: <code>GALLERY_PORT=8090 docker compose up</code>. Same for 4200 (Prefect UI) and 3001 (save server).</li>
+</ul>
+<h3 id="pipeline-never-runs-renders-never-appear">Pipeline never runs / renders never appear</h3>
+<ul>
+<li><strong>The pipeline runs at 06:00 UTC by default.</strong> First-time runs don't auto-trigger. To render now: <code>make pipeline-run</code>, or open Prefect UI at <code>localhost:4200</code> and trigger the <code>daily</code> flow manually.</li>
+<li><strong>Source data missing.</strong> Pipeline needs <code>data/processed/&lt;source&gt;/</code> to exist. Run <code>uv run oceancanvas fetch-historical --source oisst --year 2026</code> (or the relevant source/year) to seed.</li>
+<li><strong>Chromium not found.</strong> The renderer uses Puppeteer + headless Chromium. Inside Docker this is bundled; on a local pipeline run, set <code>PUPPETEER_EXECUTABLE_PATH</code> to your Chromium binary or install via <code>npx puppeteer browsers install chromium</code>.</li>
+</ul>
+<h3 id="gallery-loads-but-no-renders-show">Gallery loads but no renders show</h3>
+<ul>
+<li><strong>Open the right URL.</strong> Docker → <code>localhost:8080</code>. Local Vite dev → <code>localhost:5173</code> (NOT 8080 — <code>make gallery-dev</code> runs on a different port).</li>
+<li><strong>Empty <code>renders/</code>.</strong> Trigger a manual pipeline run (above). The gallery reads <code>renders/manifest.json</code>; if no PNGs exist, the manifest is empty.</li>
+<li><strong>Browser cache.</strong> Hard-reload the page (<code>Cmd-Shift-R</code> / <code>Ctrl-Shift-R</code>) — manifest is cached aggressively.</li>
+</ul>
+<h3 id="local-dev-vite-or-save-server-fail-to-start">Local dev: Vite or save server fail to start</h3>
+<ul>
+<li><strong>Python 3.12 not found.</strong> macOS users on system Python: install via <code>brew install python@3.12</code> or <code>pyenv install 3.12</code>. <code>uv</code> will pick up the right version automatically once it's on PATH.</li>
+<li><strong>Node 20 not on PATH.</strong> <code>make gallery-dev</code> uses npm scripts that assume Node 20+. If you have multiple Node versions, <code>nvm use 20</code> before running.</li>
+<li><strong><code>uv: command not found</code>.</strong> Install: <code>curl -LsSf https://astral.sh/uv/install.sh | sh</code>.</li>
+</ul>
+<h3 id="audio-doesnt-play-in-the-video-editor">Audio doesn't play in the Video Editor</h3>
+<ul>
+<li><strong>Browser autoplay policy.</strong> Audio context can't start without a user gesture. Click the play button — clicking the canvas isn't enough on Safari.</li>
+<li><strong>Sample assets missing.</strong> Confirm <code>audio/generative/</code> contains the seven MP3s. If it's empty, run <code>bash scripts/build-audio-assets.sh</code> to regenerate them via ffmpeg.</li>
+</ul>
+<h3 id="export-video-fails-produces-silent-mp4">Export-video fails / produces silent MP4</h3>
+<ul>
+<li><strong>ffmpeg not in PATH.</strong> Inside Docker it is; locally check <code>ffmpeg -version</code>.</li>
+<li><strong>No time-series data.</strong> Audio synthesis reads <code>data/processed/&lt;source&gt;/sst-monthly-series.json</code> (or <code>time-series.json</code>). If absent, the export falls back to silent.</li>
+<li><strong>Sample bank not loaded.</strong> Confirm <code>audio/generative/</code> is populated; same as above.</li>
+</ul>
+<h3 id="still-stuck">Still stuck</h3>
+<ul>
+<li>Check logs: <code>docker compose logs pipeline</code> (or <code>gallery</code> / <code>prefect</code> / <code>recipe-server</code>).</li>
+<li>Verify the manifest: <code>cat renders/manifest.json | head</code> — if it's <code>{ "recipes": {} }</code>, the pipeline hasn't run yet.</li>
+<li>Open an issue with the failing command, error output, OS, and what you tried. The maintainer reads them.</li>
+</ul>
 
 
 

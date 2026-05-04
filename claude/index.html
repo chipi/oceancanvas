@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://chipi.github.io/oceancanvas/claude/">
       
       
-        <link rel="prev" href="../rfc/RFC-009/">
+        <link rel="prev" href="../rfc/RFC-011-tension-arc/">
       
       
       
@@ -765,6 +765,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1596,6 +1600,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-027-generative-audio-composition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/ADR-028-tension-arc-shared-curve/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1615,6 +1675,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1923,6 +1987,62 @@
     
   
     Pipeline CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-010-generative-audio-composition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generative Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rfc/RFC-011-tension-arc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tension Arc
   
 
     
@@ -2253,6 +2373,28 @@
     <span class="md-ellipsis">
       
         Phase 1 scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-scope-data-source-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 scope — data source expansion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-scope-public-hosting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 scope — public hosting
       
     </span>
   </a>
@@ -2614,13 +2756,24 @@
 </ul>
 <p>Phase 1 does not ship:</p>
 <ul>
-<li>Public hosting (Cloudflare R2, custom domain, social share cards). Phase 2.</li>
-<li>Multi-source dashboard beyond SST. Phase 2.</li>
+<li>More than four data sources (the rest of OC-03's 15-source catalog). Phase 2.</li>
+<li>Public hosting (Cloudflare R2, custom domain, social share cards). Phase 3.</li>
 <li>Multi-author recipes. Deferred indefinitely (ADR-016).</li>
 <li>Authentication, accounts, API keys. Outside Phase 1 scope.</li>
 <li>Real-time alerts, monitoring, watch-lists. Not within the project's frame.</li>
 </ul>
-<p>Anything outside Phase 1 scope, when it comes up, becomes a Phase 2 PRD or stays deferred. Don't quietly extend Phase 1.</p>
+<hr />
+<h2 id="phase-2-scope-data-source-expansion">Phase 2 scope — data source expansion</h2>
+<p>Phase 1 lit up four sources (OISST · Argo · OBIS biologging · GEBCO). OC-03 specs 15. Phase 2 brings the remainder in three tiers, milestoned v0.6.0 / v0.7.0 / v0.8.0.</p>
+<ul>
+<li><strong>Tier 1 (v0.6.0) — editorial heavyweights.</strong> ESA Sea Level CCI, ESA SSS-CCI Salinity, ESA OC-CCI Chlorophyll. The three CCI sources that carry the strongest climate-storytelling weight.</li>
+<li><strong>Tier 2 (v0.7.0) — visual variety.</strong> NSIDC Sea Ice Index, NOAA OSCAR Currents, NOAA Coral Reef Watch. New render-type fits (particles for currents, pulse for sea-ice extent).</li>
+<li><strong>Tier 3 (v0.8.0) — point and climatology.</strong> NDBC Buoys, NOAA WOA23, UK Met Office HadSST4. Scatter recipes and historical-baseline context layers.</li>
+</ul>
+<p>Each source: pipeline integration (discover/fetch/process), 1–3 authored recipes, dashboard source-rail entry, ADR if anything non-trivial surfaces. The locked-stack constraints still hold — file-based, no auth, deterministic, self-hostable.</p>
+<h2 id="phase-3-scope-public-hosting">Phase 3 scope — public hosting</h2>
+<p>Cloudflare R2 push from the pipeline, static gallery served from R2 + Cloudflare on a custom domain, social share cards per recipe and per timelapse. Deferred until Phase 2 has given visitors more to look at.</p>
+<p>Anything outside the current phase's scope, when it comes up, becomes a later-phase PRD or stays deferred. Don't quietly extend the current phase.</p>
 <hr />
 <h2 id="references">References</h2>
 <ul>
