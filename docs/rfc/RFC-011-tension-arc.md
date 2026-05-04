@@ -1,9 +1,9 @@
 # RFC-011 — Tension arc as shared primitive
 
-> **Status** · Draft v0.1 · May 2026
+> **Status** · Decided · closes into [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md)
 > **TA anchor** · §components/render-system · §contracts/recipe-yaml · §contracts/render-payload · §constraints
 > **Related** · PRD-006 The piece · ADR-027 Generative audio composition · ADR-008 Shared payload format · ADR-024 Key moment detection
-> **Closes into** · ADR-028 (pending — locks the arc representation, expansion logic, and consumer protocol)
+> **Closes into** · [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md) (locks the arc representation, expansion logic, and consumer protocol)
 > **Why this is an RFC** · The tension arc has to be authored once in the recipe and consumed identically by three independent systems — the browser audio engines, the pipeline audio synthesis, and the ffmpeg filter graph that keys the visual filters. How it is represented in YAML, where it is expanded into a per-frame array, and how that array reaches each consumer all have plausible alternatives with real trade-offs.
 
 ---
