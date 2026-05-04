@@ -1,6 +1,6 @@
 [project]
 name = "oceancanvas"
-version = "0.5.0"
+version = "0.6.0"
 description = "Daily generative ocean art pipeline"
 requires-python = ">=3.12"
 dependencies = [
