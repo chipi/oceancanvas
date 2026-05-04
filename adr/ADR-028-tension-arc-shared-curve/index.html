@@ -2053,9 +2053,14 @@
 <p>When <code>pin_key_moment: true</code> and a dominant moment frame exists, the export holds that frame for ~1 second:</p>
 <ul>
 <li>The concat file gives the held frame a <code>duration</code> of <code>1/fps + 1.0</code> seconds — the visual lingers.</li>
-<li><code>build_audio_track</code> <code>_inject_hold</code> extends the per-frame inputs (values, dates, arc, moments) by <code>1.0 × fps</code> copies of the held frame's data — the audio synthesis produces a matching sustained segment so audio and video stay in sync.</li>
+<li><code>build_audio_track</code> <code>_inject_hold</code> extends the per-frame inputs (values, dates, arc, moments) by <code>1.0 × fps</code> copies of the held frame's data, AND returns a per-frame <code>hold_mask</code> marking the inserted frames.</li>
+<li><code>_synth_pulse</code> and <code>_synth_accent</code> skip firing on held frames — the sequence stops, no new accents trigger.</li>
+<li><code>_synth_texture</code> zeros its envelope on held frames — the noise layer mutes; per-sample interpolation provides natural fade at the boundaries.</li>
+<li>The drone holds full through the held window — that's PRD-006's "single sustained note" gesture.</li>
+<li>The bell that fires at the moment frame itself (which is NOT inside the hold mask) rings out naturally into the held seconds — its sample plays through after firing because the bus gain stays constant.</li>
 </ul>
-<p>Both extensions happen at the same index; total duration grows by exactly 1 second.</p>
+<p>Browser preview applies the same gesture for the equivalent span (<code>fps</code> frames after the moment) via the engines' <code>setHoldMask(mask)</code> method. Audio and video drift slightly during preview because the browser doesn't extend playback, but the gesture is audible and matches what the exported MP4 plays.</p>
+<p>Both extensions happen at the same index; total export duration grows by exactly 1 second.</p>
 <h2 id="rationale">Rationale</h2>
 <p><strong>One curve, three consumers.</strong> The arc is the load-bearing primitive for v0.5.0's audio-video coupling. Storing it once (spec in YAML), expanding via shared cross-validated logic, and distributing the expanded array via in-process method calls (rather than re-expanding per consumer) eliminates the duplicated-curve risk RFC-011 set out to defeat.</p>
 <p><strong>Spec, not array, in the payload.</strong> v0.4.0's <code>recipe.audio</code> block carries the same compactness pattern. Both audio and arc are per-recipe (or per-video) concerns; the per-frame render payload is the wrong shape to carry per-video data. Storing the spec keeps the payload small, lets each consumer expand with its own <code>totalFrames</code>, and matches the existing precedent.</p>
@@ -2078,7 +2083,7 @@
 <h2 id="open-follow-ups">Open follow-ups</h2>
 <ul>
 <li><strong>e2e coverage.</strong> Cross-validation + unit determinism are in. A full Docker Compose e2e exercising the held-moment behaviour end-to-end is left as v0.5.x polish; the live exports verified the path manually.</li>
-<li><strong>Audio "drop to drone only" at the held moment.</strong> PRD-006's lede describes the music <em>reducing to a single sustained note</em> at the record frame. Current implementation amplifies all layers at the arc peak via the multiplier chain — the held moment is loud and full, not stripped. Refining peak behaviour to suppress sequence + accent (so only pad/drone holds) is a polish pass.</li>
+<li>~~<strong>Audio "drop to drone only" at the held moment.</strong>~~ Implemented as part of this ADR via the <code>hold_mask</code> plumbing: pulse + accent skip new firings during hold, texture mutes, drone holds full, accent bell fired at the moment frame rings out naturally. PRD-006's lede gesture lands.</li>
 <li><strong>Modal scales.</strong> PRD-007 candidate. The arc shapes dynamics; modes shape pitch space. Different RFC.</li>
 <li><strong>Other timeframe-mixing video formats.</strong> Ghost accumulation, temporal split, etc. (per the Video×Audio Creative working notes). Each is its own PRD; all build on the arc primitive locked here.</li>
 </ul>
