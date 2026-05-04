@@ -13,7 +13,8 @@
 
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
-import { existsSync, statSync, createReadStream } from 'node:fs';
+import { existsSync, statSync, createReadStream, writeFileSync, unlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const RENDERS_DIR = process.env.RENDERS_DIR || '/renders';
@@ -46,13 +47,25 @@ const server = createServer(async (req, res) => {
 
       const fps = opts.fps || 12;
       const silent = opts.silent === true;
+      const overrides = opts.overrides && typeof opts.overrides === 'object' ? opts.overrides : null;
       const outputPath = join(RENDERS_DIR, `${recipe}.mp4`);
+
+      // Sidebar overrides — write to a temp JSON file the CLI reads via --overrides.
+      // The temp file lives in the OS tmpdir and is cleaned up after the spawn closes
+      // (success and failure paths both unlink). Skipping writes when there are no
+      // overrides keeps the no-sync export path identical to today.
+      let overridesPath = null;
+      if (overrides && Object.keys(overrides).length > 0) {
+        overridesPath = join(tmpdir(), `oc-overrides-${recipe}-${Date.now()}.json`);
+        writeFileSync(overridesPath, JSON.stringify(overrides));
+      }
 
       // Spawn the CLI command — use uv run in dev, oceancanvas directly in Docker
       const useUv = !process.env.DOCKER;
       const cmd = useUv ? 'uv' : 'oceancanvas';
       const baseArgs = ['export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath];
       if (silent) baseArgs.push('--silent');
+      if (overridesPath) baseArgs.push('--overrides', overridesPath);
       const args = useUv ? ['run', 'oceancanvas', ...baseArgs] : baseArgs;
 
       const proc = spawn(cmd, args, {
@@ -69,6 +82,9 @@ const server = createServer(async (req, res) => {
       proc.stderr.on('data', (d) => { stderr += d.toString(); });
 
       proc.on('close', (code) => {
+        if (overridesPath) {
+          try { unlinkSync(overridesPath); } catch {}
+        }
         if (code !== 0) {
           res.writeHead(500, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: false, error: stderr.slice(-500) }));

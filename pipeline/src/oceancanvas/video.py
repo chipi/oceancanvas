@@ -39,6 +39,8 @@ def assemble_video(
     tension_arc: list[float] | None = None,
     hold_at_frame: int | None = None,
     hold_duration_sec: float = 0.0,
+    channel_mix: dict[str, dict] | None = None,
+    audio_eq: dict[str, float] | None = None,
 ) -> Path:
     """Assemble PNG renders into an MP4 video via ffmpeg.
 
@@ -117,6 +119,7 @@ def assemble_video(
                 arc=tension_arc,
                 hold_at_frame=hold_at_frame if valid_hold else None,
                 hold_duration_sec=hold_duration_sec if valid_hold else 0.0,
+                channel_mix=channel_mix,
             )
         except Exception as e:  # noqa: BLE001
             logger.warning("Audio synthesis failed (%s) — exporting silent", e)
@@ -144,6 +147,22 @@ def assemble_video(
         "-crf", "23",
     ])
     if audio_path:
+        # 3-band peaking EQ matching the browser sidebar — bass / mid / treble
+        # gains in dB. Only emit filters that actually move the needle to keep
+        # ffmpeg's filter graph short.
+        af_chain = []
+        if audio_eq:
+            bass = float(audio_eq.get("bass", 0))
+            mid = float(audio_eq.get("mid", 0))
+            treble = float(audio_eq.get("treble", 0))
+            if abs(bass) >= 0.1:
+                af_chain.append(f"equalizer=f=80:t=h:width=80:g={bass:.2f}")
+            if abs(mid) >= 0.1:
+                af_chain.append(f"equalizer=f=1000:t=h:width=2000:g={mid:.2f}")
+            if abs(treble) >= 0.1:
+                af_chain.append(f"equalizer=f=8000:t=h:width=4000:g={treble:.2f}")
+        if af_chain:
+            cmd.extend(["-af", ",".join(af_chain)])
         cmd.extend(["-c:a", "aac", "-b:a", "192k", "-shortest"])
     cmd.extend([
         "-movflags", "+faststart",

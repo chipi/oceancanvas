@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AUDIO_PRESETS, PRESET_GROUPS, PRESET_ORDER, getPreset } from './audioPresets';
+import { AUDIO_PRESETS, PRESET_GROUPS, PRESET_ORDER, getPreset, audioParamsFromPreset, presetFromAudioParams } from './audioPresets';
 
 describe('audioPresets', () => {
   it('exports all synth presets plus the JMJ-inspired ambient presets', () => {
@@ -62,5 +62,37 @@ describe('audioPresets', () => {
   it('getPreset falls back to ocean for unknown id', () => {
     expect(getPreset('nope').id).toBe('ocean');
     expect(getPreset('storm-surge').id).toBe('storm-surge');
+  });
+
+  it('audioParamsFromPreset round-trips a preset built from AudioParams', () => {
+    // Pick a non-default value in every field to make the round-trip meaningful.
+    const original = {
+      drone_waveform: 'sawtooth',
+      drone_glide: 0.3,
+      pulse_sensitivity: 0.65,
+      presence: 0.55,
+      accent_style: 'bell',
+      texture_density: 0.45,
+    } as const;
+    const preset = presetFromAudioParams(original);
+    const round = audioParamsFromPreset(preset);
+    expect(round.drone_waveform).toBe(original.drone_waveform);
+    expect(round.accent_style).toBe(original.accent_style);
+    expect(round.pulse_sensitivity).toBeCloseTo(original.pulse_sensitivity, 5);
+    expect(round.texture_density).toBeCloseTo(original.texture_density, 5);
+    // glide and presence go through a lerp pair so allow a small drift
+    expect(round.drone_glide).toBeCloseTo(original.drone_glide, 2);
+    expect(round.presence).toBeCloseTo(original.presence, 2);
+  });
+
+  it('audioParamsFromPreset returns sensible values for hand-authored presets', () => {
+    const p = audioParamsFromPreset(AUDIO_PRESETS['storm-surge']);
+    expect(p.drone_waveform).toBe('sawtooth');
+    expect(p.accent_style).toBe('ping');
+    expect(p.pulse_sensitivity).toBeGreaterThan(0.5);
+    expect(p.drone_glide).toBeGreaterThanOrEqual(0);
+    expect(p.drone_glide).toBeLessThanOrEqual(1);
+    expect(p.presence).toBeGreaterThanOrEqual(0);
+    expect(p.presence).toBeLessThanOrEqual(1);
   });
 });

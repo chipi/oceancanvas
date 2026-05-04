@@ -306,6 +306,48 @@ export function presetFromAudioParams(p: AudioParamsLike, id = 'recipe'): AudioP
   };
 }
 
+/**
+ * Reverse projection: engine-level AudioPreset → recipe-level AudioParams.
+ *
+ * Used at export time so a sidebar preset choice flows through to the
+ * pipeline's audio synth (which only speaks creative-level AudioParams).
+ *
+ * Most fields project trivially (waveform, accent style, sensitivity,
+ * density). drone_glide and presence are the inferred axes — drone_glide
+ * is read off glideSec via the same lerp range used in presetFromAudioParams,
+ * and presence is read off the master gain.
+ */
+export interface PipelineAudioParams {
+  drone_waveform: string;
+  drone_glide: number;
+  pulse_sensitivity: number;
+  presence: number;
+  accent_style: string;
+  texture_density: number;
+}
+
+export function audioParamsFromPreset(preset: AudioPreset): PipelineAudioParams {
+  // Inverse of `lerp(0.1, 1.6, glide)` and `lerp(0.7, 0.95, presence)` from
+  // presetFromAudioParams — keeps the round-trip stable for any preset that
+  // started life as AudioParams (i.e. the "recipe" preset).
+  const drone_glide = clamp01Inverse((preset.drone.glideSec - 0.1) / (1.6 - 0.1), 0.5);
+  const presence = clamp01Inverse((preset.master - 0.7) / (0.95 - 0.7), 0.7);
+
+  return {
+    drone_waveform: preset.drone.waveform,
+    drone_glide,
+    pulse_sensitivity: clamp01Inverse(preset.pulse.sensitivity, 0.4),
+    presence,
+    accent_style: preset.accent.style,
+    texture_density: clamp01Inverse(preset.texture.density, 0.35),
+  };
+}
+
+function clamp01Inverse(v: number, fallback: number): number {
+  if (!Number.isFinite(v)) return fallback;
+  return Math.max(0, Math.min(1, v));
+}
+
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }

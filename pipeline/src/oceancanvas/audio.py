@@ -73,6 +73,7 @@ def build_audio_track(
     hold_at_frame: int | None = None,
     hold_duration_sec: float = 0.0,
     samples_dir: Path | None = None,
+    channel_mix: dict[str, dict] | None = None,
 ) -> Path:
     """Synthesise a four-layer audio track for one recipe export.
 
@@ -138,6 +139,21 @@ def build_audio_track(
     pulse = _synth_pulse(v_arr, arc_arr, hold_arr, params, fps, n_samples, sr, bank)
     accent = _synth_accent(moments or [], arc_arr, hold_arr, params, fps, n_samples, sr, bank)
     texture = _synth_texture(value_norm, dates, arc_arr, hold_arr, params, fps, n_samples, sr, bank)
+
+    # Per-layer mix (volume + mute) — sidebar overrides matching the browser
+    # AudioWaveform mixer. Defaults (no override / missing key) keep the
+    # pre-sync behaviour: every layer at gain 1.0, nothing muted.
+    cm = channel_mix or {}
+    def _layer_gain(name: str) -> float:
+        layer = cm.get(name) or {}
+        if layer.get("muted"):
+            return 0.0
+        return float(layer.get("volume", 1.0))
+
+    drone *= _layer_gain("drone")
+    pulse *= _layer_gain("pulse")
+    accent *= _layer_gain("accent")
+    texture *= _layer_gain("texture")
 
     mix = drone + pulse + accent + texture
     mix = np.clip(mix * params.presence, -1.0, 1.0)

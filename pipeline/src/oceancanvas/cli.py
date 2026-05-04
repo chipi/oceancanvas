@@ -572,6 +572,9 @@ def export_video(
     fps: int = typer.Option(12, "--fps", help="Frames per second"),
     output: str = typer.Option(None, "--output", "-o", help="Output MP4 path"),
     silent: bool = typer.Option(False, "--silent", help="Skip generative audio"),
+    overrides_path: str = typer.Option(
+        None, "--overrides", help="JSON file with sidebar overrides (audio_params, channel_mix, eq, tension_arc)",
+    ),
 ) -> None:
     """Export a timelapse MP4 from a recipe's renders.
 
@@ -602,6 +605,13 @@ def export_video(
 
     out_path = Path(output) if output else RENDERS_DIR / f"{recipe}.mp4"
 
+    # Sidebar overrides (Video Editor → export). Any field absent → falls back
+    # to the recipe YAML's authored defaults.
+    overrides: dict = {}
+    if overrides_path:
+        with Path(overrides_path).open() as f:
+            overrides = json.load(f) or {}
+
     audio_params: AudioParams | None = None
     audio_values: list[float] | None = None
     audio_dates: list[str] | None = None
@@ -609,13 +619,19 @@ def export_video(
     tension_arc: list[float] | None = None
     hold_at_frame: int | None = None
     hold_duration_sec: float = 0.0
+    channel_mix: dict[str, dict] | None = overrides.get("channel_mix")
+    audio_eq: dict[str, float] | None = overrides.get("eq")
 
     if not silent:
         recipe_path = RECIPES_DIR / f"{recipe}.yaml"
         if recipe_path.exists():
             with recipe_path.open() as f:
                 recipe_yaml = yaml.safe_load(f) or {}
-            audio_params = AudioParams.from_dict(recipe_yaml.get("audio"))
+            # Audio params: merge recipe YAML with sidebar override (override wins
+            # field-by-field so partial overrides still work).
+            audio_block = dict(recipe_yaml.get("audio") or {})
+            audio_block.update(overrides.get("audio_params") or {})
+            audio_params = AudioParams.from_dict(audio_block)
             source_id = recipe_yaml.get("sources", {}).get("primary", "oisst")
             series_path = (
                 DATA_DIR / "processed" / "oisst" / "sst-monthly-series.json"
@@ -638,8 +654,11 @@ def export_video(
                     {"frame": e.frame, "type": e.type, "label": e.label, "score": e.score}
                     for e in signal.events
                 ]
-                # Expand tension arc once for the full video — RFC-011
-                arc_spec = TensionArcSpec.from_dict(recipe_yaml.get("tension_arc"))
+                # Expand tension arc once for the full video — RFC-011.
+                # Sidebar arc override merges field-by-field with YAML defaults.
+                arc_block = dict(recipe_yaml.get("tension_arc") or {})
+                arc_block.update(overrides.get("tension_arc") or {})
+                arc_spec = TensionArcSpec.from_dict(arc_block)
                 dominant_frame = (
                     max(audio_moments, key=lambda m: m["score"])["frame"]
                     if audio_moments
@@ -685,6 +704,8 @@ def export_video(
             tension_arc=tension_arc,
             hold_at_frame=hold_at_frame,
             hold_duration_sec=hold_duration_sec,
+            channel_mix=channel_mix,
+            audio_eq=audio_eq,
         )
         size_mb = result.stat().st_size / 1024 / 1024
         console.print(f"[green]Exported: {result} ({size_mb:.1f} MB)[/green]")

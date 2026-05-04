@@ -4,7 +4,7 @@ import { AudioWaveform } from '../components/AudioWaveform';
 import { ArcEditor } from '../components/ArcEditor';
 import { useGenerativeAudio } from '../hooks/useGenerativeAudio';
 import { useManifest } from '../hooks/useManifest';
-import { PRESET_GROUPS, AUDIO_PRESETS, getPreset, presetFromAudioParams, type AudioPreset } from '../lib/audioPresets';
+import { PRESET_GROUPS, AUDIO_PRESETS, getPreset, presetFromAudioParams, audioParamsFromPreset, type AudioPreset } from '../lib/audioPresets';
 import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, type ChannelMix, type EqSettings } from '../lib/audioEngineTypes';
 import { type MomentEvent, detectMoments } from '../lib/moments';
 import { DEFAULT_ARC_SPEC, expandArc, type TensionArcSpec } from '../lib/tensionArc';
@@ -280,12 +280,26 @@ export function VideoEditor() {
     if (!recipe) return;
     setExportState({ status: 'exporting', progress: 'Starting ffmpeg...' });
     try {
+      // Build sidebar override payload — every visible audio control flows
+      // through to the export. Audio preset override only emits when the user
+      // picked a preset other than the recipe default; channel mix/EQ/arc
+      // always emit so they can override even when the recipe defines them.
+      const overrides: Record<string, unknown> = {};
+      if (exportAudio) {
+        if (audioTheme && audioTheme !== 'recipe' && resolvedPreset) {
+          overrides.audio_params = audioParamsFromPreset(resolvedPreset);
+        }
+        overrides.channel_mix = channelMix;
+        overrides.eq = audioEq;
+        overrides.tension_arc = arcSpec;
+      }
       const resp = await fetch(`/api/export/${recipe}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fps,
           silent: !exportAudio,
+          overrides,
         }),
       });
       const result = await resp.json();
@@ -301,7 +315,7 @@ export function VideoEditor() {
     } catch (e) {
       setExportState({ status: 'error', error: (e as Error).message });
     }
-  }, [recipe, fps, exportAudio]);
+  }, [recipe, fps, exportAudio, audioTheme, resolvedPreset, channelMix, audioEq, arcSpec]);
 
   const toggleOverlay = useCallback((key: string) => {
     setOverlays((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
@@ -597,8 +611,8 @@ export function VideoEditor() {
               </div>
               {exportAudio && (
                 <div className={styles.exportSummaryNote}>
-                  Note: mixer / EQ tweaks live only in browser preview — the
-                  exported MP4 uses the recipe's authored audio + arc settings.
+                  Sidebar mixer, EQ, and arc tweaks all flow through to the
+                  rendered MP4.
                 </div>
               )}
             </div>

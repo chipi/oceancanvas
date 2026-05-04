@@ -414,3 +414,73 @@ class TestBuildAudioTrack:
         # interactions across layers; 4x is the ideal but layers like accent
         # don't fire when moments=[] so the ratio sits between 2× and 4×).
         assert loud_rms > quiet_rms * 2, f"loud {loud_rms} should be ≥2x quiet {quiet_rms}"
+
+    def test_channel_mix_mute_silences_layers(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """Sidebar override: muting all four channels yields silence (RMS ~ 0)."""
+        import wave
+
+        common = dict(
+            values=list(np.linspace(15, 25, 24)),
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[{"frame": 12, "type": "peak", "label": "test"}],
+            params=AudioParams(),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+        )
+        muted_all = tmp_path / "muted.wav"
+        build_audio_track(
+            muted_all, **common,
+            channel_mix={
+                "drone":   {"muted": True},
+                "pulse":   {"muted": True},
+                "accent":  {"muted": True},
+                "texture": {"muted": True},
+            },
+        )
+        with wave.open(str(muted_all), "rb") as w:
+            frames = w.readframes(w.getnframes())
+        ints = np.frombuffer(frames, dtype=np.int16).astype(np.float64) / 32767
+        rms = float(np.sqrt((ints ** 2).mean()))
+        assert rms < 1e-6, f"all-muted output should be silent, got rms={rms}"
+
+    def test_channel_mix_volume_scales(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """Halving every channel volume halves the output RMS (linear scaling)."""
+        import wave
+
+        common = dict(
+            values=list(np.linspace(15, 25, 24)),
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[],
+            params=AudioParams(),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+        )
+
+        def _rms(path):
+            with wave.open(str(path), "rb") as w:
+                frames = w.readframes(w.getnframes())
+            ints = np.frombuffer(frames, dtype=np.int16).astype(np.float64) / 32767
+            return float(np.sqrt((ints ** 2).mean()))
+
+        full = tmp_path / "full.wav"
+        half = tmp_path / "half.wav"
+        build_audio_track(full, **common)  # default = 1.0 everywhere
+        build_audio_track(
+            half, **common,
+            channel_mix={
+                "drone":   {"volume": 0.5},
+                "pulse":   {"volume": 0.5},
+                "accent":  {"volume": 0.5},
+                "texture": {"volume": 0.5},
+            },
+        )
+        full_rms = _rms(full)
+        half_rms = _rms(half)
+        # Allow generous tolerance — clipping + presence multiplier interact
+        assert 0.3 < (half_rms / full_rms) < 0.7, (
+            f"half-volume should land in [0.3, 0.7] of full, got {half_rms / full_rms:.3f}"
+        )
