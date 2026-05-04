@@ -1508,6 +1508,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#schema-additions-since-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema additions since acceptance
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2150,6 +2161,13 @@
 <li>NaN constant: <code>pipeline/src/oceancanvas/constants.py</code> (<code>NAN_VALUE = -999.0</code>) and <code>sketches/shared.js</code></li>
 <li>Payload files: <code>data/payloads/{recipe}__{date}.json</code></li>
 </ul>
+<h2 id="schema-additions-since-acceptance">Schema additions since acceptance</h2>
+<p>The payload's <code>recipe</code> block is open-ended — additional fields may be carried alongside <code>render</code> without breaking the contract. Additions to date:</p>
+<ul>
+<li><strong><code>recipe.audio</code></strong> (v0.4.0, <a href="../ADR-027-generative-audio-composition/">ADR-027</a>) — generative audio character. Optional. The recipe's <code>audio:</code> YAML block round-trips here; consumers (browser audio engine, pipeline <code>audio.py</code>) read it at use time.</li>
+<li><strong><code>recipe.tension_arc</code></strong> (v0.5.0, <a href="../ADR-028-tension-arc-shared-curve/">ADR-028</a>) — tension-arc spec (preset + 3 shaping params + <code>pin_key_moment</code>). Optional. The <strong>spec</strong> travels through the payload, <strong>not</strong> the expanded per-frame array — each consumer expands via the cross-validated <code>tensionArc.ts</code> / <code>arc.py</code> with its own <code>totalFrames</code> and dominant-moment-frame context. This keeps per-frame payloads small (~150 bytes for the spec vs ~5 KB for an expanded 534-float array).</li>
+</ul>
+<p>Payload version bumped to <strong>2</strong> at v0.5.0 to mark the <code>tension_arc</code> field's appearance. v1 payloads remain readable by v2 consumers (missing field → constant 1.0).</p>
 
 
 
