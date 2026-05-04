@@ -16,7 +16,7 @@ export function RecipeEditor() {
   const [searchParams] = useSearchParams();
   const isNew = !id || id === 'new';
 
-  const [mode, setMode] = useState<'creative' | 'yaml'>('creative');
+  const [mode, setMode] = useState<'story' | 'creative' | 'yaml'>('creative');
   const [creativeState, setCreativeState] = useState<CreativeState>(DEFAULT_STATE);
   const [yamlText, setYamlText] = useState('');
   const [recipeState, setRecipeState] = useState<RecipeState>('matched');
@@ -152,7 +152,7 @@ export function RecipeEditor() {
     }
   }, [creativeState, mode, recipeName, recipeTitle, recipeDescription, region, technical, audio, renderType]);
 
-  const handleModeSwitch = useCallback((newMode: 'creative' | 'yaml') => {
+  const handleModeSwitch = useCallback((newMode: 'story' | 'creative' | 'yaml') => {
     if (newMode === 'creative' && mode === 'yaml') {
       setRecipeState(detectState(creativeState, technical));
     }
@@ -221,8 +221,14 @@ export function RecipeEditor() {
 
         {/* Controls panel — right side */}
         <aside className={styles.controls}>
-          {/* Flip bar */}
+          {/* Flip bar — story (editorial copy) · creative (mood + tech) · yaml (raw) */}
           <div className={styles.flipBar}>
+            <button
+              className={`${styles.flipPill} ${mode === 'story' ? styles.flipActive : ''}`}
+              onClick={() => handleModeSwitch('story')}
+            >
+              story
+            </button>
             <button
               className={`${styles.flipPill} ${mode === 'creative' ? styles.flipActive : ''}`}
               onClick={() => handleModeSwitch('creative')}
@@ -240,32 +246,36 @@ export function RecipeEditor() {
             )}
           </div>
 
-          {/* Creative or YAML */}
+          {/* Story · Creative · YAML */}
           <div className={styles.controlBody}>
-            {mode === 'creative' ? (
-              <>
-                {/* Editorial title + description — what readers see in the
-                    gallery and detail pages, distinct from the slug. */}
-                <div className={styles.editorialBlock}>
-                  <label className={styles.editorialLabel}>Title</label>
-                  <input
-                    type="text"
-                    className={styles.editorialInput}
-                    value={recipeTitle}
-                    onChange={(e) => setRecipeTitle(e.target.value)}
-                    placeholder="e.g. North Atlantic SST"
-                    maxLength={80}
-                  />
-                  <label className={styles.editorialLabel}>Description</label>
-                  <textarea
-                    className={styles.editorialTextarea}
-                    value={recipeDescription}
-                    onChange={(e) => setRecipeDescription(e.target.value)}
-                    placeholder="One or two sentences arguing for this recipe — the editorial 'why'."
-                    maxLength={600}
-                    rows={3}
-                  />
+            {mode === 'story' ? (
+              <div className={styles.editorialBlock}>
+                <div className={styles.editorialNote}>
+                  How this recipe reads on the gallery and detail surfaces.
+                  The slug is the durable identifier; the title and
+                  description are the public face.
                 </div>
+                <label className={styles.editorialLabel}>Title</label>
+                <input
+                  type="text"
+                  className={styles.editorialInput}
+                  value={recipeTitle}
+                  onChange={(e) => setRecipeTitle(e.target.value)}
+                  placeholder="e.g. North Atlantic SST"
+                  maxLength={80}
+                />
+                <label className={styles.editorialLabel}>Description</label>
+                <textarea
+                  className={styles.editorialTextarea}
+                  value={recipeDescription}
+                  onChange={(e) => setRecipeDescription(e.target.value)}
+                  placeholder="One or two sentences arguing for this recipe — the editorial 'why'."
+                  maxLength={600}
+                  rows={6}
+                />
+              </div>
+            ) : mode === 'creative' ? (
+              <>
                 <CreativeControls
                   state={creativeState}
                   onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}

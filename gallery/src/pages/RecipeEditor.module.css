@@ -211,8 +211,16 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  padding: 4px 0;
+}
+
+.editorialNote {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-style: italic;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
 
