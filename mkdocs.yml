@@ -87,6 +87,8 @@ nav:
           - Key Moment Detection: adr/ADR-024-key-moment-detection.md
           - Recipe Lifecycle: adr/ADR-025-recipe-lifecycle.md
           - Audio Stem System: adr/ADR-026-audio-stem-system.md
+          - Generative Audio: adr/ADR-027-generative-audio-composition.md
+          - Tension Arc: adr/ADR-028-tension-arc-shared-curve.md
       - RFCs:
           - rfc/index.md
           - Recipe YAML: rfc/RFC-001-recipe-yaml-schema.md
@@ -98,4 +100,6 @@ nav:
           - Key Moments: rfc/RFC-007-key-moment-detection.md
           - Pipeline Parallelisation: rfc/RFC-008-v2.md
           - Pipeline CLI: rfc/RFC-009.md
+          - Generative Audio: rfc/RFC-010-generative-audio-composition.md
+          - Tension Arc: rfc/RFC-011-tension-arc.md
       - Conventions: claude.md
