@@ -131,6 +131,7 @@ export function VideoEditor() {
     date: true,
     attribution: true,
   });
+  const [exportAudio, setExportAudio] = useState(true);
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
   const [exportOpen, setExportOpen] = useState(false);
   const [moments, setMoments] = useState<MomentEvent[]>([]);
@@ -284,7 +285,7 @@ export function VideoEditor() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fps,
-          audio_theme: audioEnabled ? audioTheme : null,
+          silent: !exportAudio,
         }),
       });
       const result = await resp.json();
@@ -300,7 +301,7 @@ export function VideoEditor() {
     } catch (e) {
       setExportState({ status: 'error', error: (e as Error).message });
     }
-  }, [recipe, fps]);
+  }, [recipe, fps, exportAudio]);
 
   const toggleOverlay = useCallback((key: string) => {
     setOverlays((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
@@ -571,6 +572,36 @@ export function VideoEditor() {
                 <span>{key === 'date' ? 'Date stamp' : 'Source attribution'}</span>
               </label>
             ))}
+            <label className={styles.overlayRow}>
+              <input
+                type="checkbox"
+                checked={exportAudio}
+                onChange={() => setExportAudio((e) => !e)}
+                disabled={exportState.status === 'exporting'}
+              />
+              <span>Audio</span>
+            </label>
+            <div className={styles.exportSummary}>
+              <div className={styles.exportSummaryTitle}>Will export:</div>
+              <div className={styles.exportSummaryRow}>
+                <span>Frames</span>
+                <span>{dates.length} @ {fps}fps · {duration.toFixed(1)}s</span>
+              </div>
+              <div className={styles.exportSummaryRow}>
+                <span>Audio</span>
+                <span>
+                  {exportAudio
+                    ? `${resolvedPreset?.name ?? 'Silent'} · arc: ${arcSpec.preset}`
+                    : 'Silent'}
+                </span>
+              </div>
+              {exportAudio && (
+                <div className={styles.exportSummaryNote}>
+                  Note: mixer / EQ tweaks live only in browser preview — the
+                  exported MP4 uses the recipe's authored audio + arc settings.
+                </div>
+              )}
+            </div>
             <div className={styles.exportPopupActions}>
               {exportState.status === 'idle' && (
                 <button className={styles.exportBtn} onClick={handleExport}>

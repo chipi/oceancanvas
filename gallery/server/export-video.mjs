@@ -45,14 +45,15 @@ const server = createServer(async (req, res) => {
       try { opts = JSON.parse(body || '{}'); } catch {}
 
       const fps = opts.fps || 12;
+      const silent = opts.silent === true;
       const outputPath = join(RENDERS_DIR, `${recipe}.mp4`);
 
       // Spawn the CLI command — use uv run in dev, oceancanvas directly in Docker
       const useUv = !process.env.DOCKER;
       const cmd = useUv ? 'uv' : 'oceancanvas';
-      const args = useUv
-        ? ['run', 'oceancanvas', 'export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath]
-        : ['export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath];
+      const baseArgs = ['export-video', '--recipe', recipe, '--fps', String(fps), '--output', outputPath];
+      if (silent) baseArgs.push('--silent');
+      const args = useUv ? ['run', 'oceancanvas', ...baseArgs] : baseArgs;
 
       const proc = spawn(cmd, args, {
         cwd: useUv ? PIPELINE_DIR : undefined,
