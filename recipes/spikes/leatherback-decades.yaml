@@ -1,0 +1,51 @@
+# leatherback-decades — one frame per decade, sixty-six years of migration.
+#
+# The intent: most timelapses move month by month. This one moves *decade
+# by decade*. Each frame aggregates every leatherback observation in a
+# ten-year window — 1957–1966, 1967–1976, ..., 2017–2026. Played end to
+# end, the timelapse asks the question that climate-decadal data only
+# whispers: is the species still using the same ocean? Where the dots
+# clustered tightly in the 1960s and where they cluster now is the answer.
+#
+# Status: NEEDS feature → issue #97 (decade-aggregation mode in the OBIS
+# process task). Today the pipeline emits one processed file per
+# observation date; this recipe needs the process task to honour a
+# `frame_grouping: decade` directive that produces 7-ish frames instead
+# of thousands.
+
+name: leatherback-decades
+created: 2026-05-04
+author: chipi
+region:
+  lat: [-60, 75]
+  lon: [-180, 180]
+  name: Atlantic + Pacific basins
+sources:
+  primary: obis-leatherback-turtle
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: arctic
+  marker_size: 3
+  marker_opacity: 0.55
+  seed: 1957
+  # Spike-only: tells the process task to bin frames by decade rather than
+  # per-day. Default behaviour (per-day) preserved when this key is absent.
+  frame_grouping: decade
+  context_layer: bathymetry
+audio:
+  drone_waveform: sine
+  drone_glide: 0.8
+  pulse_sensitivity: 0.25
+  presence: 0.65
+  accent_style: drop
+  texture_density: 0.5
+tension_arc:
+  preset: classic
+  peak_position: 0.85   # builds across decades, peaks near present day
+  peak_height: 1.0
+  release_steepness: 0.3
+  pin_key_moment: false

@@ -1,0 +1,63 @@
+# three-species — the ocean as three species perceive it.
+#
+# The intent: every animal reads the ocean differently. Whale shark
+# (surface, warm, equatorial), leatherback (surface and column, cold-edge
+# chaser, hemispheric migrant), elephant seal (deep, polar, slope-locked).
+# Render all three on the same canvas, each species colour-coded, each
+# layer at its own opacity. The composite is a single image of the ocean
+# being interpreted three ways at once — the same water yielding three
+# different stories.
+#
+# Status: NEEDS feature → issue #100 (multi-primary-source composite render).
+# Builds on the same composite primitive whale-shark-on-sst (#99) needs,
+# but with three foreground layers and no field background.
+
+name: three-species
+created: 2026-05-04
+author: chipi
+region:
+  lat: [-75, 75]
+  lon: [-180, 180]
+  name: Global oceans
+sources:
+  primary: obis-whale-shark
+  foreground:
+    - obis-leatherback-turtle
+    - obis-elephant-seal
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: composite
+  seed: 999
+  layers:
+    - source: primary               # whale shark — warm equatorial
+      style: scatter
+      colormap: thermal
+      marker_size: 4
+      marker_opacity: 0.7
+    - source: foreground[0]         # leatherback — temperate cold-edge
+      style: scatter
+      colormap: arctic
+      marker_size: 4
+      marker_opacity: 0.7
+    - source: foreground[1]         # elephant seal — polar slope
+      style: scatter
+      colormap: otherworldly
+      marker_size: 4
+      marker_opacity: 0.85
+  context_layer: bathymetry
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.6
+  pulse_sensitivity: 0.4
+  presence: 0.7
+  accent_style: chime
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 0.9
+  release_steepness: 0.5
+  pin_key_moment: false

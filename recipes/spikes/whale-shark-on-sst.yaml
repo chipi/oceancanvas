@@ -1,0 +1,59 @@
+# whale-shark-on-sst — the species reading the ocean.
+#
+# The intent: the most direct biological story in the catalog. SST as the
+# background field; whale-shark observations as scatter dots overlaid on
+# top, showing where the animals chose to be. The story writes itself —
+# whale sharks aggregate along the 28°C isotherm, they avoid the cold
+# tongues, they move with the seasons. The image is the species reading
+# the ocean's temperature.
+#
+# Status: NEEDS feature → issue #99 (multi-source recipes — primary +
+# foreground in one render). Today every recipe runs a single render type
+# from one primary source. This recipe needs the schema to support a
+# layered render with two data sources and the renderer to composite
+# them in z-order.
+
+name: whale-shark-on-sst
+created: 2026-05-04
+author: chipi
+region:
+  lat: [-40, 40]
+  lon: [-180, 180]
+  name: Global tropics
+sources:
+  primary: oisst                   # the field underneath
+  foreground: obis-whale-shark     # the dots on top
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: composite
+  colormap: thermal
+  opacity: 0.85
+  smooth: true
+  seed: 28
+  # Spike-only: composite render takes a `layers` block describing the
+  # z-order of source renders. Fields are rendered first, points last.
+  layers:
+    - source: primary
+      style: field
+      opacity: 0.85
+    - source: foreground
+      style: scatter
+      marker_size: 4
+      marker_opacity: 0.9
+      colormap: arctic   # cool dots stand out against warm SST background
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.6
+  pulse_sensitivity: 0.45
+  presence: 0.75
+  accent_style: bell
+  texture_density: 0.35
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 0.95
+  release_steepness: 0.55
+  pin_key_moment: true

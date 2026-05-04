@@ -1,0 +1,46 @@
+# elephant-seal-bathymetry — tracks against the seafloor.
+#
+# The intent: the existing elephant-seal recipe shows tracks on the bare
+# canvas with a coastline overlay. But elephant seals don't roam randomly —
+# they follow the continental slope and seamounts almost obsessively, diving
+# to 1500m+ along bathymetric contours. Show the seabed underneath the
+# tracks and the foraging strategy becomes obvious. The data is the same;
+# the context layer turns it into a different story.
+#
+# Status: READY today. Sketches/scatter.js already supports
+# `context_layer: bathymetry`. Promote out of `spikes/` to start
+# rendering daily.
+
+name: elephant-seal-bathymetry
+created: 2026-05-04
+author: chipi
+region:
+  lat: [-75, -30]
+  lon: [-180, 180]
+  name: Southern Ocean
+sources:
+  primary: obis-elephant-seal
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: otherworldly
+  marker_size: 4
+  marker_opacity: 0.85
+  seed: 451
+  context_layer: bathymetry
+audio:
+  drone_waveform: sine
+  drone_glide: 0.9
+  pulse_sensitivity: 0.2
+  presence: 0.75
+  accent_style: drop
+  texture_density: 0.45
+tension_arc:
+  preset: classic
+  peak_position: 0.55
+  peak_height: 0.85
+  release_steepness: 0.6
+  pin_key_moment: false

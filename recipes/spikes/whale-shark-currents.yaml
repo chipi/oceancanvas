@@ -1,0 +1,52 @@
+# whale-shark-currents — animal tracks as particle flow.
+#
+# The intent: the same trick the gulf-stream-thermal recipe pulls with
+# OISST gradients, but with whale-shark positions instead. Particles
+# advect along the actual paths the animals swam — every dot's trajectory
+# is a real shark's migration over hours and days. The image becomes a
+# portrait of the ocean's structure as read by the animals themselves.
+# Where they cluster reveals upwelling fronts; where they line up reveals
+# currents the satellites can't directly see.
+#
+# Status: NEEDS feature → issue #98 (particle-mode for point-array sources).
+# The particles sketch today expects a gridded vector field. Need a
+# track-mode that consumes per-animal time-ordered position arrays and
+# uses them as advection trajectories.
+
+name: whale-shark-currents
+created: 2026-05-04
+author: chipi
+region:
+  lat: [-40, 40]
+  lon: [-180, 180]
+  name: Global tropics
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  colormap: thermal
+  opacity: 0.9
+  particle_count: 2000
+  tail_length: 18
+  speed_scale: 0.7
+  seed: 73
+  # Spike-only: tells the particles sketch to advect along point-array
+  # tracks rather than from a u/v vector field.
+  source_mode: tracks
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.55
+  pulse_sensitivity: 0.5
+  presence: 0.7
+  accent_style: ping
+  texture_density: 0.3
+tension_arc:
+  preset: classic
+  peak_position: 0.7
+  peak_height: 1.0
+  release_steepness: 0.6
+  pin_key_moment: true
