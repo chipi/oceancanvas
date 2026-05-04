@@ -27,15 +27,31 @@ const IMAGES_DIR = join('..', 'docs', 'concept', 'images');
  */
 const HERO_RECIPE = 'north-atlantic-sst';
 
-/** Wait for any image inside the gallery grid to actually load. */
+/**
+ * Wait for the page to settle: every <img> on the page has either loaded or
+ * errored, AND no new images have appeared for a quiet window. The gallery
+ * front page is image-heavy (today's renders + 14-day strip + recipe grid),
+ * and capturing while images are still streaming in produces fragmented PNGs.
+ */
 async function waitForGalleryRenders(page: Page) {
-  // Wait until at least one render image inside the grid has loaded
+  // First: at least one image present and loaded — guards against capturing
+  // an empty shell before React has mounted the grid.
   await page.waitForFunction(() => {
     const imgs = Array.from(document.querySelectorAll('img'));
-    return imgs.some((img) => img.complete && img.naturalWidth > 0);
+    return imgs.length > 0 && imgs.some((img) => img.complete && img.naturalWidth > 0);
   }, null, { timeout: 15_000 });
-  // Settle any final layout shifts
-  await page.waitForTimeout(400);
+
+  // Then: every image is settled (loaded or errored — `complete` covers both).
+  await page.waitForFunction(() => {
+    const imgs = Array.from(document.querySelectorAll('img'));
+    return imgs.every((img) => img.complete);
+  }, null, { timeout: 20_000 });
+
+  // Network quiet — catches any tail-end fetches (manifest hydration, etc.)
+  await page.waitForLoadState('networkidle');
+
+  // Final settle for any layout shifts after image loads
+  await page.waitForTimeout(600);
 }
 
 async function shoot(page: Page, filename: string) {

@@ -39,17 +39,24 @@ Three concepts hold the project together.
 
 **The recipe.** A YAML file authored by a person — region, source, render type, creative parameters. Once authored, it runs forever. Tomorrow at 06:00 UTC the pipeline reads it, fetches that region's data for that source, and renders it. The recipe is the authored work; each render is the data sitting for the work that day.
 
-![Recipe Editor — creative mode with mood presets and energy × presence quadrant](docs/concept/images/editor_creative_mode.png)
-
 **The pipeline.** Six tasks in a Prefect flow, running daily. Discover the latest available date per source. Fetch raw data. Process it into a browser-friendly intermediate format. Build a render payload per recipe. Render via Puppeteer + p5.js. Rebuild the manifest. The output is one PNG per recipe per day, on disk.
 
 ![Pipeline architecture — six tasks, Docker Compose stack](docs/concept/images/pipeline_architecture.png)
 
 **The gallery.** A static React app that reads the manifest. Today's renders fill the front page. The fourteen-day strip below shows recent history. The grid below that shows every active recipe. No editor curated it. No engagement metrics measure it. The pipeline ran at 06:00 UTC and the gallery reflects what it produced.
 
-The four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor — close the creative loop: read the data, author a piece, watch it accumulate, assemble a year into a film.
+---
 
-![Video Editor — timelapse assembly with mixer, EQ, and tension-arc editor](docs/concept/images/video_editor.png)
+## The four surfaces
+
+The customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor — close the creative loop: read the data, author a piece, watch it accumulate, assemble a year into a film.
+
+| | |
+|---|---|
+| ![Dashboard — source rail with region stats and CTA](docs/concept/images/dashboard_overview.png) | ![Recipe Editor — creative mode with mood presets and energy × presence quadrant](docs/concept/images/editor_creative_mode.png) |
+| **Dashboard.** Read the data. Source rail (SST · Argo · biologging), live region stats, "create a recipe from this region" CTA. | **Recipe Editor.** Author a piece. Mood presets, energy × presence quadrant, colour character, audio mapping — flip to the YAML pill for the durable form. |
+| ![Gallery detail — timeline scrubber across decades of renders](docs/concept/images/gallery_detail.png) | ![Video Editor — timelapse assembly with mixer, EQ, and tension-arc editor](docs/concept/images/video_editor.png) |
+| **Gallery.** Watch it accumulate. Per-recipe detail page with timeline scrubber across years (or decades) of accumulated renders. | **Video Editor.** Assemble a year into a film. Multi-channel mixer, EQ, tension-arc editor that shapes audio dynamics + visual filters in unison. |
 
 ---
 
