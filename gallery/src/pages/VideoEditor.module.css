@@ -355,19 +355,21 @@
   transition: width 0.15s ease-out;
 }
 
-.audioReady {
-  font-size: 11px;
-  color: var(--intent-teal);
-  font-weight: 500;
+.volumeControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.audioLoading {
-  font-size: 11px;
+.volumeLabel {
+  font-size: 10px;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .volumeSlider {
-  width: 100px;
+  width: 80px;
   accent-color: #5DCAA5;
   height: 4px;
 }

@@ -182,9 +182,15 @@ export function AudioWaveform({
       <div style={{
         marginTop: 6, display: 'grid', gridTemplateColumns: '1fr 1fr',
         columnGap: 14, fontSize: 9, letterSpacing: '0.04em',
+        alignItems: 'stretch',
       }}>
-        {/* Column 1 — channel mixer (4 stacked rows) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {/* Column 1 — channel mixer (4 stacked rows). justify-content spreads
+            them to fill the same vertical room as the vertical EQ column. */}
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between', alignItems: 'stretch',
+          padding: '4px 0',
+        }}>
           {CHANNEL_META.map((c) => {
             const cm = mix?.[c.key];
             const muted = !!cm?.muted;
@@ -221,22 +227,37 @@ export function AudioWaveform({
           })}
         </div>
 
-        {/* Column 2 — 3-band EQ (bass / mid / treble), gain in dB [-12..+12] */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {/* Column 2 — 3-band EQ (bass / mid / treble), gain in dB [-12..+12].
+            Vertical sliders side-by-side: the column doesn't have horizontal
+            room for three labelled rows, but it has plenty of vertical room. */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 4, alignItems: 'end',
+        }}>
           {EQ_META.map((band) => {
             const value = eq?.[band.key] ?? 0;
             return (
-              <div key={band.key} style={rowStyle}>
-                <span style={{ ...labelBase, color: 'rgba(180, 200, 220, 0.7)' }}>{band.label}</span>
+              <div key={band.key} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+              }}>
+                <span style={{
+                  fontSize: 9, letterSpacing: '0.04em',
+                  color: 'rgba(180, 200, 220, 0.7)',
+                }}>{band.label}</span>
                 <input
                   type="range" min={-12} max={12} step={0.5} value={value}
                   disabled={!eqInteractive}
                   onChange={(e) => updateEq(band.key, parseFloat(e.target.value))}
-                  style={{ ...sliderStyle, opacity: 0.85 }}
+                  style={{
+                    writingMode: 'vertical-lr', direction: 'rtl',
+                    WebkitAppearance: 'slider-vertical',
+                    width: 14, height: 56, opacity: 0.85,
+                    cursor: eqInteractive ? 'pointer' : 'default',
+                  } as React.CSSProperties}
                 />
                 <span style={{
                   fontSize: 8, color: 'rgba(180, 200, 220, 0.55)',
-                  fontFamily: 'ui-monospace, monospace', minWidth: 22, textAlign: 'right',
+                  fontFamily: 'ui-monospace, monospace',
                 }}>
                   {value > 0 ? '+' : ''}{value.toFixed(0)}
                 </span>

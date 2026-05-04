@@ -179,7 +179,7 @@ export function VideoEditor() {
     : [];
 
   // Generative audio engine — RFC-010 four-layer composition + RFC-011 arc envelope
-  const { masterVolume, setMasterVolume, audioReady, liveChannels } = useGenerativeAudio({
+  const { masterVolume, setMasterVolume, liveChannels } = useGenerativeAudio({
     preset: resolvedPreset,
     enabled: audioEnabled,
     isPlaying,
@@ -492,20 +492,18 @@ export function VideoEditor() {
                     ))}
                     <option value="">Silent</option>
                   </select>
-                  {audioTheme && (
-                    <span className={audioReady ? styles.audioReady : styles.audioLoading}>
-                      {audioReady ? 'ready' : isPlaying ? 'loading...' : 'press play'}
-                    </span>
-                  )}
-                  <input
-                    type="range"
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    value={masterVolume}
-                    onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
-                    className={styles.volumeSlider}
-                  />
+                  <label className={styles.volumeControl}>
+                    <span className={styles.volumeLabel}>Volume</span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.05}
+                      value={masterVolume}
+                      onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
+                      className={styles.volumeSlider}
+                    />
+                  </label>
                 </div>
 
                 {/* Waveform + interactive 4-channel mixer + 3-band EQ */}
