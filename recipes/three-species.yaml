@@ -19,32 +19,19 @@ region:
   name: Global oceans
 sources:
   primary: obis-whale-shark
-  foreground:
-    - obis-leatherback-turtle
-    - obis-elephant-seal
   context: gebco
 schedule: daily
 
 # ⊓ creative controls ⊓
+# Falls back to whale-shark scatter until #99 (composite render type) ships.
+# When that ships, leatherback + elephant seal will overlay as additional
+# scatter layers in arctic + otherworldly colourways.
 render:
-  type: composite
+  type: scatter
   seed: 999
-  layers:
-    - source: primary               # whale shark — warm equatorial
-      style: scatter
-      colormap: thermal
-      marker_size: 4
-      marker_opacity: 0.7
-    - source: foreground[0]         # leatherback — temperate cold-edge
-      style: scatter
-      colormap: arctic
-      marker_size: 4
-      marker_opacity: 0.7
-    - source: foreground[1]         # elephant seal — polar slope
-      style: scatter
-      colormap: otherworldly
-      marker_size: 4
-      marker_opacity: 0.85
+  colormap: thermal
+  marker_size: 4
+  marker_opacity: 0.7
   context_layer: bathymetry
 audio:
   drone_waveform: triangle

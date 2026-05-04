@@ -72,8 +72,9 @@ function setup() {
 
   if (Array.isArray(primary.data) && primary.data.length > 0 &&
       typeof primary.data[0] === 'object' && 'lat' in primary.data[0]) {
+    const colorBy = payload.recipe?.render?.color_by || 'value';
     drawPointsToBuffer(img, primary.data, w, h, latMin, latMax, lonMin, lonMax,
-                       primary.min, primary.max, stops, markerSize, markerOpacity);
+                       primary.min, primary.max, stops, markerSize, markerOpacity, colorBy);
   } else if (primary.shape) {
     drawGridToBuffer(img, primary, w, h, latMin, latMax, lonMin, lonMax,
                      stops, markerSize, markerOpacity);
@@ -120,17 +121,33 @@ function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha) {
 }
 
 function drawPointsToBuffer(img, points, w, h, latMin, latMax, lonMin, lonMax,
-                            vmin, vmax, stops, size, opacity) {
+                            vmin, vmax, stops, size, opacity, colorBy) {
   const radius = size / 2;
+  const mode = colorBy || 'value';
   for (const pt of points) {
     const sx = (pt.lon - lonMin) / (lonMax - lonMin) * w;
     const sy = (latMax - pt.lat) / (latMax - latMin) * h;
 
-    // Use lat as value for colouring if no explicit value
-    const val = pt.value !== undefined ? pt.value : pt.lat;
-    const tMin = vmin !== undefined ? vmin : latMin;
-    const tMax = vmax !== undefined ? vmax : latMax;
-    const t = tMax !== tMin ? (val - tMin) / (tMax - tMin) : 0.5;
+    // Colour assignment depends on color_by mode:
+    //   value (default) — point.value mapped to colormap
+    //   month          — month-of-year of point.date → 0..1 (Jan..Dec)
+    //   year           — year of point.date over the dataset's year span
+    //   lat            — latitude (legacy fallback when no value)
+    let t;
+    if (mode === 'month' && pt.date) {
+      const m = parseInt(pt.date.slice(5, 7), 10);
+      t = Number.isFinite(m) ? (m - 1) / 11 : 0.5;
+    } else if (mode === 'year' && pt.date) {
+      const y = parseInt(pt.date.slice(0, 4), 10);
+      const yMin = vmin || 1970;
+      const yMax = vmax || new Date().getFullYear();
+      t = yMax !== yMin ? (y - yMin) / (yMax - yMin) : 0.5;
+    } else {
+      const val = pt.value !== undefined ? pt.value : pt.lat;
+      const tMin = vmin !== undefined ? vmin : latMin;
+      const tMax = vmax !== undefined ? vmax : latMax;
+      t = tMax !== tMin ? (val - tMin) / (tMax - tMin) : 0.5;
+    }
     const [cr, cg, cb] = colorFromStops(stops, t);
     stampDot(img, w, h, Math.round(sx), Math.round(sy), radius, cr, cg, cb, opacity);
   }

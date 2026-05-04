@@ -17,29 +17,19 @@ region:
   lon: [-180, 180]
   name: Global tropics
 sources:
-  primary: oisst                   # the field underneath
-  foreground: obis-whale-shark     # the dots on top
+  primary: oisst
   context: gebco
 schedule: daily
 
 # ⊓ creative controls ⊓
+# Falls back to OISST field render until #99 (composite render type) ships.
+# When that ships, foreground will be obis-whale-shark scatter on top.
 render:
-  type: composite
+  type: field
   colormap: thermal
   opacity: 0.85
   smooth: true
   seed: 28
-  # Spike-only: composite render takes a `layers` block describing the
-  # z-order of source renders. Fields are rendered first, points last.
-  layers:
-    - source: primary
-      style: field
-      opacity: 0.85
-    - source: foreground
-      style: scatter
-      marker_size: 4
-      marker_opacity: 0.9
-      colormap: arctic   # cool dots stand out against warm SST background
 audio:
   drone_waveform: triangle
   drone_glide: 0.6

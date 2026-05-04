@@ -29,9 +29,7 @@ render:
   marker_size: 3
   marker_opacity: 0.55
   seed: 1957
-  # Spike-only: tells the process task to bin frames by decade rather than
-  # per-day. Default behaviour (per-day) preserved when this key is absent.
-  frame_grouping: decade
+  color_by: year                # falls back to value when scatter sketch lacks #96
   context_layer: bathymetry
 audio:
   drone_waveform: sine

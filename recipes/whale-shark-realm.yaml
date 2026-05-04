@@ -23,15 +23,12 @@ schedule: daily
 
 # ⊓ creative controls ⊓
 render:
-  type: field
+  type: scatter
   colormap: thermal
-  opacity: 0.9
-  smooth: true
+  marker_size: 8
+  marker_opacity: 0.18      # low opacity → overlapping points create density feel
   seed: 144
-  # Spike-only: tells the (future) processing path to bin observations into
-  # a 720×360 lat/lon grid and emit counts per cell, rather than a point list.
-  aggregate: density
-  resolution: 0.5
+  context_layer: coastline
 audio:
   drone_waveform: triangle
   drone_glide: 0.65

@@ -23,17 +23,16 @@ sources:
 schedule: daily
 
 # ⊓ creative controls ⊓
+# Falls back to scatter until #98 (particles track-mode) ships — editorial
+# title and description still convey the "animals as ocean sensors" reading.
 render:
-  type: particles
+  type: scatter
   colormap: thermal
-  opacity: 0.9
-  particle_count: 2000
-  tail_length: 18
-  speed_scale: 0.7
+  marker_size: 3
+  marker_opacity: 0.85
   seed: 73
-  # Spike-only: tells the particles sketch to advect along point-array
-  # tracks rather than from a u/v vector field.
-  source_mode: tracks
+  color_by: lat
+  context_layer: coastline
 audio:
   drone_waveform: triangle
   drone_glide: 0.55
