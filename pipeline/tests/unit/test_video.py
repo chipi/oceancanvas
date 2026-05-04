@@ -122,3 +122,35 @@ class TestAssembleVideo:
 
         assert result == out
         assert out.exists()
+
+    def test_hold_extends_concat_duration(self, tmp_path: Path):
+        """Record Moment hold: held frame's concat duration grows by hold_duration_sec."""
+        recipe_dir = tmp_path / "test"
+        recipe_dir.mkdir()
+        for i in range(5):
+            (recipe_dir / f"2025-0{i+1}-01.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
+        out = tmp_path / "out.mp4"
+
+        # Capture the concat file content before ffmpeg cleanup deletes it
+        captured: dict = {}
+        def fake_run(*args, **kwargs):
+            concat_path = out.with_suffix(".concat.txt")
+            captured["text"] = concat_path.read_text()
+            out.write_bytes(b"fake mp4")
+            return MagicMock(returncode=0)
+
+        with patch("oceancanvas.video.subprocess.run", side_effect=fake_run):
+            assemble_video(
+                "test", tmp_path, out,
+                fps=12,
+                overlay_date=False, overlay_attribution=False,
+                audio_params=None,
+                hold_at_frame=2,
+                hold_duration_sec=1.0,
+            )
+
+        text = captured["text"]
+        # Held frame (index 2 → "2025-03-01") gets duration ≈ 1/12 + 1.0 ≈ 1.0833
+        assert "duration 1.083333" in text
+        # Other frames get the normal 1/12s duration
+        assert "duration 0.083333" in text

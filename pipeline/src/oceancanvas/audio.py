@@ -70,6 +70,8 @@ def build_audio_track(
     params: AudioParams,
     fps: int,
     arc: list[float] | None = None,
+    hold_at_frame: int | None = None,
+    hold_duration_sec: float = 0.0,
     samples_dir: Path | None = None,
 ) -> Path:
     """Synthesise a four-layer audio track for one recipe export.
@@ -84,6 +86,13 @@ def build_audio_track(
         arc: Optional per-frame [0, 1] tension arc (RFC-011). When supplied,
             drone/pulse/accent/texture per-frame gains are multiplied by
             arc[frame]. Pass None or [] to disable (constant 1.0).
+        hold_at_frame: Optional frame index to "hold" (Record Moment, RFC-011).
+            Inserts ``hold_duration_sec * fps`` copies of that frame's data
+            (value, date, arc) immediately after, producing a sustained
+            audio segment that matches the visual hold in assemble_video.
+            Moments occurring after the hold get their frame indices shifted.
+        hold_duration_sec: Duration of the hold in seconds. Ignored when
+            ``hold_at_frame`` is None.
         samples_dir: Override for sample bank location (defaults to repo).
 
     Returns:
@@ -93,6 +102,12 @@ def build_audio_track(
     if not values:
         msg = "build_audio_track: values is empty"
         raise ValueError(msg)
+
+    # Inject Record Moment hold — extends arrays at the held frame so the audio
+    # stays in sync with the held video frame in assemble_video.
+    values, dates, arc, moments = _inject_hold(
+        values, dates, arc, moments, fps, hold_at_frame, hold_duration_sec,
+    )
 
     sr = SAMPLE_RATE
     duration = len(values) / fps
@@ -313,6 +328,66 @@ def _synth_texture(
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
+
+
+def _inject_hold(
+    values: list[float],
+    dates: list[str],
+    arc: list[float] | None,
+    moments: list[dict] | None,
+    fps: int,
+    hold_at_frame: int | None,
+    hold_duration_sec: float,
+) -> tuple[list[float], list[str], list[float] | None, list[dict] | None]:
+    """Extend per-frame arrays to "hold" the held frame's value for hold_duration_sec.
+
+    Insertion happens immediately after ``hold_at_frame``. Moments occurring
+    after the held frame get their frame indices shifted by hold_frames.
+    Returns possibly-new arrays; originals are not mutated.
+    """
+    if hold_at_frame is None or hold_duration_sec <= 0 or fps <= 0:
+        return values, dates, arc, moments
+    if hold_at_frame < 0 or hold_at_frame >= len(values):
+        return values, dates, arc, moments
+
+    hold_frames = max(1, int(round(hold_duration_sec * fps)))
+    held_value = values[hold_at_frame]
+    held_date = dates[hold_at_frame] if hold_at_frame < len(dates) else ""
+    held_arc = (
+        arc[hold_at_frame] if (arc and hold_at_frame < len(arc)) else None
+    )
+
+    new_values = (
+        list(values[: hold_at_frame + 1])
+        + [held_value] * hold_frames
+        + list(values[hold_at_frame + 1 :])
+    )
+    new_dates = (
+        list(dates[: hold_at_frame + 1])
+        + [held_date] * hold_frames
+        + list(dates[hold_at_frame + 1 :])
+    )
+    new_arc: list[float] | None = None
+    if arc is not None:
+        new_arc = (
+            list(arc[: hold_at_frame + 1])
+            + [held_arc if held_arc is not None else 1.0] * hold_frames
+            + list(arc[hold_at_frame + 1 :])
+        )
+
+    new_moments: list[dict] | None = None
+    if moments is not None:
+        new_moments = []
+        for m in moments:
+            f = int(m.get("frame", 0))
+            if f > hold_at_frame:
+                new_m = dict(m)
+                new_m["frame"] = f + hold_frames
+                new_moments.append(new_m)
+            else:
+                new_moments.append(m)
+
+    return new_values, new_dates, new_arc, new_moments
 
 
 def _align_arc(arc: list[float] | None, n_frames: int) -> np.ndarray:

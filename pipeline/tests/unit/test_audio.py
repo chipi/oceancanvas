@@ -12,6 +12,7 @@ from oceancanvas.audio import (
     AudioParams,
     _align_arc,
     _compute_intensity,
+    _inject_hold,
     _interp_to_samples,
     _synth_drone,
     build_audio_track,
@@ -79,6 +80,56 @@ class TestSynthDrone:
         # Half-arc should be roughly half RMS
         ratio = np.sqrt((quiet**2).mean()) / np.sqrt((loud**2).mean())
         assert 0.4 < ratio < 0.6
+
+
+class TestInjectHold:
+    def test_no_hold_returns_originals(self):
+        v, d, a, m = _inject_hold(
+            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.5, 0.5, 0.5], [{"frame": 1}],
+            fps=12, hold_at_frame=None, hold_duration_sec=0.0,
+        )
+        assert v == [1.0, 2.0, 3.0]
+        assert d == ["a", "b", "c"]
+        assert a == [0.5, 0.5, 0.5]
+        assert m == [{"frame": 1}]
+
+    def test_hold_extends_arrays(self):
+        v, d, a, m = _inject_hold(
+            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.0, 1.0, 0.0], [{"frame": 0}],
+            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+        )
+        # 12 hold frames inserted after index 1
+        assert len(v) == 3 + 12
+        assert v[1] == 2.0
+        assert v[2:14] == [2.0] * 12  # held copies
+        assert v[14] == 3.0  # original next frame
+
+    def test_arc_held_at_value(self):
+        v, d, a, _ = _inject_hold(
+            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.2, 0.7, 0.4], None,
+            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+        )
+        assert a is not None
+        # Hold copies the arc value at the held frame (0.7)
+        assert a[2:14] == [0.7] * 12
+
+    def test_moment_indices_shift(self):
+        v, d, a, m = _inject_hold(
+            [1.0, 2.0, 3.0, 4.0], ["a", "b", "c", "d"], None,
+            [{"frame": 1}, {"frame": 3}],  # one before/at, one after the held frame
+            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+        )
+        # Moment at frame 1 stays at frame 1 (it IS the held moment)
+        assert m[0]["frame"] == 1
+        # Moment at frame 3 shifts by hold_frames (12)
+        assert m[1]["frame"] == 15
+
+    def test_invalid_frame_returns_unchanged(self):
+        v, d, a, m = _inject_hold(
+            [1.0, 2.0], ["a", "b"], None, None,
+            fps=12, hold_at_frame=99, hold_duration_sec=1.0,
+        )
+        assert v == [1.0, 2.0]
 
 
 class TestAlignArc:

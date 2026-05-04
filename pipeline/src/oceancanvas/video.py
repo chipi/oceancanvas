@@ -37,6 +37,8 @@ def assemble_video(
     audio_dates: list[str] | None = None,
     audio_moments: list[dict] | None = None,
     tension_arc: list[float] | None = None,
+    hold_at_frame: int | None = None,
+    hold_duration_sec: float = 0.0,
 ) -> Path:
     """Assemble PNG renders into an MP4 video via ffmpeg.
 
@@ -77,13 +79,26 @@ def assemble_video(
         len(png_files), output_path, fps,
     )
 
-    # Create a concat file listing all PNGs with duration
+    # Create a concat file listing all PNGs with duration. If a Record Moment
+    # hold is requested (RFC-011 / PRD-006), the held frame is given a longer
+    # duration so the video lingers; build_audio_track gets the same hold so
+    # audio stays in sync.
     concat_path = output_path.with_suffix(".concat.txt")
     frame_duration = f"{1/fps:.6f}"
+    valid_hold = (
+        hold_at_frame is not None
+        and 0 <= hold_at_frame < len(png_files)
+        and hold_duration_sec > 0
+    )
     with concat_path.open("w") as f:
-        for png in png_files:
+        for i, png in enumerate(png_files):
             f.write(f"file '{png.resolve()}'\n")
-            f.write(f"duration {frame_duration}\n")
+            if valid_hold and i == hold_at_frame:
+                # Held frame gets the normal frame duration plus the extra hold
+                held = (1 / fps) + hold_duration_sec
+                f.write(f"duration {held:.6f}\n")
+            else:
+                f.write(f"duration {frame_duration}\n")
         # Repeat last frame to avoid ffmpeg cutting it short
         f.write(f"file '{png_files[-1].resolve()}'\n")
 
@@ -100,6 +115,8 @@ def assemble_video(
                 params=audio_params,
                 fps=fps,
                 arc=tension_arc,
+                hold_at_frame=hold_at_frame if valid_hold else None,
+                hold_duration_sec=hold_duration_sec if valid_hold else 0.0,
             )
         except Exception as e:  # noqa: BLE001
             logger.warning("Audio synthesis failed (%s) — exporting silent", e)

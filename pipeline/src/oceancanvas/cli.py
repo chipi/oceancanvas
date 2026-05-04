@@ -607,6 +607,8 @@ def export_video(
     audio_dates: list[str] | None = None
     audio_moments: list[dict] | None = None
     tension_arc: list[float] | None = None
+    hold_at_frame: int | None = None
+    hold_duration_sec: float = 0.0
 
     if not silent:
         recipe_path = RECIPES_DIR / f"{recipe}.yaml"
@@ -644,6 +646,16 @@ def export_video(
                     else None
                 )
                 tension_arc = expand_arc(arc_spec, len(audio_values), dominant_frame)
+
+                # Record Moment hold — when the arc pins to a key moment, the
+                # video lingers on that frame for ~1s and audio extends in step.
+                if arc_spec.pin_key_moment and dominant_frame is not None:
+                    hold_at_frame = dominant_frame
+                    hold_duration_sec = 1.0
+                else:
+                    hold_at_frame = None
+                    hold_duration_sec = 0.0
+
                 console.print(
                     f"  Audio:    {audio_params.drone_waveform} drone · "
                     f"{audio_params.accent_style} accents · {len(audio_moments)} moments"
@@ -652,6 +664,8 @@ def export_video(
                     f"  Arc:      {arc_spec.preset} preset"
                     + (f" · pinned to frame {dominant_frame}" if arc_spec.pin_key_moment and dominant_frame is not None else "")
                 )
+                if hold_at_frame is not None:
+                    console.print(f"  Hold:     {hold_duration_sec:.1f}s at frame {hold_at_frame}")
             else:
                 console.print("  [yellow]Audio: time-series not found, exporting silent[/yellow]")
                 audio_params = None
@@ -669,6 +683,8 @@ def export_video(
             audio_dates=audio_dates,
             audio_moments=audio_moments,
             tension_arc=tension_arc,
+            hold_at_frame=hold_at_frame,
+            hold_duration_sec=hold_duration_sec,
         )
         size_mb = result.stat().st_size / 1024 / 1024
         console.print(f"[green]Exported: {result} ({size_mb:.1f} MB)[/green]")
