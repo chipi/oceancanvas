@@ -1,16 +1,15 @@
-# whale-shark-realm — fifty years of sightings as a single density field.
-#
-# The intent: not one animal's path, but the whole species' realm. Bin every
-# whale-shark observation since the 1970s into a global lat/lon grid; render
-# as a heat field where bright regions are aggregation hotspots — Mafia
-# Island, Ningaloo, Galapagos, the Yucatán. The image is a portrait of where
-# this species has chosen to live across half a century.
-#
 # Status: NEEDS feature → issue #95 (gridded density variant in the OBIS
 # process task). Today the obis-* processed files emit per-point arrays;
 # this recipe needs an aggregated grid output.
 
 name: whale-shark-realm
+title: Whale shark — the realm
+description: >
+  Not one animal's path, but the whole species' realm. Every whale-shark
+  observation since the 1970s binned into a global lat/lon grid and rendered
+  as a heat field — bright regions are aggregation hotspots: Mafia Island,
+  Ningaloo, Galapagos, the Yucatán. The image is a portrait of where this
+  species has chosen to live across half a century.
 created: 2026-05-04
 author: chipi
 region:

@@ -1,19 +1,16 @@
-# whale-shark-currents — animal tracks as particle flow.
-#
-# The intent: the same trick the gulf-stream-thermal recipe pulls with
-# OISST gradients, but with whale-shark positions instead. Particles
-# advect along the actual paths the animals swam — every dot's trajectory
-# is a real shark's migration over hours and days. The image becomes a
-# portrait of the ocean's structure as read by the animals themselves.
-# Where they cluster reveals upwelling fronts; where they line up reveals
-# currents the satellites can't directly see.
-#
 # Status: NEEDS feature → issue #98 (particle-mode for point-array sources).
-# The particles sketch today expects a gridded vector field. Need a
-# track-mode that consumes per-animal time-ordered position arrays and
-# uses them as advection trajectories.
+# Particles sketch today expects a gridded vector field; needs a track-mode
+# that consumes per-animal time-ordered position arrays as advection paths.
 
 name: whale-shark-currents
+title: Whale shark — animals as ocean sensors
+description: >
+  The same trick gulf-stream-thermal pulls with SST gradients, but with
+  whale-shark positions instead. Particles advect along the actual paths the
+  animals swam — every dot's trajectory is a real shark's migration over
+  hours and days. The image becomes a portrait of the ocean's structure as
+  read by the animals themselves: where they cluster reveals upwelling
+  fronts, where they line up reveals currents the satellites can't see.
 created: 2026-05-04
 author: chipi
 region:

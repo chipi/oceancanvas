@@ -1,5 +1,10 @@
-# argo-scatter — Argo float positions as a point cloud
 name: argo-scatter
+title: Argo float positions
+description: >
+  The North Atlantic Argo array as a point cloud. Every dot is a robotic
+  float that surfaces every ten days to send a temperature-and-salinity
+  profile from 2000m up. The image is the network itself, not the readings —
+  twenty-five years of "where the scientists were looking."
 created: 2026-04-28
 author: chipi
 region:

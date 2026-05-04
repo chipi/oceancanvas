@@ -1,19 +1,16 @@
-# whale-shark-seasonal — sightings coloured by month, not by metric.
-#
-# The intent: reveal the annual rhythm of whale-shark presence. Same scatter
-# we already render, but each dot's colour is the month of the observation
-# (Jan blue · Apr green · Jul yellow · Oct red, looping back through the
-# colour wheel). Aggregation sites become legible by season — Mafia Island
-# blooms green/yellow in spring, Yucatán glows red in autumn — without any
-# new data. The track-record is already in the processed JSON; only the
-# colour assignment changes.
-#
 # Status: NEEDS feature → issue #96 (`color_by: month` parameter in scatter
-# sketch). The processed OBIS data already carries per-point dates, so the
-# pipeline side is a one-line render-payload pass-through; the visual change
-# is in sketches/scatter.js.
+# sketch). Processed OBIS data already carries per-point dates; the pipeline
+# side is a one-line render-payload pass-through, the visual change lives in
+# sketches/scatter.js.
 
 name: whale-shark-seasonal
+title: Whale shark — the annual rhythm
+description: >
+  Same scatter, different colour rule: each dot wears the month of its
+  observation (Jan blue, Apr green, Jul yellow, Oct red, looping). Aggregation
+  sites become legible by season — Mafia Island green in spring, Yucatán red
+  in autumn — without any new data. The track-record is already in the
+  processed JSON; only the colour assignment changes.
 created: 2026-05-04
 author: chipi
 region:

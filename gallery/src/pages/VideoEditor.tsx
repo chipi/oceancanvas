@@ -340,7 +340,7 @@ export function VideoEditor() {
       <header className={styles.topbar}>
         <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
         <span className={styles.topbarPath}>
-          /timelapse editor / {recipe}
+          /timelapse editor / {entry?.title || recipe}
         </span>
         <div className={styles.topbarActions}>
           <a href="/" className={styles.topbarLink}>← gallery</a>

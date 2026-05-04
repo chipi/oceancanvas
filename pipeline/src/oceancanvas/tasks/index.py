@@ -59,6 +59,8 @@ def _read_recipe_metadata(recipes_dir: Path, recipe_name: str) -> dict:
         return {
             "render_type": recipe.get("render", {}).get("type", "unknown"),
             "source": recipe.get("sources", {}).get("primary", "unknown"),
+            "title": recipe.get("title") or "",
+            "description": recipe.get("description") or "",
         }
     except Exception:
         return {}

@@ -1,19 +1,16 @@
-# leatherback-decades — one frame per decade, sixty-six years of migration.
-#
-# The intent: most timelapses move month by month. This one moves *decade
-# by decade*. Each frame aggregates every leatherback observation in a
-# ten-year window — 1957–1966, 1967–1976, ..., 2017–2026. Played end to
-# end, the timelapse asks the question that climate-decadal data only
-# whispers: is the species still using the same ocean? Where the dots
-# clustered tightly in the 1960s and where they cluster now is the answer.
-#
 # Status: NEEDS feature → issue #97 (decade-aggregation mode in the OBIS
-# process task). Today the pipeline emits one processed file per
-# observation date; this recipe needs the process task to honour a
-# `frame_grouping: decade` directive that produces 7-ish frames instead
-# of thousands.
+# process task). Today the pipeline emits one processed file per observation
+# date; this recipe needs `frame_grouping: decade` to produce 7-ish frames
+# instead of thousands.
 
 name: leatherback-decades
+title: Leatherback — sixty-six years, one frame per decade
+description: >
+  Most timelapses move month by month. This one moves decade by decade —
+  each frame is every leatherback observation in a ten-year window from
+  1957 onward. Played end to end, the timelapse asks what climate data
+  only whispers: is the species still using the same ocean? Where the
+  dots clustered in the 1960s and where they cluster now is the answer.
 created: 2026-05-04
 author: chipi
 region:

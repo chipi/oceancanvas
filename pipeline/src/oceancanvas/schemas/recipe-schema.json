@@ -11,6 +11,16 @@
       "pattern": "^[a-z0-9-]+$",
       "description": "Kebab-case slug — filesystem-safe, stable after creation"
     },
+    "title": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "Editorial title — short, evocative. Used as the recipe heading on gallery + detail surfaces. Optional; falls back to the slug."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 600,
+      "description": "Editorial paragraph — the 'why this recipe' argument in 1-3 sentences. Shown on the gallery detail page and as secondary text in the gallery grid. Optional."
+    },
     "created": {
       "type": "string",
       "format": "date",

@@ -1,19 +1,15 @@
-# whale-shark-on-sst — the species reading the ocean.
-#
-# The intent: the most direct biological story in the catalog. SST as the
-# background field; whale-shark observations as scatter dots overlaid on
-# top, showing where the animals chose to be. The story writes itself —
-# whale sharks aggregate along the 28°C isotherm, they avoid the cold
-# tongues, they move with the seasons. The image is the species reading
-# the ocean's temperature.
-#
-# Status: NEEDS feature → issue #99 (multi-source recipes — primary +
-# foreground in one render). Today every recipe runs a single render type
-# from one primary source. This recipe needs the schema to support a
-# layered render with two data sources and the renderer to composite
-# them in z-order.
+# Status: NEEDS feature → issue #99 (composite render type — multi-source
+# z-ordered layers). Today recipes run a single render type from one source;
+# this one needs schema for layered renders and a composite sketch.
 
 name: whale-shark-on-sst
+title: Whale shark — reading the ocean
+description: >
+  The most direct biological story in the catalog. SST as the background
+  field; whale-shark observations as scatter dots overlaid on top, showing
+  where the animals chose to be. Whale sharks aggregate along the 28°C
+  isotherm, avoid the cold tongues, move with the seasons. The image is
+  the species reading the ocean's temperature.
 created: 2026-05-04
 author: chipi
 region:

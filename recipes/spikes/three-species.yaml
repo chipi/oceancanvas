@@ -1,18 +1,16 @@
-# three-species — the ocean as three species perceive it.
-#
-# The intent: every animal reads the ocean differently. Whale shark
-# (surface, warm, equatorial), leatherback (surface and column, cold-edge
-# chaser, hemispheric migrant), elephant seal (deep, polar, slope-locked).
-# Render all three on the same canvas, each species colour-coded, each
-# layer at its own opacity. The composite is a single image of the ocean
-# being interpreted three ways at once — the same water yielding three
-# different stories.
-#
-# Status: NEEDS feature → issue #100 (multi-primary-source composite render).
-# Builds on the same composite primitive whale-shark-on-sst (#99) needs,
-# but with three foreground layers and no field background.
+# Status: NEEDS feature → issue #99 (composite render type with multiple
+# foreground layers). Same primitive whale-shark-on-sst needs, but with
+# three foreground point-cloud layers and no field background.
 
 name: three-species
+title: Three species, one ocean
+description: >
+  Every animal reads the ocean differently. Whale shark (surface, warm,
+  equatorial), leatherback (cold-edge, hemispheric migrant), elephant seal
+  (deep, polar, slope-locked). Render all three on the same canvas, each
+  species colour-coded, each layer at its own opacity. The composite is a
+  single image of the ocean being interpreted three ways at once — the same
+  water yielding three different stories.
 created: 2026-05-04
 author: chipi
 region:

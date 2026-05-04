@@ -87,7 +87,10 @@ export function Gallery() {
                 onError={handleImgError}
               />
               <div className={styles.tileOverlay}>
-                <div className={styles.tileName}>{recipe.name}</div>
+                <div className={styles.tileName}>{recipe.title || recipe.name}</div>
+                {recipe.description && (
+                  <div className={styles.tileDescription}>{recipe.description}</div>
+                )}
                 <div className={styles.tileMeta}>
                   {recipe.render_type} · {recipe.source} · {recipe.latest}
                 </div>

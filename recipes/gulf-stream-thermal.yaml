@@ -1,5 +1,10 @@
-# gulf-stream-thermal — particles tracing SST gradient along the Gulf Stream
 name: gulf-stream-thermal
+title: Thermal trace of the Gulf Stream
+description: >
+  Particles tracing the surface temperature gradient where Florida warmth
+  meets Labrador cold. The image isn't of currents, technically — it's of
+  the SST gradient that the currents produce. The animals know the
+  difference; the image makes it visible.
 created: 2026-04-28
 author: chipi
 region:

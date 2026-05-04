@@ -79,10 +79,13 @@ export function GalleryDetail() {
               onError={handleImgError}
             />
             <div className={styles.overlay}>
-              <div className={styles.recipeName}>{entry.name}</div>
+              <div className={styles.recipeName}>{entry.title || entry.name}</div>
               <div className={styles.recipeMeta}>
                 {entry.render_type} · {entry.count} render{entry.count !== 1 ? 's' : ''}
               </div>
+              {entry.description && (
+                <div className={styles.recipeDescription}>{entry.description}</div>
+              )}
             </div>
           </div>
 

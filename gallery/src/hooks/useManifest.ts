@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 export interface RecipeEntry {
   name: string;
+  title?: string;
+  description?: string;
   render_type?: string;
   source?: string;
   dates: string[];

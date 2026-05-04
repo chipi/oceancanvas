@@ -1,5 +1,10 @@
-# north-atlantic-sst — the first OceanCanvas recipe
 name: north-atlantic-sst
+title: North Atlantic SST
+description: >
+  The first OceanCanvas recipe — the basin where everything starts. Gulf
+  Stream warmth meeting the Labrador outflow, deep-water formation pulling
+  cold water down at Fram Strait, the great conveyor turning over. Forty-five
+  years of monthly OISST as a thermal field across the North Atlantic.
 created: 2026-04-25
 author: chipi
 region:

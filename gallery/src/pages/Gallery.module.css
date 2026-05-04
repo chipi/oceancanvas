@@ -138,10 +138,22 @@
   color: var(--text);
 }
 
+.tileDescription {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .tileMeta {
   font-size: 10px;
-  color: var(--text-secondary);
-  margin-top: 2px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
 }
 
 /* States */

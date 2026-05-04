@@ -1,17 +1,14 @@
-# elephant-seal-bathymetry — tracks against the seafloor.
-#
-# The intent: the existing elephant-seal recipe shows tracks on the bare
-# canvas with a coastline overlay. But elephant seals don't roam randomly —
-# they follow the continental slope and seamounts almost obsessively, diving
-# to 1500m+ along bathymetric contours. Show the seabed underneath the
-# tracks and the foraging strategy becomes obvious. The data is the same;
-# the context layer turns it into a different story.
-#
 # Status: READY today. Sketches/scatter.js already supports
-# `context_layer: bathymetry`. Promote out of `spikes/` to start
-# rendering daily.
+# `context_layer: bathymetry`. Promote out of `spikes/` to start rendering daily.
 
 name: elephant-seal-bathymetry
+title: Elephant seal — against the seafloor
+description: >
+  Elephant seals don't roam randomly. They follow the continental slope and
+  seamounts almost obsessively, diving to 1500m+ along bathymetric contours.
+  Show the seabed underneath the tracks and the foraging strategy becomes
+  obvious — the data is the same as the elephant-seal recipe, only the
+  context layer changes.
 created: 2026-05-04
 author: chipi
 region:

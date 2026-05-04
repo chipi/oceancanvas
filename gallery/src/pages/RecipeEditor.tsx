@@ -22,6 +22,8 @@ export function RecipeEditor() {
   const [recipeState, setRecipeState] = useState<RecipeState>('matched');
   const [processedData, setProcessedData] = useState<ProcessedData | null>(null);
   const [recipeName, setRecipeName] = useState(id || 'new-recipe');
+  const [recipeTitle, setRecipeTitle] = useState('');
+  const [recipeDescription, setRecipeDescription] = useState('');
   const [renderType, setRenderType] = useState('field');
   const [loadedParams, setLoadedParams] = useState<Record<string, unknown> | null>(null);
   const [originalCreative, setOriginalCreative] = useState<CreativeState | null>(null);
@@ -77,6 +79,15 @@ export function RecipeEditor() {
           setRecipeName(id);
           const typeMatch = text.match(/type:\s*(\w+)/);
           if (typeMatch) setRenderType(typeMatch[1]);
+          // Editorial title + description (optional fields). Match `title: …`
+          // on a single line and `description: >` block scalars on multiple.
+          const titleMatch = text.match(/^title:\s*(.+)$/m);
+          if (titleMatch) setRecipeTitle(titleMatch[1].trim().replace(/^["']|["']$/g, ''));
+          const descMatch = text.match(/^description:\s*>\s*\n((?:\s{2,}.*\n)+)/m);
+          if (descMatch) {
+            const dedented = descMatch[1].split('\n').map((l) => l.trim()).filter(Boolean).join(' ');
+            setRecipeDescription(dedented);
+          }
           // Extract actual render params so preview matches the pipeline render
           const params = extractRenderParams(text);
           if (Object.keys(params).length > 0) {
@@ -117,6 +128,10 @@ export function RecipeEditor() {
     if (mode === 'creative') {
       const yaml = [
         `name: ${recipeName}`,
+        ...(recipeTitle ? [`title: ${recipeTitle}`] : []),
+        ...(recipeDescription
+          ? [`description: >`, ...recipeDescription.match(/.{1,72}(\s|$)/g)?.map((l) => `  ${l.trim()}`) ?? [`  ${recipeDescription}`]]
+          : []),
         `region:`,
         `  lat: [${region.lat[0]}, ${region.lat[1]}]`,
         `  lon: [${region.lon[0]}, ${region.lon[1]}]`,
@@ -135,7 +150,7 @@ export function RecipeEditor() {
       setYamlText(yaml);
       setRecipeState('matched');
     }
-  }, [creativeState, mode, recipeName, region, technical, audio, renderType]);
+  }, [creativeState, mode, recipeName, recipeTitle, recipeDescription, region, technical, audio, renderType]);
 
   const handleModeSwitch = useCallback((newMode: 'creative' | 'yaml') => {
     if (newMode === 'creative' && mode === 'yaml') {
@@ -229,6 +244,28 @@ export function RecipeEditor() {
           <div className={styles.controlBody}>
             {mode === 'creative' ? (
               <>
+                {/* Editorial title + description — what readers see in the
+                    gallery and detail pages, distinct from the slug. */}
+                <div className={styles.editorialBlock}>
+                  <label className={styles.editorialLabel}>Title</label>
+                  <input
+                    type="text"
+                    className={styles.editorialInput}
+                    value={recipeTitle}
+                    onChange={(e) => setRecipeTitle(e.target.value)}
+                    placeholder="e.g. North Atlantic SST"
+                    maxLength={80}
+                  />
+                  <label className={styles.editorialLabel}>Description</label>
+                  <textarea
+                    className={styles.editorialTextarea}
+                    value={recipeDescription}
+                    onChange={(e) => setRecipeDescription(e.target.value)}
+                    placeholder="One or two sentences arguing for this recipe — the editorial 'why'."
+                    maxLength={600}
+                    rows={3}
+                  />
+                </div>
                 <CreativeControls
                   state={creativeState}
                   onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}
