@@ -195,6 +195,26 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
             context_data = json.loads(context_path.read_text())
             payload["data"]["context"] = _crop_to_region(context_data, region["lat"], region["lon"])
 
+    # Load foreground source(s) for composite renders (e.g. SST field with
+    # whale-shark scatter dots overlaid). OBIS sources use latest.json for
+    # the all-time aggregated point cloud; other sources fall back to the
+    # same date as the primary render.
+    foreground_id = recipe.get("sources", {}).get("foreground")
+    if foreground_id:
+        fg_ids = [foreground_id] if isinstance(foreground_id, str) else list(foreground_id)
+        foreground_layers = []
+        for fid in fg_ids:
+            fg_dir = processed_dir / fid
+            fg_path = fg_dir / "latest.json" if fid.startswith("obis-") else fg_dir / f"{date}.json"
+            if fg_path.exists():
+                fg_data = json.loads(fg_path.read_text())
+                foreground_layers.append({
+                    "source_id": fid,
+                    **_crop_to_region(fg_data, region["lat"], region["lon"]),
+                })
+        if foreground_layers:
+            payload["data"]["foreground"] = foreground_layers if len(foreground_layers) > 1 else foreground_layers[0]
+
     # Load coastline GeoJSON if available (shared across all scatter renders)
     # Check common locations: project root sketches/, Docker /sketches/
     coastline_path = None
@@ -206,7 +226,7 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
         if candidate.exists():
             coastline_path = candidate
             break
-    if coastline_path and render.get("type") == "scatter":
+    if coastline_path and render.get("type") in ("scatter", "composite"):
         coastline = json.loads(coastline_path.read_text())
         payload["data"]["coastline"] = coastline.get("features", [])
 
