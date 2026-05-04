@@ -72,7 +72,11 @@ Phase 1 ships:
 - All four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor
 - Generative audio (RFC-010 → ADR-027) and tension-arc audio-video coupling (RFC-011 → ADR-028)
 
-Phase 2 (later) will add public hosting and additional editorial features. Phase 1 stays open-by-default, file-based, and self-hostable.
+**Phase 2 — data source expansion (in progress).** OC-03 specs 15 sources; Phase 1 lit up four (OISST, Argo, OBIS, GEBCO). Phase 2 brings the rest in three tiers: tier 1 — Sea Level, Salinity, Chlorophyll (the editorial heavyweights); tier 2 — Sea Ice, OSCAR currents, Coral Reef Watch (visual variety); tier 3 — NDBC buoys, WOA23, HadSST4 (point + climatology). Tracked across milestones [v0.6.0](https://github.com/chipi/oceancanvas/milestone/6) / [v0.7.0](https://github.com/chipi/oceancanvas/milestone/7) / [v0.8.0](https://github.com/chipi/oceancanvas/milestone/8).
+
+**Phase 3 — public hosting.** Cloudflare R2 for renders, custom domain, social share cards. Deferred until Phase 2 has more for visitors to look at.
+
+The whole thing stays open-by-default, file-based, and self-hostable across all three phases.
 
 ---
 

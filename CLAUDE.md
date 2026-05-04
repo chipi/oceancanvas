@@ -246,13 +246,29 @@ Phase 1 ships:
 
 Phase 1 does not ship:
 
-- Public hosting (Cloudflare R2, custom domain, social share cards). Phase 2.
-- Multi-source dashboard beyond SST. Phase 2.
+- More than four data sources (the rest of OC-03's 15-source catalog). Phase 2.
+- Public hosting (Cloudflare R2, custom domain, social share cards). Phase 3.
 - Multi-author recipes. Deferred indefinitely (ADR-016).
 - Authentication, accounts, API keys. Outside Phase 1 scope.
 - Real-time alerts, monitoring, watch-lists. Not within the project's frame.
 
-Anything outside Phase 1 scope, when it comes up, becomes a Phase 2 PRD or stays deferred. Don't quietly extend Phase 1.
+---
+
+## Phase 2 scope — data source expansion
+
+Phase 1 lit up four sources (OISST · Argo · OBIS biologging · GEBCO). OC-03 specs 15. Phase 2 brings the remainder in three tiers, milestoned v0.6.0 / v0.7.0 / v0.8.0.
+
+- **Tier 1 (v0.6.0) — editorial heavyweights.** ESA Sea Level CCI, ESA SSS-CCI Salinity, ESA OC-CCI Chlorophyll. The three CCI sources that carry the strongest climate-storytelling weight.
+- **Tier 2 (v0.7.0) — visual variety.** NSIDC Sea Ice Index, NOAA OSCAR Currents, NOAA Coral Reef Watch. New render-type fits (particles for currents, pulse for sea-ice extent).
+- **Tier 3 (v0.8.0) — point and climatology.** NDBC Buoys, NOAA WOA23, UK Met Office HadSST4. Scatter recipes and historical-baseline context layers.
+
+Each source: pipeline integration (discover/fetch/process), 1–3 authored recipes, dashboard source-rail entry, ADR if anything non-trivial surfaces. The locked-stack constraints still hold — file-based, no auth, deterministic, self-hostable.
+
+## Phase 3 scope — public hosting
+
+Cloudflare R2 push from the pipeline, static gallery served from R2 + Cloudflare on a custom domain, social share cards per recipe and per timelapse. Deferred until Phase 2 has given visitors more to look at.
+
+Anything outside the current phase's scope, when it comes up, becomes a later-phase PRD or stays deferred. Don't quietly extend the current phase.
 
 ---
 
