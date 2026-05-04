@@ -1,5 +1,10 @@
 # OceanCanvas
 
+[![CI](https://img.shields.io/github/actions/workflow/status/chipi/oceancanvas/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/chipi/oceancanvas/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/chipi/oceancanvas?style=flat-square&color=5DCAA5&label=release)](https://github.com/chipi/oceancanvas/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-5DCAA5.svg?style=flat-square)](LICENSE)
+[![Phase 1](https://img.shields.io/badge/phase-1-5DCAA5.svg?style=flat-square)](docs/concept/00-package-introduction.md)
+
 > Generative ocean art that the data performs daily.
 
 ![OceanCanvas gallery — accumulated daily renders across multiple recipes](docs/concept/images/gallery_front_page.png)
