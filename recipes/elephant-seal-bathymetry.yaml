@@ -1,5 +1,5 @@
 # Status: READY today. Sketches/scatter.js already supports
-# `context_layer: bathymetry`. Promote out of `spikes/` to start rendering daily.
+# `context_layer: coastline`. Promote out of `spikes/` to start rendering daily.
 
 name: elephant-seal-bathymetry
 title: Elephant seal — against the seafloor
@@ -27,7 +27,7 @@ render:
   marker_size: 4
   marker_opacity: 0.85
   seed: 451
-  context_layer: bathymetry
+  context_layer: coastline
 audio:
   drone_waveform: sine
   drone_glide: 0.9

@@ -32,7 +32,7 @@ render:
   colormap: thermal
   marker_size: 4
   marker_opacity: 0.7
-  context_layer: bathymetry
+  context_layer: coastline
 audio:
   drone_waveform: triangle
   drone_glide: 0.6

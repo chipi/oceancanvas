@@ -30,7 +30,7 @@ render:
   marker_opacity: 0.55
   seed: 1957
   color_by: year                # falls back to value when scatter sketch lacks #96
-  context_layer: bathymetry
+  context_layer: coastline
 audio:
   drone_waveform: sine
   drone_glide: 0.8
