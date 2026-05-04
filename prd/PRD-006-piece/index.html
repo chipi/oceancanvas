@@ -1997,7 +1997,7 @@
 
 <h1 id="prd-006-the-piece">PRD-006 — The piece</h1>
 <blockquote>
-<p><strong>Status</strong> · Draft v0.1 · May 2026
+<p><strong>Status</strong> · Accepted · May 2026 (v0.5.0 implementation closed via <a href="../../adr/ADR-028-tension-arc-shared-curve/">ADR-028</a>)
 <strong>Sources</strong> · OC-02 §Surface 4 · OC-04 §Video editor · OC-05 §Video editor
 <strong>Audiences</strong> · artist, climate-communicator, curious-person (PA §audiences)
 <strong>Promises</strong> · <em>grounded</em>, <em>editorial-dignity</em>, <em>accumulation</em> (PA §promises)
@@ -2037,10 +2037,11 @@
 <p>Counter-evidence we want: a viewer naming the held moment unprompted, or describing the rhythm of the piece without referencing data values. What kills the threat: the held moment being legible enough that it reads as authorship. The arc has to feel like a decision, not a setting.</p>
 <h2 id="open-threads">Open threads</h2>
 <ul>
-<li><strong>RFC-011 — Tension arc as shared primitive.</strong> Architecture for the audio engine, ffmpeg filter graph, and rate scheduler to consume the same array deterministically. Closes into ADR-028 once implementation forces the decision.</li>
-<li><strong>UXS-005 update.</strong> The Video Editor surface contract gains the arc editor block.</li>
-<li><strong>PRD-007 — Modal scales.</strong> Audio musicality, second pass. Drafts after this PRD reviews.</li>
-<li><strong>Phase 4 PRDs.</strong> Timeframe-mixing pieces (ghost accumulation, temporal split, rewind). Each is its own PRD when the time comes; all of them build on the arc primitive locked here.</li>
+<li>~~<strong>RFC-011 — Tension arc as shared primitive.</strong>~~ Closed v0.5.0 → <a href="../../adr/ADR-028-tension-arc-shared-curve/">ADR-028</a>.</li>
+<li><strong>UXS-005 update.</strong> The Video Editor surface contract gains the arc editor block (landed in <a href="../../uxs/UXS-005-video-editor/">UXS-005</a> §"Audio sidebar").</li>
+<li><strong>PRD-007 — Modal scales.</strong> Audio musicality, second pass. Drafts when this milestone retrospective is in.</li>
+<li><strong>Phase 4 PRDs.</strong> Timeframe-mixing pieces (ghost accumulation, temporal split, rewind). Each is its own PRD when the time comes; all of them build on the arc primitive locked in ADR-028.</li>
+<li><strong>Audio "drop to drone only" at held moment.</strong> This PRD's lede describes the music <em>reducing to a single sustained note</em> at the record frame. v0.5.0 implementation amplifies all layers at the arc peak; refining peak behaviour to suppress sequence + accent so only pad holds is a polish pass.</li>
 </ul>
 <h2 id="links">Links</h2>
 <ul>

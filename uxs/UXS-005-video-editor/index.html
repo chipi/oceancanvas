@@ -2413,6 +2413,24 @@
 <td>"El Niño peak fr.54" / "Record high fr.348" / "Acceleration fr.378"</td>
 </tr>
 <tr>
+<td><strong>Channel mixer + EQ block</strong></td>
+<td>Below the waveform inside AUDIO</td>
+<td>two-column grid: left = 4 channel rows (pad / pulse / accent / texture) with mute toggle + slim volume slider; right = 3 EQ bands (bass / mid / treble) with slim sliders and dB readout; mute strikes through the channel label and dims to <code>text-disabled</code></td>
+<td>per ADR-027 mixer + EQ surface</td>
+</tr>
+<tr>
+<td><strong>Tension arc editor</strong></td>
+<td>Below the mixer + EQ inside AUDIO</td>
+<td>small SVG curve preview (~280×50px) in <code>surface</code> 4% tint with <code>border</code> 1px, intent-teal curve at 85% opacity, draggable peak handle as <code>intent-info</code> filled circle with <code>canvas</code> 1.5px stroke; below the curve a row of 5 preset pills (none / classic / plateau / drift / invert) with active in <code>intent-teal</code> border + tint, inactive in <code>text-muted</code> border; below the pills, optional pin toggle row (<code>accent-color: intent-teal</code>) showing "pin peak to record moment (frame N)" in <code>text-muted</code> <code>type-axis</code></td>
+<td>per ADR-028 — author-facing arc surface</td>
+</tr>
+<tr>
+<td><strong>Arc overlay (on waveform)</strong></td>
+<td>Painted over the waveform canvas</td>
+<td>thin guide line at ~28% opacity tracing arc[t] across canvas height; live indicator dot at currentFrame in <code>rgba(180, 220, 255, 0.9)</code> 2.5px filled circle</td>
+<td>per ADR-028 — visualizer reads engine state, not parallel math</td>
+</tr>
+<tr>
 <td><strong>OVERLAYS section</strong></td>
 <td>Bottom of right panel</td>
 <td>header <code>text-muted</code> <code>type-label</code>; rows: status dot + label + sublabel; enabled overlays use <code>videoeditor-overlay-on</code>; disabled use <code>videoeditor-overlay-off</code></td>
