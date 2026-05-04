@@ -68,9 +68,13 @@ function curveValue(preset, t, peakPosition, peakHeight, releaseSteepness) {
   }
 }
 
+const VALID_PRESETS = ['classic', 'plateau', 'drift', 'invert', 'none'];
+
 function expandArc(spec, totalFrames, dominantMomentFrame = null) {
   if (totalFrames <= 0) return [];
   if (spec.preset === 'none') return new Array(totalFrames).fill(1.0);
+  // Mirror tensionArc.ts: unknown preset string → silent fallback (1.0)
+  if (!VALID_PRESETS.includes(spec.preset)) return new Array(totalFrames).fill(1.0);
 
   let peakPosition = clamp(spec.peak_position, 0, 1);
   if (spec.pin_key_moment && dominantMomentFrame !== null && totalFrames > 1) {

@@ -40,3 +40,12 @@ Plain JSON is verbose but debuggable — any render issue can be diagnosed by in
 - Browser builder: `gallery/src/lib/payloadBuilder.ts`
 - NaN constant: `pipeline/src/oceancanvas/constants.py` (`NAN_VALUE = -999.0`) and `sketches/shared.js`
 - Payload files: `data/payloads/{recipe}__{date}.json`
+
+## Schema additions since acceptance
+
+The payload's `recipe` block is open-ended — additional fields may be carried alongside `render` without breaking the contract. Additions to date:
+
+- **`recipe.audio`** (v0.4.0, [ADR-027](ADR-027-generative-audio-composition.md)) — generative audio character. Optional. The recipe's `audio:` YAML block round-trips here; consumers (browser audio engine, pipeline `audio.py`) read it at use time.
+- **`recipe.tension_arc`** (v0.5.0, [ADR-028](ADR-028-tension-arc-shared-curve.md)) — tension-arc spec (preset + 3 shaping params + `pin_key_moment`). Optional. The **spec** travels through the payload, **not** the expanded per-frame array — each consumer expands via the cross-validated `tensionArc.ts` / `arc.py` with its own `totalFrames` and dominant-moment-frame context. This keeps per-frame payloads small (~150 bytes for the spec vs ~5 KB for an expanded 534-float array).
+
+Payload version bumped to **2** at v0.5.0 to mark the `tension_arc` field's appearance. v1 payloads remain readable by v2 consumers (missing field → constant 1.0).

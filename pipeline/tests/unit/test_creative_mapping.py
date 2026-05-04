@@ -1,5 +1,7 @@
 """Tests for creative-to-technical parameter mapping."""
 
+import pytest
+
 from oceancanvas.creative_mapping import MOOD_PRESETS, creative_to_technical
 
 
@@ -115,3 +117,30 @@ class TestCreativeToAudio:
         assert py["presence"] == 0.72
         assert py["accent_style"] == "chime"
         assert py["texture_density"] == 0.42
+
+
+# ─── Cross-validation fixtures (TS ↔ Py parity, ADR-027) ─────────────────
+
+import json as _json
+from pathlib import Path as _Path
+
+_AUDIO_FIXTURE_PATH = (
+    _Path(__file__).parent.parent.parent.parent
+    / "tests"
+    / "cross-validation"
+    / "creative_audio_fixtures.json"
+)
+with _AUDIO_FIXTURE_PATH.open() as _f:
+    _AUDIO_FIXTURES = _json.load(_f)
+
+
+@pytest.mark.parametrize("case", _AUDIO_FIXTURES, ids=lambda c: c["name"])
+def test_creative_to_audio_matches_typescript(case: dict) -> None:
+    """ADR-027 cross-validation: Py creative_to_audio must produce
+    byte-identical output to the shared fixture (generated from TS).
+    Re-generate via ``node scripts/build-creative-audio-fixtures.mjs``."""
+    result = creative_to_audio(case["input"])
+    assert result == case["expected"], (
+        f"audio mapping drift for {case['name']}: "
+        f"got {result}, expected {case['expected']}"
+    )

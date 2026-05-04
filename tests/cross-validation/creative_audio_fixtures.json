@@ -1,0 +1,236 @@
+[
+  {
+    "name": "Becalmed",
+    "input": {
+      "mood": "Becalmed",
+      "energy_x": 0.2,
+      "energy_y": 0.6,
+      "colour_character": 0.3,
+      "temporal_weight": 0.4
+    },
+    "expected": {
+      "drone_waveform": "sine",
+      "drone_glide": 0.4,
+      "pulse_sensitivity": 0.2,
+      "presence": 0.72,
+      "accent_style": "chime",
+      "texture_density": 0.42
+    }
+  },
+  {
+    "name": "Deep current",
+    "input": {
+      "mood": "Deep current",
+      "energy_x": 0.4,
+      "energy_y": 0.8,
+      "colour_character": 0.4,
+      "temporal_weight": 0.7
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.7,
+      "pulse_sensitivity": 0.4,
+      "presence": 0.86,
+      "accent_style": "bell",
+      "texture_density": 0.51
+    }
+  },
+  {
+    "name": "Storm surge",
+    "input": {
+      "mood": "Storm surge",
+      "energy_x": 0.9,
+      "energy_y": 0.3,
+      "colour_character": 0.5,
+      "temporal_weight": 0.6
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.6,
+      "pulse_sensitivity": 0.9,
+      "presence": 0.51,
+      "accent_style": "ping",
+      "texture_density": 0.28
+    }
+  },
+  {
+    "name": "Surface shimmer",
+    "input": {
+      "mood": "Surface shimmer",
+      "energy_x": 0.5,
+      "energy_y": 0.5,
+      "colour_character": 0.6,
+      "temporal_weight": 0.3
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.3,
+      "pulse_sensitivity": 0.5,
+      "presence": 0.65,
+      "accent_style": "ping",
+      "texture_density": 0.38
+    }
+  },
+  {
+    "name": "Arctic still",
+    "input": {
+      "mood": "Arctic still",
+      "energy_x": 0.1,
+      "energy_y": 0.9,
+      "colour_character": 0,
+      "temporal_weight": 0.8
+    },
+    "expected": {
+      "drone_waveform": "sine",
+      "drone_glide": 0.8,
+      "pulse_sensitivity": 0.1,
+      "presence": 0.93,
+      "accent_style": "drop",
+      "texture_density": 0.55
+    }
+  },
+  {
+    "name": "custom-energy-x-high",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.8,
+      "energy_y": 0.5,
+      "colour_character": 0.5,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.8,
+      "presence": 0.65,
+      "accent_style": "ping",
+      "texture_density": 0.38
+    }
+  },
+  {
+    "name": "custom-energy-y-high",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.4,
+      "energy_y": 0.8,
+      "colour_character": 0.5,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.4,
+      "presence": 0.86,
+      "accent_style": "bell",
+      "texture_density": 0.51
+    }
+  },
+  {
+    "name": "custom-energy-y-low",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.4,
+      "energy_y": 0.2,
+      "colour_character": 0.5,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.4,
+      "presence": 0.44,
+      "accent_style": "drop",
+      "texture_density": 0.24
+    }
+  },
+  {
+    "name": "custom-mid",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.4,
+      "energy_y": 0.4,
+      "colour_character": 0.5,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "triangle",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.4,
+      "presence": 0.58,
+      "accent_style": "chime",
+      "texture_density": 0.33
+    }
+  },
+  {
+    "name": "custom-arctic-colour",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.5,
+      "energy_y": 0.5,
+      "colour_character": 0,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "sine",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.5,
+      "presence": 0.65,
+      "accent_style": "chime",
+      "texture_density": 0.38
+    }
+  },
+  {
+    "name": "custom-otherworldly",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0.5,
+      "energy_y": 0.5,
+      "colour_character": 1,
+      "temporal_weight": 0.5
+    },
+    "expected": {
+      "drone_waveform": "sawtooth",
+      "drone_glide": 0.5,
+      "pulse_sensitivity": 0.5,
+      "presence": 0.65,
+      "accent_style": "chime",
+      "texture_density": 0.38
+    }
+  },
+  {
+    "name": "all-zeros",
+    "input": {
+      "mood": "custom",
+      "energy_x": 0,
+      "energy_y": 0,
+      "colour_character": 0,
+      "temporal_weight": 0
+    },
+    "expected": {
+      "drone_waveform": "sine",
+      "drone_glide": 0,
+      "pulse_sensitivity": 0,
+      "presence": 0.3,
+      "accent_style": "drop",
+      "texture_density": 0.15
+    }
+  },
+  {
+    "name": "all-ones",
+    "input": {
+      "mood": "custom",
+      "energy_x": 1,
+      "energy_y": 1,
+      "colour_character": 1,
+      "temporal_weight": 1
+    },
+    "expected": {
+      "drone_waveform": "sawtooth",
+      "drone_glide": 1,
+      "pulse_sensitivity": 1,
+      "presence": 1,
+      "accent_style": "ping",
+      "texture_density": 0.6
+    }
+  }
+]

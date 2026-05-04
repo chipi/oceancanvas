@@ -276,3 +276,57 @@ class TestBuildAudioTrack:
         build_audio_track(a, **common, arc=None)
         build_audio_track(b, **common, arc=[1.0] * 24)
         assert a.read_bytes() == b.read_bytes()
+
+    def test_arc_hold_determinism(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """Determinism for the new RFC-011 params: same arc + same hold → same WAV."""
+        kwargs = dict(
+            values=list(np.linspace(15, 25, 24)),
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[{"frame": 12, "type": "record", "label": "Record high"}],
+            params=AudioParams(drone_waveform="sawtooth", pulse_sensitivity=0.6),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+            arc=[0.1 + i * 0.04 for i in range(24)],
+            hold_at_frame=12,
+            hold_duration_sec=0.5,
+        )
+        a = tmp_path / "a.wav"
+        b = tmp_path / "b.wav"
+        build_audio_track(a, **kwargs)
+        build_audio_track(b, **kwargs)
+        assert a.read_bytes() == b.read_bytes()
+
+    def test_arc_quarter_significantly_quieter_than_full(
+        self, tmp_path: Path, synthetic_samples_dir: Path,
+    ):
+        """Stronger arc-amplitude check: arc=[0.25,...] should drop RMS to roughly 1/4
+        of arc=[1.0,...]. Catches a class of bugs where arc gets clipped or
+        ignored on some layers but not others."""
+        import wave as _wave
+
+        def _rms(path: Path) -> float:
+            with _wave.open(str(path), "rb") as w:
+                frames = w.readframes(w.getnframes())
+            ints = np.frombuffer(frames, dtype=np.int16).astype(np.float64) / 32767
+            return float(np.sqrt((ints**2).mean()))
+
+        common = dict(
+            values=list(np.full(24, 0.5)),  # constant pitch
+            dates=[f"2020-{(i % 12) + 1:02d}" for i in range(24)],
+            moments=[],
+            params=AudioParams(),
+            fps=12,
+            samples_dir=synthetic_samples_dir,
+        )
+        loud = tmp_path / "loud.wav"
+        quiet = tmp_path / "quiet.wav"
+        build_audio_track(loud, **common, arc=[1.0] * 24)
+        build_audio_track(quiet, **common, arc=[0.25] * 24)
+        loud_rms = _rms(loud)
+        quiet_rms = _rms(quiet)
+        # Loud must be at least 2x louder than quiet (allowing for non-linear
+        # interactions across layers; 4x is the ideal but layers like accent
+        # don't fire when moments=[] so the ratio sits between 2× and 4×).
+        assert loud_rms > quiet_rms * 2, f"loud {loud_rms} should be ≥2x quiet {quiet_rms}"

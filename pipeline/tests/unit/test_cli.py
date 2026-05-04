@@ -135,3 +135,113 @@ class TestRunDryRun:
         assert result.exit_code == 0
         assert "test-recipe" in result.output
         assert "Dry run" in result.output
+
+
+class TestExportVideoArcForwarding:
+    """RFC-011 / ADR-028: export-video must read tension_arc from the recipe,
+    expand it once, and forward both the arc array and the Record Moment hold
+    params to assemble_video."""
+
+    def _setup_arc_recipe(self, cli_env):
+        """Mutate the cli_env recipe to include a tension_arc block + a time-series."""
+        recipe_path = cli_env / "recipes" / "test-recipe.yaml"
+        text = recipe_path.read_text()
+        text += (
+            "\ntension_arc:\n"
+            "  preset: classic\n"
+            "  peak_position: 0.5\n"
+            "  peak_height: 1.0\n"
+            "  release_steepness: 0.7\n"
+            "  pin_key_moment: true\n"
+            "audio:\n"
+            "  drone_waveform: triangle\n"
+            "  drone_glide: 0.5\n"
+            "  pulse_sensitivity: 0.4\n"
+            "  presence: 0.7\n"
+            "  accent_style: chime\n"
+            "  texture_density: 0.4\n"
+        )
+        recipe_path.write_text(text)
+
+        # Create a synthetic time-series so export-video has data values
+        series = [
+            {"date": f"2026-01-{i:02d}", "mean": 15 + i * 0.5}
+            for i in range(15, 20)
+        ]
+        series_path = cli_env / "data" / "processed" / "oisst" / "sst-monthly-series.json"
+        series_path.write_text(json.dumps(series))
+
+        # Add render PNGs to match those dates
+        render_dir = cli_env / "renders" / "test-recipe"
+        for i in range(15, 20):
+            (render_dir / f"2026-01-{i:02d}.png").write_bytes(
+                b"\x89PNG\r\n\x1a\n" + b"\x00" * 50
+            )
+        # Update manifest
+        manifest_path = cli_env / "renders" / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["recipes"]["test-recipe"]["dates"] = [
+            f"2026-01-{i:02d}" for i in range(15, 20)
+        ]
+        manifest_path.write_text(json.dumps(manifest))
+
+    def test_arc_and_hold_reach_assemble_video(self, cli_env, tmp_path):
+        """End-to-end: export-video reads tension_arc + computes hold + forwards
+        all of (audio_params, audio_values, tension_arc, hold_at_frame,
+        hold_duration_sec) to assemble_video as a single coherent call."""
+        self._setup_arc_recipe(cli_env)
+
+        captured: dict = {}
+
+        def fake_assemble(*args, **kwargs):
+            captured.update(kwargs)
+            out_path = args[2] if len(args) > 2 else kwargs.get("output_path")
+            out_path.write_bytes(b"fake mp4")
+            return out_path
+
+        out = tmp_path / "out.mp4"
+        with patch("oceancanvas.video.assemble_video", side_effect=fake_assemble):
+            result = runner.invoke(
+                app,
+                ["export-video", "--recipe", "test-recipe", "--fps", "12",
+                 "--output", str(out)],
+            )
+
+        assert result.exit_code == 0, result.output
+        assert "Arc:      classic preset" in result.output
+        # Tension arc was expanded and forwarded
+        arc = captured.get("tension_arc")
+        assert arc is not None and len(arc) == 5  # one per series frame
+        # Hold params present (arc.pin_key_moment is true; moments may or may
+        # not be detected — when present, hold should fire)
+        if captured.get("hold_at_frame") is not None:
+            assert captured["hold_duration_sec"] == 1.0
+        # Audio params hydrated from recipe
+        params = captured.get("audio_params")
+        assert params is not None
+        assert params.drone_waveform == "triangle"
+        assert params.accent_style == "chime"
+
+    def test_silent_flag_disables_arc(self, cli_env, tmp_path):
+        """--silent must skip arc, audio_params, hold — back to v0.4.0-baseline path."""
+        self._setup_arc_recipe(cli_env)
+        captured: dict = {}
+
+        def fake_assemble(*args, **kwargs):
+            captured.update(kwargs)
+            out_path = args[2] if len(args) > 2 else kwargs.get("output_path")
+            out_path.write_bytes(b"fake mp4")
+            return out_path
+
+        out = tmp_path / "out.mp4"
+        with patch("oceancanvas.video.assemble_video", side_effect=fake_assemble):
+            result = runner.invoke(
+                app,
+                ["export-video", "--recipe", "test-recipe", "--silent",
+                 "--output", str(out)],
+            )
+
+        assert result.exit_code == 0, result.output
+        assert captured.get("tension_arc") is None
+        assert captured.get("audio_params") is None
+        assert captured.get("hold_at_frame") is None

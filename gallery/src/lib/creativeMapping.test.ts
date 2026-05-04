@@ -166,3 +166,17 @@ describe('cross-validation: TS matches Python mapping', () => {
     });
   }
 });
+
+describe('cross-validation: creativeToAudio TS↔Py parity', () => {
+  const fixturesPath = join(__dirname, '..', '..', '..', 'tests', 'cross-validation', 'creative_audio_fixtures.json');
+  const fixtures = JSON.parse(readFileSync(fixturesPath, 'utf-8'));
+
+  for (const fixture of fixtures) {
+    it(`matches Python output for "${fixture.name}"`, () => {
+      const result = creativeToAudio(fixture.input);
+      for (const [key, expected] of Object.entries(fixture.expected)) {
+        expect(result[key as keyof typeof result]).toBe(expected);
+      }
+    });
+  }
+});
