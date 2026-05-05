@@ -1,50 +1,47 @@
 :8080 {
-    root * /srv
-    file_server
+    # Specific prefixes first — each handle is mutually exclusive (first match wins).
+    # Do not use a global root + file_server above these: /renders/* would fall
+    # through to SPA try_files and return index.html (breaking JSON.parse on manifest).
 
-    # SPA fallback
-    try_files {path} /index.html
+    handle /api/* {
+        reverse_proxy {$RECIPE_SERVER:localhost:3001}
+    }
 
-    # Data files served as static assets
     handle /data/* {
         root * /
         file_server
     }
+
     handle /renders/* {
         root * /
         file_server
     }
 
-    # manifest.json lives in renders/ — convenience alias for direct browser access
-    # Gallery app fetches /renders/manifest.json directly
     handle /manifest.json {
         rewrite * /renders/manifest.json
         root * /
         file_server
     }
 
-    # Recipe save API — proxies to Node.js save server
-    # In Docker: recipe-server runs as a separate container
-    # RECIPE_SERVER env var allows override; defaults to localhost:3001 for dev
-    handle /api/* {
-        reverse_proxy {$RECIPE_SERVER:localhost:3001}
-    }
-
-    # Serve recipe YAML files as static assets (for editor loading)
     handle /recipes/* {
         root * /
         file_server
     }
 
-    # Serve sketches for editor preview iframe
     handle /sketches/* {
         root * /
         file_server
     }
 
-    # Serve audio stems for video editor preview
     handle /audio/* {
         root * /
+        file_server
+    }
+
+    # React build (Vite): static files + SPA fallback — must be last
+    handle {
+        root * /srv
+        try_files {path} /index.html
         file_server
     }
 
