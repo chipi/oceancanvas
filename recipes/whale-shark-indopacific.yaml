@@ -1,0 +1,43 @@
+name: whale-shark-indopacific
+title: Whale shark — the Indo-Pacific year
+description: >
+  Two thirds of all whale-shark sightings on Earth happen in this belt —
+  from Mozambique through the Maldives, Indonesia, Australia, the
+  Philippines. Each aggregation site has its own season; rendered together,
+  the colour wheel turns west to east. Mafia greens in austral spring,
+  Ningaloo blues into autumn, Donsol reds by November. One ocean, twelve
+  rhythms.
+created: 2026-05-05
+author: chipi
+region:
+  lat: [-30, 30]
+  lon: [30, 150]
+  name: Indo-Pacific belt
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: thermal
+  marker_size: 9
+  marker_opacity: 0.5
+  marker_glow: 4
+  seed: 1968
+  color_by: month
+  context_layer: coastline
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.55
+  pulse_sensitivity: 0.45
+  presence: 0.7
+  accent_style: chime
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.6
+  peak_height: 0.95
+  release_steepness: 0.55
+  pin_key_moment: false

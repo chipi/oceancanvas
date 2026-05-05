@@ -1,0 +1,42 @@
+name: whale-shark-ningaloo
+title: Whale shark — Ningaloo, April
+description: >
+  Each year between March and July, hundreds of whale sharks gather along
+  the Ningaloo Reef on Western Australia's coast — drawn by the coral spawn
+  and the bloom that follows. Forty years of sightings packed into a
+  five-degree box. Eighty per cent of them happen in three months: the dots
+  burn bright in May and fade to almost nothing by August.
+created: 2026-05-05
+author: chipi
+region:
+  lat: [-24, -21]
+  lon: [113, 117]
+  name: Ningaloo Reef
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: thermal
+  marker_size: 18
+  marker_opacity: 0.45
+  marker_glow: 4
+  seed: 1995
+  color_by: month
+  context_layer: coastline
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.4
+  pulse_sensitivity: 0.45
+  presence: 0.7
+  accent_style: chime
+  texture_density: 0.3
+tension_arc:
+  preset: classic
+  peak_position: 0.4    # April-May peak
+  peak_height: 1.0
+  release_steepness: 0.7
+  pin_key_moment: false

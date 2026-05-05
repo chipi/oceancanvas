@@ -22,6 +22,10 @@ function setup() {
   const seed = payload.recipe?.render?.seed || 42;
   const markerSize = payload.recipe?.render?.marker_size || 4;
   const markerOpacity = (payload.recipe?.render?.marker_opacity ?? 0.75) * 255;
+  // marker_glow scales the halo radius. Default 2 keeps the existing look;
+  // higher values (3–4) make overlapping dots compound to brighter cores —
+  // useful for tightly-framed aggregation-site recipes.
+  const markerGlow = payload.recipe?.render?.marker_glow || 2;
   const colormapName = payload.recipe?.render?.colormap || 'thermal';
   // Context layer: 'coastline' (default), 'bathymetry', 'none'
   const contextLayer = payload.recipe?.render?.context_layer || 'coastline';
@@ -74,7 +78,7 @@ function setup() {
       typeof primary.data[0] === 'object' && 'lat' in primary.data[0]) {
     const colorBy = payload.recipe?.render?.color_by || 'value';
     drawPointsToBuffer(img, primary.data, w, h, latMin, latMax, lonMin, lonMax,
-                       primary.min, primary.max, stops, markerSize, markerOpacity, colorBy);
+                       primary.min, primary.max, stops, markerSize, markerOpacity, colorBy, markerGlow);
   } else if (primary.shape) {
     drawGridToBuffer(img, primary, w, h, latMin, latMax, lonMin, lonMax,
                      stops, markerSize, markerOpacity);
@@ -91,9 +95,10 @@ function setup() {
  * Draw a filled circle into a pixel buffer at (cx, cy) with given radius and colour.
  * No p5 draw calls — pure array manipulation.
  */
-function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha) {
-  // Draw with soft glow: outer ring fades, inner core is solid
-  const glowRadius = radius * 2;
+function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha, glowMult) {
+  // Soft glow: outer ring fades, inner core is solid. glowMult lets recipes
+  // dial the halo radius up to compound dot density visually.
+  const glowRadius = radius * (glowMult || 2);
   const gr2 = glowRadius * glowRadius;
   const x0 = Math.max(0, Math.floor(cx - glowRadius));
   const x1 = Math.min(w - 1, Math.ceil(cx + glowRadius));
@@ -121,7 +126,7 @@ function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha) {
 }
 
 function drawPointsToBuffer(img, points, w, h, latMin, latMax, lonMin, lonMax,
-                            vmin, vmax, stops, size, opacity, colorBy) {
+                            vmin, vmax, stops, size, opacity, colorBy, glowMult) {
   const radius = size / 2;
   const mode = colorBy || 'value';
   for (const pt of points) {
@@ -149,7 +154,7 @@ function drawPointsToBuffer(img, points, w, h, latMin, latMax, lonMin, lonMax,
       t = tMax !== tMin ? (val - tMin) / (tMax - tMin) : 0.5;
     }
     const [cr, cg, cb] = colorFromStops(stops, t);
-    stampDot(img, w, h, Math.round(sx), Math.round(sy), radius, cr, cg, cb, opacity);
+    stampDot(img, w, h, Math.round(sx), Math.round(sy), radius, cr, cg, cb, opacity, glowMult);
   }
 }
 

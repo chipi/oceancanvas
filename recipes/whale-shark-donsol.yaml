@@ -1,0 +1,42 @@
+name: whale-shark-donsol
+title: Whale shark — Donsol, the season
+description: >
+  Donsol Bay in the Philippines is the second great whale-shark
+  aggregation site after Ningaloo — sharks arrive each November and stay
+  through May, feeding on the plankton blooms in the Sibuyan Sea. The
+  dots cluster tight against the coastline; the seasonal colours arc from
+  late autumn into early summer.
+created: 2026-05-05
+author: chipi
+region:
+  lat: [10, 18]
+  lon: [120, 128]
+  name: Donsol & Sibuyan Sea
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: thermal
+  marker_size: 14
+  marker_opacity: 0.5
+  marker_glow: 4
+  seed: 2003
+  color_by: month
+  context_layer: coastline
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.5
+  pulse_sensitivity: 0.4
+  presence: 0.65
+  accent_style: bell
+  texture_density: 0.35
+tension_arc:
+  preset: classic
+  peak_position: 0.6
+  peak_height: 0.9
+  release_steepness: 0.6
+  pin_key_moment: false

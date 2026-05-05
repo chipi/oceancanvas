@@ -1,0 +1,42 @@
+name: whale-shark-galapagos
+title: Whale shark — Galápagos, the deep blue
+description: >
+  Around the Galápagos Islands and stretching east toward the Ecuadorian
+  coast, the cold Humboldt Current meets the warm Panama Current — a
+  collision zone that draws large pregnant females passing through. Eight
+  hundred sightings across a 30-year archive, with a clear July-November
+  pulse when the cool water dominates.
+created: 2026-05-05
+author: chipi
+region:
+  lat: [-5, 5]
+  lon: [-95, -85]
+  name: Galápagos & Ecuadorian coast
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: thermal
+  marker_size: 14
+  marker_opacity: 0.5
+  marker_glow: 4
+  seed: 1832
+  color_by: month
+  context_layer: coastline
+audio:
+  drone_waveform: sawtooth
+  drone_glide: 0.55
+  pulse_sensitivity: 0.5
+  presence: 0.7
+  accent_style: ping
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.7    # Jul-Nov peak
+  peak_height: 0.9
+  release_steepness: 0.55
+  pin_key_moment: false

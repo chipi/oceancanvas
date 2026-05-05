@@ -1,0 +1,42 @@
+name: whale-shark-tofo
+title: Whale shark — Tofo, the warm corner
+description: >
+  Off Tofo Beach in southern Mozambique, the Agulhas Current sweeps warm
+  Indian Ocean water past the continental shelf and concentrates plankton
+  in the upwelling zones — and the whale sharks come. Smaller cluster than
+  Ningaloo but the seasonality is pronounced: October-March is the season,
+  and the dots in cold months are nearly absent.
+created: 2026-05-05
+author: chipi
+region:
+  lat: [-25, -22]
+  lon: [33, 38]
+  name: Tofo, Mozambique
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: scatter
+  colormap: thermal
+  marker_size: 14
+  marker_opacity: 0.5
+  marker_glow: 4
+  seed: 2007
+  color_by: month
+  context_layer: coastline
+audio:
+  drone_waveform: sine
+  drone_glide: 0.6
+  pulse_sensitivity: 0.35
+  presence: 0.75
+  accent_style: chime
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.85   # peaks in austral summer
+  peak_height: 0.95
+  release_steepness: 0.5
+  pin_key_moment: false
