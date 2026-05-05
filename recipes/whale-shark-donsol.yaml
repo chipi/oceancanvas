@@ -21,9 +21,8 @@ schedule: daily
 render:
   type: scatter
   colormap: thermal
-  marker_size: 14
-  marker_opacity: 0.5
-  marker_glow: 4
+  marker_size: 10
+  marker_opacity: 0.85
   seed: 2003
   color_by: month
   context_layer: coastline
