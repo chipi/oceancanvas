@@ -20,9 +20,10 @@ schedule: daily
 # ⊓ creative controls ⊓
 render:
   type: scatter
-  colormap: thermal
-  marker_size: 10
-  marker_opacity: 0.85
+  colormap: otherworldly
+  marker_size: 7
+  marker_opacity: 0.6
+  jitter: 60
   seed: 2007
   color_by: month
   context_layer: coastline

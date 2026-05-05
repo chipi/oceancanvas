@@ -23,7 +23,8 @@ render:
   type: scatter
   colormap: thermal
   marker_size: 8
-  marker_opacity: 0.85
+  marker_opacity: 0.75
+  jitter: 12
   seed: 1968
   color_by: month
   context_layer: coastline

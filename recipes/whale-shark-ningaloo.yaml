@@ -21,8 +21,9 @@ schedule: daily
 render:
   type: scatter
   colormap: thermal
-  marker_size: 12
-  marker_opacity: 0.85
+  marker_size: 8
+  marker_opacity: 0.6
+  jitter: 50              # spread coincident records across ~50 px
   seed: 1995
   color_by: month
   context_layer: coastline

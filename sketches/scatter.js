@@ -77,8 +77,9 @@ function setup() {
   if (Array.isArray(primary.data) && primary.data.length > 0 &&
       typeof primary.data[0] === 'object' && 'lat' in primary.data[0]) {
     const colorBy = payload.recipe?.render?.color_by || 'value';
+    const jitter = payload.recipe?.render?.jitter || 0;
     drawPointsToBuffer(img, primary.data, w, h, latMin, latMax, lonMin, lonMax,
-                       primary.min, primary.max, stops, markerSize, markerOpacity, colorBy, markerGlow);
+                       primary.min, primary.max, stops, markerSize, markerOpacity, colorBy, markerGlow, jitter);
   } else if (primary.shape) {
     drawGridToBuffer(img, primary, w, h, latMin, latMax, lonMin, lonMax,
                      stops, markerSize, markerOpacity);
@@ -126,12 +127,21 @@ function stampDot(img, w, h, cx, cy, radius, cr, cg, cb, alpha, glowMult) {
 }
 
 function drawPointsToBuffer(img, points, w, h, latMin, latMax, lonMin, lonMax,
-                            vmin, vmax, stops, size, opacity, colorBy, glowMult) {
+                            vmin, vmax, stops, size, opacity, colorBy, glowMult, jitter) {
   const radius = size / 2;
   const mode = colorBy || 'value';
+  // Jitter spreads visually-coincident records (many OBIS sightings share
+  // exact lat/lon). Deterministic via the seeded p5 random() in setup().
+  // jitter is in canvas pixels — small offset, doesn't move the dot off
+  // its true position by more than a marker width or so.
+  const jit = jitter || 0;
   for (const pt of points) {
-    const sx = (pt.lon - lonMin) / (lonMax - lonMin) * w;
-    const sy = (latMax - pt.lat) / (latMax - latMin) * h;
+    let sx = (pt.lon - lonMin) / (lonMax - lonMin) * w;
+    let sy = (latMax - pt.lat) / (latMax - latMin) * h;
+    if (jit > 0) {
+      sx += (random() - 0.5) * jit;
+      sy += (random() - 0.5) * jit;
+    }
 
     // Colour assignment depends on color_by mode:
     //   value (default) — point.value mapped to colormap
