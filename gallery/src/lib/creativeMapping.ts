@@ -10,10 +10,10 @@
 
 export interface CreativeState {
   mood: string;
-  energy_x: number;  // 0 = calm, 1 = turbulent
-  energy_y: number;  // 0 = ghost, 1 = solid
-  colour_character: number;  // 0 = arctic cold, 0.5 = thermal, 1 = otherworldly
-  temporal_weight: number;  // 0 = moment, 1 = epoch
+  energy_x: number; // 0 = calm, 1 = turbulent
+  energy_y: number; // 0 = ghost, 1 = solid
+  colour_character: number; // 0 = arctic cold, 0.5 = thermal, 1 = otherworldly
+  temporal_weight: number; // 0 = moment, 1 = epoch
 }
 
 export interface TechnicalParams {
@@ -27,51 +27,51 @@ export interface TechnicalParams {
   marker_opacity: number;
 }
 
-export type AccentStyle = 'chime' | 'bell' | 'ping' | 'drop';
-export type DroneWaveform = 'sine' | 'triangle' | 'sawtooth' | 'square';
+export type AccentStyle = "chime" | "bell" | "ping" | "drop";
+export type DroneWaveform = "sine" | "triangle" | "sawtooth" | "square";
 
 /** Audio parameters derived from creative state — RFC-010, "Creative state → audio parameters". */
 export interface AudioParams {
   drone_waveform: DroneWaveform;
-  drone_glide: number;        // 0 = instant, 1 = very slow portamento
-  pulse_sensitivity: number;  // 0 = subtle, 1 = aggressive
-  presence: number;           // 0 = barely audible, 1 = full mix
+  drone_glide: number; // 0 = instant, 1 = very slow portamento
+  pulse_sensitivity: number; // 0 = subtle, 1 = aggressive
+  presence: number; // 0 = barely audible, 1 = full mix
   accent_style: AccentStyle;
-  texture_density: number;    // 0 = sparse, 1 = dense
+  texture_density: number; // 0 = sparse, 1 = dense
 }
 
 /** Five mood presets — named starting points that set the full parameter space. */
 export const MOOD_PRESETS: Record<string, CreativeState> = {
-  'Becalmed': {
-    mood: 'Becalmed',
+  Becalmed: {
+    mood: "Becalmed",
     energy_x: 0.2,
     energy_y: 0.6,
     colour_character: 0.3,
     temporal_weight: 0.4,
   },
-  'Deep current': {
-    mood: 'Deep current',
+  "Deep current": {
+    mood: "Deep current",
     energy_x: 0.4,
     energy_y: 0.8,
     colour_character: 0.4,
     temporal_weight: 0.7,
   },
-  'Storm surge': {
-    mood: 'Storm surge',
+  "Storm surge": {
+    mood: "Storm surge",
     energy_x: 0.9,
     energy_y: 0.3,
     colour_character: 0.5,
     temporal_weight: 0.6,
   },
-  'Surface shimmer': {
-    mood: 'Surface shimmer',
+  "Surface shimmer": {
+    mood: "Surface shimmer",
     energy_x: 0.5,
     energy_y: 0.5,
     colour_character: 0.6,
     temporal_weight: 0.3,
   },
-  'Arctic still': {
-    mood: 'Arctic still',
+  "Arctic still": {
+    mood: "Arctic still",
     energy_x: 0.1,
     energy_y: 0.9,
     colour_character: 0.0,
@@ -97,11 +97,11 @@ export function creativeToTechnical(state: CreativeState): TechnicalParams {
   // Colormap selection based on colour_character
   let colormap: string;
   if (colour_character < 0.33) {
-    colormap = 'arctic';
+    colormap = "arctic";
   } else if (colour_character < 0.66) {
-    colormap = 'thermal';
+    colormap = "thermal";
   } else {
-    colormap = 'otherworldly';
+    colormap = "otherworldly";
   }
 
   // Opacity: ghost (low presence) = transparent, solid (high) = opaque
@@ -138,7 +138,10 @@ export function creativeToTechnical(state: CreativeState): TechnicalParams {
 }
 
 /** Check if technical params match what creative state would produce. */
-export function isMatched(state: CreativeState, technical: TechnicalParams): boolean {
+export function isMatched(
+  state: CreativeState,
+  technical: TechnicalParams,
+): boolean {
   const expected = creativeToTechnical(state);
   return JSON.stringify(expected) === JSON.stringify(technical);
 }
@@ -161,9 +164,9 @@ export function creativeToAudio(state: CreativeState): AudioParams {
 
   // Drone waveform — three buckets matching the colormap split
   let drone_waveform: DroneWaveform;
-  if (colour_character < 0.33) drone_waveform = 'sine';
-  else if (colour_character < 0.66) drone_waveform = 'triangle';
-  else drone_waveform = 'sawtooth';
+  if (colour_character < 0.33) drone_waveform = "sine";
+  else if (colour_character < 0.66) drone_waveform = "triangle";
+  else drone_waveform = "sawtooth";
 
   const drone_glide = clamp(temporal_weight, 0, 1);
   const pulse_sensitivity = clamp(energy_x, 0, 1);
@@ -172,15 +175,23 @@ export function creativeToAudio(state: CreativeState): AudioParams {
 
   // Mood-driven accent style; fall back to energy-quadrant heuristic for custom moods.
   const accent_style: AccentStyle =
-    mood === 'Becalmed' ? 'chime' :
-    mood === 'Deep current' ? 'bell' :
-    mood === 'Storm surge' ? 'ping' :
-    mood === 'Surface shimmer' ? 'ping' :
-    mood === 'Arctic still' ? 'drop' :
-    energy_x > 0.6 ? 'ping' :
-    energy_y > 0.6 ? 'bell' :
-    energy_y < 0.3 ? 'drop' :
-    'chime';
+    mood === "Becalmed"
+      ? "chime"
+      : mood === "Deep current"
+        ? "bell"
+        : mood === "Storm surge"
+          ? "ping"
+          : mood === "Surface shimmer"
+            ? "ping"
+            : mood === "Arctic still"
+              ? "drop"
+              : energy_x > 0.6
+                ? "ping"
+                : energy_y > 0.6
+                  ? "bell"
+                  : energy_y < 0.3
+                    ? "drop"
+                    : "chime";
 
   return {
     drone_waveform,
@@ -200,8 +211,11 @@ function round2(v: number): number {
  * Reverse-engineer the creative state that best matches given technical params.
  * Inverts the lerp functions used in creativeToTechnical.
  */
-export function technicalToCreative(params: Record<string, unknown>): CreativeState {
-  const inverseLerp = (a: number, b: number, v: number) => clamp((v - a) / (b - a), 0, 1);
+export function technicalToCreative(
+  params: Record<string, unknown>,
+): CreativeState {
+  const inverseLerp = (a: number, b: number, v: number) =>
+    clamp((v - a) / (b - a), 0, 1);
 
   // energy_x from speed_scale: lerp(0.2, 2.0, x)
   const speed = Number(params.speed_scale ?? 1.0);
@@ -219,15 +233,15 @@ export function technicalToCreative(params: Record<string, unknown>): CreativeSt
   const temporal_weight = inverseLerp(3, 24, tl);
 
   // colour_character from colormap name
-  const colormap = String(params.colormap ?? 'thermal');
+  const colormap = String(params.colormap ?? "thermal");
   let colour_character = 0.5;
-  if (colormap === 'arctic') colour_character = 0.15;
-  else if (colormap === 'thermal') colour_character = 0.5;
-  else if (colormap === 'otherworldly') colour_character = 0.85;
+  if (colormap === "arctic") colour_character = 0.15;
+  else if (colormap === "thermal") colour_character = 0.5;
+  else if (colormap === "otherworldly") colour_character = 0.85;
 
   // Find closest mood preset
   const state: CreativeState = {
-    mood: 'custom',
+    mood: "custom",
     energy_x: Math.round(energy_x * 100) / 100,
     energy_y: Math.round(energy_y * 100) / 100,
     colour_character: Math.round(colour_character * 100) / 100,
@@ -236,10 +250,11 @@ export function technicalToCreative(params: Record<string, unknown>): CreativeSt
 
   // Check if any preset is close
   for (const [name, preset] of Object.entries(MOOD_PRESETS)) {
-    const dist = Math.abs(preset.energy_x - state.energy_x) +
-                 Math.abs(preset.energy_y - state.energy_y) +
-                 Math.abs(preset.colour_character - state.colour_character) +
-                 Math.abs(preset.temporal_weight - state.temporal_weight);
+    const dist =
+      Math.abs(preset.energy_x - state.energy_x) +
+      Math.abs(preset.energy_y - state.energy_y) +
+      Math.abs(preset.colour_character - state.colour_character) +
+      Math.abs(preset.temporal_weight - state.temporal_weight);
     if (dist < 0.15) {
       state.mood = name;
       break;

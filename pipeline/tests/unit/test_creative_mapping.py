@@ -1,8 +1,20 @@
 """Tests for creative-to-technical parameter mapping."""
 
+import json
+from pathlib import Path
+
 import pytest
 
-from oceancanvas.creative_mapping import MOOD_PRESETS, creative_to_technical
+from oceancanvas.creative_mapping import (
+    MOOD_PRESETS,
+    creative_to_audio,
+    creative_to_technical,
+)
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+_AUDIO_FIXTURE_PATH = _REPO_ROOT / "tests" / "cross-validation" / "creative_audio_fixtures.json"
+with _AUDIO_FIXTURE_PATH.open() as _f:
+    _AUDIO_FIXTURES = json.load(_f)
 
 
 def _map_preset(name: str) -> dict:
@@ -72,7 +84,6 @@ class TestCreativeToTechnical:
 
 
 # ─── creative_to_audio (RFC-010) ───────────────────────────────────────────
-from oceancanvas.creative_mapping import creative_to_audio  # noqa: E402
 
 
 class TestCreativeToAudio:
@@ -121,18 +132,6 @@ class TestCreativeToAudio:
 
 # ─── Cross-validation fixtures (TS ↔ Py parity, ADR-027) ─────────────────
 
-import json as _json
-from pathlib import Path as _Path
-
-_AUDIO_FIXTURE_PATH = (
-    _Path(__file__).parent.parent.parent.parent
-    / "tests"
-    / "cross-validation"
-    / "creative_audio_fixtures.json"
-)
-with _AUDIO_FIXTURE_PATH.open() as _f:
-    _AUDIO_FIXTURES = _json.load(_f)
-
 
 @pytest.mark.parametrize("case", _AUDIO_FIXTURES, ids=lambda c: c["name"])
 def test_creative_to_audio_matches_typescript(case: dict) -> None:
@@ -141,6 +140,5 @@ def test_creative_to_audio_matches_typescript(case: dict) -> None:
     Re-generate via ``node scripts/build-creative-audio-fixtures.mjs``."""
     result = creative_to_audio(case["input"])
     assert result == case["expected"], (
-        f"audio mapping drift for {case['name']}: "
-        f"got {result}, expected {case['expected']}"
+        f"audio mapping drift for {case['name']}: got {result}, expected {case['expected']}"
     )

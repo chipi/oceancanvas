@@ -57,9 +57,7 @@ class ChromiumWorker:
         )
         # Start stderr drain thread to prevent pipe buffer deadlock
         self._stderr_lines: list[str] = []
-        self._stderr_thread = threading.Thread(
-            target=self._drain_stderr, daemon=True
-        )
+        self._stderr_thread = threading.Thread(target=self._drain_stderr, daemon=True)
         self._stderr_thread.start()
 
         # Wait for ready signal

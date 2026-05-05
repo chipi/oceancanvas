@@ -18,7 +18,6 @@ from oceancanvas.arc import (
     is_arc_preset,
 )
 
-
 FIXTURE_PATH = (
     Path(__file__).parent.parent.parent.parent
     / "tests"
@@ -78,9 +77,7 @@ class TestExpandArc:
         assert peak_idx == 30
 
     def test_pin_with_null_moment_uses_default_peak(self) -> None:
-        baseline = expand_arc(
-            TensionArcSpec(preset="classic", peak_position=0.65), 100
-        )
+        baseline = expand_arc(TensionArcSpec(preset="classic", peak_position=0.65), 100)
         pinned = expand_arc(
             TensionArcSpec(preset="classic", peak_position=0.65, pin_key_moment=True),
             100,

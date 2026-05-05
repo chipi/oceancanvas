@@ -6,18 +6,18 @@
  * Engines differ in their voicings, not their wiring.
  */
 
-import type { AudioPreset } from './audioPresets';
+import type { AudioPreset } from "./audioPresets";
 
 export interface FrameView {
   frame: number;
-  intensity: number;          // 0–1, smoothed moment intensity
-  value: number;              // 0–1 normalised data value (drives pitch)
-  delta: number;              // 0–1 |Δ| between consecutive frames
-  direction: 1 | 0 | -1;      // sign of Δ
-  isAccent: boolean;          // key moment fires now
-  accentType: 'record-high' | 'record-low' | 'inflection' | null;
-  monthFrac: number;          // 0–1 month of year
-  yearFrac: number;           // 0–1 timeline position
+  intensity: number; // 0–1, smoothed moment intensity
+  value: number; // 0–1 normalised data value (drives pitch)
+  delta: number; // 0–1 |Δ| between consecutive frames
+  direction: 1 | 0 | -1; // sign of Δ
+  isAccent: boolean; // key moment fires now
+  accentType: "record-high" | "record-low" | "inflection" | null;
+  monthFrac: number; // 0–1 month of year
+  yearFrac: number; // 0–1 timeline position
 }
 
 export interface ChannelState {
@@ -28,7 +28,7 @@ export interface ChannelState {
 }
 
 /** Per-channel mixer controls — UI layer feeds these into the engine. */
-export type ChannelKey = 'drone' | 'pulse' | 'accent' | 'texture';
+export type ChannelKey = "drone" | "pulse" | "accent" | "texture";
 
 export interface ChannelMix {
   drone: { volume: number; muted: boolean };
@@ -51,9 +51,9 @@ export function channelScale(mix: ChannelMix, ch: ChannelKey): number {
 
 /** Three-band master EQ — gains in dB, range [-12, +12]. */
 export interface EqSettings {
-  bass: number;     // lowshelf, ~200Hz
-  mid: number;      // peaking, ~1000Hz
-  treble: number;   // highshelf, ~3500Hz
+  bass: number; // lowshelf, ~200Hz
+  mid: number; // peaking, ~1000Hz
+  treble: number; // highshelf, ~3500Hz
 }
 
 export const DEFAULT_EQ: EqSettings = { bass: 0, mid: 0, treble: 0 };
@@ -108,7 +108,10 @@ export function holdAt(mask: boolean[], frame: number): boolean {
  * the head of the chain (connect master into here) and the tail (connect to
  * destination). Filter handles are returned so engines can update gains live.
  */
-export function buildEqChain(ctx: AudioContext, eq: EqSettings): {
+export function buildEqChain(
+  ctx: AudioContext,
+  eq: EqSettings,
+): {
   head: BiquadFilterNode;
   tail: BiquadFilterNode;
   bass: BiquadFilterNode;
@@ -116,18 +119,18 @@ export function buildEqChain(ctx: AudioContext, eq: EqSettings): {
   treble: BiquadFilterNode;
 } {
   const bass = ctx.createBiquadFilter();
-  bass.type = 'lowshelf';
+  bass.type = "lowshelf";
   bass.frequency.value = 200;
   bass.gain.value = eq.bass;
 
   const mid = ctx.createBiquadFilter();
-  mid.type = 'peaking';
+  mid.type = "peaking";
   mid.frequency.value = 1000;
   mid.Q.value = 1;
   mid.gain.value = eq.mid;
 
   const treble = ctx.createBiquadFilter();
-  treble.type = 'highshelf';
+  treble.type = "highshelf";
   treble.frequency.value = 3500;
   treble.gain.value = eq.treble;
 
@@ -145,19 +148,24 @@ export interface SampleBank {
   textureNoise: AudioBuffer;
 }
 
-export const ASSET_BASE = '/audio/generative';
-export const SILENT_CHANNELS: ChannelState = { drone: 0, pulse: 0, accent: false, texture: 0 };
+export const ASSET_BASE = "/audio/generative";
+export const SILENT_CHANNELS: ChannelState = {
+  drone: 0,
+  pulse: 0,
+  accent: false,
+  texture: 0,
+};
 
 /** Decode the seven sample assets into AudioBuffers. */
 export async function loadSampleBank(ctx: AudioContext): Promise<SampleBank> {
   const names: Array<[keyof SampleBank, string]> = [
-    ['pulseUp', 'pulse_tick_up.mp3'],
-    ['pulseNeutral', 'pulse_tick_neutral.mp3'],
-    ['pulseDown', 'pulse_tick_down.mp3'],
-    ['accentHigh', 'accent_record_high.mp3'],
-    ['accentLow', 'accent_record_low.mp3'],
-    ['accentInflection', 'accent_inflection.mp3'],
-    ['textureNoise', 'texture_noise.mp3'],
+    ["pulseUp", "pulse_tick_up.mp3"],
+    ["pulseNeutral", "pulse_tick_neutral.mp3"],
+    ["pulseDown", "pulse_tick_down.mp3"],
+    ["accentHigh", "accent_record_high.mp3"],
+    ["accentLow", "accent_record_low.mp3"],
+    ["accentInflection", "accent_inflection.mp3"],
+    ["textureNoise", "texture_noise.mp3"],
   ];
   const bank: Partial<SampleBank> = {};
   await Promise.all(
@@ -212,5 +220,7 @@ export class PulseScheduler {
     }
     return false;
   }
-  reset() { this.phase = 0; }
+  reset() {
+    this.phase = 0;
+  }
 }

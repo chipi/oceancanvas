@@ -19,10 +19,14 @@ class TestSpecies:
 class TestProcessObis:
     def test_produces_point_format(self, tmp_path: Path):
         raw_path = tmp_path / "raw.json"
-        raw_path.write_text(json.dumps([
-            {"decimalLatitude": 10.5, "decimalLongitude": -20.3, "depth": 15},
-            {"decimalLatitude": 12.0, "decimalLongitude": -18.0, "eventDate": "2020-05-01"},
-        ]))
+        raw_path.write_text(
+            json.dumps(
+                [
+                    {"decimalLatitude": 10.5, "decimalLongitude": -20.3, "depth": 15},
+                    {"decimalLatitude": 12.0, "decimalLongitude": -18.0, "eventDate": "2020-05-01"},
+                ]
+            )
+        )
 
         processed_dir = tmp_path / "processed"
         result = process_obis(raw_path, processed_dir, "whale-shark")
@@ -36,11 +40,15 @@ class TestProcessObis:
 
     def test_skips_records_without_coords(self, tmp_path: Path):
         raw_path = tmp_path / "raw.json"
-        raw_path.write_text(json.dumps([
-            {"decimalLatitude": 10.5, "decimalLongitude": -20.3},
-            {"decimalLatitude": None, "decimalLongitude": -18.0},
-            {"depth": 100},
-        ]))
+        raw_path.write_text(
+            json.dumps(
+                [
+                    {"decimalLatitude": 10.5, "decimalLongitude": -20.3},
+                    {"decimalLatitude": None, "decimalLongitude": -18.0},
+                    {"depth": 100},
+                ]
+            )
+        )
 
         processed_dir = tmp_path / "processed"
         result = process_obis(raw_path, processed_dir, "whale-shark")
@@ -49,9 +57,13 @@ class TestProcessObis:
 
     def test_custom_date(self, tmp_path: Path):
         raw_path = tmp_path / "raw.json"
-        raw_path.write_text(json.dumps([
-            {"decimalLatitude": 10, "decimalLongitude": 20},
-        ]))
+        raw_path.write_text(
+            json.dumps(
+                [
+                    {"decimalLatitude": 10, "decimalLongitude": 20},
+                ]
+            )
+        )
 
         processed_dir = tmp_path / "processed"
         result = process_obis(raw_path, processed_dir, "whale-shark", date="2020-01-01")

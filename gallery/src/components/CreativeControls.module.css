@@ -17,7 +17,8 @@
   gap: 16px;
 }
 
-.section {}
+.section {
+}
 
 .sectionLabel {
   font-size: 9px;
@@ -41,7 +42,9 @@
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .moodPill:hover {
@@ -114,7 +117,8 @@
 }
 
 /* Colour character spectrum */
-.spectrumWrap {}
+.spectrumWrap {
+}
 
 .spectrum {
   height: 8px;
@@ -157,7 +161,8 @@
 }
 
 /* Temporal weight slider */
-.sliderWrap {}
+.sliderWrap {
+}
 
 .slider {
   width: 100%;

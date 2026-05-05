@@ -78,7 +78,9 @@ def assemble_video(
 
     logger.info(
         "Assembling %d frames into %s at %d fps",
-        len(png_files), output_path, fps,
+        len(png_files),
+        output_path,
+        fps,
     )
 
     # Create a concat file listing all PNGs with duration. If a Record Moment
@@ -86,11 +88,9 @@ def assemble_video(
     # duration so the video lingers; build_audio_track gets the same hold so
     # audio stays in sync.
     concat_path = output_path.with_suffix(".concat.txt")
-    frame_duration = f"{1/fps:.6f}"
+    frame_duration = f"{1 / fps:.6f}"
     valid_hold = (
-        hold_at_frame is not None
-        and 0 <= hold_at_frame < len(png_files)
-        and hold_duration_sec > 0
+        hold_at_frame is not None and 0 <= hold_at_frame < len(png_files) and hold_duration_sec > 0
     )
     with concat_path.open("w") as f:
         for i, png in enumerate(png_files):
@@ -130,22 +130,32 @@ def assemble_video(
     arc_chain = _build_arc_chain(tension_arc, duration_sec) if tension_arc else ""
     vf = _build_filters(overlay_date, overlay_attribution, png_files, arc_chain)
     cmd = [
-        "ffmpeg", "-y",
-        "-f", "concat",
-        "-safe", "0",
-        "-i", str(concat_path),
+        "ffmpeg",
+        "-y",
+        "-f",
+        "concat",
+        "-safe",
+        "0",
+        "-i",
+        str(concat_path),
     ]
     if audio_path:
         cmd.extend(["-i", str(audio_path)])
     # Only add filter if we have drawtext support
     if vf != "null":
         cmd.extend(["-vf", vf])
-    cmd.extend([
-        "-c:v", "libx264",
-        "-pix_fmt", "yuv420p",
-        "-preset", "medium",
-        "-crf", "23",
-    ])
+    cmd.extend(
+        [
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-preset",
+            "medium",
+            "-crf",
+            "23",
+        ]
+    )
     if audio_path:
         # 3-band peaking EQ matching the browser sidebar — bass / mid / treble
         # gains in dB. Only emit filters that actually move the needle to keep
@@ -164,10 +174,13 @@ def assemble_video(
         if af_chain:
             cmd.extend(["-af", ",".join(af_chain)])
         cmd.extend(["-c:a", "aac", "-b:a", "192k", "-shortest"])
-    cmd.extend([
-        "-movflags", "+faststart",
-        str(output_path),
-    ])
+    cmd.extend(
+        [
+            "-movflags",
+            "+faststart",
+            str(output_path),
+        ]
+    )
 
     logger.info("Running ffmpeg: %s", " ".join(cmd[:6]) + " ...")
 
@@ -192,7 +205,10 @@ def assemble_video(
     duration = len(png_files) / fps
     logger.info(
         "Video assembled: %s (%.1f MB, %.1fs at %d fps)",
-        output_path, size / 1024 / 1024, duration, fps,
+        output_path,
+        size / 1024 / 1024,
+        duration,
+        fps,
     )
     return output_path
 
@@ -228,9 +244,7 @@ def _build_filters(
 
     if overlay_attribution:
         filters.append(
-            "drawtext=text='OceanCanvas':"
-            "fontsize=16:fontcolor=white@0.4:"
-            "x=20:y=h-30:font=monospace"
+            "drawtext=text='OceanCanvas':fontsize=16:fontcolor=white@0.4:x=20:y=h-30:font=monospace"
         )
 
     if not filters:

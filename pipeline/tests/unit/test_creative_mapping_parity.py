@@ -15,7 +15,9 @@ from oceancanvas.creative_mapping import creative_to_technical
 
 FIXTURES_PATH = (
     Path(__file__).parent.parent.parent.parent
-    / "tests" / "cross-validation" / "creative_mapping_fixtures.json"
+    / "tests"
+    / "cross-validation"
+    / "creative_mapping_fixtures.json"
 )
 
 
@@ -40,6 +42,5 @@ class TestCreativeMappingParity:
             )
             for key, val in expected.items():
                 assert actual[key] == val, (
-                    f"{case['name']}: {key} mismatch — "
-                    f"expected {val}, got {actual[key]}"
+                    f"{case['name']}: {key} mismatch — expected {val}, got {actual[key]}"
                 )

@@ -101,9 +101,7 @@ class TestAssembleVideo:
         recipe_dir.mkdir()
         # Create tiny valid PNGs
         for i in range(3):
-            (recipe_dir / f"2025-0{i+1}-01.png").write_bytes(
-                b"\x89PNG\r\n\x1a\n" + b"\x00" * 100
-            )
+            (recipe_dir / f"2025-0{i + 1}-01.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
         out = tmp_path / "out.mp4"
 
         mock_result = MagicMock()
@@ -115,8 +113,11 @@ class TestAssembleVideo:
 
         with patch("oceancanvas.video.subprocess.run", side_effect=fake_run):
             result = assemble_video(
-                "test", tmp_path, out,
-                overlay_date=False, overlay_attribution=False,
+                "test",
+                tmp_path,
+                out,
+                overlay_date=False,
+                overlay_attribution=False,
                 audio_params=None,
             )
 
@@ -128,11 +129,12 @@ class TestAssembleVideo:
         recipe_dir = tmp_path / "test"
         recipe_dir.mkdir()
         for i in range(5):
-            (recipe_dir / f"2025-0{i+1}-01.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
+            (recipe_dir / f"2025-0{i + 1}-01.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
         out = tmp_path / "out.mp4"
 
         # Capture the concat file content before ffmpeg cleanup deletes it
         captured: dict = {}
+
         def fake_run(*args, **kwargs):
             concat_path = out.with_suffix(".concat.txt")
             captured["text"] = concat_path.read_text()
@@ -141,9 +143,12 @@ class TestAssembleVideo:
 
         with patch("oceancanvas.video.subprocess.run", side_effect=fake_run):
             assemble_video(
-                "test", tmp_path, out,
+                "test",
+                tmp_path,
+                out,
                 fps=12,
-                overlay_date=False, overlay_attribution=False,
+                overlay_date=False,
+                overlay_attribution=False,
                 audio_params=None,
                 hold_at_frame=2,
                 hold_duration_sec=1.0,

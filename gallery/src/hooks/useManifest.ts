@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export interface RecipeEntry {
   name: string;
@@ -23,7 +23,7 @@ export function useManifest() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/renders/manifest.json')
+    fetch("/renders/manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
         return res.json();

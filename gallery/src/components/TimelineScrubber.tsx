@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import styles from './TimelineScrubber.module.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import styles from "./TimelineScrubber.module.css";
 
 interface Props {
   dates: string[];
@@ -12,7 +12,12 @@ interface Props {
  * Timeline scrubber for browsing historical renders.
  * Shows a slider + thumbnail strip spanning the full date range.
  */
-export function TimelineScrubber({ dates, selected, recipeName, onSelect }: Props) {
+export function TimelineScrubber({
+  dates,
+  selected,
+  recipeName,
+  onSelect,
+}: Props) {
   const stripRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const playRef = useRef<number | null>(null);
@@ -24,7 +29,11 @@ export function TimelineScrubber({ dates, selected, recipeName, onSelect }: Prop
     if (!stripRef.current) return;
     const thumb = stripRef.current.children[selectedIdx] as HTMLElement;
     if (thumb) {
-      thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      thumb.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
     }
   }, [selectedIdx]);
 
@@ -57,28 +66,39 @@ export function TimelineScrubber({ dates, selected, recipeName, onSelect }: Prop
   // Keyboard navigation
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') handlePrev();
-      if (e.key === 'ArrowRight') handleNext();
-      if (e.key === ' ') { e.preventDefault(); setIsPlaying((p) => !p); }
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
+      if (e.key === " ") {
+        e.preventDefault();
+        setIsPlaying((p) => !p);
+      }
     }
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, [handlePrev, handleNext]);
 
-  const startYear = dates[0]?.substring(0, 4) || '';
-  const endYear = dates[dates.length - 1]?.substring(0, 4) || '';
+  const startYear = dates[0]?.substring(0, 4) || "";
+  const endYear = dates[dates.length - 1]?.substring(0, 4) || "";
 
   return (
     <div className={styles.scrubber}>
       {/* Controls row */}
       <div className={styles.controls}>
-        <button className={styles.btn} onClick={handlePrev} disabled={selectedIdx <= 0}>
+        <button
+          className={styles.btn}
+          onClick={handlePrev}
+          disabled={selectedIdx <= 0}
+        >
           ◀
         </button>
         <button className={styles.btn} onClick={() => setIsPlaying((p) => !p)}>
-          {isPlaying ? '⏸' : '▶'}
+          {isPlaying ? "⏸" : "▶"}
         </button>
-        <button className={styles.btn} onClick={handleNext} disabled={selectedIdx >= dates.length - 1}>
+        <button
+          className={styles.btn}
+          onClick={handleNext}
+          disabled={selectedIdx >= dates.length - 1}
+        >
           ▶
         </button>
         <span className={styles.dateLabel}>{selected}</span>
@@ -106,7 +126,7 @@ export function TimelineScrubber({ dates, selected, recipeName, onSelect }: Prop
         {dates.map((date) => (
           <button
             key={date}
-            className={`${styles.thumb} ${date === selected ? styles.thumbActive : ''}`}
+            className={`${styles.thumb} ${date === selected ? styles.thumbActive : ""}`}
             onClick={() => onSelect(date)}
             title={date}
           >

@@ -215,9 +215,7 @@ def recipes_validate(
         source_dir = DATA_DIR / "processed" / source_id
         if source_dir.exists() and any(source_dir.glob("*.json")):
             latest = sorted(source_dir.glob("*.json"))[-1]
-            console.print(
-                f"[green]✓[/green] Source '{source_id}' has data (latest: {latest.stem})"
-            )
+            console.print(f"[green]✓[/green] Source '{source_id}' has data (latest: {latest.stem})")
             checks_passed += 1
         else:
             console.print(
@@ -344,12 +342,8 @@ def fetch_historical(
     if source == "oisst":
         from oceancanvas.tasks.fetch import fetch_historical_oisst
 
-        fetched, skipped = fetch_historical_oisst(
-            dates, DATA_DIR, delay=delay
-        )
-        console.print(
-            f"\n[green]Done: {len(fetched)} fetched, {len(skipped)} skipped[/green]"
-        )
+        fetched, skipped = fetch_historical_oisst(dates, DATA_DIR, delay=delay)
+        console.print(f"\n[green]Done: {len(fetched)} fetched, {len(skipped)} skipped[/green]")
 
         if process and fetched:
             console.print("\n[cyan]Processing fetched dates...[/cyan]")
@@ -360,9 +354,7 @@ def fetch_historical(
 
         console.print("\n[cyan]Downloading full Argo index (one request)...[/cyan]")
         new_months, skipped = fetch_argo_historical(DATA_DIR)
-        console.print(
-            f"[green]Done: {len(new_months)} new months, {len(skipped)} skipped[/green]"
-        )
+        console.print(f"[green]Done: {len(new_months)} new months, {len(skipped)} skipped[/green]")
 
         if process and new_months:
             console.print(f"\n[cyan]Processing {len(new_months)} months...[/cyan]")
@@ -380,9 +372,7 @@ def fetch_historical(
 
         console.print(f"\n[cyan]Fetching all {species} records from OBIS...[/cyan]")
         new_years, skipped = fetch_obis_all(species, DATA_DIR)
-        console.print(
-            f"[green]Done: {len(new_years)} new years, {len(skipped)} skipped[/green]"
-        )
+        console.print(f"[green]Done: {len(new_years)} new years, {len(skipped)} skipped[/green]")
 
         if process and new_years:
             console.print(f"\n[cyan]Processing {len(new_years)} years...[/cyan]")
@@ -573,7 +563,9 @@ def export_video(
     output: str = typer.Option(None, "--output", "-o", help="Output MP4 path"),
     silent: bool = typer.Option(False, "--silent", help="Skip generative audio"),
     overrides_path: str = typer.Option(
-        None, "--overrides", help="JSON file with sidebar overrides (audio_params, channel_mix, eq, tension_arc)",
+        None,
+        "--overrides",
+        help=("JSON file with sidebar overrides (audio_params, channel_mix, eq, tension_arc)"),
     ),
 ) -> None:
     """Export a timelapse MP4 from a recipe's renders.
@@ -643,8 +635,7 @@ def export_video(
                     series = json.load(sf)
                 # Align series with frame dates
                 date_to_value = {
-                    s["date"]: s.get("mean", s.get("count", 0.0))
-                    for s in series if "date" in s
+                    s["date"]: s.get("mean", s.get("count", 0.0)) for s in series if "date" in s
                 }
                 audio_dates = info["dates"]
                 audio_values = [float(date_to_value.get(d, 0.0)) for d in audio_dates]
@@ -660,9 +651,7 @@ def export_video(
                 arc_block.update(overrides.get("tension_arc") or {})
                 arc_spec = TensionArcSpec.from_dict(arc_block)
                 dominant_frame = (
-                    max(audio_moments, key=lambda m: m["score"])["frame"]
-                    if audio_moments
-                    else None
+                    max(audio_moments, key=lambda m: m["score"])["frame"] if audio_moments else None
                 )
                 tension_arc = expand_arc(arc_spec, len(audio_values), dominant_frame)
 
@@ -679,24 +668,32 @@ def export_video(
                     f"  Audio:    {audio_params.drone_waveform} drone · "
                     f"{audio_params.accent_style} accents · {len(audio_moments)} moments"
                 )
-                console.print(
-                    f"  Arc:      {arc_spec.preset} preset"
-                    + (f" · pinned to frame {dominant_frame}" if arc_spec.pin_key_moment and dominant_frame is not None else "")
+                arc_note = (
+                    f" · pinned to frame {dominant_frame}"
+                    if arc_spec.pin_key_moment and dominant_frame is not None
+                    else ""
                 )
+                console.print(f"  Arc:      {arc_spec.preset} preset{arc_note}")
                 if hold_at_frame is not None:
                     console.print(f"  Hold:     {hold_duration_sec:.1f}s at frame {hold_at_frame}")
             else:
                 console.print("  [yellow]Audio: time-series not found, exporting silent[/yellow]")
                 audio_params = None
         else:
-            console.print(f"  [yellow]Audio: {recipe_path.name} not found, exporting silent[/yellow]")
+            console.print(
+                f"  [yellow]Audio: {recipe_path.name} not found, exporting silent[/yellow]"
+            )
 
     console.print("\n[cyan]Assembling video...[/cyan]")
 
     try:
         result = assemble_video(
-            recipe, RENDERS_DIR, out_path, fps=fps,
-            overlay_date=False, overlay_attribution=False,
+            recipe,
+            RENDERS_DIR,
+            out_path,
+            fps=fps,
+            overlay_date=False,
+            overlay_attribution=False,
             audio_params=audio_params,
             audio_values=audio_values,
             audio_dates=audio_dates,

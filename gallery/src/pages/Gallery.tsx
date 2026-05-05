@@ -1,10 +1,10 @@
-import { type SyntheticEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useManifest } from '../hooks/useManifest';
-import styles from './Gallery.module.css';
+import { type SyntheticEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useManifest } from "../hooks/useManifest";
+import styles from "./Gallery.module.css";
 
 function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
-  e.currentTarget.style.display = 'none';
+  e.currentTarget.style.display = "none";
 }
 
 function renderUrl(recipe: string, date: string): string {
@@ -14,10 +14,13 @@ function renderUrl(recipe: string, date: string): string {
 /** Assign size tier — creates visual variety in the grid.
  *  First recipe (most renders) is large. Every 3rd is medium. Rest standard.
  *  This ensures variety even when all recipes have the same render count. */
-function getTier(index: number, total: number): 'large' | 'medium' | 'standard' {
-  if (index === 0) return 'large';
-  if (total > 3 && (index === 2 || index === 5)) return 'medium';
-  return 'standard';
+function getTier(
+  index: number,
+  total: number,
+): "large" | "medium" | "standard" {
+  if (index === 0) return "large";
+  if (total > 3 && (index === 2 || index === 5)) return "medium";
+  return "standard";
 }
 
 export function Gallery() {
@@ -26,9 +29,14 @@ export function Gallery() {
   const navigate = useNavigate();
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
-  if (error) return <div className={styles.error}>Could not load manifest: {error}</div>;
+  if (error)
+    return <div className={styles.error}>Could not load manifest: {error}</div>;
   if (!manifest || manifest.recipe_count === 0) {
-    return <div className={styles.empty}>No renders yet. Run the pipeline to get started.</div>;
+    return (
+      <div className={styles.empty}>
+        No renders yet. Run the pipeline to get started.
+      </div>
+    );
   }
 
   const recipes = Object.values(manifest.recipes);
@@ -40,10 +48,12 @@ export function Gallery() {
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark}>
+          OCEANCANVAS
+        </a>
         <div className={styles.filters}>
           <button
-            className={`${styles.filter} ${!filter ? styles.filterActive : ''}`}
+            className={`${styles.filter} ${!filter ? styles.filterActive : ""}`}
             onClick={() => setFilter(null)}
           >
             all
@@ -51,7 +61,7 @@ export function Gallery() {
           {sources.map((s) => (
             <button
               key={s}
-              className={`${styles.filter} ${filter === s ? styles.filterActive : ''}`}
+              className={`${styles.filter} ${filter === s ? styles.filterActive : ""}`}
               onClick={() => setFilter(s!)}
             >
               {s}
@@ -59,9 +69,15 @@ export function Gallery() {
           ))}
         </div>
         <nav className={styles.nav}>
-          <a href="/dashboard" className={styles.navLink}>dashboard</a>
-          <a href="/dashboard/oisst/explorer" className={styles.navLink}>data explorer</a>
-          <a href="/recipes/new" className={styles.navLink}>new recipe</a>
+          <a href="/dashboard" className={styles.navLink}>
+            dashboard
+          </a>
+          <a href="/dashboard/oisst/explorer" className={styles.navLink}>
+            data explorer
+          </a>
+          <a href="/recipes/new" className={styles.navLink}>
+            new recipe
+          </a>
         </nav>
       </header>
 
@@ -76,7 +92,9 @@ export function Gallery() {
               onClick={() => navigate(`/gallery/${recipe.name}`)}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/gallery/${recipe.name}`); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") navigate(`/gallery/${recipe.name}`);
+              }}
               aria-label={`${recipe.name} — ${recipe.render_type} — ${recipe.latest}`}
             >
               <img
@@ -87,9 +105,13 @@ export function Gallery() {
                 onError={handleImgError}
               />
               <div className={styles.tileOverlay}>
-                <div className={styles.tileName}>{recipe.title || recipe.name}</div>
+                <div className={styles.tileName}>
+                  {recipe.title || recipe.name}
+                </div>
                 {recipe.description && (
-                  <div className={styles.tileDescription}>{recipe.description}</div>
+                  <div className={styles.tileDescription}>
+                    {recipe.description}
+                  </div>
                 )}
                 <div className={styles.tileMeta}>
                   {recipe.render_type} · {recipe.source} · {recipe.latest}

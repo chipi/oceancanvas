@@ -1,15 +1,33 @@
-import { Component, type ErrorInfo, type ReactNode, useEffect, useState } from 'react';
-import { ObservationTimeline } from '../components/ObservationTimeline';
-import { SstHistogram } from '../components/SstHistogram';
-import { SstTimeSeries } from '../components/SstTimeSeries';
-import styles from './DashboardSpread.module.css';
+import {
+  Component,
+  type ErrorInfo,
+  type ReactNode,
+  useEffect,
+  useState,
+} from "react";
+import { ObservationTimeline } from "../components/ObservationTimeline";
+import { SstHistogram } from "../components/SstHistogram";
+import { SstTimeSeries } from "../components/SstTimeSeries";
+import styles from "./DashboardSpread.module.css";
 
-class ChartErrorBoundary extends Component<{children: ReactNode}, {error: string | null}> {
+class ChartErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: string | null }
+> {
   state = { error: null as string | null };
-  static getDerivedStateFromError(error: Error) { return { error: error.message }; }
-  componentDidCatch(error: Error, info: ErrorInfo) { console.error('Chart error:', error, info); }
+  static getDerivedStateFromError(error: Error) {
+    return { error: error.message };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Chart error:", error, info);
+  }
   render() {
-    if (this.state.error) return <div style={{color: 'rgba(220,230,240,0.5)', padding: 12}}>Chart error: {this.state.error}</div>;
+    if (this.state.error)
+      return (
+        <div style={{ color: "rgba(220,230,240,0.5)", padding: 12 }}>
+          Chart error: {this.state.error}
+        </div>
+      );
     return this.props.children;
   }
 }
@@ -36,28 +54,60 @@ interface MetaData {
 }
 
 const SOURCES = [
-  { id: 'north-atlantic-sst', label: 'SST', source: 'oisst', sub: 'NOAA OISST' },
-  { id: 'argo-global', label: 'Argo Floats', source: 'argo', sub: 'ifremer GDAC' },
-  { id: 'whale-shark', label: 'Whale Shark', source: 'obis-whale-shark', sub: 'OBIS' },
-  { id: 'leatherback-turtle', label: 'Leatherback', source: 'obis-leatherback-turtle', sub: 'OBIS' },
-  { id: 'elephant-seal', label: 'Elephant Seal', source: 'obis-elephant-seal', sub: 'OBIS' },
+  {
+    id: "north-atlantic-sst",
+    label: "SST",
+    source: "oisst",
+    sub: "NOAA OISST",
+  },
+  {
+    id: "argo-global",
+    label: "Argo Floats",
+    source: "argo",
+    sub: "ifremer GDAC",
+  },
+  {
+    id: "whale-shark",
+    label: "Whale Shark",
+    source: "obis-whale-shark",
+    sub: "OBIS",
+  },
+  {
+    id: "leatherback-turtle",
+    label: "Leatherback",
+    source: "obis-leatherback-turtle",
+    sub: "OBIS",
+  },
+  {
+    id: "elephant-seal",
+    label: "Elephant Seal",
+    source: "obis-elephant-seal",
+    sub: "OBIS",
+  },
 ];
 
 const CLIMATOLOGY_MEAN = 13.8;
 
 export function DashboardSpread() {
-  const [manifest, setManifest] = useState<Record<string, ManifestRecipe> | null>(null);
+  const [manifest, setManifest] = useState<Record<
+    string,
+    ManifestRecipe
+  > | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [meta, setMeta] = useState<MetaData | null>(null);
   const [sstData, setSstData] = useState<number[]>([]);
-  const [monthlySeries, setMonthlySeries] = useState<Array<{date: string; mean: number; min: number; max: number}>>([]);
-  const [obsSeries, setObsSeries] = useState<Array<{date: string; count: number}>>([]);
+  const [monthlySeries, setMonthlySeries] = useState<
+    Array<{ date: string; mean: number; min: number; max: number }>
+  >([]);
+  const [obsSeries, setObsSeries] = useState<
+    Array<{ date: string; count: number }>
+  >([]);
 
   const active = SOURCES[activeIdx];
   const entry = manifest?.[active.id];
 
   useEffect(() => {
-    fetch('/renders/manifest.json')
+    fetch("/renders/manifest.json")
       .then((r) => r.json())
       .then((m) => setManifest(m.recipes || {}))
       .catch(() => {});
@@ -73,46 +123,68 @@ export function DashboardSpread() {
 
     const sourceDir = active.source;
 
-    if (sourceDir === 'oisst') {
+    if (sourceDir === "oisst") {
       // SST: meta + grid data + monthly series
       fetch(`/data/processed/oisst/${entry.latest}.meta.json`)
-        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+        .then((r) => {
+          if (!r.ok) throw new Error();
+          return r.json();
+        })
         .then((m) => setMeta(m))
         .catch(() => {});
 
       fetch(`/data/processed/oisst/${entry.latest}.json`)
         .then((r) => r.json())
-        .then((d) => { if (d?.data) setSstData(d.data); })
+        .then((d) => {
+          if (d?.data) setSstData(d.data);
+        })
         .catch(() => {});
 
-      fetch('/data/processed/oisst/sst-monthly-series.json')
+      fetch("/data/processed/oisst/sst-monthly-series.json")
         .then((r) => r.json())
-        .then((s) => { if (Array.isArray(s)) setMonthlySeries(s); })
+        .then((s) => {
+          if (Array.isArray(s)) setMonthlySeries(s);
+        })
         .catch(() => {});
     }
 
     // All non-OISST sources: observation count time series
-    if (sourceDir !== 'oisst') {
+    if (sourceDir !== "oisst") {
       fetch(`/data/processed/${sourceDir}/time-series.json`)
-        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-        .then((s) => { if (Array.isArray(s)) setObsSeries(s); })
+        .then((r) => {
+          if (!r.ok) throw new Error();
+          return r.json();
+        })
+        .then((s) => {
+          if (Array.isArray(s)) setObsSeries(s);
+        })
         .catch(() => setObsSeries([]));
     }
   }, [activeIdx, entry?.latest]);
 
-  const anomaly = meta ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10 : null;
-  const isOisst = active.source === 'oisst';
+  const anomaly = meta
+    ? Math.round((meta.mean - CLIMATOLOGY_MEAN) * 10) / 10
+    : null;
+  const isOisst = active.source === "oisst";
 
   return (
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark}>
+          OCEANCANVAS
+        </a>
         <span className={styles.topbarLabel}>/DATA EXPLORER</span>
-        <span className={styles.topbarChip}>{active.label} ⊓ {active.sub}</span>
+        <span className={styles.topbarChip}>
+          {active.label} ⊓ {active.sub}
+        </span>
         <nav className={styles.topbarNav}>
-          <a href="/" className={styles.topbarLink}>← gallery</a>
-          <a href="/dashboard" className={styles.topbarLink}>dashboard</a>
+          <a href="/" className={styles.topbarLink}>
+            ← gallery
+          </a>
+          <a href="/dashboard" className={styles.topbarLink}>
+            dashboard
+          </a>
         </nav>
       </header>
 
@@ -123,7 +195,9 @@ export function DashboardSpread() {
           {SOURCES.map((s, i) => (
             <button
               key={s.id}
-              className={i === activeIdx ? styles.sourceActive : styles.sourceInactive}
+              className={
+                i === activeIdx ? styles.sourceActive : styles.sourceInactive
+              }
               onClick={() => setActiveIdx(i)}
             >
               <div>{s.label}</div>
@@ -134,146 +208,191 @@ export function DashboardSpread() {
 
         {/* Main content area */}
         <div className={styles.content}>
-      {/* Hero section */}
-      <div className={styles.hero}>
-        <div className={styles.heroLeft}>
-          <div className={styles.eyebrow}>
-            {active.label} · {entry?.latest || ''}
-          </div>
-          {isOisst && meta ? (
-            <>
-              <div className={styles.heroNumber}>{meta.mean.toFixed(1)}°</div>
-              <div className={styles.heroSubtitle}>
-                Mean SST across the North Atlantic basin
+          {/* Hero section */}
+          <div className={styles.hero}>
+            <div className={styles.heroLeft}>
+              <div className={styles.eyebrow}>
+                {active.label} · {entry?.latest || ""}
               </div>
-              {anomaly !== null && (
-                <div className={anomaly >= 0 ? styles.anomalyWarm : styles.anomalyCool}>
-                  {anomaly >= 0 ? '+' : ''}{anomaly.toFixed(1)}° above 1981–2010 climatology
-                </div>
+              {isOisst && meta ? (
+                <>
+                  <div className={styles.heroNumber}>
+                    {meta.mean.toFixed(1)}°
+                  </div>
+                  <div className={styles.heroSubtitle}>
+                    Mean SST across the North Atlantic basin
+                  </div>
+                  {anomaly !== null && (
+                    <div
+                      className={
+                        anomaly >= 0 ? styles.anomalyWarm : styles.anomalyCool
+                      }
+                    >
+                      {anomaly >= 0 ? "+" : ""}
+                      {anomaly.toFixed(1)}° above 1981–2010 climatology
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className={styles.heroNumber}>{entry?.count || "—"}</div>
+                  <div className={styles.heroSubtitle}>
+                    {active.source.startsWith("obis")
+                      ? "occurrence records"
+                      : "float profiles"}{" "}
+                    · {entry?.dates?.length || 0} time periods
+                  </div>
+                </>
               )}
-            </>
-          ) : (
-            <>
-              <div className={styles.heroNumber}>{entry?.count || '—'}</div>
-              <div className={styles.heroSubtitle}>
-                {active.source.startsWith('obis') ? 'occurrence records' : 'float profiles'}
-                {' '}· {entry?.dates?.length || 0} time periods
+              <div className={styles.metaRow}>
+                <span>{entry?.count || 0} renders</span>
+                <span>
+                  {entry?.dates?.[0]?.substring(0, 4) || ""} →{" "}
+                  {entry?.latest?.substring(0, 4) || ""}
+                </span>
+                <span>{active.sub}</span>
               </div>
-            </>
-          )}
-          <div className={styles.metaRow}>
-            <span>{entry?.count || 0} renders</span>
-            <span>{entry?.dates?.[0]?.substring(0, 4) || ''} → {entry?.latest?.substring(0, 4) || ''}</span>
-            <span>{active.sub}</span>
-          </div>
-        </div>
-        <div className={styles.heroRight}>
-          {entry?.latest && (
-            <img
-              className={styles.heroHeatmap}
-              src={`/renders/${active.id}/${entry.latest}.png`}
-              alt={active.label}
-              onError={(e) => { e.currentTarget.style.opacity = '0.3'; }}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Data strip */}
-      <div className={styles.dataStrip}>
-        {isOisst && meta ? (
-          <>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{meta.max.toFixed(1)}°</div>
-              <div className={styles.dataLabel}>REGION MAX</div>
             </div>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{meta.min.toFixed(1)}°</div>
-              <div className={styles.dataLabel}>REGION MIN</div>
-            </div>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
-              <div className={styles.dataLabel}>BASELINE</div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{obsSeries.reduce((s, d) => s + d.count, 0).toLocaleString()}</div>
-              <div className={styles.dataLabel}>TOTAL RECORDS</div>
-            </div>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{entry?.dates?.length || 0}</div>
-              <div className={styles.dataLabel}>TIME PERIODS</div>
-            </div>
-            <div className={styles.dataCol}>
-              <div className={styles.dataValue}>{entry?.dates?.[0]?.substring(0, 4) || '—'}</div>
-              <div className={styles.dataLabel}>EARLIEST</div>
-            </div>
-          </>
-        )}
-        <div className={styles.dataCol}>
-          <div className={styles.dataValue}>{entry?.count || 0}</div>
-          <div className={styles.dataLabel}>RENDERS</div>
-        </div>
-      </div>
-
-      {/* Charts */}
-      <div className={styles.chartsSection}>
-        {/* Chart 1: SST histogram or observation timeline */}
-        <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>
-            {isOisst ? `SST DISTRIBUTION ⊓ ${entry?.latest || ''}` : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
-          </div>
-          <div className={styles.chartBody}>
-            <ChartErrorBoundary key={activeIdx}>
-            {isOisst ? (
-              sstData.length > 0 ? <SstHistogram data={sstData} /> : 'Loading...'
-            ) : (
-              obsSeries.length > 0 ? (
-                <ObservationTimeline data={obsSeries} label="Records" color="#5DCAA5" />
-              ) : 'Loading...'
-            )}
-            </ChartErrorBoundary>
-          </div>
-        </div>
-
-        {/* Chart 2: SST time series or observation timeline for SST */}
-        <div className={styles.chartPlaceholder}>
-          <div className={styles.chartTitle}>
-            {isOisst ? 'MEAN SST ⊓ 1981→2026' : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
-          </div>
-          <div className={styles.chartBody}>
-            <ChartErrorBoundary key={activeIdx}>
-            {isOisst ? (
-              monthlySeries.length > 0 ? (
-                <SstTimeSeries data={monthlySeries} baseline={CLIMATOLOGY_MEAN} />
-              ) : 'Loading...'
-            ) : (
-              obsSeries.length > 0 ? (
-                <ObservationTimeline
-                  data={obsSeries.reduce<Array<{date: string; count: number}>>((acc, d) => {
-                    const prev = acc.length > 0 ? acc[acc.length - 1].count : 0;
-                    acc.push({ date: d.date, count: prev + d.count });
-                    return acc;
-                  }, [])}
-                  label="Cumulative"
-                  color="#EF9F27"
+            <div className={styles.heroRight}>
+              {entry?.latest && (
+                <img
+                  className={styles.heroHeatmap}
+                  src={`/renders/${active.id}/${entry.latest}.png`}
+                  alt={active.label}
+                  onError={(e) => {
+                    e.currentTarget.style.opacity = "0.3";
+                  }}
                 />
-              ) : 'Loading...'
-            )}
-            </ChartErrorBoundary>
+              )}
+            </div>
           </div>
+
+          {/* Data strip */}
+          <div className={styles.dataStrip}>
+            {isOisst && meta ? (
+              <>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>{meta.max.toFixed(1)}°</div>
+                  <div className={styles.dataLabel}>REGION MAX</div>
+                </div>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>{meta.min.toFixed(1)}°</div>
+                  <div className={styles.dataLabel}>REGION MIN</div>
+                </div>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>{CLIMATOLOGY_MEAN}°</div>
+                  <div className={styles.dataLabel}>BASELINE</div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>
+                    {obsSeries
+                      .reduce((s, d) => s + d.count, 0)
+                      .toLocaleString()}
+                  </div>
+                  <div className={styles.dataLabel}>TOTAL RECORDS</div>
+                </div>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>
+                    {entry?.dates?.length || 0}
+                  </div>
+                  <div className={styles.dataLabel}>TIME PERIODS</div>
+                </div>
+                <div className={styles.dataCol}>
+                  <div className={styles.dataValue}>
+                    {entry?.dates?.[0]?.substring(0, 4) || "—"}
+                  </div>
+                  <div className={styles.dataLabel}>EARLIEST</div>
+                </div>
+              </>
+            )}
+            <div className={styles.dataCol}>
+              <div className={styles.dataValue}>{entry?.count || 0}</div>
+              <div className={styles.dataLabel}>RENDERS</div>
+            </div>
+          </div>
+
+          {/* Charts */}
+          <div className={styles.chartsSection}>
+            {/* Chart 1: SST histogram or observation timeline */}
+            <div className={styles.chartPlaceholder}>
+              <div className={styles.chartTitle}>
+                {isOisst
+                  ? `SST DISTRIBUTION ⊓ ${entry?.latest || ""}`
+                  : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
+              </div>
+              <div className={styles.chartBody}>
+                <ChartErrorBoundary key={activeIdx}>
+                  {isOisst ? (
+                    sstData.length > 0 ? (
+                      <SstHistogram data={sstData} />
+                    ) : (
+                      "Loading..."
+                    )
+                  ) : obsSeries.length > 0 ? (
+                    <ObservationTimeline
+                      data={obsSeries}
+                      label="Records"
+                      color="#5DCAA5"
+                    />
+                  ) : (
+                    "Loading..."
+                  )}
+                </ChartErrorBoundary>
+              </div>
+            </div>
+
+            {/* Chart 2: SST time series or observation timeline for SST */}
+            <div className={styles.chartPlaceholder}>
+              <div className={styles.chartTitle}>
+                {isOisst
+                  ? "MEAN SST ⊓ 1981→2026"
+                  : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
+              </div>
+              <div className={styles.chartBody}>
+                <ChartErrorBoundary key={activeIdx}>
+                  {isOisst ? (
+                    monthlySeries.length > 0 ? (
+                      <SstTimeSeries
+                        data={monthlySeries}
+                        baseline={CLIMATOLOGY_MEAN}
+                      />
+                    ) : (
+                      "Loading..."
+                    )
+                  ) : obsSeries.length > 0 ? (
+                    <ObservationTimeline
+                      data={obsSeries.reduce<
+                        Array<{ date: string; count: number }>
+                      >((acc, d) => {
+                        const prev =
+                          acc.length > 0 ? acc[acc.length - 1].count : 0;
+                        acc.push({ date: d.date, count: prev + d.count });
+                        return acc;
+                      }, [])}
+                      label="Cumulative"
+                      color="#EF9F27"
+                    />
+                  ) : (
+                    "Loading..."
+                  )}
+                </ChartErrorBoundary>
+              </div>
+            </div>
+          </div>
+
+          {/* Citation */}
+          <footer className={styles.citation}>
+            {active.sub} · {active.label} ·{" "}
+            {entry?.dates?.[0]?.substring(0, 4) || ""}–
+            {entry?.latest?.substring(0, 4) || ""} · OceanCanvas
+          </footer>
         </div>
+        {/* /content */}
       </div>
-
-      {/* Citation */}
-      <footer className={styles.citation}>
-        {active.sub} · {active.label} · {entry?.dates?.[0]?.substring(0, 4) || ''}–{entry?.latest?.substring(0, 4) || ''} · OceanCanvas
-      </footer>
-
-        </div>{/* /content */}
-      </div>{/* /body */}
+      {/* /body */}
     </div>
   );
 }

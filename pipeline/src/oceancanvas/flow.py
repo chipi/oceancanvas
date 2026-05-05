@@ -83,8 +83,7 @@ def _parallel_build_and_render(
 
     # Fan out: build payloads in parallel
     payload_futures = [
-        build_one_payload.submit(recipe_path, data_dir, renders_dir)
-        for recipe_path in recipe_files
+        build_one_payload.submit(recipe_path, data_dir, renders_dir) for recipe_path in recipe_files
     ]
     payload_paths = [f.result() for f in payload_futures if f.result() is not None]
 
@@ -93,8 +92,7 @@ def _parallel_build_and_render(
 
     # Fan out: render in parallel (concurrency bounded by semaphore in render_one)
     render_futures = [
-        render_one.submit(payload_path, renders_dir)
-        for payload_path in payload_paths
+        render_one.submit(payload_path, renders_dir) for payload_path in payload_paths
     ]
 
     # Collect results, log failures, then clean up workers

@@ -30,7 +30,7 @@ class TensionArcSpec:
     pin_key_moment: bool = False
 
     @classmethod
-    def from_dict(cls, d: dict | None) -> "TensionArcSpec":
+    def from_dict(cls, d: dict | None) -> TensionArcSpec:
         if not d:
             return cls()
         return cls(
@@ -73,9 +73,7 @@ def expand_arc(
     result: list[float] = []
     for i in range(total_frames):
         t = i / (total_frames - 1) if total_frames > 1 else 0.0
-        result.append(
-            _curve_value(spec.preset, t, peak_position, peak_height, release_steepness)
-        )
+        result.append(_curve_value(spec.preset, t, peak_position, peak_height, release_steepness))
     return result
 
 

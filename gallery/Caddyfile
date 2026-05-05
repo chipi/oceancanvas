@@ -23,7 +23,9 @@
         file_server
     }
 
-    handle /recipes/* {
+    # Only recipe YAML is static; /recipes/:id is a React route (align with Vite proxy).
+    @recipeYaml path_regexp ^/recipes/.+\.yaml$
+    handle @recipeYaml {
         root * /
         file_server
     }

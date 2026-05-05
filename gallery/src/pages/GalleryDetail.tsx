@@ -1,12 +1,12 @@
-import { type SyntheticEvent, useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { TimelineScrubber } from '../components/TimelineScrubber';
-import { useManifest } from '../hooks/useManifest';
-import { getSourceInfo } from '../lib/sourceInfo';
-import styles from './GalleryDetail.module.css';
+import { type SyntheticEvent, useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { TimelineScrubber } from "../components/TimelineScrubber";
+import { useManifest } from "../hooks/useManifest";
+import { getSourceInfo } from "../lib/sourceInfo";
+import styles from "./GalleryDetail.module.css";
 
 function handleImgError(e: SyntheticEvent<HTMLImageElement>) {
-  e.currentTarget.style.opacity = '0.3';
+  e.currentTarget.style.opacity = "0.3";
 }
 
 export function GalleryDetail() {
@@ -14,8 +14,8 @@ export function GalleryDetail() {
   const navigate = useNavigate();
   const { manifest } = useManifest();
 
-  const entry = manifest?.recipes?.[recipe || ''];
-  const source = getSourceInfo(entry?.source || '');
+  const entry = manifest?.recipes?.[recipe || ""];
+  const source = getSourceInfo(entry?.source || "");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // Default to latest date
@@ -29,17 +29,19 @@ export function GalleryDetail() {
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') navigate('/');
+      if (e.key === "Escape") navigate("/");
     }
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, [navigate]);
 
   if (!entry) {
     return (
       <div className={styles.page}>
         <header className={styles.topbar}>
-          <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+          <a href="/" className={styles.wordmark}>
+            OCEANCANVAS
+          </a>
         </header>
         <div className={styles.empty}>Recipe not found</div>
       </div>
@@ -52,11 +54,19 @@ export function GalleryDetail() {
   return (
     <div className={styles.page}>
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark}>
+          OCEANCANVAS
+        </a>
         <div className={styles.actions}>
-          <a href="/" className={styles.action}>← gallery</a>
-          <a href={`/recipes/${entry.name}`} className={styles.action}>recipe ↗</a>
-          <a href={`/timelapse/${entry.name}`} className={styles.action}>timelapse ↗</a>
+          <a href="/" className={styles.action}>
+            ← gallery
+          </a>
+          <a href={`/recipes/${entry.name}`} className={styles.action}>
+            recipe ↗
+          </a>
+          <a href={`/timelapse/${entry.name}`} className={styles.action}>
+            timelapse ↗
+          </a>
           <a
             href={renderUrl}
             download={`${entry.name}_${displayDate}_oceancanvas.png`}
@@ -79,12 +89,17 @@ export function GalleryDetail() {
               onError={handleImgError}
             />
             <div className={styles.overlay}>
-              <div className={styles.recipeName}>{entry.title || entry.name}</div>
+              <div className={styles.recipeName}>
+                {entry.title || entry.name}
+              </div>
               <div className={styles.recipeMeta}>
-                {entry.render_type} · {entry.count} render{entry.count !== 1 ? 's' : ''}
+                {entry.render_type} · {entry.count} render
+                {entry.count !== 1 ? "s" : ""}
               </div>
               {entry.description && (
-                <div className={styles.recipeDescription}>{entry.description}</div>
+                <div className={styles.recipeDescription}>
+                  {entry.description}
+                </div>
               )}
             </div>
           </div>
@@ -140,7 +155,7 @@ export function GalleryDetail() {
                 rel="noopener noreferrer"
                 className={styles.contextLink}
               >
-                {source.url.replace('https://', '')}
+                {source.url.replace("https://", "")}
               </a>
               <div className={styles.contextDetail}>{source.license}</div>
             </div>

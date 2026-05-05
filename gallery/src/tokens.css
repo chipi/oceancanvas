@@ -1,9 +1,9 @@
 /* OceanCanvas design tokens — from OC_IA.md (shared-tokens), UXS-001, UXS-003 */
 :root {
   /* Surface */
-  --canvas: #030B10;
-  --surface: #050E1A;
-  --elevated: #0A1828;
+  --canvas: #030b10;
+  --surface: #050e1a;
+  --elevated: #0a1828;
   --overlay: rgba(3, 11, 16, 0.85);
   --border: rgba(255, 255, 255, 0.07);
   --border-strong: rgba(255, 255, 255, 0.15);
@@ -12,37 +12,37 @@
   --text: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.65);
   --text-muted: rgba(255, 255, 255, 0.35);
-  --text-disabled: rgba(255, 255, 255, 0.20);
+  --text-disabled: rgba(255, 255, 255, 0.2);
 
   /* Intent */
-  --intent-alert: #F09595;
-  --intent-info: #5DCAA5;
+  --intent-alert: #f09595;
+  --intent-info: #5dcaa5;
 
   /* Domain — SST (UXS-001) */
-  --domain-sst-cold: #042C53;
-  --domain-sst-mid-low: #0F6E56;
+  --domain-sst-cold: #042c53;
+  --domain-sst-mid-low: #0f6e56;
   --domain-sst-mid: #639922;
-  --domain-sst-mid-high: #BA7517;
-  --domain-sst-warm: #D85A30;
-  --domain-sst-hot: #791F1F;
-  --domain-sst-accent: #EF9F27;
+  --domain-sst-mid-high: #ba7517;
+  --domain-sst-warm: #d85a30;
+  --domain-sst-hot: #791f1f;
+  --domain-sst-accent: #ef9f27;
   --domain-sst-fill-soft: rgba(239, 159, 39, 0.07);
 
   /* Domain — Sea Level (UXS-002) */
-  --domain-sealevel-accent: #5DCAA5;
-  --domain-sealevel-cool: #1D9E75;
-  --domain-sealevel-warm: #BA7517;
-  --domain-sealevel-hot: #D85A30;
+  --domain-sealevel-accent: #5dcaa5;
+  --domain-sealevel-cool: #1d9e75;
+  --domain-sealevel-warm: #ba7517;
+  --domain-sealevel-hot: #d85a30;
   --domain-sealevel-fill-soft: rgba(93, 202, 165, 0.07);
 
   /* Editor — Recipe Editor (UXS-003) */
-  --editor-creative: #EF9F27;
-  --editor-structure: #5DCAA5;
+  --editor-creative: #ef9f27;
+  --editor-structure: #5dcaa5;
   --editor-quadrant-active: rgba(255, 255, 255, 0.92);
   --editor-quadrant-grid: rgba(255, 255, 255, 0.07);
-  --editor-spectrum-cold: #042C53;
-  --editor-spectrum-thermal: #EF9F27;
-  --editor-spectrum-otherworldly: #AFA9EC;
+  --editor-spectrum-cold: #042c53;
+  --editor-spectrum-thermal: #ef9f27;
+  --editor-spectrum-otherworldly: #afa9ec;
   --editor-slider-handle: rgba(255, 255, 255, 0.92);
 
   /* Gallery (UXS-004) */
@@ -52,10 +52,14 @@
   --gallery-filter-inactive: transparent;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
   background: var(--canvas);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }

@@ -6,33 +6,33 @@
  * Supports round-trip: load → save preserves formatting.
  */
 
-import type { CreativeState, TechnicalParams } from './creativeMapping';
-import { creativeToTechnical } from './creativeMapping';
+import type { CreativeState, TechnicalParams } from "./creativeMapping";
+import { creativeToTechnical } from "./creativeMapping";
 
-export const CREATIVE_MARKER = '# ⊓ creative controls ⊓';
+export const CREATIVE_MARKER = "# ⊓ creative controls ⊓";
 
 export interface TaggedLine {
   text: string;
-  type: 'structural' | 'creative' | 'marker';
+  type: "structural" | "creative" | "marker";
 }
 
-export type RecipeState = 'matched' | 'partially-custom' | 'custom';
+export type RecipeState = "matched" | "partially-custom" | "custom";
 
 /**
  * Parse recipe YAML into tagged lines for editor display.
  */
 export function parseRecipeYaml(yaml: string): TaggedLine[] {
-  const lines = yaml.split('\n');
+  const lines = yaml.split("\n");
   let belowMarker = false;
 
   return lines.map((text) => {
     if (text.trim() === CREATIVE_MARKER) {
       belowMarker = true;
-      return { text, type: 'marker' as const };
+      return { text, type: "marker" as const };
     }
     return {
       text,
-      type: belowMarker ? ('creative' as const) : ('structural' as const),
+      type: belowMarker ? ("creative" as const) : ("structural" as const),
     };
   });
 }
@@ -42,7 +42,7 @@ export function parseRecipeYaml(yaml: string): TaggedLine[] {
  * Round-trip safe: parseRecipeYaml(yaml) → reconstructYaml(lines) === yaml
  */
 export function reconstructYaml(lines: TaggedLine[]): string {
-  return lines.map((l) => l.text).join('\n');
+  return lines.map((l) => l.text).join("\n");
 }
 
 /**
@@ -50,7 +50,7 @@ export function reconstructYaml(lines: TaggedLine[]): string {
  * Returns key-value pairs from the render: section.
  */
 export function extractRenderParams(yaml: string): Record<string, unknown> {
-  return extractBlock(yaml, 'render');
+  return extractBlock(yaml, "render");
 }
 
 /**
@@ -58,7 +58,7 @@ export function extractRenderParams(yaml: string): Record<string, unknown> {
  * Returns key-value pairs from the audio: section, or {} if no block exists.
  */
 export function extractAudioParams(yaml: string): Record<string, unknown> {
-  return extractBlock(yaml, 'audio');
+  return extractBlock(yaml, "audio");
 }
 
 /**
@@ -67,13 +67,16 @@ export function extractAudioParams(yaml: string): Record<string, unknown> {
  * RFC-011.
  */
 export function extractTensionArc(yaml: string): Record<string, unknown> {
-  return extractBlock(yaml, 'tension_arc');
+  return extractBlock(yaml, "tension_arc");
 }
 
-function extractBlock(yaml: string, blockName: string): Record<string, unknown> {
+function extractBlock(
+  yaml: string,
+  blockName: string,
+): Record<string, unknown> {
   const lines = parseRecipeYaml(yaml);
   const creativeLines = lines
-    .filter((l) => l.type === 'creative')
+    .filter((l) => l.type === "creative")
     .map((l) => l.text);
 
   const params: Record<string, unknown> = {};
@@ -86,18 +89,24 @@ function extractBlock(yaml: string, blockName: string): Record<string, unknown> 
       continue;
     }
     // Leaving the block: a non-indented, non-empty, non-comment line ends it
-    if (inBlock && trimmed && !line.startsWith(' ') && !line.startsWith('\t') && !trimmed.startsWith('#')) {
+    if (
+      inBlock &&
+      trimmed &&
+      !line.startsWith(" ") &&
+      !line.startsWith("\t") &&
+      !trimmed.startsWith("#")
+    ) {
       inBlock = false;
       continue;
     }
-    if (inBlock && trimmed && !trimmed.startsWith('#')) {
+    if (inBlock && trimmed && !trimmed.startsWith("#")) {
       const match = trimmed.match(/^(\w+):\s*(.+)$/);
       if (match) {
         const [, key, val] = match;
-        if (val === 'true') params[key] = true;
-        else if (val === 'false') params[key] = false;
+        if (val === "true") params[key] = true;
+        else if (val === "false") params[key] = false;
         else if (!isNaN(Number(val))) params[key] = Number(val);
-        else params[key] = val.replace(/^["']|["']$/g, '');
+        else params[key] = val.replace(/^["']|["']$/g, "");
       }
     }
   }
@@ -126,9 +135,9 @@ export function detectState(
     }
   }
 
-  if (diffs === 0) return 'matched';
-  if (diffs <= 2) return 'partially-custom';
-  return 'custom';
+  if (diffs === 0) return "matched";
+  if (diffs <= 2) return "partially-custom";
+  return "custom";
 }
 
 /**
@@ -137,14 +146,14 @@ export function detectState(
 export function ensureMarker(yaml: string): string {
   if (yaml.includes(CREATIVE_MARKER)) return yaml;
 
-  const lines = yaml.split('\n');
-  const renderIdx = lines.findIndex((l) => l.trim().startsWith('render:'));
+  const lines = yaml.split("\n");
+  const renderIdx = lines.findIndex((l) => l.trim().startsWith("render:"));
 
   if (renderIdx >= 0) {
-    lines.splice(renderIdx, 0, '', CREATIVE_MARKER);
+    lines.splice(renderIdx, 0, "", CREATIVE_MARKER);
   } else {
-    lines.push('', CREATIVE_MARKER);
+    lines.push("", CREATIVE_MARKER);
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }

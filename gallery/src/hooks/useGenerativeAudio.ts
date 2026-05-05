@@ -8,9 +8,9 @@
  *   - Exposes liveChannels so the visualizer reflects engine state, not parallel math
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { SynthEngine } from '../lib/audioEngine';
-import { AmbientEngine } from '../lib/audioEngineAmbient';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { SynthEngine } from "../lib/audioEngine";
+import { AmbientEngine } from "../lib/audioEngineAmbient";
 import {
   type AudioEngineInterface,
   type ChannelMix,
@@ -19,17 +19,17 @@ import {
   type FrameView,
   DEFAULT_CHANNEL_MIX,
   DEFAULT_EQ,
-} from '../lib/audioEngineTypes';
-import type { AudioPreset } from '../lib/audioPresets';
-import type { MomentEvent } from '../lib/moments';
+} from "../lib/audioEngineTypes";
+import type { AudioPreset } from "../lib/audioPresets";
+import type { MomentEvent } from "../lib/moments";
 
 interface UseGenerativeAudioArgs {
-  preset: AudioPreset | null;  // null = silent
+  preset: AudioPreset | null; // null = silent
   enabled: boolean;
   isPlaying: boolean;
   intensity: number[];
-  values: number[];            // raw data values (for drone pitch)
-  dates: string[];             // YYYY-MM strings (for seasonal texture)
+  values: number[]; // raw data values (for drone pitch)
+  dates: string[]; // YYYY-MM strings (for seasonal texture)
   moments: MomentEvent[];
   currentFrame: number;
   fps: number;
@@ -41,27 +41,44 @@ interface UseGenerativeAudioArgs {
   holdMask?: boolean[];
 }
 
-const SILENT_CHANNELS: ChannelState = { drone: 0, pulse: 0, accent: false, texture: 0 };
+const SILENT_CHANNELS: ChannelState = {
+  drone: 0,
+  pulse: 0,
+  accent: false,
+  texture: 0,
+};
 const EMPTY_ARC: number[] = [];
 const EMPTY_HOLD_MASK: boolean[] = [];
 
 export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
-  const { preset, enabled, isPlaying, intensity, values, dates, moments, currentFrame, fps } = args;
+  const {
+    preset,
+    enabled,
+    isPlaying,
+    intensity,
+    values,
+    dates,
+    moments,
+    currentFrame,
+    fps,
+  } = args;
   const channelMix = args.channelMix ?? DEFAULT_CHANNEL_MIX;
   const eq = args.eq ?? DEFAULT_EQ;
   const tensionArc = args.tensionArc ?? EMPTY_ARC;
   const holdMask = args.holdMask ?? EMPTY_HOLD_MASK;
 
   const engineRef = useRef<AudioEngineInterface | null>(null);
-  const currentEngineKindRef = useRef<string>('');
+  const currentEngineKindRef = useRef<string>("");
   const [masterVolume, setMasterVolumeState] = useState(0.8);
   const [audioReady, setAudioReady] = useState(false);
-  const [liveChannels, setLiveChannels] = useState<ChannelState>(SILENT_CHANNELS);
+  const [liveChannels, setLiveChannels] =
+    useState<ChannelState>(SILENT_CHANNELS);
 
   // Normalise values to [0,1] for drone pitch — recompute when series changes
   const valueRange = useMemo(() => {
     if (!values.length) return { min: 0, max: 1 };
-    let min = Infinity, max = -Infinity;
+    let min = Infinity,
+      max = -Infinity;
     for (const v of values) {
       if (v < min) min = v;
       if (v > max) max = v;
@@ -79,12 +96,14 @@ export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
   // Engine lifecycle: instantiate per engine kind. Swap when preset.engine changes.
   useEffect(() => {
     if (!preset) return;
-    const desiredKind = preset.engine || 'synth';
-    if (engineRef.current && currentEngineKindRef.current === desiredKind) return;
+    const desiredKind = preset.engine || "synth";
+    if (engineRef.current && currentEngineKindRef.current === desiredKind)
+      return;
 
     // Tear down previous engine when switching kind
     engineRef.current?.dispose();
-    const engine: AudioEngineInterface = desiredKind === 'ambient' ? new AmbientEngine() : new SynthEngine();
+    const engine: AudioEngineInterface =
+      desiredKind === "ambient" ? new AmbientEngine() : new SynthEngine();
     engineRef.current = engine;
     currentEngineKindRef.current = desiredKind;
     setAudioReady(false);
@@ -95,7 +114,7 @@ export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
     return () => {
       engineRef.current?.dispose();
       engineRef.current = null;
-      currentEngineKindRef.current = '';
+      currentEngineKindRef.current = "";
     };
   }, []);
 
@@ -146,7 +165,8 @@ export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
       let cancelled = false;
       engine.setPreset(preset);
       engine.setFps(fps);
-      engine.start()
+      engine
+        .start()
         .then(() => {
           if (!cancelled) setAudioReady(true);
         })
@@ -168,11 +188,26 @@ export function useGenerativeAudio(args: UseGenerativeAudioArgs) {
     const engine = engineRef.current;
     if (!engine || !enabled || !preset || !isPlaying || !values.length) return;
     const view = buildFrameView({
-      currentFrame, intensity, values, dates, momentByFrame, valueRange,
+      currentFrame,
+      intensity,
+      values,
+      dates,
+      momentByFrame,
+      valueRange,
     });
     engine.setFrame(view);
     setLiveChannels(engine.getLiveChannels());
-  }, [currentFrame, isPlaying, enabled, preset, intensity, values, dates, momentByFrame, valueRange]);
+  }, [
+    currentFrame,
+    isPlaying,
+    enabled,
+    preset,
+    intensity,
+    values,
+    dates,
+    momentByFrame,
+    valueRange,
+  ]);
 
   return {
     masterVolume,
@@ -192,7 +227,12 @@ interface BuildArgs {
 }
 
 export function buildFrameView({
-  currentFrame, intensity, values, dates, momentByFrame, valueRange,
+  currentFrame,
+  intensity,
+  values,
+  dates,
+  momentByFrame,
+  valueRange,
 }: BuildArgs): FrameView {
   const i = Math.max(0, Math.min(values.length - 1, currentFrame));
   const v = values[i] ?? 0;
@@ -207,7 +247,7 @@ export function buildFrameView({
   const moment = momentByFrame.get(i);
   const accentType = moment ? mapMomentToAccent(moment) : null;
 
-  const date = dates[i] || '';
+  const date = dates[i] || "";
   const month = parseInt(date.substring(5, 7), 10) || 0;
   const monthFrac = month > 0 ? (month - 1) / 12 : 0;
   const yearFrac = values.length > 1 ? i / (values.length - 1) : 0;
@@ -225,9 +265,13 @@ export function buildFrameView({
   };
 }
 
-function mapMomentToAccent(m: MomentEvent): FrameView['accentType'] {
-  if (m.type === 'record') return m.label.toLowerCase().includes('low') ? 'record-low' : 'record-high';
-  if (m.type === 'inflection') return 'inflection';
-  if (m.type === 'peak') return m.label.toLowerCase().includes('cold') ? 'record-low' : 'record-high';
-  return 'inflection';
+function mapMomentToAccent(m: MomentEvent): FrameView["accentType"] {
+  if (m.type === "record")
+    return m.label.toLowerCase().includes("low") ? "record-low" : "record-high";
+  if (m.type === "inflection") return "inflection";
+  if (m.type === "peak")
+    return m.label.toLowerCase().includes("cold")
+      ? "record-low"
+      : "record-high";
+  return "inflection";
 }

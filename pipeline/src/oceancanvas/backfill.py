@@ -22,9 +22,7 @@ from oceancanvas.tasks.index import index
 from oceancanvas.tasks.render import cleanup_workers, render_one
 
 
-def _generate_dates(
-    start: str, end: str, cadence: str = "monthly"
-) -> list[str]:
+def _generate_dates(start: str, end: str, cadence: str = "monthly") -> list[str]:
     """Generate date strings from start to end at the given cadence.
 
     Args:
@@ -140,7 +138,11 @@ def backfill_flow(
     dates = _generate_dates(start_date, end_date, cadence)
     logger.info(
         "Backfill %s: %s → %s, %s cadence, %d dates",
-        recipe_name, start_date, end_date, cadence, len(dates),
+        recipe_name,
+        start_date,
+        end_date,
+        cadence,
+        len(dates),
     )
 
     to_render, already_done, missing_data = validate_backfill(
@@ -151,7 +153,8 @@ def backfill_flow(
         logger.error(
             "Missing processed data for %d dates (first 5: %s). "
             "Run the pipeline to fetch and process these dates first.",
-            len(missing_data), missing_data[:5],
+            len(missing_data),
+            missing_data[:5],
         )
         msg = f"Missing processed data for {len(missing_data)} dates"
         raise ValueError(msg)
@@ -169,8 +172,7 @@ def backfill_flow(
 
     # Fan out: build payloads
     payload_futures = [
-        build_one_payload.submit(recipe_path, data_dir, renders_dir, date=d)
-        for d in to_render
+        build_one_payload.submit(recipe_path, data_dir, renders_dir, date=d) for d in to_render
     ]
     payload_paths = [f.result() for f in payload_futures if f.result() is not None]
 
@@ -179,10 +181,7 @@ def backfill_flow(
         return []
 
     # Fan out: render (semaphore-limited by render_one)
-    render_futures = [
-        render_one.submit(p, renders_dir)
-        for p in payload_paths
-    ]
+    render_futures = [render_one.submit(p, renders_dir) for p in payload_paths]
 
     results: list[Path] = []
     failed: list[str] = []
@@ -203,7 +202,9 @@ def backfill_flow(
 
     logger.info(
         "Backfill complete: %d rendered, %d failed, %d skipped",
-        len(results), len(failed), len(already_done),
+        len(results),
+        len(failed),
+        len(already_done),
     )
 
     if failed:

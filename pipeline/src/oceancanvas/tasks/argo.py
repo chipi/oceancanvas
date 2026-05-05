@@ -164,16 +164,20 @@ def fetch_argo_historical(
 
         # Group by first-of-month
         month_key = f"{date_str[:4]}-{date_str[4:6]}-01"
-        monthly[month_key].append({
-            "lat": round(lat, 3),
-            "lon": round(lon, 3),
-            "date": f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}",
-            "file": parts[0],
-        })
+        monthly[month_key].append(
+            {
+                "lat": round(lat, 3),
+                "lon": round(lon, 3),
+                "date": f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}",
+                "file": parts[0],
+            }
+        )
 
     logger.info(
         "Argo index: %d lines, %d months, %d in region",
-        total_lines, len(monthly), sum(len(v) for v in monthly.values()),
+        total_lines,
+        len(monthly),
+        sum(len(v) for v in monthly.values()),
     )
 
     # Write only new months
@@ -192,7 +196,8 @@ def fetch_argo_historical(
 
     logger.info(
         "Argo historical: %d new months written, %d skipped (existing)",
-        len(new_months), len(skipped),
+        len(new_months),
+        len(skipped),
     )
     return new_months, skipped
 

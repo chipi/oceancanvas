@@ -63,7 +63,10 @@ def fetch_obis(
             wait = backoff_base * (2**attempt)
             logger.warning(
                 "OBIS %s attempt %d failed (%s), retry in %.0fs",
-                species_slug, attempt + 1, e, wait,
+                species_slug,
+                attempt + 1,
+                e,
+                wait,
             )
             time.sleep(wait)
         except requests.HTTPError as e:
@@ -81,7 +84,9 @@ def fetch_obis(
 
     logger.info(
         "OBIS %s: %d records (total available: %s)",
-        species_slug, len(records), data.get("total"),
+        species_slug,
+        len(records),
+        data.get("total"),
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -150,7 +155,10 @@ def fetch_obis_all(
 
         logger.info(
             "OBIS %s: page %d, %d records (total: %d)",
-            species_slug, page + 1, len(results), total,
+            species_slug,
+            page + 1,
+            len(results),
+            total,
         )
 
         if len(results) < max_per_page or offset >= total:
@@ -175,8 +183,11 @@ def fetch_obis_all(
 
     logger.info(
         "OBIS %s: %d total, %d with dates, %d years, %d undated",
-        species_slug, len(all_records), sum(len(v) for v in yearly.values()),
-        len(yearly), no_date,
+        species_slug,
+        len(all_records),
+        sum(len(v) for v in yearly.values()),
+        len(yearly),
+        no_date,
     )
 
     # Write only new years
@@ -196,7 +207,9 @@ def fetch_obis_all(
 
     logger.info(
         "OBIS %s: %d new years, %d skipped",
-        species_slug, len(new_years), len(skipped),
+        species_slug,
+        len(new_years),
+        len(skipped),
     )
     return new_years, skipped
 
@@ -220,12 +233,14 @@ def process_obis(
         lon = r.get("decimalLongitude")
         if lat is None or lon is None:
             continue
-        points.append({
-            "lat": round(lat, 4),
-            "lon": round(lon, 4),
-            "value": r.get("depth", 0) or 0,
-            "date": (r.get("eventDate") or "")[:10],
-        })
+        points.append(
+            {
+                "lat": round(lat, 4),
+                "lon": round(lon, 4),
+                "value": r.get("depth", 0) or 0,
+                "date": (r.get("eventDate") or "")[:10],
+            }
+        )
 
     if not points:
         logger.warning("No valid points for %s", species_slug)

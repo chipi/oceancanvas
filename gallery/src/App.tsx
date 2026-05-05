@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Dashboard } from './pages/Dashboard';
-import { DashboardSpread } from './pages/DashboardSpread';
-import { Gallery } from './pages/Gallery';
-import { GalleryDetail } from './pages/GalleryDetail';
-import { RecipeEditor } from './pages/RecipeEditor';
-import { VideoEditor } from './pages/VideoEditor';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Dashboard } from "./pages/Dashboard";
+import { DashboardSpread } from "./pages/DashboardSpread";
+import { Gallery } from "./pages/Gallery";
+import { GalleryDetail } from "./pages/GalleryDetail";
+import { RecipeEditor } from "./pages/RecipeEditor";
+import { VideoEditor } from "./pages/VideoEditor";
 
 export function App() {
   return (
@@ -16,7 +16,10 @@ export function App() {
         <Route path="/gallery/:recipe/:date" element={<GalleryDetail />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/:source" element={<Dashboard />} />
-        <Route path="/dashboard/:source/explorer" element={<DashboardSpread />} />
+        <Route
+          path="/dashboard/:source/explorer"
+          element={<DashboardSpread />}
+        />
         <Route path="/recipes" element={<RecipeEditor />} />
         <Route path="/recipes/new" element={<RecipeEditor />} />
         <Route path="/recipes/:id" element={<RecipeEditor />} />

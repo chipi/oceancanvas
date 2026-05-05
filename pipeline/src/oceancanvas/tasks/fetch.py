@@ -68,7 +68,10 @@ def _fetch_oisst(
             logger = get_logger()
             logger.warning(
                 "OISST %s attempt %d failed (%s), retrying in %.0fs",
-                date, attempt + 1, e, wait,
+                date,
+                attempt + 1,
+                e,
+                wait,
             )
             time.sleep(wait)
 
@@ -80,7 +83,9 @@ def _fetch_oisst(
                 logger = get_logger()
                 logger.warning(
                     "OISST %s server error %d, retrying in %.0fs",
-                    date, e.response.status_code, wait,
+                    date,
+                    e.response.status_code,
+                    wait,
                 )
                 time.sleep(wait)
             else:
@@ -118,9 +123,7 @@ def fetch_historical_oisst(
             skipped.append(date)
             continue
 
-        logger.info(
-            "Fetching OISST %s (%d/%d)...", date, i + 1, len(dates)
-        )
+        logger.info("Fetching OISST %s (%d/%d)...", date, i + 1, len(dates))
         _fetch_oisst(date, output_path, max_retries=max_retries)
         size_kb = output_path.stat().st_size / 1024
         logger.info("OISST %s saved (%.0f KB)", date, size_kb)
@@ -132,7 +135,8 @@ def fetch_historical_oisst(
 
     logger.info(
         "Historical fetch complete: %d fetched, %d skipped (already on disk)",
-        len(fetched), len(skipped),
+        len(fetched),
+        len(skipped),
     )
     return fetched, skipped
 

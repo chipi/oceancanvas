@@ -13,7 +13,7 @@
  * with JMJ-style detuned pad + arpeggio + reverb voicings.
  */
 
-import type { AudioPreset } from './audioPresets';
+import type { AudioPreset } from "./audioPresets";
 import {
   type AudioEngineInterface,
   type ChannelMix,
@@ -29,10 +29,10 @@ import {
   channelScale,
   holdAt,
   loadSampleBank,
-} from './audioEngineTypes';
+} from "./audioEngineTypes";
 
 // Re-export for backwards compatibility (other modules import these from audioEngine)
-export type { FrameView, ChannelState } from './audioEngineTypes';
+export type { FrameView, ChannelState } from "./audioEngineTypes";
 
 export class SynthEngine implements AudioEngineInterface {
   private ctx: AudioContext | null = null;
@@ -59,7 +59,12 @@ export class SynthEngine implements AudioEngineInterface {
   private samples: SampleBank | null = null;
   private preset: AudioPreset | null = null;
   private running = false;
-  private channels: ChannelState = { drone: 0, pulse: 0, accent: false, texture: 0 };
+  private channels: ChannelState = {
+    drone: 0,
+    pulse: 0,
+    accent: false,
+    texture: 0,
+  };
   private accentCooldownUntil = 0;
   private fps = 12;
   private mix: ChannelMix = DEFAULT_CHANNEL_MIX;
@@ -92,7 +97,11 @@ export class SynthEngine implements AudioEngineInterface {
   setMasterVolume(v: number): void {
     this.masterVolume = Math.max(0, Math.min(1, v));
     if (this.master && this.ctx) {
-      this.master.gain.setTargetAtTime(this.masterVolume, this.ctx.currentTime, 0.05);
+      this.master.gain.setTargetAtTime(
+        this.masterVolume,
+        this.ctx.currentTime,
+        0.05,
+      );
     }
   }
 
@@ -121,10 +130,10 @@ export class SynthEngine implements AudioEngineInterface {
   /** Resume the audio context and start all sustained layers. Requires user gesture. */
   async start(): Promise<void> {
     if (this.running) return;
-    if (!this.preset) throw new Error('AudioEngine.start: setPreset() first');
+    if (!this.preset) throw new Error("AudioEngine.start: setPreset() first");
     await this.loadSamples();
     const ctx = this.ensureCtx();
-    if (ctx.state === 'suspended') await ctx.resume();
+    if (ctx.state === "suspended") await ctx.resume();
 
     this.master = ctx.createGain();
     this.master.gain.value = this.masterVolume;
@@ -187,22 +196,37 @@ export class SynthEngine implements AudioEngineInterface {
 
     // ── Drone: minor triad rooted at tonic; filter+gain follow value/intensity ─
     if (this.droneOscs.length > 0 && this.droneFilter && this.droneGain) {
-      const tonicHz = p.drone.minHz + (p.drone.maxHz - p.drone.minHz) * view.value;
-      const targetCutoff = p.drone.filterMinHz + (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
-      const droneAmp = p.drone.gain * 0.6 * (0.4 + 0.6 * view.intensity) * channelScale(this.mix, 'drone') * arcValue;
+      const tonicHz =
+        p.drone.minHz + (p.drone.maxHz - p.drone.minHz) * view.value;
+      const targetCutoff =
+        p.drone.filterMinHz +
+        (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
+      const droneAmp =
+        p.drone.gain *
+        0.6 *
+        (0.4 + 0.6 * view.intensity) *
+        channelScale(this.mix, "drone") *
+        arcValue;
       const semitones = [0, 3, 7];
       this.droneOscs.forEach((osc, i) => {
         const voiceHz = tonicHz * Math.pow(2, semitones[i] / 12);
         osc.frequency.setTargetAtTime(voiceHz, now, p.drone.glideSec);
       });
-      this.droneFilter.frequency.setTargetAtTime(targetCutoff, now, p.drone.glideSec);
+      this.droneFilter.frequency.setTargetAtTime(
+        targetCutoff,
+        now,
+        p.drone.glideSec,
+      );
       this.droneGain.gain.setTargetAtTime(droneAmp, now, 0.05);
       this.channels.drone = view.intensity;
     }
 
     // ── Pulse: scheduled tap when phase wraps ─────────────────────────
     // Held frames suppress NEW firings; already-playing samples decay naturally.
-    const bpm = p.pulse.minBpm + (p.pulse.maxBpm - p.pulse.minBpm) * Math.min(1, view.delta * p.pulse.sensitivity * 4);
+    const bpm =
+      p.pulse.minBpm +
+      (p.pulse.maxBpm - p.pulse.minBpm) *
+        Math.min(1, view.delta * p.pulse.sensitivity * 4);
     if (this.pulseScheduler.step(bpm, frameSec) && !isHeld) {
       this.firePulse(view.direction);
     }
@@ -220,11 +244,24 @@ export class SynthEngine implements AudioEngineInterface {
 
     // ── Texture: seasonal envelope on density ─────────────────────────
     if (this.textureFilter && this.textureGain) {
-      const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
+      const seasonal =
+        1 -
+        p.texture.seasonalDepth +
+        p.texture.seasonalDepth *
+          (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
       const holdScale = isHeld ? 0 : 1;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * channelScale(this.mix, 'texture') * arcValue * holdScale;
-      const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
+      const textureAmp =
+        p.texture.gain *
+        p.texture.density *
+        seasonal *
+        yearRamp *
+        channelScale(this.mix, "texture") *
+        arcValue *
+        holdScale;
+      const filterTarget =
+        p.texture.filterMinHz +
+        (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.2);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.3);
       this.channels.texture = textureAmp / Math.max(0.0001, p.texture.gain);
@@ -237,7 +274,7 @@ export class SynthEngine implements AudioEngineInterface {
 
   dispose(): void {
     this.stop();
-    if (this.ctx && this.ctx.state !== 'closed') {
+    if (this.ctx && this.ctx.state !== "closed") {
       this.ctx.close().catch(() => {});
     }
     this.ctx = null;
@@ -248,7 +285,10 @@ export class SynthEngine implements AudioEngineInterface {
 
   private ensureCtx(): AudioContext {
     if (!this.ctx) {
-      const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const Ctor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
       this.ctx = new Ctor();
     }
     return this.ctx;
@@ -259,7 +299,7 @@ export class SynthEngine implements AudioEngineInterface {
     const ctx = this.ctx;
     const p = this.preset.drone;
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.value = p.filterMinHz;
     filter.Q.value = 1.2;
     const gain = ctx.createGain();
@@ -268,9 +308,9 @@ export class SynthEngine implements AudioEngineInterface {
 
     // Three-voice minor triad (tonic / minor 3rd / perfect 5th) — chord pad, not single drone
     const voices = [
-      { semitones: 0,  detune: -4 },
-      { semitones: 3,  detune:  0 },
-      { semitones: 7,  detune: +4 },
+      { semitones: 0, detune: -4 },
+      { semitones: 3, detune: 0 },
+      { semitones: 7, detune: +4 },
     ];
     const oscs: OscillatorNode[] = [];
     for (const v of voices) {
@@ -308,7 +348,7 @@ export class SynthEngine implements AudioEngineInterface {
   private buildPulseBus(): void {
     if (!this.ctx || !this.master || !this.preset) return;
     const gain = this.ctx.createGain();
-    gain.gain.value = this.preset.pulse.gain * channelScale(this.mix, 'pulse');
+    gain.gain.value = this.preset.pulse.gain * channelScale(this.mix, "pulse");
     gain.connect(this.master);
     this.pulseGain = gain;
   }
@@ -316,7 +356,8 @@ export class SynthEngine implements AudioEngineInterface {
   private buildAccentBus(): void {
     if (!this.ctx || !this.master || !this.preset) return;
     const gain = this.ctx.createGain();
-    gain.gain.value = this.preset.accent.gain * channelScale(this.mix, 'accent');
+    gain.gain.value =
+      this.preset.accent.gain * channelScale(this.mix, "accent");
     gain.connect(this.master);
     this.accentGain = gain;
   }
@@ -329,7 +370,7 @@ export class SynthEngine implements AudioEngineInterface {
     src.buffer = this.samples.textureNoise;
     src.loop = true;
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.value = p.filterMinHz;
     filter.Q.value = 0.8;
     const gain = ctx.createGain();
@@ -346,26 +387,36 @@ export class SynthEngine implements AudioEngineInterface {
     if (!this.ctx || !this.preset) return;
     const now = this.ctx.currentTime;
     if (this.pulseGain) {
-      this.pulseGain.gain.setTargetAtTime(this.preset.pulse.gain * channelScale(this.mix, 'pulse') * arcValue, now, 0.1);
+      this.pulseGain.gain.setTargetAtTime(
+        this.preset.pulse.gain * channelScale(this.mix, "pulse") * arcValue,
+        now,
+        0.1,
+      );
     }
     if (this.accentGain) {
-      this.accentGain.gain.setTargetAtTime(this.preset.accent.gain * channelScale(this.mix, 'accent') * arcValue, now, 0.1);
+      this.accentGain.gain.setTargetAtTime(
+        this.preset.accent.gain * channelScale(this.mix, "accent") * arcValue,
+        now,
+        0.1,
+      );
     }
   }
 
   private firePulse(direction: 1 | 0 | -1): void {
     if (!this.ctx || !this.samples || !this.pulseGain) return;
     const buf =
-      direction > 0 ? this.samples.pulseUp :
-      direction < 0 ? this.samples.pulseDown :
-      this.samples.pulseNeutral;
+      direction > 0
+        ? this.samples.pulseUp
+        : direction < 0
+          ? this.samples.pulseDown
+          : this.samples.pulseNeutral;
     const src = this.ctx.createBufferSource();
     src.buffer = buf;
     src.connect(this.pulseGain);
     src.start();
   }
 
-  private fireAccent(type: FrameView['accentType']): void {
+  private fireAccent(type: FrameView["accentType"]): void {
     if (!this.ctx || !this.samples || !this.accentGain || !this.preset) return;
     const buf = pickAccentBuffer(this.samples, this.preset.accent.style, type);
     const src = this.ctx.createBufferSource();
@@ -377,15 +428,15 @@ export class SynthEngine implements AudioEngineInterface {
 
 function pickAccentBuffer(
   s: SampleBank,
-  style: AudioPreset['accent']['style'],
-  type: FrameView['accentType'],
+  style: AudioPreset["accent"]["style"],
+  type: FrameView["accentType"],
 ): AudioBuffer {
   // Style overrides type for unified character; default chime mirrors event type.
-  if (style === 'bell') return s.accentInflection;
-  if (style === 'ping') return s.accentHigh;
-  if (style === 'drop') return s.accentLow;
+  if (style === "bell") return s.accentInflection;
+  if (style === "ping") return s.accentHigh;
+  if (style === "drop") return s.accentLow;
   // chime (default)
-  if (type === 'record-high') return s.accentHigh;
-  if (type === 'record-low') return s.accentLow;
+  if (type === "record-high") return s.accentHigh;
+  if (type === "record-low") return s.accentLow;
   return s.accentInflection;
 }

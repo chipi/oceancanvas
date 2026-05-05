@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import type { OceanPayload } from '../lib/payloadBuilder';
-import styles from './SketchPreview.module.css';
+import { useEffect, useRef, useState } from "react";
+import type { OceanPayload } from "../lib/payloadBuilder";
+import styles from "./SketchPreview.module.css";
 
 interface SketchPreviewProps {
   payload: OceanPayload | null;
@@ -24,24 +24,26 @@ async function fetchScript(url: string): Promise<string> {
  * All scripts are fetched and inlined to avoid srcDoc origin issues.
  */
 export function SketchPreview({ payload, className }: SketchPreviewProps) {
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const [srcdoc, setSrcdoc] = useState('');
+  const [srcdoc, setSrcdoc] = useState("");
 
   // Listen for completion message from iframe
   useEffect(() => {
     function handleMessage(e: MessageEvent) {
-      if (e.data === 'OCEAN_RENDER_COMPLETE') setStatus('ready');
-      if (e.data === 'OCEAN_RENDER_TIMEOUT') setStatus('error');
+      if (e.data === "OCEAN_RENDER_COMPLETE") setStatus("ready");
+      if (e.data === "OCEAN_RENDER_TIMEOUT") setStatus("error");
     }
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   // Debounce + build srcdoc with inlined scripts
   useEffect(() => {
     if (!payload) {
-      setSrcdoc('');
+      setSrcdoc("");
       return;
     }
 
@@ -56,12 +58,12 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
   }, [payload]);
 
   async function buildSrcdoc(p: OceanPayload) {
-    setStatus('loading');
-    const renderType = p.recipe.render.type || 'field';
+    setStatus("loading");
+    const renderType = p.recipe.render.type || "field";
 
     try {
       const [sharedJs, sketchJs] = await Promise.all([
-        fetchScript('/sketches/shared.js'),
+        fetchScript("/sketches/shared.js"),
         fetchScript(`/sketches/${renderType}.js`),
       ]);
 
@@ -86,17 +88,16 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
 </body></html>`;
 
       setSrcdoc(html);
-    } catch (e) {
-      setStatus('error');
+    } catch {
+      setStatus("error");
     }
   }
 
-
   return (
-    <div className={`${styles.container} ${className ?? ''}`}>
+    <div className={`${styles.container} ${className ?? ""}`}>
       {srcdoc ? (
         <iframe
-          key={srcdoc.length + '_' + (payload?.recipe?.render?.type || '')}
+          key={srcdoc.length + "_" + (payload?.recipe?.render?.type || "")}
           className={styles.iframe}
           srcDoc={srcdoc}
           sandbox="allow-scripts"
@@ -105,9 +106,11 @@ export function SketchPreview({ payload, className }: SketchPreviewProps) {
       ) : (
         <div className={styles.shimmer} />
       )}
-      {status === 'loading' && srcdoc && <div className={styles.shimmer} />}
-      {status === 'error' && (
-        <div className={styles.error}>Render timed out — try simplifying the recipe</div>
+      {status === "loading" && srcdoc && <div className={styles.shimmer} />}
+      {status === "error" && (
+        <div className={styles.error}>
+          Render timed out — try simplifying the recipe
+        </div>
       )}
     </div>
   );

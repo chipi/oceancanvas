@@ -1,18 +1,37 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { AudioWaveform } from '../components/AudioWaveform';
-import { ArcEditor } from '../components/ArcEditor';
-import { useGenerativeAudio } from '../hooks/useGenerativeAudio';
-import { useManifest } from '../hooks/useManifest';
-import { PRESET_GROUPS, AUDIO_PRESETS, getPreset, presetFromAudioParams, audioParamsFromPreset, type AudioPreset } from '../lib/audioPresets';
-import { DEFAULT_CHANNEL_MIX, DEFAULT_EQ, type ChannelMix, type EqSettings } from '../lib/audioEngineTypes';
-import { type MomentEvent, detectMoments } from '../lib/moments';
-import { DEFAULT_ARC_SPEC, expandArc, type TensionArcSpec } from '../lib/tensionArc';
-import { extractAudioParams, extractTensionArc } from '../lib/yamlParser';
-import styles from './VideoEditor.module.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { AudioWaveform } from "../components/AudioWaveform";
+import { ArcEditor } from "../components/ArcEditor";
+import { useGenerativeAudio } from "../hooks/useGenerativeAudio";
+import { useManifest } from "../hooks/useManifest";
+import {
+  PRESET_GROUPS,
+  AUDIO_PRESETS,
+  getPreset,
+  presetFromAudioParams,
+  audioParamsFromPreset,
+  type AudioPreset,
+} from "../lib/audioPresets";
+import {
+  DEFAULT_CHANNEL_MIX,
+  DEFAULT_EQ,
+  type ChannelMix,
+  type EqSettings,
+} from "../lib/audioEngineTypes";
+import { type MomentEvent, detectMoments } from "../lib/moments";
+import {
+  DEFAULT_ARC_SPEC,
+  expandArc,
+  type TensionArcSpec,
+} from "../lib/tensionArc";
+import { extractAudioParams, extractTensionArc } from "../lib/yamlParser";
+import styles from "./VideoEditor.module.css";
 
 /** Extract truly significant moments — all-time records, decade highs/lows, major anomalies. */
-function extractSignificantMoments(values: number[], dates: string[]): MomentEvent[] {
+function extractSignificantMoments(
+  values: number[],
+  dates: string[],
+): MomentEvent[] {
   if (values.length < 3) return [];
 
   const events: MomentEvent[] = [];
@@ -27,9 +46,10 @@ function extractSignificantMoments(values: number[], dates: string[]): MomentEve
       // Only mark as event if it's significantly above previous record
       if (i > 0) {
         events.push({
-          frame: i, score: 1.0,
+          frame: i,
+          score: 1.0,
           label: `All-time high (${v.toFixed(1)}°)`,
-          type: 'record',
+          type: "record",
         });
       }
     }
@@ -39,17 +59,22 @@ function extractSignificantMoments(values: number[], dates: string[]): MomentEve
       allTimeLow = v;
       if (i > 0) {
         events.push({
-          frame: i, score: 0.8,
+          frame: i,
+          score: 0.8,
           label: `All-time low (${v.toFixed(1)}°)`,
-          type: 'record',
+          type: "record",
         });
       }
     }
   }
 
   // Keep only the LAST all-time high (the actual record) and first all-time low
-  const finalHigh = events.filter((e) => e.label.startsWith('All-time high')).pop();
-  const finalLow = events.filter((e) => e.label.startsWith('All-time low')).pop();
+  const finalHigh = events
+    .filter((e) => e.label.startsWith("All-time high"))
+    .pop();
+  const finalLow = events
+    .filter((e) => e.label.startsWith("All-time low"))
+    .pop();
   const filtered: MomentEvent[] = [];
   if (finalHigh) filtered.push(finalHigh);
   if (finalLow) filtered.push(finalLow);
@@ -57,43 +82,54 @@ function extractSignificantMoments(values: number[], dates: string[]): MomentEve
   // Find the hottest and coldest year (max/min of annual means)
   const annual: Record<string, number[]> = {};
   for (let i = 0; i < values.length; i++) {
-    const year = (dates[i] || '').substring(0, 4);
+    const year = (dates[i] || "").substring(0, 4);
     if (!year) continue;
     if (!annual[year]) annual[year] = [];
     annual[year].push(values[i]);
   }
-  const annualMeans = Object.entries(annual).map(([y, vals]) => ({
-    year: y,
-    mean: vals.reduce((s, v) => s + v, 0) / vals.length,
-    frame: dates.findIndex((d) => d.startsWith(y + '-07')) || dates.findIndex((d) => d.startsWith(y)),
-  })).filter((a) => a.frame >= 0);
+  const annualMeans = Object.entries(annual)
+    .map(([y, vals]) => ({
+      year: y,
+      mean: vals.reduce((s, v) => s + v, 0) / vals.length,
+      frame:
+        dates.findIndex((d) => d.startsWith(y + "-07")) ||
+        dates.findIndex((d) => d.startsWith(y)),
+    }))
+    .filter((a) => a.frame >= 0);
 
   if (annualMeans.length > 2) {
-    const hottest = annualMeans.reduce((a, b) => a.mean > b.mean ? a : b);
-    const coldest = annualMeans.reduce((a, b) => a.mean < b.mean ? a : b);
+    const hottest = annualMeans.reduce((a, b) => (a.mean > b.mean ? a : b));
+    const coldest = annualMeans.reduce((a, b) => (a.mean < b.mean ? a : b));
     filtered.push({
-      frame: hottest.frame, score: 0.9,
+      frame: hottest.frame,
+      score: 0.9,
       label: `Hottest year: ${hottest.year} (${hottest.mean.toFixed(1)}°)`,
-      type: 'peak',
+      type: "peak",
     });
     filtered.push({
-      frame: coldest.frame, score: 0.7,
+      frame: coldest.frame,
+      score: 0.7,
       label: `Coldest year: ${coldest.year} (${coldest.mean.toFixed(1)}°)`,
-      type: 'peak',
+      type: "peak",
     });
 
     // Biggest year-over-year jump
-    let maxJump = 0, jumpIdx = 0;
+    let maxJump = 0,
+      jumpIdx = 0;
     for (let i = 1; i < annualMeans.length; i++) {
       const jump = Math.abs(annualMeans[i].mean - annualMeans[i - 1].mean);
-      if (jump > maxJump) { maxJump = jump; jumpIdx = i; }
+      if (jump > maxJump) {
+        maxJump = jump;
+        jumpIdx = i;
+      }
     }
     if (maxJump > 0.3) {
       const j = annualMeans[jumpIdx];
       filtered.push({
-        frame: j.frame, score: 0.6,
-        label: `Largest shift: ${j.year} (${maxJump > 0 ? '+' : ''}${maxJump.toFixed(1)}°)`,
-        type: 'inflection',
+        frame: j.frame,
+        score: 0.6,
+        label: `Largest shift: ${j.year} (${maxJump > 0 ? "+" : ""}${maxJump.toFixed(1)}°)`,
+        type: "inflection",
       });
     }
   }
@@ -104,7 +140,7 @@ function extractSignificantMoments(values: number[], dates: string[]): MomentEve
 }
 
 interface ExportState {
-  status: 'idle' | 'exporting' | 'done' | 'error';
+  status: "idle" | "exporting" | "done" | "error";
   progress?: string;
   path?: string;
   size?: number;
@@ -114,7 +150,7 @@ interface ExportState {
 export function VideoEditor() {
   const { recipe } = useParams<{ recipe: string }>();
   const { manifest } = useManifest();
-  const entry = manifest?.recipes?.[recipe || ''];
+  const entry = manifest?.recipes?.[recipe || ""];
 
   const [selectedFrame, setSelectedFrame] = useState(0);
   const [fps, setFps] = useState(12);
@@ -122,7 +158,7 @@ export function VideoEditor() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [audioEnabled, setAudioEnabled] = useState(true);
   // '' = silent, 'recipe' = use recipe's audio: block, otherwise = named preset override
-  const [audioTheme, setAudioTheme] = useState<string>('recipe');
+  const [audioTheme, setAudioTheme] = useState<string>("recipe");
   const [recipePreset, setRecipePreset] = useState<AudioPreset | null>(null);
   const [channelMix, setChannelMix] = useState<ChannelMix>(DEFAULT_CHANNEL_MIX);
   const [audioEq, setAudioEq] = useState<EqSettings>(DEFAULT_EQ);
@@ -132,7 +168,9 @@ export function VideoEditor() {
     attribution: true,
   });
   const [exportAudio, setExportAudio] = useState(true);
-  const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const [exportState, setExportState] = useState<ExportState>({
+    status: "idle",
+  });
   const [exportOpen, setExportOpen] = useState(false);
   const [moments, setMoments] = useState<MomentEvent[]>([]);
   const [intensity, setIntensity] = useState<number[]>([]);
@@ -140,26 +178,30 @@ export function VideoEditor() {
   const playRef = useRef<number | null>(null);
 
   const dates = entry?.dates || [];
-  const currentDate = dates[selectedFrame] || '';
+  const currentDate = dates[selectedFrame] || "";
   const duration = dates.length / fps;
 
   // Resolve preset: 'recipe' = derived from YAML audio block (falls back to ocean if absent)
   // ''        = silent
   // other     = named preset override
   const resolvedPreset: AudioPreset | null =
-    audioTheme === '' ? null :
-    audioTheme === 'recipe' ? (recipePreset ?? getPreset('ocean')) :
-    getPreset(audioTheme);
+    audioTheme === ""
+      ? null
+      : audioTheme === "recipe"
+        ? (recipePreset ?? getPreset("ocean"))
+        : getPreset(audioTheme);
 
   // Dominant moment frame — the highest-scoring event, used to pin the arc peak.
-  const dominantMomentFrame = moments.length > 0
-    ? moments.reduce((a, b) => (a.score >= b.score ? a : b)).frame
-    : null;
+  const dominantMomentFrame =
+    moments.length > 0
+      ? moments.reduce((a, b) => (a.score >= b.score ? a : b)).frame
+      : null;
 
   // Tension arc — RFC-011. Expanded once per spec/totalFrames/momentFrame change.
-  const tensionArc = dates.length > 0
-    ? expandArc(arcSpec, dates.length, dominantMomentFrame)
-    : [];
+  const tensionArc =
+    dates.length > 0
+      ? expandArc(arcSpec, dates.length, dominantMomentFrame)
+      : [];
 
   // Hold mask — PRD-006 "drop to drone only" gesture. In the pipeline export,
   // frames are inserted at the moment to extend the visual hold. In the browser
@@ -169,15 +211,18 @@ export function VideoEditor() {
   // is audible and matches what the exported MP4 plays. Mask matches the
   // pipeline _inject_hold convention: moment frame itself is False (so the
   // bell fires there), inserted/equivalent frames are True.
-  const holdSpan = fps;  // 1-second hold at current fps
-  const holdMask: boolean[] = dates.length > 0
-    ? Array.from({ length: dates.length }, (_, i) =>
-        arcSpec.pin_key_moment === true &&
-        dominantMomentFrame !== null &&
-        i > dominantMomentFrame &&
-        i <= dominantMomentFrame + holdSpan,
-      )
-    : [];
+  const holdSpan = fps; // 1-second hold at current fps
+  const holdMask: boolean[] =
+    dates.length > 0
+      ? Array.from(
+          { length: dates.length },
+          (_, i) =>
+            arcSpec.pin_key_moment === true &&
+            dominantMomentFrame !== null &&
+            i > dominantMomentFrame &&
+            i <= dominantMomentFrame + holdSpan,
+        )
+      : [];
 
   // Generative audio engine — RFC-010 four-layer composition + RFC-011 arc envelope
   const { masterVolume, setMasterVolume, liveChannels } = useGenerativeAudio({
@@ -198,11 +243,19 @@ export function VideoEditor() {
 
   // Fetch recipe YAML — derive audio preset and tension arc spec from it
   useEffect(() => {
-    if (!recipe) { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); return; }
+    if (!recipe) {
+      setRecipePreset(null);
+      setArcSpec(DEFAULT_ARC_SPEC);
+      return;
+    }
     fetch(`/recipes/${recipe}.yaml`)
-      .then((r) => r.ok ? r.text() : '')
+      .then((r) => (r.ok ? r.text() : ""))
       .then((yaml) => {
-        if (!yaml) { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); return; }
+        if (!yaml) {
+          setRecipePreset(null);
+          setArcSpec(DEFAULT_ARC_SPEC);
+          return;
+        }
         const audio = extractAudioParams(yaml);
         if (Object.keys(audio).length === 0) {
           setRecipePreset(null);
@@ -215,22 +268,29 @@ export function VideoEditor() {
           ...(arc as Partial<TensionArcSpec>),
         });
       })
-      .catch(() => { setRecipePreset(null); setArcSpec(DEFAULT_ARC_SPEC); });
+      .catch(() => {
+        setRecipePreset(null);
+        setArcSpec(DEFAULT_ARC_SPEC);
+      });
   }, [recipe]);
 
   // Load time series and compute key moments
   useEffect(() => {
     if (!entry) return;
-    const source = entry.source || 'oisst';
-    const sourceDir = source === 'oisst' ? 'oisst' : source;
+    const source = entry.source || "oisst";
+    const sourceDir = source === "oisst" ? "oisst" : source;
     // Try time-series.json (non-OISST) or sst-monthly-series.json (OISST)
-    const url = source === 'oisst'
-      ? '/data/processed/oisst/sst-monthly-series.json'
-      : `/data/processed/${sourceDir}/time-series.json`;
+    const url =
+      source === "oisst"
+        ? "/data/processed/oisst/sst-monthly-series.json"
+        : `/data/processed/${sourceDir}/time-series.json`;
 
     fetch(url)
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((series: Array<{mean?: number; count?: number}>) => {
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((series: Array<{ mean?: number; count?: number }>) => {
         const seriesValues = series.map((d) => d.mean ?? d.count ?? 0);
         setValues(seriesValues);
         // Compute intensity signal for audio + visualizer
@@ -241,7 +301,11 @@ export function VideoEditor() {
         const significant = extractSignificantMoments(seriesValues, dates);
         setMoments(significant);
       })
-      .catch(() => { setMoments([]); setIntensity([]); setValues([]); });
+      .catch(() => {
+        setMoments([]);
+        setIntensity([]);
+        setValues([]);
+      });
   }, [entry?.source]);
 
   // Playback loop
@@ -257,7 +321,9 @@ export function VideoEditor() {
         return f + 1;
       });
     }, interval);
-    return () => { if (playRef.current) clearInterval(playRef.current); };
+    return () => {
+      if (playRef.current) clearInterval(playRef.current);
+    };
   }, [isPlaying, fps, playbackSpeed, dates.length]);
 
   const togglePlay = useCallback(() => {
@@ -268,17 +334,26 @@ export function VideoEditor() {
   // Keyboard navigation
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowLeft') { setIsPlaying(false); setSelectedFrame((f) => Math.max(0, f - 1)); }
-      if (e.key === 'ArrowRight') { setIsPlaying(false); setSelectedFrame((f) => Math.min(dates.length - 1, f + 1)); }
-      if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+      if (e.key === "ArrowLeft") {
+        setIsPlaying(false);
+        setSelectedFrame((f) => Math.max(0, f - 1));
+      }
+      if (e.key === "ArrowRight") {
+        setIsPlaying(false);
+        setSelectedFrame((f) => Math.min(dates.length - 1, f + 1));
+      }
+      if (e.key === " ") {
+        e.preventDefault();
+        togglePlay();
+      }
     }
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
   }, [dates.length, togglePlay]);
 
   const handleExport = useCallback(async () => {
     if (!recipe) return;
-    setExportState({ status: 'exporting', progress: 'Starting ffmpeg...' });
+    setExportState({ status: "exporting", progress: "Starting ffmpeg..." });
     try {
       // Build sidebar override payload — every visible audio control flows
       // through to the export. Audio preset override only emits when the user
@@ -286,7 +361,7 @@ export function VideoEditor() {
       // always emit so they can override even when the recipe defines them.
       const overrides: Record<string, unknown> = {};
       if (exportAudio) {
-        if (audioTheme && audioTheme !== 'recipe' && resolvedPreset) {
+        if (audioTheme && audioTheme !== "recipe" && resolvedPreset) {
           overrides.audio_params = audioParamsFromPreset(resolvedPreset);
         }
         overrides.channel_mix = channelMix;
@@ -294,8 +369,8 @@ export function VideoEditor() {
         overrides.tension_arc = arcSpec;
       }
       const resp = await fetch(`/api/export/${recipe}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fps,
           silent: !exportAudio,
@@ -305,30 +380,44 @@ export function VideoEditor() {
       const result = await resp.json();
       if (result.ok) {
         setExportState({
-          status: 'done',
+          status: "done",
           path: result.path,
           size: result.size,
         });
       } else {
-        setExportState({ status: 'error', error: result.error });
+        setExportState({ status: "error", error: result.error });
       }
     } catch (e) {
-      setExportState({ status: 'error', error: (e as Error).message });
+      setExportState({ status: "error", error: (e as Error).message });
     }
-  }, [recipe, fps, exportAudio, audioTheme, resolvedPreset, channelMix, audioEq, arcSpec]);
+  }, [
+    recipe,
+    fps,
+    exportAudio,
+    audioTheme,
+    resolvedPreset,
+    channelMix,
+    audioEq,
+    arcSpec,
+  ]);
 
   const toggleOverlay = useCallback((key: string) => {
-    setOverlays((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }));
+    setOverlays((prev) => ({
+      ...prev,
+      [key]: !prev[key as keyof typeof prev],
+    }));
   }, []);
 
   if (!entry) {
     return (
       <div className={styles.page}>
         <header className={styles.topbar}>
-          <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+          <a href="/" className={styles.wordmark}>
+            OCEANCANVAS
+          </a>
         </header>
         <div className={styles.empty}>
-          {recipe ? `No renders for "${recipe}"` : 'Select a recipe'}
+          {recipe ? `No renders for "${recipe}"` : "Select a recipe"}
         </div>
       </div>
     );
@@ -338,14 +427,22 @@ export function VideoEditor() {
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark}>
+          OCEANCANVAS
+        </a>
         <span className={styles.topbarPath}>
           /timelapse editor / {entry?.title || recipe}
         </span>
         <div className={styles.topbarActions}>
-          <a href="/" className={styles.topbarLink}>← gallery</a>
-          <a href={`/gallery/${recipe}`} className={styles.topbarLink}>← view</a>
-          <a href={`/recipes/${recipe}`} className={styles.topbarLink}>← recipe</a>
+          <a href="/" className={styles.topbarLink}>
+            ← gallery
+          </a>
+          <a href={`/gallery/${recipe}`} className={styles.topbarLink}>
+            ← view
+          </a>
+          <a href={`/recipes/${recipe}`} className={styles.topbarLink}>
+            ← recipe
+          </a>
           <button
             type="button"
             className={styles.actionPrimary}
@@ -360,7 +457,7 @@ export function VideoEditor() {
       <div className={styles.body}>
         {/* Preview area */}
         <div className={styles.preview}>
-          {exportState.status === 'done' ? (
+          {exportState.status === "done" ? (
             <video
               className={styles.previewVideo}
               src={`/api/export/${recipe}/download`}
@@ -388,16 +485,25 @@ export function VideoEditor() {
               {/* Year labels at evenly spaced positions */}
               {(() => {
                 const yearSet = new Set<string>();
-                const ticks: Array<{year: string; pct: number}> = [];
+                const ticks: Array<{ year: string; pct: number }> = [];
                 for (let i = 0; i < dates.length; i++) {
                   const y = dates[i]?.substring(0, 4);
                   if (y && !yearSet.has(y) && parseInt(y) % 5 === 0) {
                     yearSet.add(y);
-                    ticks.push({ year: y, pct: (i / Math.max(1, dates.length - 1)) * 100 });
+                    ticks.push({
+                      year: y,
+                      pct: (i / Math.max(1, dates.length - 1)) * 100,
+                    });
                   }
                 }
                 return ticks.map((t) => (
-                  <span key={t.year} className={styles.yearTick} style={{ left: `${t.pct}%` }}>{t.year}</span>
+                  <span
+                    key={t.year}
+                    className={styles.yearTick}
+                    style={{ left: `${t.pct}%` }}
+                  >
+                    {t.year}
+                  </span>
                 ));
               })()}
               {/* Key moment markers */}
@@ -407,10 +513,18 @@ export function VideoEditor() {
                   className={styles.momentMarker}
                   style={{
                     left: `${(m.frame / Math.max(1, dates.length - 1)) * 100}%`,
-                    backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666',
+                    backgroundColor:
+                      m.type === "record"
+                        ? "#EF9F27"
+                        : m.type === "peak"
+                          ? "#5DCAA5"
+                          : "#666",
                   }}
                   title={`${m.label} (frame ${m.frame})`}
-                  onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                  onClick={() => {
+                    setIsPlaying(false);
+                    setSelectedFrame(m.frame);
+                  }}
                 />
               ))}
             </div>
@@ -421,12 +535,15 @@ export function VideoEditor() {
               max={dates.length - 1}
               value={selectedFrame}
               className={styles.ribbonSlider}
-              onChange={(e) => { setIsPlaying(false); setSelectedFrame(parseInt(e.target.value, 10)); }}
+              onChange={(e) => {
+                setIsPlaying(false);
+                setSelectedFrame(parseInt(e.target.value, 10));
+              }}
             />
             {/* Playback controls below */}
             <div className={styles.playControls}>
               <button className={styles.playBtn} onClick={togglePlay}>
-                {isPlaying ? '⏸' : '▶'}
+                {isPlaying ? "⏸" : "▶"}
               </button>
               <select
                 className={styles.speedSelect}
@@ -501,7 +618,9 @@ export function VideoEditor() {
                     {PRESET_GROUPS.map((group) => (
                       <optgroup key={group.engine} label={group.label}>
                         {group.ids.map((id) => (
-                          <option key={id} value={id}>{AUDIO_PRESETS[id].name}</option>
+                          <option key={id} value={id}>
+                            {AUDIO_PRESETS[id].name}
+                          </option>
                         ))}
                       </optgroup>
                     ))}
@@ -515,7 +634,9 @@ export function VideoEditor() {
                       max={1}
                       step={0.05}
                       value={masterVolume}
-                      onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        setMasterVolume(parseFloat(e.target.value))
+                      }
                       className={styles.volumeSlider}
                     />
                   </label>
@@ -547,43 +668,66 @@ export function VideoEditor() {
           {/* Key moments */}
           {moments.length > 0 && (
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>KEY MOMENTS ({moments.length})</div>
+              <div className={styles.sectionTitle}>
+                KEY MOMENTS ({moments.length})
+              </div>
               <div className={styles.momentList}>
                 {moments.map((m) => (
                   <div
                     key={m.frame}
                     className={styles.momentRow}
-                    onClick={() => { setIsPlaying(false); setSelectedFrame(m.frame); }}
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setSelectedFrame(m.frame);
+                    }}
                   >
                     <span
                       className={styles.momentDot}
-                      style={{ backgroundColor: m.type === 'record' ? '#EF9F27' : m.type === 'peak' ? '#5DCAA5' : '#666' }}
+                      style={{
+                        backgroundColor:
+                          m.type === "record"
+                            ? "#EF9F27"
+                            : m.type === "peak"
+                              ? "#5DCAA5"
+                              : "#666",
+                      }}
                     />
                     <span className={styles.momentLabel}>{m.label}</span>
-                    <span className={styles.momentFrame}>{dates[m.frame]?.substring(0, 7) || ''}</span>
+                    <span className={styles.momentFrame}>
+                      {dates[m.frame]?.substring(0, 7) || ""}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
         </aside>
       </div>
 
       {exportOpen && (
-        <div className={styles.exportBackdrop} onClick={() => setExportOpen(false)}>
-          <div className={styles.exportPopup} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.exportBackdrop}
+          onClick={() => setExportOpen(false)}
+        >
+          <div
+            className={styles.exportPopup}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.exportPopupTitle}>EXPORT MP4</div>
-            <div className={styles.exportPopupNote}>Baked into the exported video</div>
+            <div className={styles.exportPopupNote}>
+              Baked into the exported video
+            </div>
             {Object.entries(overlays).map(([key, enabled]) => (
               <label key={key} className={styles.overlayRow}>
                 <input
                   type="checkbox"
                   checked={enabled}
                   onChange={() => toggleOverlay(key)}
-                  disabled={exportState.status === 'exporting'}
+                  disabled={exportState.status === "exporting"}
                 />
-                <span>{key === 'date' ? 'Date stamp' : 'Source attribution'}</span>
+                <span>
+                  {key === "date" ? "Date stamp" : "Source attribution"}
+                </span>
               </label>
             ))}
             <label className={styles.overlayRow}>
@@ -591,7 +735,7 @@ export function VideoEditor() {
                 type="checkbox"
                 checked={exportAudio}
                 onChange={() => setExportAudio((e) => !e)}
-                disabled={exportState.status === 'exporting'}
+                disabled={exportState.status === "exporting"}
               />
               <span>Audio</span>
             </label>
@@ -599,14 +743,16 @@ export function VideoEditor() {
               <div className={styles.exportSummaryTitle}>Will export:</div>
               <div className={styles.exportSummaryRow}>
                 <span>Frames</span>
-                <span>{dates.length} @ {fps}fps · {duration.toFixed(1)}s</span>
+                <span>
+                  {dates.length} @ {fps}fps · {duration.toFixed(1)}s
+                </span>
               </div>
               <div className={styles.exportSummaryRow}>
                 <span>Audio</span>
                 <span>
                   {exportAudio
-                    ? `${resolvedPreset?.name ?? 'Silent'} · arc: ${arcSpec.preset}`
-                    : 'Silent'}
+                    ? `${resolvedPreset?.name ?? "Silent"} · arc: ${arcSpec.preset}`
+                    : "Silent"}
                 </span>
               </div>
               {exportAudio && (
@@ -617,24 +763,25 @@ export function VideoEditor() {
               )}
             </div>
             <div className={styles.exportPopupActions}>
-              {exportState.status === 'idle' && (
+              {exportState.status === "idle" && (
                 <button className={styles.exportBtn} onClick={handleExport}>
                   Render & download
                 </button>
               )}
-              {exportState.status === 'exporting' && (
+              {exportState.status === "exporting" && (
                 <button className={styles.exportBtn} disabled>
                   Rendering…
                 </button>
               )}
-              {exportState.status === 'done' && (
+              {exportState.status === "done" && (
                 <a
                   href={`/api/export/${recipe}/download`}
                   className={styles.exportBtn}
                   download
                   onClick={() => setTimeout(() => setExportOpen(false), 150)}
                 >
-                  Download MP4 ({((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
+                  Download MP4 (
+                  {((exportState.size || 0) / 1024 / 1024).toFixed(1)} MB)
                 </a>
               )}
               <button
@@ -645,10 +792,12 @@ export function VideoEditor() {
                 close
               </button>
             </div>
-            {exportState.status === 'exporting' && exportState.progress && (
-              <div className={styles.exportProgress}>{exportState.progress}</div>
+            {exportState.status === "exporting" && exportState.progress && (
+              <div className={styles.exportProgress}>
+                {exportState.progress}
+              </div>
             )}
-            {exportState.status === 'error' && (
+            {exportState.status === "error" && (
               <div className={styles.exportError}>{exportState.error}</div>
             )}
           </div>

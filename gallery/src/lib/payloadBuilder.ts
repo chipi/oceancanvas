@@ -74,7 +74,7 @@ export interface OceanPayload {
 }
 
 const NAN_VALUE = -999.0;
-const DEFAULT_WIDTH = 960;  // preview is half pipeline resolution
+const DEFAULT_WIDTH = 960; // preview is half pipeline resolution
 const DEFAULT_HEIGHT = 540;
 const DOWNSAMPLE_FACTOR = 2;
 
@@ -125,7 +125,10 @@ function cropToRegion(
   }
 
   const idx = (val: number, min: number, max: number, n: number): number =>
-    Math.max(0, Math.min(n - 1, Math.round(((val - min) / (max - min)) * (n - 1))));
+    Math.max(
+      0,
+      Math.min(n - 1, Math.round(((val - min) / (max - min)) * (n - 1))),
+    );
 
   const r0 = idx(region.lat[0], dataLatMin, dataLatMax, rows);
   const r1 = idx(region.lat[1], dataLatMin, dataLatMax, rows) + 1;
@@ -156,7 +159,7 @@ function cropToRegion(
 }
 
 export interface BuildOptions {
-  full?: boolean;  // skip downsampling
+  full?: boolean; // skip downsampling
   width?: number;
   height?: number;
 }

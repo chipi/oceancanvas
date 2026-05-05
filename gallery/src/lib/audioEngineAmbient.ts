@@ -16,7 +16,7 @@
  * Inspired by Jean-Michel Jarre — Oxygène pt. 4, Equinoxe pt. 5, Magnetic Fields pt. 2.
  */
 
-import type { AudioPreset } from './audioPresets';
+import type { AudioPreset } from "./audioPresets";
 import {
   type AudioEngineInterface,
   type ChannelMix,
@@ -33,14 +33,14 @@ import {
   holdAt,
   loadSampleBank,
   makeReverbImpulse,
-} from './audioEngineTypes';
+} from "./audioEngineTypes";
 
 // Minor triad voicing — tonic, minor third, perfect fifth.
 // Tiny per-voice detuning gives an analog-pad warmth without sounding out of tune.
 const PAD_VOICES = [
-  { semitones: 0,  detune: -4 },   // tonic
-  { semitones: 3,  detune:  0 },   // minor third
-  { semitones: 7,  detune: +4 },   // perfect fifth
+  { semitones: 0, detune: -4 }, // tonic
+  { semitones: 3, detune: 0 }, // minor third
+  { semitones: 7, detune: +4 }, // perfect fifth
 ];
 // Minor pentatonic walk — JMJ Oxygène-style sequence pattern
 const ARP_SCALE = [0, 3, 5, 7, 12, 7, 5, 3];
@@ -80,7 +80,12 @@ export class AmbientEngine implements AudioEngineInterface {
   private samples: SampleBank | null = null;
   private preset: AudioPreset | null = null;
   private running = false;
-  private channels: ChannelState = { drone: 0, pulse: 0, accent: false, texture: 0 };
+  private channels: ChannelState = {
+    drone: 0,
+    pulse: 0,
+    accent: false,
+    texture: 0,
+  };
   private accentCooldownUntil = 0;
   private fps = 12;
   private currentTonicHz = 110;
@@ -114,7 +119,11 @@ export class AmbientEngine implements AudioEngineInterface {
   setMasterVolume(v: number): void {
     this.masterVolume = Math.max(0, Math.min(1, v));
     if (this.master && this.ctx) {
-      this.master.gain.setTargetAtTime(this.masterVolume, this.ctx.currentTime, 0.05);
+      this.master.gain.setTargetAtTime(
+        this.masterVolume,
+        this.ctx.currentTime,
+        0.05,
+      );
     }
   }
 
@@ -142,10 +151,10 @@ export class AmbientEngine implements AudioEngineInterface {
 
   async start(): Promise<void> {
     if (this.running) return;
-    if (!this.preset) throw new Error('AmbientEngine.start: setPreset() first');
+    if (!this.preset) throw new Error("AmbientEngine.start: setPreset() first");
     await this.loadSamples();
     const ctx = this.ensureCtx();
-    if (ctx.state === 'suspended') await ctx.resume();
+    if (ctx.state === "suspended") await ctx.resume();
 
     this.master = ctx.createGain();
     this.master.gain.value = this.masterVolume;
@@ -217,12 +226,21 @@ export class AmbientEngine implements AudioEngineInterface {
     this.applyPresetGains(arcValue);
 
     // ── Pad: minor triad rooted at tonic (Hz follows data value) ───────
-    if (this.padOscs.length > 0 && this.padFilter && this.padDryGain && this.padWetGain) {
-      const tonicHz = p.drone.minHz + (p.drone.maxHz - p.drone.minHz) * view.value;
+    if (
+      this.padOscs.length > 0 &&
+      this.padFilter &&
+      this.padDryGain &&
+      this.padWetGain
+    ) {
+      const tonicHz =
+        p.drone.minHz + (p.drone.maxHz - p.drone.minHz) * view.value;
       this.currentTonicHz = tonicHz;
-      const baseCutoff = p.drone.filterMinHz + (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
-      const droneScale = channelScale(this.mix, 'drone');
-      const padAmp = p.drone.gain * (0.6 + 0.4 * view.intensity) * droneScale * arcValue;
+      const baseCutoff =
+        p.drone.filterMinHz +
+        (p.drone.filterMaxHz - p.drone.filterMinHz) * view.value;
+      const droneScale = channelScale(this.mix, "drone");
+      const padAmp =
+        p.drone.gain * (0.6 + 0.4 * view.intensity) * droneScale * arcValue;
       // Compensate for 3-voice triad stack (sqrt(3) ≈ 1.73× sum vs single voice)
       const wetAmp = padAmp * 0.25;
       const glide = Math.max(0.2, p.drone.glideSec * 1.4);
@@ -241,7 +259,10 @@ export class AmbientEngine implements AudioEngineInterface {
     // ── Sequence: arpeggio note on each tick ────────────────────────────
     // Held frames suppress NEW notes — already-playing notes ring out naturally.
     const sensitivity = p.pulse.sensitivity;
-    const bpm = p.pulse.minBpm + (p.pulse.maxBpm - p.pulse.minBpm) * Math.min(1, view.delta * sensitivity * 4);
+    const bpm =
+      p.pulse.minBpm +
+      (p.pulse.maxBpm - p.pulse.minBpm) *
+        Math.min(1, view.delta * sensitivity * 4);
     if (this.pulseScheduler.step(bpm, frameSec) && !isHeld) {
       this.fireSequenceNote(view.direction);
     }
@@ -259,11 +280,25 @@ export class AmbientEngine implements AudioEngineInterface {
 
     // ── Texture: seasonal envelope, slow LFO already running ──────────
     if (this.textureFilter && this.textureGain) {
-      const seasonal = 1 - p.texture.seasonalDepth + p.texture.seasonalDepth * (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
+      const seasonal =
+        1 -
+        p.texture.seasonalDepth +
+        p.texture.seasonalDepth *
+          (0.5 + 0.5 * Math.cos(view.monthFrac * Math.PI * 2));
       const yearRamp = 0.5 + 0.5 * view.yearFrac;
       const holdScale = isHeld ? 0 : 1;
-      const textureAmp = p.texture.gain * p.texture.density * seasonal * yearRamp * 0.85 * channelScale(this.mix, 'texture') * arcValue * holdScale;
-      const filterTarget = p.texture.filterMinHz + (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
+      const textureAmp =
+        p.texture.gain *
+        p.texture.density *
+        seasonal *
+        yearRamp *
+        0.85 *
+        channelScale(this.mix, "texture") *
+        arcValue *
+        holdScale;
+      const filterTarget =
+        p.texture.filterMinHz +
+        (p.texture.filterMaxHz - p.texture.filterMinHz) * view.value;
       this.textureGain.gain.setTargetAtTime(textureAmp, now, 0.3);
       this.textureFilter.frequency.setTargetAtTime(filterTarget, now, 0.4);
       this.channels.texture = textureAmp / Math.max(0.0001, p.texture.gain);
@@ -276,7 +311,7 @@ export class AmbientEngine implements AudioEngineInterface {
 
   dispose(): void {
     this.stop();
-    if (this.ctx && this.ctx.state !== 'closed') {
+    if (this.ctx && this.ctx.state !== "closed") {
       this.ctx.close().catch(() => {});
     }
     this.ctx = null;
@@ -287,7 +322,10 @@ export class AmbientEngine implements AudioEngineInterface {
 
   private ensureCtx(): AudioContext {
     if (!this.ctx) {
-      const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const Ctor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
       this.ctx = new Ctor();
     }
     return this.ctx;
@@ -299,7 +337,7 @@ export class AmbientEngine implements AudioEngineInterface {
     const conv = ctx.createConvolver();
     conv.buffer = makeReverbImpulse(ctx, 2.4, 2.6);
     const ret = ctx.createGain();
-    ret.gain.value = 0.42;  // overall wet level — lower than 0.55 to keep mix dry-leaning
+    ret.gain.value = 0.42; // overall wet level — lower than 0.55 to keep mix dry-leaning
     conv.connect(ret).connect(this.master);
     this.reverb = conv;
   }
@@ -310,9 +348,9 @@ export class AmbientEngine implements AudioEngineInterface {
     const p = this.preset.drone;
 
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.value = p.filterMinHz;
-    filter.Q.value = 2.2;  // softer resonance — less brittle pad
+    filter.Q.value = 2.2; // softer resonance — less brittle pad
 
     // Three voices forming a minor triad (tonic / minor 3rd / perfect 5th)
     const oscs: OscillatorNode[] = [];
@@ -330,7 +368,7 @@ export class AmbientEngine implements AudioEngineInterface {
     const lfo = ctx.createOscillator();
     lfo.frequency.value = 0.06;
     const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 200;  // ±200 Hz around base cutoff (was 350)
+    lfoGain.gain.value = 200; // ±200 Hz around base cutoff (was 350)
     lfo.connect(lfoGain).connect(filter.frequency);
     lfo.start();
 
@@ -356,8 +394,16 @@ export class AmbientEngine implements AudioEngineInterface {
 
   private rebuildPad(): void {
     if (!this.preset) return;
-    try { this.padOscs.forEach((o) => o.stop()); } catch { /* already stopped */ }
-    try { this.padLfo?.stop(); } catch { /* already stopped */ }
+    try {
+      this.padOscs.forEach((o) => o.stop());
+    } catch {
+      /* already stopped */
+    }
+    try {
+      this.padLfo?.stop();
+    } catch {
+      /* already stopped */
+    }
     this.padOscs.forEach((o) => o.disconnect());
     this.padFilter?.disconnect();
     this.padDryGain?.disconnect();
@@ -369,7 +415,7 @@ export class AmbientEngine implements AudioEngineInterface {
   private buildSequenceBus(): void {
     if (!this.ctx || !this.master || !this.reverb || !this.preset) return;
     const ctx = this.ctx;
-    const ps = channelScale(this.mix, 'pulse');
+    const ps = channelScale(this.mix, "pulse");
     const dry = ctx.createGain();
     dry.gain.value = this.preset.pulse.gain * 0.4 * ps;
     dry.connect(this.master);
@@ -383,7 +429,7 @@ export class AmbientEngine implements AudioEngineInterface {
   private buildAccentBus(): void {
     if (!this.ctx || !this.master || !this.reverb || !this.preset) return;
     const ctx = this.ctx;
-    const as = channelScale(this.mix, 'accent');
+    const as = channelScale(this.mix, "accent");
     const dry = ctx.createGain();
     dry.gain.value = this.preset.accent.gain * 0.65 * as;
     dry.connect(this.master);
@@ -403,7 +449,7 @@ export class AmbientEngine implements AudioEngineInterface {
     src.loop = true;
 
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.value = p.filterMinHz;
     filter.Q.value = 0.7;
 
@@ -432,29 +478,51 @@ export class AmbientEngine implements AudioEngineInterface {
   private applyPresetGains(arcValue = 1.0): void {
     if (!this.ctx || !this.preset) return;
     const now = this.ctx.currentTime;
-    const pulseScale = channelScale(this.mix, 'pulse');
-    const accentScale = channelScale(this.mix, 'accent');
-    if (this.seqDryGain) this.seqDryGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.4 * pulseScale * arcValue, now, 0.1);
-    if (this.seqWetGain) this.seqWetGain.gain.setTargetAtTime(this.preset.pulse.gain * 0.28 * pulseScale * arcValue, now, 0.1);
-    if (this.accentDryGain) this.accentDryGain.gain.setTargetAtTime(this.preset.accent.gain * 0.65 * accentScale * arcValue, now, 0.1);
-    if (this.accentWetGain) this.accentWetGain.gain.setTargetAtTime(this.preset.accent.gain * 0.55 * accentScale * arcValue, now, 0.1);
+    const pulseScale = channelScale(this.mix, "pulse");
+    const accentScale = channelScale(this.mix, "accent");
+    if (this.seqDryGain)
+      this.seqDryGain.gain.setTargetAtTime(
+        this.preset.pulse.gain * 0.4 * pulseScale * arcValue,
+        now,
+        0.1,
+      );
+    if (this.seqWetGain)
+      this.seqWetGain.gain.setTargetAtTime(
+        this.preset.pulse.gain * 0.28 * pulseScale * arcValue,
+        now,
+        0.1,
+      );
+    if (this.accentDryGain)
+      this.accentDryGain.gain.setTargetAtTime(
+        this.preset.accent.gain * 0.65 * accentScale * arcValue,
+        now,
+        0.1,
+      );
+    if (this.accentWetGain)
+      this.accentWetGain.gain.setTargetAtTime(
+        this.preset.accent.gain * 0.55 * accentScale * arcValue,
+        now,
+        0.1,
+      );
   }
 
   private fireSequenceNote(direction: 1 | 0 | -1): void {
-    if (!this.ctx || !this.preset || !this.seqDryGain || !this.seqWetGain) return;
+    if (!this.ctx || !this.preset || !this.seqDryGain || !this.seqWetGain)
+      return;
     const ctx = this.ctx;
     const semitones = ARP_SCALE[this.arpStep % ARP_SCALE.length];
     // Direction biases octave: rising data nudges arpeggio up an octave occasionally
     const octaveBias = direction > 0 && this.arpStep % 4 === 0 ? 12 : 0;
     this.arpStep++;
-    const freq = this.currentTonicHz * Math.pow(2, (semitones + octaveBias) / 12);
+    const freq =
+      this.currentTonicHz * Math.pow(2, (semitones + octaveBias) / 12);
 
     const osc = ctx.createOscillator();
     osc.type = this.preset.drone.waveform;
     osc.frequency.value = freq;
 
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.value = freq * 5;
     filter.Q.value = 3;
 
@@ -466,8 +534,11 @@ export class AmbientEngine implements AudioEngineInterface {
     env.connect(this.seqWetGain);
 
     const t = ctx.currentTime;
-    const peak = 0.18;  // per-note amplitude before bus gain — lower so notes blend into pad
-    const A = 0.025, D = 0.18, S = 0.4, R = 0.4;
+    const peak = 0.18; // per-note amplitude before bus gain — lower so notes blend into pad
+    const A = 0.025,
+      D = 0.18,
+      S = 0.4,
+      R = 0.4;
     env.gain.setValueAtTime(0, t);
     env.gain.linearRampToValueAtTime(peak, t + A);
     env.gain.linearRampToValueAtTime(peak * S, t + A + D);
@@ -478,8 +549,15 @@ export class AmbientEngine implements AudioEngineInterface {
     osc.stop(t + A + D + R + 0.15);
   }
 
-  private fireAccent(type: FrameView['accentType']): void {
-    if (!this.ctx || !this.samples || !this.accentDryGain || !this.accentWetGain || !this.preset) return;
+  private fireAccent(type: FrameView["accentType"]): void {
+    if (
+      !this.ctx ||
+      !this.samples ||
+      !this.accentDryGain ||
+      !this.accentWetGain ||
+      !this.preset
+    )
+      return;
     const buf = pickAccentBuffer(this.samples, this.preset.accent.style, type);
     const dry = this.ctx.createBufferSource();
     dry.buffer = buf;
@@ -494,13 +572,13 @@ export class AmbientEngine implements AudioEngineInterface {
 
 function pickAccentBuffer(
   s: SampleBank,
-  style: AudioPreset['accent']['style'],
-  type: FrameView['accentType'],
+  style: AudioPreset["accent"]["style"],
+  type: FrameView["accentType"],
 ): AudioBuffer {
-  if (style === 'bell') return s.accentInflection;
-  if (style === 'ping') return s.accentHigh;
-  if (style === 'drop') return s.accentLow;
-  if (type === 'record-high') return s.accentHigh;
-  if (type === 'record-low') return s.accentLow;
+  if (style === "bell") return s.accentInflection;
+  if (style === "ping") return s.accentHigh;
+  if (style === "drop") return s.accentLow;
+  if (type === "record-high") return s.accentHigh;
+  if (type === "record-low") return s.accentLow;
   return s.accentInflection;
 }

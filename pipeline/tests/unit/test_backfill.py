@@ -1,6 +1,5 @@
 """Tests for the backfill module."""
 
-
 import pytest
 import yaml
 

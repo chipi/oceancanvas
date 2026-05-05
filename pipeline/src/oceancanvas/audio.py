@@ -48,7 +48,7 @@ class AudioParams:
     texture_density: float = 0.35
 
     @classmethod
-    def from_dict(cls, d: dict | None) -> "AudioParams":
+    def from_dict(cls, d: dict | None) -> AudioParams:
         if not d:
             return cls()
         return cls(
@@ -109,7 +109,13 @@ def build_audio_track(
     # marks inserted frames so non-drone layers (pulse, accent, texture) drop
     # out during the hold — PRD-006's "room goes quiet for a beat" gesture.
     values, dates, arc, moments, hold_mask = _inject_hold(
-        values, dates, arc, moments, fps, hold_at_frame, hold_duration_sec,
+        values,
+        dates,
+        arc,
+        moments,
+        fps,
+        hold_at_frame,
+        hold_duration_sec,
     )
 
     sr = SAMPLE_RATE
@@ -128,7 +134,10 @@ def build_audio_track(
 
     # Tension arc: align length with frames; default to constant 1.0 (no effect)
     arc_arr = _align_arc(arc, len(v_arr))
-    hold_arr = np.asarray(hold_mask, dtype=bool) if len(hold_mask) == len(v_arr) else np.zeros(len(v_arr), dtype=bool)
+    if len(hold_mask) == len(v_arr):
+        hold_arr = np.asarray(hold_mask, dtype=bool)
+    else:
+        hold_arr = np.zeros(len(v_arr), dtype=bool)
 
     # Load samples once
     bank = _load_samples(samples_dir or GENERATIVE_DIR)
@@ -144,6 +153,7 @@ def build_audio_track(
     # AudioWaveform mixer. Defaults (no override / missing key) keep the
     # pre-sync behaviour: every layer at gain 1.0, nothing muted.
     cm = channel_mix or {}
+
     def _layer_gain(name: str) -> float:
         layer = cm.get(name) or {}
         if layer.get("muted"):
@@ -161,7 +171,11 @@ def build_audio_track(
     _write_wav(output_path, sr, mix.astype(np.float32))
     logger.info(
         "Audio synthesised: %.1fs at %dHz (%s drone, %s accents, density=%.2f)",
-        duration, sr, params.drone_waveform, params.accent_style, params.texture_density,
+        duration,
+        sr,
+        params.drone_waveform,
+        params.accent_style,
+        params.texture_density,
     )
     return output_path
 
@@ -211,7 +225,8 @@ def _synth_drone(
     if waveform == "sine":
         wave_arr = np.sin(phase)
     elif waveform == "triangle":
-        wave_arr = 2.0 * np.abs(2.0 * (phase / (2 * np.pi) - np.floor(phase / (2 * np.pi) + 0.5))) - 1.0
+        t = phase / (2 * np.pi)
+        wave_arr = 2.0 * np.abs(2.0 * (t - np.floor(t + 0.5))) - 1.0
     elif waveform == "sawtooth":
         wave_arr = 2.0 * (phase / (2 * np.pi) - np.floor(0.5 + phase / (2 * np.pi)))
     elif waveform == "square":
@@ -270,14 +285,13 @@ def _synth_pulse(
             # naturally after the hold — sequence doesn't bunch up at the exit.
             if frame < len(hold) and hold[frame]:
                 continue
-            direction = (
-                1 if values[frame] > prev else
-                -1 if values[frame] < prev else 0
-            )
+            direction = 1 if values[frame] > prev else -1 if values[frame] < prev else 0
             sample = (
-                bank["pulse_up"] if direction > 0 else
-                bank["pulse_down"] if direction < 0 else
-                bank["pulse_neutral"]
+                bank["pulse_up"]
+                if direction > 0
+                else bank["pulse_down"]
+                if direction < 0
+                else bank["pulse_neutral"]
             )
             offset_samples = int(frame * frame_sec * sr)
             _place_sample(out, sample, offset_samples, base_gain * float(arc[frame]))
@@ -396,9 +410,7 @@ def _inject_hold(
     hold_frames = max(1, int(round(hold_duration_sec * fps)))
     held_value = values[hold_at_frame]
     held_date = dates[hold_at_frame] if hold_at_frame < len(dates) else ""
-    held_arc = (
-        arc[hold_at_frame] if (arc and hold_at_frame < len(arc)) else None
-    )
+    held_arc = arc[hold_at_frame] if (arc and hold_at_frame < len(arc)) else None
 
     new_values = (
         list(values[: hold_at_frame + 1])
@@ -557,11 +569,18 @@ def _load_samples(samples_dir: Path) -> dict:
 def _decode_to_array(path: Path) -> np.ndarray:
     """Decode an audio file to mono float32 numpy array at SAMPLE_RATE via ffmpeg."""
     cmd = [
-        "ffmpeg", "-hide_banner", "-loglevel", "error",
-        "-i", str(path),
-        "-ac", "1",
-        "-ar", str(SAMPLE_RATE),
-        "-f", "f32le",
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        str(path),
+        "-ac",
+        "1",
+        "-ar",
+        str(SAMPLE_RATE),
+        "-f",
+        "f32le",
         "-",
     ]
     result = subprocess.run(cmd, capture_output=True, check=True, timeout=30)

@@ -11,8 +11,8 @@
  * presets keep the synth engine for the rhythmic / clinical feel.
  */
 
-export type AccentStyle = 'chime' | 'bell' | 'ping' | 'drop';
-export type EngineId = 'synth' | 'ambient';
+export type AccentStyle = "chime" | "bell" | "ping" | "drop";
+export type EngineId = "synth" | "ambient";
 
 export interface AudioPreset {
   id: string;
@@ -49,86 +49,198 @@ export interface AudioPreset {
 
 const RFC_MOODS = {
   becalmed: {
-    id: 'becalmed',
-    name: 'Becalmed',
-    engine: 'synth',
-    drone: { waveform: 'sine', minHz: 80, maxHz: 240, glideSec: 1.2, filterMinHz: 200, filterMaxHz: 1200, gain: 0.32 },
+    id: "becalmed",
+    name: "Becalmed",
+    engine: "synth",
+    drone: {
+      waveform: "sine",
+      minHz: 80,
+      maxHz: 240,
+      glideSec: 1.2,
+      filterMinHz: 200,
+      filterMaxHz: 1200,
+      gain: 0.32,
+    },
     pulse: { sensitivity: 0.15, minBpm: 40, maxBpm: 80, gain: 0.18 },
-    accent: { style: 'chime', gain: 0.38 },
-    texture: { density: 0.15, filterMinHz: 200, filterMaxHz: 700, seasonalDepth: 0.4, gain: 0.18 },
+    accent: { style: "chime", gain: 0.38 },
+    texture: {
+      density: 0.15,
+      filterMinHz: 200,
+      filterMaxHz: 700,
+      seasonalDepth: 0.4,
+      gain: 0.18,
+    },
     master: 0.85,
   },
-  'deep-current': {
-    id: 'deep-current',
-    name: 'Deep current',
-    engine: 'synth',
-    drone: { waveform: 'triangle', minHz: 90, maxHz: 320, glideSec: 0.6, filterMinHz: 300, filterMaxHz: 1800, gain: 0.42 },
+  "deep-current": {
+    id: "deep-current",
+    name: "Deep current",
+    engine: "synth",
+    drone: {
+      waveform: "triangle",
+      minHz: 90,
+      maxHz: 320,
+      glideSec: 0.6,
+      filterMinHz: 300,
+      filterMaxHz: 1800,
+      gain: 0.42,
+    },
     pulse: { sensitivity: 0.45, minBpm: 60, maxBpm: 140, gain: 0.3 },
-    accent: { style: 'bell', gain: 0.5 },
-    texture: { density: 0.4, filterMinHz: 250, filterMaxHz: 900, seasonalDepth: 0.35, gain: 0.28 },
+    accent: { style: "bell", gain: 0.5 },
+    texture: {
+      density: 0.4,
+      filterMinHz: 250,
+      filterMaxHz: 900,
+      seasonalDepth: 0.35,
+      gain: 0.28,
+    },
     master: 0.9,
   },
-  'storm-surge': {
-    id: 'storm-surge',
-    name: 'Storm surge',
-    engine: 'synth',
-    drone: { waveform: 'sawtooth', minHz: 100, maxHz: 400, glideSec: 0.18, filterMinHz: 400, filterMaxHz: 3000, gain: 0.45 },
+  "storm-surge": {
+    id: "storm-surge",
+    name: "Storm surge",
+    engine: "synth",
+    drone: {
+      waveform: "sawtooth",
+      minHz: 100,
+      maxHz: 400,
+      glideSec: 0.18,
+      filterMinHz: 400,
+      filterMaxHz: 3000,
+      gain: 0.45,
+    },
     pulse: { sensitivity: 0.85, minBpm: 90, maxBpm: 180, gain: 0.5 },
-    accent: { style: 'ping', gain: 0.65 },
-    texture: { density: 0.55, filterMinHz: 400, filterMaxHz: 1400, seasonalDepth: 0.5, gain: 0.35 },
+    accent: { style: "ping", gain: 0.65 },
+    texture: {
+      density: 0.55,
+      filterMinHz: 400,
+      filterMaxHz: 1400,
+      seasonalDepth: 0.5,
+      gain: 0.35,
+    },
     master: 0.95,
   },
-  'surface-shimmer': {
-    id: 'surface-shimmer',
-    name: 'Surface shimmer',
-    engine: 'synth',
-    drone: { waveform: 'triangle', minHz: 160, maxHz: 380, glideSec: 0.4, filterMinHz: 600, filterMaxHz: 2400, gain: 0.3 },
+  "surface-shimmer": {
+    id: "surface-shimmer",
+    name: "Surface shimmer",
+    engine: "synth",
+    drone: {
+      waveform: "triangle",
+      minHz: 160,
+      maxHz: 380,
+      glideSec: 0.4,
+      filterMinHz: 600,
+      filterMaxHz: 2400,
+      gain: 0.3,
+    },
     pulse: { sensitivity: 0.55, minBpm: 80, maxBpm: 160, gain: 0.32 },
-    accent: { style: 'ping', gain: 0.55 },
-    texture: { density: 0.3, filterMinHz: 800, filterMaxHz: 2200, seasonalDepth: 0.45, gain: 0.25 },
+    accent: { style: "ping", gain: 0.55 },
+    texture: {
+      density: 0.3,
+      filterMinHz: 800,
+      filterMaxHz: 2200,
+      seasonalDepth: 0.45,
+      gain: 0.25,
+    },
     master: 0.85,
   },
-  'arctic-still': {
-    id: 'arctic-still',
-    name: 'Arctic still',
-    engine: 'synth',
-    drone: { waveform: 'sine', minHz: 70, maxHz: 200, glideSec: 1.6, filterMinHz: 180, filterMaxHz: 900, gain: 0.32 },
+  "arctic-still": {
+    id: "arctic-still",
+    name: "Arctic still",
+    engine: "synth",
+    drone: {
+      waveform: "sine",
+      minHz: 70,
+      maxHz: 200,
+      glideSec: 1.6,
+      filterMinHz: 180,
+      filterMaxHz: 900,
+      gain: 0.32,
+    },
     pulse: { sensitivity: 0.08, minBpm: 30, maxBpm: 60, gain: 0.08 },
-    accent: { style: 'drop', gain: 0.42 },
-    texture: { density: 0.1, filterMinHz: 150, filterMaxHz: 500, seasonalDepth: 0.25, gain: 0.14 },
+    accent: { style: "drop", gain: 0.42 },
+    texture: {
+      density: 0.1,
+      filterMinHz: 150,
+      filterMaxHz: 500,
+      seasonalDepth: 0.25,
+      gain: 0.14,
+    },
     master: 0.8,
   },
 } as const satisfies Record<string, AudioPreset>;
 
 const CARRY_OVERS = {
   ocean: {
-    id: 'ocean',
-    name: 'Ocean',
-    engine: 'synth',
-    drone: { waveform: 'sine', minHz: 110, maxHz: 300, glideSec: 0.7, filterMinHz: 350, filterMaxHz: 2000, gain: 0.4 },
+    id: "ocean",
+    name: "Ocean",
+    engine: "synth",
+    drone: {
+      waveform: "sine",
+      minHz: 110,
+      maxHz: 300,
+      glideSec: 0.7,
+      filterMinHz: 350,
+      filterMaxHz: 2000,
+      gain: 0.4,
+    },
     pulse: { sensitivity: 0.4, minBpm: 60, maxBpm: 130, gain: 0.3 },
-    accent: { style: 'chime', gain: 0.5 },
-    texture: { density: 0.35, filterMinHz: 300, filterMaxHz: 1100, seasonalDepth: 0.4, gain: 0.26 },
+    accent: { style: "chime", gain: 0.5 },
+    texture: {
+      density: 0.35,
+      filterMinHz: 300,
+      filterMaxHz: 1100,
+      seasonalDepth: 0.4,
+      gain: 0.26,
+    },
     master: 0.9,
   },
   dramatic: {
-    id: 'dramatic',
-    name: 'Dramatic',
-    engine: 'synth',
-    drone: { waveform: 'sawtooth', minHz: 90, maxHz: 360, glideSec: 0.25, filterMinHz: 450, filterMaxHz: 2600, gain: 0.42 },
+    id: "dramatic",
+    name: "Dramatic",
+    engine: "synth",
+    drone: {
+      waveform: "sawtooth",
+      minHz: 90,
+      maxHz: 360,
+      glideSec: 0.25,
+      filterMinHz: 450,
+      filterMaxHz: 2600,
+      gain: 0.42,
+    },
     pulse: { sensitivity: 0.7, minBpm: 80, maxBpm: 170, gain: 0.42 },
-    accent: { style: 'chime', gain: 0.6 },
-    texture: { density: 0.45, filterMinHz: 350, filterMaxHz: 1300, seasonalDepth: 0.45, gain: 0.32 },
+    accent: { style: "chime", gain: 0.6 },
+    texture: {
+      density: 0.45,
+      filterMinHz: 350,
+      filterMaxHz: 1300,
+      seasonalDepth: 0.45,
+      gain: 0.32,
+    },
     master: 0.92,
   },
   deep: {
-    id: 'deep',
-    name: 'Deep',
-    engine: 'synth',
-    drone: { waveform: 'triangle', minHz: 60, maxHz: 220, glideSec: 1.0, filterMinHz: 200, filterMaxHz: 1100, gain: 0.5 },
+    id: "deep",
+    name: "Deep",
+    engine: "synth",
+    drone: {
+      waveform: "triangle",
+      minHz: 60,
+      maxHz: 220,
+      glideSec: 1.0,
+      filterMinHz: 200,
+      filterMaxHz: 1100,
+      gain: 0.5,
+    },
     pulse: { sensitivity: 0.25, minBpm: 50, maxBpm: 100, gain: 0.22 },
-    accent: { style: 'bell', gain: 0.45 },
-    texture: { density: 0.5, filterMinHz: 150, filterMaxHz: 700, seasonalDepth: 0.35, gain: 0.4 },
+    accent: { style: "bell", gain: 0.45 },
+    texture: {
+      density: 0.5,
+      filterMinHz: 150,
+      filterMaxHz: 700,
+      seasonalDepth: 0.35,
+      gain: 0.4,
+    },
     master: 0.88,
   },
 } as const satisfies Record<string, AudioPreset>;
@@ -137,58 +249,128 @@ const CARRY_OVERS = {
 // Names evoke the Jean-Michel Jarre tracks each one chases.
 const AMBIENT_PRESETS = {
   oxygene: {
-    id: 'oxygene',
-    name: 'Oxygène',
-    engine: 'ambient',
+    id: "oxygene",
+    name: "Oxygène",
+    engine: "ambient",
     // Bright triangle pad, gentle arpeggio, chime accents — Oxygène pt. 4 vibe
-    drone: { waveform: 'triangle', minHz: 130, maxHz: 290, glideSec: 0.9, filterMinHz: 500, filterMaxHz: 2200, gain: 0.4 },
+    drone: {
+      waveform: "triangle",
+      minHz: 130,
+      maxHz: 290,
+      glideSec: 0.9,
+      filterMinHz: 500,
+      filterMaxHz: 2200,
+      gain: 0.4,
+    },
     pulse: { sensitivity: 0.45, minBpm: 70, maxBpm: 140, gain: 0.22 },
-    accent: { style: 'chime', gain: 0.4 },
-    texture: { density: 0.25, filterMinHz: 400, filterMaxHz: 1300, seasonalDepth: 0.35, gain: 0.18 },
+    accent: { style: "chime", gain: 0.4 },
+    texture: {
+      density: 0.25,
+      filterMinHz: 400,
+      filterMaxHz: 1300,
+      seasonalDepth: 0.35,
+      gain: 0.18,
+    },
     master: 0.88,
   },
   equinoxe: {
-    id: 'equinoxe',
-    name: 'Equinoxe',
-    engine: 'ambient',
+    id: "equinoxe",
+    name: "Equinoxe",
+    engine: "ambient",
     // Deeper sawtooth pad, slower arpeggio, bell accents — Equinoxe pt. 5
-    drone: { waveform: 'sawtooth', minHz: 90, maxHz: 230, glideSec: 1.1, filterMinHz: 350, filterMaxHz: 1700, gain: 0.42 },
+    drone: {
+      waveform: "sawtooth",
+      minHz: 90,
+      maxHz: 230,
+      glideSec: 1.1,
+      filterMinHz: 350,
+      filterMaxHz: 1700,
+      gain: 0.42,
+    },
     pulse: { sensitivity: 0.3, minBpm: 50, maxBpm: 110, gain: 0.2 },
-    accent: { style: 'bell', gain: 0.42 },
-    texture: { density: 0.35, filterMinHz: 280, filterMaxHz: 1000, seasonalDepth: 0.4, gain: 0.22 },
+    accent: { style: "bell", gain: 0.42 },
+    texture: {
+      density: 0.35,
+      filterMinHz: 280,
+      filterMaxHz: 1000,
+      seasonalDepth: 0.4,
+      gain: 0.22,
+    },
     master: 0.9,
   },
-  'magnetic-fields': {
-    id: 'magnetic-fields',
-    name: 'Magnetic Fields',
-    engine: 'ambient',
+  "magnetic-fields": {
+    id: "magnetic-fields",
+    name: "Magnetic Fields",
+    engine: "ambient",
     // Bright sparkly pad, faster sequence, ping accents — Magnetic Fields pt. 2
-    drone: { waveform: 'triangle', minHz: 160, maxHz: 360, glideSec: 0.5, filterMinHz: 700, filterMaxHz: 2800, gain: 0.36 },
+    drone: {
+      waveform: "triangle",
+      minHz: 160,
+      maxHz: 360,
+      glideSec: 0.5,
+      filterMinHz: 700,
+      filterMaxHz: 2800,
+      gain: 0.36,
+    },
     pulse: { sensitivity: 0.6, minBpm: 90, maxBpm: 170, gain: 0.24 },
-    accent: { style: 'ping', gain: 0.45 },
-    texture: { density: 0.2, filterMinHz: 600, filterMaxHz: 1800, seasonalDepth: 0.4, gain: 0.16 },
+    accent: { style: "ping", gain: 0.45 },
+    texture: {
+      density: 0.2,
+      filterMinHz: 600,
+      filterMaxHz: 1800,
+      seasonalDepth: 0.4,
+      gain: 0.16,
+    },
     master: 0.86,
   },
   chronologie: {
-    id: 'chronologie',
-    name: 'Chronologie',
-    engine: 'ambient',
+    id: "chronologie",
+    name: "Chronologie",
+    engine: "ambient",
     // Driving sequencer feel — Chronologie pt. 4
-    drone: { waveform: 'sawtooth', minHz: 100, maxHz: 280, glideSec: 0.4, filterMinHz: 450, filterMaxHz: 2400, gain: 0.4 },
+    drone: {
+      waveform: "sawtooth",
+      minHz: 100,
+      maxHz: 280,
+      glideSec: 0.4,
+      filterMinHz: 450,
+      filterMaxHz: 2400,
+      gain: 0.4,
+    },
     pulse: { sensitivity: 0.7, minBpm: 100, maxBpm: 180, gain: 0.26 },
-    accent: { style: 'chime', gain: 0.42 },
-    texture: { density: 0.3, filterMinHz: 400, filterMaxHz: 1500, seasonalDepth: 0.45, gain: 0.2 },
+    accent: { style: "chime", gain: 0.42 },
+    texture: {
+      density: 0.3,
+      filterMinHz: 400,
+      filterMaxHz: 1500,
+      seasonalDepth: 0.45,
+      gain: 0.2,
+    },
     master: 0.9,
   },
   glacial: {
-    id: 'glacial',
-    name: 'Glacial drift',
-    engine: 'ambient',
+    id: "glacial",
+    name: "Glacial drift",
+    engine: "ambient",
     // Very slow ambient — minimal sequence, sine pad, drop accents
-    drone: { waveform: 'sine', minHz: 70, maxHz: 180, glideSec: 1.6, filterMinHz: 220, filterMaxHz: 900, gain: 0.38 },
+    drone: {
+      waveform: "sine",
+      minHz: 70,
+      maxHz: 180,
+      glideSec: 1.6,
+      filterMinHz: 220,
+      filterMaxHz: 900,
+      gain: 0.38,
+    },
     pulse: { sensitivity: 0.15, minBpm: 35, maxBpm: 75, gain: 0.16 },
-    accent: { style: 'drop', gain: 0.38 },
-    texture: { density: 0.18, filterMinHz: 180, filterMaxHz: 600, seasonalDepth: 0.3, gain: 0.18 },
+    accent: { style: "drop", gain: 0.38 },
+    texture: {
+      density: 0.18,
+      filterMinHz: 180,
+      filterMaxHz: 600,
+      seasonalDepth: 0.3,
+      gain: 0.18,
+    },
     master: 0.82,
   },
 } as const satisfies Record<string, AudioPreset>;
@@ -203,21 +385,44 @@ export type AudioPresetId = keyof typeof AUDIO_PRESETS;
 
 /** Picker rendering order — grouped by engine via PRESET_GROUPS below. */
 export const PRESET_ORDER: AudioPresetId[] = [
-  'ocean', 'dramatic', 'deep',
-  'becalmed', 'deep-current', 'storm-surge', 'surface-shimmer', 'arctic-still',
-  'oxygene', 'equinoxe', 'magnetic-fields', 'chronologie', 'glacial',
+  "ocean",
+  "dramatic",
+  "deep",
+  "becalmed",
+  "deep-current",
+  "storm-surge",
+  "surface-shimmer",
+  "arctic-still",
+  "oxygene",
+  "equinoxe",
+  "magnetic-fields",
+  "chronologie",
+  "glacial",
 ];
 
-export const PRESET_GROUPS: Array<{ engine: EngineId; label: string; ids: AudioPresetId[] }> = [
+export const PRESET_GROUPS: Array<{
+  engine: EngineId;
+  label: string;
+  ids: AudioPresetId[];
+}> = [
   {
-    engine: 'synth',
-    label: 'Synth',
-    ids: ['ocean', 'dramatic', 'deep', 'becalmed', 'deep-current', 'storm-surge', 'surface-shimmer', 'arctic-still'],
+    engine: "synth",
+    label: "Synth",
+    ids: [
+      "ocean",
+      "dramatic",
+      "deep",
+      "becalmed",
+      "deep-current",
+      "storm-surge",
+      "surface-shimmer",
+      "arctic-still",
+    ],
   },
   {
-    engine: 'ambient',
-    label: 'Ambient (JMJ-style)',
-    ids: ['oxygene', 'equinoxe', 'magnetic-fields', 'chronologie', 'glacial'],
+    engine: "ambient",
+    label: "Ambient (JMJ-style)",
+    ids: ["oxygene", "equinoxe", "magnetic-fields", "chronologie", "glacial"],
   },
 ];
 
@@ -244,20 +449,39 @@ export interface AudioParamsLike {
   texture_density?: number;
 }
 
-const VALID_WAVEFORMS: ReadonlyArray<OscillatorType> = ['sine', 'triangle', 'sawtooth', 'square'];
-const VALID_ACCENTS: ReadonlyArray<AccentStyle> = ['chime', 'bell', 'ping', 'drop'];
-const VALID_ENGINES: ReadonlyArray<EngineId> = ['synth', 'ambient'];
+const VALID_WAVEFORMS: ReadonlyArray<OscillatorType> = [
+  "sine",
+  "triangle",
+  "sawtooth",
+  "square",
+];
+const VALID_ACCENTS: ReadonlyArray<AccentStyle> = [
+  "chime",
+  "bell",
+  "ping",
+  "drop",
+];
+const VALID_ENGINES: ReadonlyArray<EngineId> = ["synth", "ambient"];
 
-export function presetFromAudioParams(p: AudioParamsLike, id = 'recipe'): AudioPreset {
-  const engine: EngineId = (VALID_ENGINES as readonly string[]).includes(p.engine ?? '')
+export function presetFromAudioParams(
+  p: AudioParamsLike,
+  id = "recipe",
+): AudioPreset {
+  const engine: EngineId = (VALID_ENGINES as readonly string[]).includes(
+    p.engine ?? "",
+  )
     ? (p.engine as EngineId)
-    : 'synth';
-  const waveform = (VALID_WAVEFORMS as readonly string[]).includes(p.drone_waveform ?? '')
+    : "synth";
+  const waveform = (VALID_WAVEFORMS as readonly string[]).includes(
+    p.drone_waveform ?? "",
+  )
     ? (p.drone_waveform as OscillatorType)
-    : 'triangle';
-  const accentStyle = (VALID_ACCENTS as readonly string[]).includes(p.accent_style ?? '')
+    : "triangle";
+  const accentStyle = (VALID_ACCENTS as readonly string[]).includes(
+    p.accent_style ?? "",
+  )
     ? (p.accent_style as AccentStyle)
-    : 'chime';
+    : "chime";
 
   const glide = clamp01(p.drone_glide, 0.5);
   const sensitivity = clamp01(p.pulse_sensitivity, 0.4);
@@ -266,7 +490,7 @@ export function presetFromAudioParams(p: AudioParamsLike, id = 'recipe'): AudioP
 
   // Pitch range widens with sensitivity (more reactive = more dynamic range)
   const droneSpan = lerp(180, 320, sensitivity);
-  const droneMin = lerp(110, 80, presence);  // higher presence = lower drone
+  const droneMin = lerp(110, 80, presence); // higher presence = lower drone
 
   // BPM range widens with sensitivity
   const bpmMin = lerp(50, 70, sensitivity);
@@ -326,11 +550,16 @@ export interface PipelineAudioParams {
   texture_density: number;
 }
 
-export function audioParamsFromPreset(preset: AudioPreset): PipelineAudioParams {
+export function audioParamsFromPreset(
+  preset: AudioPreset,
+): PipelineAudioParams {
   // Inverse of `lerp(0.1, 1.6, glide)` and `lerp(0.7, 0.95, presence)` from
   // presetFromAudioParams — keeps the round-trip stable for any preset that
   // started life as AudioParams (i.e. the "recipe" preset).
-  const drone_glide = clamp01Inverse((preset.drone.glideSec - 0.1) / (1.6 - 0.1), 0.5);
+  const drone_glide = clamp01Inverse(
+    (preset.drone.glideSec - 0.1) / (1.6 - 0.1),
+    0.5,
+  );
   const presence = clamp01Inverse((preset.master - 0.7) / (0.95 - 0.7), 0.7);
 
   return {

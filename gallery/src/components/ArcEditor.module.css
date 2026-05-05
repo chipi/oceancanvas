@@ -38,8 +38,8 @@
 }
 
 .handle {
-  fill: var(--intent-info, #5DCAA5);
-  stroke: var(--canvas, #030B10);
+  fill: var(--intent-info, #5dcaa5);
+  stroke: var(--canvas, #030b10);
   stroke-width: 1.5;
 }
 
@@ -59,7 +59,9 @@
   color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .pill:hover {
@@ -83,7 +85,7 @@
   cursor: pointer;
 }
 
-.pinRow input[type='checkbox'] {
+.pinRow input[type="checkbox"] {
   accent-color: var(--intent-teal);
   cursor: pointer;
 }

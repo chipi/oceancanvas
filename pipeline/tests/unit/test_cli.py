@@ -62,13 +62,17 @@ def cli_env(tmp_path):
     processed_dir.mkdir(parents=True)
     (processed_dir / "2026-01-15.json").write_text("{}")
 
-    with patch.dict(os.environ, {
-        "DATA_DIR": str(data_dir),
-        "RECIPES_DIR": str(recipes_dir),
-        "RENDERS_DIR": str(renders_dir),
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "DATA_DIR": str(data_dir),
+            "RECIPES_DIR": str(recipes_dir),
+            "RENDERS_DIR": str(renders_dir),
+        },
+    ):
         # Reload module-level constants
         import oceancanvas.cli as cli_mod
+
         cli_mod.DATA_DIR = data_dir
         cli_mod.RECIPES_DIR = recipes_dir
         cli_mod.RENDERS_DIR = renders_dir
@@ -164,25 +168,18 @@ class TestExportVideoArcForwarding:
         recipe_path.write_text(text)
 
         # Create a synthetic time-series so export-video has data values
-        series = [
-            {"date": f"2026-01-{i:02d}", "mean": 15 + i * 0.5}
-            for i in range(15, 20)
-        ]
+        series = [{"date": f"2026-01-{i:02d}", "mean": 15 + i * 0.5} for i in range(15, 20)]
         series_path = cli_env / "data" / "processed" / "oisst" / "sst-monthly-series.json"
         series_path.write_text(json.dumps(series))
 
         # Add render PNGs to match those dates
         render_dir = cli_env / "renders" / "test-recipe"
         for i in range(15, 20):
-            (render_dir / f"2026-01-{i:02d}.png").write_bytes(
-                b"\x89PNG\r\n\x1a\n" + b"\x00" * 50
-            )
+            (render_dir / f"2026-01-{i:02d}.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 50)
         # Update manifest
         manifest_path = cli_env / "renders" / "manifest.json"
         manifest = json.loads(manifest_path.read_text())
-        manifest["recipes"]["test-recipe"]["dates"] = [
-            f"2026-01-{i:02d}" for i in range(15, 20)
-        ]
+        manifest["recipes"]["test-recipe"]["dates"] = [f"2026-01-{i:02d}" for i in range(15, 20)]
         manifest_path.write_text(json.dumps(manifest))
 
     def test_arc_and_hold_reach_assemble_video(self, cli_env, tmp_path):
@@ -203,8 +200,7 @@ class TestExportVideoArcForwarding:
         with patch("oceancanvas.video.assemble_video", side_effect=fake_assemble):
             result = runner.invoke(
                 app,
-                ["export-video", "--recipe", "test-recipe", "--fps", "12",
-                 "--output", str(out)],
+                ["export-video", "--recipe", "test-recipe", "--fps", "12", "--output", str(out)],
             )
 
         assert result.exit_code == 0, result.output
@@ -237,8 +233,7 @@ class TestExportVideoArcForwarding:
         with patch("oceancanvas.video.assemble_video", side_effect=fake_assemble):
             result = runner.invoke(
                 app,
-                ["export-video", "--recipe", "test-recipe", "--silent",
-                 "--output", str(out)],
+                ["export-video", "--recipe", "test-recipe", "--silent", "--output", str(out)],
             )
 
         assert result.exit_code == 0, result.output

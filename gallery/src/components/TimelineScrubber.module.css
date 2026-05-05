@@ -18,11 +18,16 @@
   cursor: pointer;
   font-size: 12px;
 }
-.btn:hover { background: rgba(93, 202, 165, 0.2); }
-.btn:disabled { opacity: 0.3; cursor: default; }
+.btn:hover {
+  background: rgba(93, 202, 165, 0.2);
+}
+.btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
 
 .dateLabel {
-  color: var(--ocean-teal, #5DCAA5);
+  color: var(--ocean-teal, #5dcaa5);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -49,7 +54,7 @@
 
 .slider {
   flex: 1;
-  accent-color: #5DCAA5;
+  accent-color: #5dcaa5;
   height: 4px;
 }
 
@@ -73,9 +78,13 @@
   padding: 0;
   background: none;
   opacity: 0.5;
-  transition: opacity 0.15s, border-color 0.15s;
+  transition:
+    opacity 0.15s,
+    border-color 0.15s;
 }
-.thumb:hover { opacity: 0.8; }
+.thumb:hover {
+  opacity: 0.8;
+}
 .thumb img {
   width: 100%;
   height: 100%;
@@ -84,6 +93,6 @@
 
 .thumbActive {
   opacity: 1;
-  border-color: var(--ocean-teal, #5DCAA5);
+  border-color: var(--ocean-teal, #5dcaa5);
   box-shadow: 0 0 6px rgba(93, 202, 165, 0.3);
 }

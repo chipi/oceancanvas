@@ -1,51 +1,72 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { CreativeControls } from '../components/CreativeControls';
-import { SketchPreview } from '../components/SketchPreview';
-import type { CreativeState } from '../lib/creativeMapping';
-import { MOOD_PRESETS, creativeToAudio, creativeToTechnical, technicalToCreative } from '../lib/creativeMapping';
-import type { OceanPayload, ProcessedData } from '../lib/payloadBuilder';
-import { buildPreviewPayload } from '../lib/payloadBuilder';
-import { CREATIVE_MARKER, detectState, extractRenderParams, parseRecipeYaml, type RecipeState } from '../lib/yamlParser';
-import styles from './RecipeEditor.module.css';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { CreativeControls } from "../components/CreativeControls";
+import { SketchPreview } from "../components/SketchPreview";
+import type { CreativeState } from "../lib/creativeMapping";
+import {
+  MOOD_PRESETS,
+  creativeToAudio,
+  creativeToTechnical,
+  technicalToCreative,
+} from "../lib/creativeMapping";
+import type { OceanPayload, ProcessedData } from "../lib/payloadBuilder";
+import { buildPreviewPayload } from "../lib/payloadBuilder";
+import {
+  CREATIVE_MARKER,
+  detectState,
+  extractRenderParams,
+  parseRecipeYaml,
+  type RecipeState,
+} from "../lib/yamlParser";
+import styles from "./RecipeEditor.module.css";
 
-const DEFAULT_STATE: CreativeState = { ...MOOD_PRESETS['Becalmed'] };
+const DEFAULT_STATE: CreativeState = { ...MOOD_PRESETS["Becalmed"] };
 
 export function RecipeEditor() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const isNew = !id || id === 'new';
+  const isNew = !id || id === "new";
 
-  const [mode, setMode] = useState<'story' | 'creative' | 'yaml'>('creative');
-  const [creativeState, setCreativeState] = useState<CreativeState>(DEFAULT_STATE);
-  const [yamlText, setYamlText] = useState('');
-  const [recipeState, setRecipeState] = useState<RecipeState>('matched');
-  const [processedData, setProcessedData] = useState<ProcessedData | null>(null);
-  const [recipeName, setRecipeName] = useState(id || 'new-recipe');
-  const [recipeTitle, setRecipeTitle] = useState('');
-  const [recipeDescription, setRecipeDescription] = useState('');
-  const [renderType, setRenderType] = useState('field');
-  const [loadedParams, setLoadedParams] = useState<Record<string, unknown> | null>(null);
-  const [originalCreative, setOriginalCreative] = useState<CreativeState | null>(null);
+  const [mode, setMode] = useState<"story" | "creative" | "yaml">("creative");
+  const [creativeState, setCreativeState] =
+    useState<CreativeState>(DEFAULT_STATE);
+  const [yamlText, setYamlText] = useState("");
+  const [recipeState, setRecipeState] = useState<RecipeState>("matched");
+  const [processedData, setProcessedData] = useState<ProcessedData | null>(
+    null,
+  );
+  const [recipeName, setRecipeName] = useState(id || "new-recipe");
+  const [recipeTitle, setRecipeTitle] = useState("");
+  const [recipeDescription, setRecipeDescription] = useState("");
+  const [renderType, setRenderType] = useState("field");
+  const [loadedParams, setLoadedParams] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
+  const [originalCreative, setOriginalCreative] =
+    useState<CreativeState | null>(null);
   const [userEdited, setUserEdited] = useState(false);
   const [latestDate, setLatestDate] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
-  const region = useMemo(() => ({
-    lat: [
-      Number(searchParams.get('lat_min') || 25),
-      Number(searchParams.get('lat_max') || 65),
-    ] as [number, number],
-    lon: [
-      Number(searchParams.get('lon_min') || -80),
-      Number(searchParams.get('lon_max') || 0),
-    ] as [number, number],
-  }), [searchParams]);
+  const region = useMemo(
+    () => ({
+      lat: [
+        Number(searchParams.get("lat_min") || 25),
+        Number(searchParams.get("lat_max") || 65),
+      ] as [number, number],
+      lon: [
+        Number(searchParams.get("lon_min") || -80),
+        Number(searchParams.get("lon_max") || 0),
+      ] as [number, number],
+    }),
+    [searchParams],
+  );
 
   // Load manifest to get this recipe's latest render date + processed data for preview
   useEffect(() => {
-    fetch('/renders/manifest.json')
+    fetch("/renders/manifest.json")
       .then((r) => r.json())
       .then((manifest) => {
         // Get this recipe's latest date for PNG display
@@ -54,16 +75,21 @@ export function RecipeEditor() {
           setLatestDate(thisRecipe.latest);
         }
         // Get OISST processed data for live preview
-        const recipes = Object.values(manifest.recipes || {}) as Array<{ source?: string; latest?: string }>;
-        const oisstRecipe = recipes.find((r) => r.source === 'oisst');
+        const recipes = Object.values(manifest.recipes || {}) as Array<{
+          source?: string;
+          latest?: string;
+        }>;
+        const oisstRecipe = recipes.find((r) => r.source === "oisst");
         if (oisstRecipe?.latest) {
           return fetch(`/data/processed/oisst/${oisstRecipe.latest}.json`);
         }
         return null;
       })
       .then((r) => r?.json())
-      .then((data) => { if (data) setProcessedData(data); })
-      .catch((e) => console.error('Failed to load preview data:', e));
+      .then((data) => {
+        if (data) setProcessedData(data);
+      })
+      .catch((e) => console.error("Failed to load preview data:", e));
   }, [id, recipeName]);
 
   // Load existing recipe
@@ -71,7 +97,7 @@ export function RecipeEditor() {
     if (!isNew && id) {
       fetch(`/recipes/${id}.yaml`)
         .then((r) => {
-          if (!r.ok) throw new Error('Recipe not found');
+          if (!r.ok) throw new Error("Recipe not found");
           return r.text();
         })
         .then((text) => {
@@ -82,10 +108,17 @@ export function RecipeEditor() {
           // Editorial title + description (optional fields). Match `title: …`
           // on a single line and `description: >` block scalars on multiple.
           const titleMatch = text.match(/^title:\s*(.+)$/m);
-          if (titleMatch) setRecipeTitle(titleMatch[1].trim().replace(/^["']|["']$/g, ''));
-          const descMatch = text.match(/^description:\s*>\s*\n((?:\s{2,}.*\n)+)/m);
+          if (titleMatch)
+            setRecipeTitle(titleMatch[1].trim().replace(/^["']|["']$/g, ""));
+          const descMatch = text.match(
+            /^description:\s*>\s*\n((?:\s{2,}.*\n)+)/m,
+          );
           if (descMatch) {
-            const dedented = descMatch[1].split('\n').map((l) => l.trim()).filter(Boolean).join(' ');
+            const dedented = descMatch[1]
+              .split("\n")
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .join(" ");
             setRecipeDescription(dedented);
           }
           // Extract actual render params so preview matches the pipeline render
@@ -93,7 +126,7 @@ export function RecipeEditor() {
           if (Object.keys(params).length > 0) {
             setLoadedParams(params);
             const cs = technicalToCreative(params);
-            cs.mood = 'saved';
+            cs.mood = "saved";
             setCreativeState(cs);
             setOriginalCreative(cs);
           }
@@ -102,7 +135,10 @@ export function RecipeEditor() {
     }
   }, [id, isNew]);
 
-  const technical = useMemo(() => creativeToTechnical(creativeState), [creativeState]);
+  const technical = useMemo(
+    () => creativeToTechnical(creativeState),
+    [creativeState],
+  );
   const audio = useMemo(() => creativeToAudio(creativeState), [creativeState]);
 
   // Don't build payload until recipe is loaded (for existing recipes)
@@ -121,16 +157,29 @@ export function RecipeEditor() {
       region,
       { full: true },
     );
-  }, [processedData, recipeName, technical, region, renderType, loadedParams, recipeReady]);
+  }, [
+    processedData,
+    recipeName,
+    technical,
+    region,
+    renderType,
+    loadedParams,
+    recipeReady,
+  ]);
 
   // Sync creative → YAML
   useEffect(() => {
-    if (mode === 'creative') {
+    if (mode === "creative") {
       const yaml = [
         `name: ${recipeName}`,
         ...(recipeTitle ? [`title: ${recipeTitle}`] : []),
         ...(recipeDescription
-          ? [`description: >`, ...recipeDescription.match(/.{1,72}(\s|$)/g)?.map((l) => `  ${l.trim()}`) ?? [`  ${recipeDescription}`]]
+          ? [
+              `description: >`,
+              ...(recipeDescription
+                .match(/.{1,72}(\s|$)/g)
+                ?.map((l) => `  ${l.trim()}`) ?? [`  ${recipeDescription}`]),
+            ]
           : []),
         `region:`,
         `  lat: [${region.lat[0]}, ${region.lat[1]}]`,
@@ -146,30 +195,43 @@ export function RecipeEditor() {
         `  seed: 42`,
         `audio:`,
         ...Object.entries(audio).map(([k, v]) => `  ${k}: ${v}`),
-      ].join('\n');
+      ].join("\n");
       setYamlText(yaml);
-      setRecipeState('matched');
+      setRecipeState("matched");
     }
-  }, [creativeState, mode, recipeName, recipeTitle, recipeDescription, region, technical, audio, renderType]);
+  }, [
+    creativeState,
+    mode,
+    recipeName,
+    recipeTitle,
+    recipeDescription,
+    region,
+    technical,
+    audio,
+    renderType,
+  ]);
 
-  const handleModeSwitch = useCallback((newMode: 'story' | 'creative' | 'yaml') => {
-    if (newMode === 'creative' && mode === 'yaml') {
-      setRecipeState(detectState(creativeState, technical));
-    }
-    setMode(newMode);
-  }, [mode, creativeState, technical]);
+  const handleModeSwitch = useCallback(
+    (newMode: "story" | "creative" | "yaml") => {
+      if (newMode === "creative" && mode === "yaml") {
+        setRecipeState(detectState(creativeState, technical));
+      }
+      setMode(newMode);
+    },
+    [mode, creativeState, technical],
+  );
 
   const handleSave = useCallback(async () => {
     setSaving(true);
     setSaveMsg(null);
     try {
       const resp = await fetch(`/api/recipes/${recipeName}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
         body: yamlText,
       });
       const result = await resp.json();
-      setSaveMsg(result.ok ? 'Saved' : `Error: ${result.error}`);
+      setSaveMsg(result.ok ? "Saved" : `Error: ${result.error}`);
     } catch (e) {
       setSaveMsg(`Save failed: ${(e as Error).message}`);
     }
@@ -182,15 +244,27 @@ export function RecipeEditor() {
     <div className={styles.page}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <a href="/" className={styles.wordmark}>OCEANCANVAS</a>
+        <a href="/" className={styles.wordmark}>
+          OCEANCANVAS
+        </a>
         <span className={styles.topbarRecipe}>{recipeName}</span>
         <span className={styles.topbarMeta}>
-          {renderType} · {technical.colormap} · {processedData?.date || ''}
+          {renderType} · {technical.colormap} · {processedData?.date || ""}
         </span>
         <div className={styles.topbarNav}>
-          <a href="/" className={styles.navLink}>← gallery</a>
-          {!isNew && <a href={`/gallery/${recipeName}`} className={styles.navLink}>← view</a>}
-          {!isNew && <a href={`/timelapse/${recipeName}`} className={styles.navLink}>timelapse ↗</a>}
+          <a href="/" className={styles.navLink}>
+            ← gallery
+          </a>
+          {!isNew && (
+            <a href={`/gallery/${recipeName}`} className={styles.navLink}>
+              ← view
+            </a>
+          )}
+          {!isNew && (
+            <a href={`/timelapse/${recipeName}`} className={styles.navLink}>
+              timelapse ↗
+            </a>
+          )}
         </div>
       </header>
 
@@ -206,7 +280,9 @@ export function RecipeEditor() {
               onError={() => setUserEdited(true)}
             />
           ) : !processedData ? (
-            <div className={styles.loadingMsg}>Loading ocean data for preview...</div>
+            <div className={styles.loadingMsg}>
+              Loading ocean data for preview...
+            </div>
           ) : (
             <SketchPreview payload={payload} />
           )}
@@ -214,7 +290,7 @@ export function RecipeEditor() {
             <div className={styles.overlayName}>{recipeName}</div>
             <div className={styles.overlayMeta}>
               {renderType} · {technical.colormap}
-              {!userEdited && !isNew ? '' : ' · live preview'}
+              {!userEdited && !isNew ? "" : " · live preview"}
             </div>
           </div>
         </div>
@@ -224,36 +300,36 @@ export function RecipeEditor() {
           {/* Flip bar — story (editorial copy) · creative (mood + tech) · yaml (raw) */}
           <div className={styles.flipBar}>
             <button
-              className={`${styles.flipPill} ${mode === 'story' ? styles.flipActive : ''}`}
-              onClick={() => handleModeSwitch('story')}
+              className={`${styles.flipPill} ${mode === "story" ? styles.flipActive : ""}`}
+              onClick={() => handleModeSwitch("story")}
             >
               story
             </button>
             <button
-              className={`${styles.flipPill} ${mode === 'creative' ? styles.flipActive : ''}`}
-              onClick={() => handleModeSwitch('creative')}
+              className={`${styles.flipPill} ${mode === "creative" ? styles.flipActive : ""}`}
+              onClick={() => handleModeSwitch("creative")}
             >
               creative
             </button>
             <button
-              className={`${styles.flipPill} ${mode === 'yaml' ? styles.flipActive : ''}`}
-              onClick={() => handleModeSwitch('yaml')}
+              className={`${styles.flipPill} ${mode === "yaml" ? styles.flipActive : ""}`}
+              onClick={() => handleModeSwitch("yaml")}
             >
               yaml
             </button>
-            {recipeState !== 'matched' && mode === 'creative' && (
+            {recipeState !== "matched" && mode === "creative" && (
               <span className={styles.stateIndicator}>{recipeState}</span>
             )}
           </div>
 
           {/* Story · Creative · YAML */}
           <div className={styles.controlBody}>
-            {mode === 'story' ? (
+            {mode === "story" ? (
               <div className={styles.editorialBlock}>
                 <div className={styles.editorialNote}>
-                  How this recipe reads on the gallery and detail surfaces.
-                  The slug is the durable identifier; the title and
-                  description are the public face.
+                  How this recipe reads on the gallery and detail surfaces. The
+                  slug is the durable identifier; the title and description are
+                  the public face.
                 </div>
                 <label className={styles.editorialLabel}>Title</label>
                 <input
@@ -274,22 +350,27 @@ export function RecipeEditor() {
                   rows={6}
                 />
               </div>
-            ) : mode === 'creative' ? (
+            ) : mode === "creative" ? (
               <>
                 <CreativeControls
                   state={creativeState}
-                  onChange={(s) => { setLoadedParams(null); setUserEdited(true); setCreativeState(s); }}
+                  onChange={(s) => {
+                    setLoadedParams(null);
+                    setUserEdited(true);
+                    setCreativeState(s);
+                  }}
                   originalState={originalCreative}
                   onReset={() => {
                     setUserEdited(false);
                     if (originalCreative) {
-                      setCreativeState({ ...originalCreative, mood: 'saved' });
+                      setCreativeState({ ...originalCreative, mood: "saved" });
                       if (!isNew && id) {
                         fetch(`/recipes/${id}.yaml`)
                           .then((r) => r.text())
                           .then((text) => {
                             const params = extractRenderParams(text);
-                            if (Object.keys(params).length > 0) setLoadedParams(params);
+                            if (Object.keys(params).length > 0)
+                              setLoadedParams(params);
                           })
                           .catch(() => {});
                       }
@@ -301,7 +382,9 @@ export function RecipeEditor() {
                   <div className={styles.audioGrid}>
                     {Object.entries(audio).map(([k, v]) => (
                       <div key={k} className={styles.audioRow}>
-                        <span className={styles.audioKey}>{k.replace(/_/g, ' ')}</span>
+                        <span className={styles.audioKey}>
+                          {k.replace(/_/g, " ")}
+                        </span>
                         <span className={styles.audioVal}>{String(v)}</span>
                       </div>
                     ))}
@@ -315,12 +398,14 @@ export function RecipeEditor() {
                     <div
                       key={i}
                       className={
-                        line.type === 'creative' ? styles.yamlCreative :
-                        line.type === 'marker' ? styles.yamlMarker :
-                        styles.yamlStructural
+                        line.type === "creative"
+                          ? styles.yamlCreative
+                          : line.type === "marker"
+                            ? styles.yamlMarker
+                            : styles.yamlStructural
                       }
                     >
-                      {line.text || '\u00A0'}
+                      {line.text || "\u00A0"}
                     </div>
                   ))}
                 </pre>
@@ -330,8 +415,12 @@ export function RecipeEditor() {
 
           {/* Actions */}
           <div className={styles.actionBar}>
-            <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving...' : 'Save recipe'}
+            <button
+              className={styles.saveBtn}
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save recipe"}
             </button>
             {saveMsg && <span className={styles.saveMsg}>{saveMsg}</span>}
           </div>

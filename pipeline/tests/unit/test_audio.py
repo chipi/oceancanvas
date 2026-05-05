@@ -62,10 +62,24 @@ class TestSynthDrone:
         values = np.full(30, 0.5)
         intensity = np.full(30, 0.5)
         arc = np.ones(30)
-        sine = _synth_drone(values, intensity, arc, AudioParams(drone_waveform="sine"),
-                            fps=12, n_samples=44100, sr=44100)
-        saw = _synth_drone(values, intensity, arc, AudioParams(drone_waveform="sawtooth"),
-                           fps=12, n_samples=44100, sr=44100)
+        sine = _synth_drone(
+            values,
+            intensity,
+            arc,
+            AudioParams(drone_waveform="sine"),
+            fps=12,
+            n_samples=44100,
+            sr=44100,
+        )
+        saw = _synth_drone(
+            values,
+            intensity,
+            arc,
+            AudioParams(drone_waveform="sawtooth"),
+            fps=12,
+            n_samples=44100,
+            sr=44100,
+        )
         assert not np.allclose(sine, saw)
 
     def test_arc_modulates_amplitude(self):
@@ -85,8 +99,13 @@ class TestSynthDrone:
 class TestInjectHold:
     def test_no_hold_returns_originals(self):
         v, d, a, m, mask = _inject_hold(
-            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.5, 0.5, 0.5], [{"frame": 1}],
-            fps=12, hold_at_frame=None, hold_duration_sec=0.0,
+            [1.0, 2.0, 3.0],
+            ["a", "b", "c"],
+            [0.5, 0.5, 0.5],
+            [{"frame": 1}],
+            fps=12,
+            hold_at_frame=None,
+            hold_duration_sec=0.0,
         )
         assert v == [1.0, 2.0, 3.0]
         assert d == ["a", "b", "c"]
@@ -96,8 +115,13 @@ class TestInjectHold:
 
     def test_hold_extends_arrays(self):
         v, d, a, m, mask = _inject_hold(
-            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.0, 1.0, 0.0], [{"frame": 0}],
-            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+            [1.0, 2.0, 3.0],
+            ["a", "b", "c"],
+            [0.0, 1.0, 0.0],
+            [{"frame": 0}],
+            fps=12,
+            hold_at_frame=1,
+            hold_duration_sec=1.0,
         )
         # 12 hold frames inserted after index 1
         assert len(v) == 3 + 12
@@ -107,8 +131,13 @@ class TestInjectHold:
 
     def test_hold_mask_marks_inserted_frames_only(self):
         _, _, _, _, mask = _inject_hold(
-            [1.0, 2.0, 3.0], ["a", "b", "c"], None, None,
-            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+            [1.0, 2.0, 3.0],
+            ["a", "b", "c"],
+            None,
+            None,
+            fps=12,
+            hold_at_frame=1,
+            hold_duration_sec=1.0,
         )
         assert len(mask) == 3 + 12
         # Original frames (incl. the moment frame itself) are False so the
@@ -120,8 +149,13 @@ class TestInjectHold:
 
     def test_arc_held_at_value(self):
         v, d, a, _, _ = _inject_hold(
-            [1.0, 2.0, 3.0], ["a", "b", "c"], [0.2, 0.7, 0.4], None,
-            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+            [1.0, 2.0, 3.0],
+            ["a", "b", "c"],
+            [0.2, 0.7, 0.4],
+            None,
+            fps=12,
+            hold_at_frame=1,
+            hold_duration_sec=1.0,
         )
         assert a is not None
         # Hold copies the arc value at the held frame (0.7)
@@ -129,17 +163,26 @@ class TestInjectHold:
 
     def test_moment_indices_shift(self):
         v, d, a, m, _ = _inject_hold(
-            [1.0, 2.0, 3.0, 4.0], ["a", "b", "c", "d"], None,
+            [1.0, 2.0, 3.0, 4.0],
+            ["a", "b", "c", "d"],
+            None,
             [{"frame": 1}, {"frame": 3}],
-            fps=12, hold_at_frame=1, hold_duration_sec=1.0,
+            fps=12,
+            hold_at_frame=1,
+            hold_duration_sec=1.0,
         )
         assert m[0]["frame"] == 1
         assert m[1]["frame"] == 15
 
     def test_invalid_frame_returns_unchanged(self):
         v, _, _, _, mask = _inject_hold(
-            [1.0, 2.0], ["a", "b"], None, None,
-            fps=12, hold_at_frame=99, hold_duration_sec=1.0,
+            [1.0, 2.0],
+            ["a", "b"],
+            None,
+            None,
+            fps=12,
+            hold_at_frame=99,
+            hold_duration_sec=1.0,
         )
         assert v == [1.0, 2.0]
         assert mask == [False, False]
@@ -195,8 +238,12 @@ class TestBuildAudioTrack:
         samples_dir.mkdir()
         # Generate brief silent placeholders for each expected sample
         for name in [
-            "pulse_tick_up.mp3", "pulse_tick_neutral.mp3", "pulse_tick_down.mp3",
-            "accent_record_high.mp3", "accent_record_low.mp3", "accent_inflection.mp3",
+            "pulse_tick_up.mp3",
+            "pulse_tick_neutral.mp3",
+            "pulse_tick_down.mp3",
+            "accent_record_high.mp3",
+            "accent_record_low.mp3",
+            "accent_inflection.mp3",
             "texture_noise.mp3",
         ]:
             # We can't write MP3 directly, but the loader is robust to missing files
@@ -205,7 +252,9 @@ class TestBuildAudioTrack:
         return samples_dir
 
     def test_writes_wav_with_correct_duration(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         out = tmp_path / "audio.wav"
         values = list(np.linspace(15, 25, 24))  # 24 frames = 2s at 12fps
@@ -227,7 +276,9 @@ class TestBuildAudioTrack:
             assert 1.9 < duration_sec < 2.1
 
     def test_same_inputs_same_output(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Determinism — same recipe + same data = byte-identical synthesised mix."""
         out1 = tmp_path / "a.wav"
@@ -248,11 +299,17 @@ class TestBuildAudioTrack:
         with pytest.raises(ValueError):
             build_audio_track(
                 tmp_path / "x.wav",
-                values=[], dates=[], moments=[], params=AudioParams(), fps=12,
+                values=[],
+                dates=[],
+                moments=[],
+                params=AudioParams(),
+                fps=12,
             )
 
     def test_arc_changes_synthesis_output(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """RFC-011: passing an arc with a peak should change the synthesised WAV."""
         common = dict(
@@ -273,7 +330,9 @@ class TestBuildAudioTrack:
         assert no_arc.read_bytes() != with_arc.read_bytes()
 
     def test_arc_none_equals_arc_ones(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Backwards-compat: arc=None must produce the same WAV as arc=[1,1,...]."""
         common = dict(
@@ -291,7 +350,9 @@ class TestBuildAudioTrack:
         assert a.read_bytes() == b.read_bytes()
 
     def test_arc_hold_determinism(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Determinism for the new RFC-011 params: same arc + same hold → same WAV."""
         kwargs = dict(
@@ -315,7 +376,8 @@ class TestBuildAudioTrack:
         """PRD-006 lede: at the held moment, texture drops out. Direct
         mechanism test against _synth_texture — the per-frame envelope
         should be zero for held frames and non-zero elsewhere."""
-        from oceancanvas.audio import _synth_texture, GENERATIVE_DIR, _load_samples
+        from oceancanvas.audio import GENERATIVE_DIR, _load_samples, _synth_texture
+
         if not (GENERATIVE_DIR / "texture_noise.mp3").exists():
             pytest.skip("audio/generative samples not present in this environment")
 
@@ -330,9 +392,17 @@ class TestBuildAudioTrack:
         sr = 44100
         n_samples = sr * 2  # 2s
 
-        out = _synth_texture(value_norm, dates, arc, hold,
-                             AudioParams(texture_density=1.0, presence=1.0),
-                             fps=12, n_samples=n_samples, sr=sr, bank=bank)
+        out = _synth_texture(
+            value_norm,
+            dates,
+            arc,
+            hold,
+            AudioParams(texture_density=1.0, presence=1.0),
+            fps=12,
+            n_samples=n_samples,
+            sr=sr,
+            bank=bank,
+        )
 
         # Mid of held window: frame 12, sample index ~ 12 * sr/12 = sr (1s in)
         held_mid = out[sr]
@@ -346,7 +416,8 @@ class TestBuildAudioTrack:
         """Mechanism test for pulse: skip firing during held frames. Asserted
         by counting non-zero samples — held window should be silent in pulse
         output, surrounding window should have ticks."""
-        from oceancanvas.audio import _synth_pulse, GENERATIVE_DIR, _load_samples
+        from oceancanvas.audio import GENERATIVE_DIR, _load_samples, _synth_pulse
+
         if not (GENERATIVE_DIR / "pulse_tick_neutral.mp3").exists():
             pytest.skip("audio/generative samples not present")
 
@@ -361,9 +432,16 @@ class TestBuildAudioTrack:
         sr = 44100
         n_samples = int(sr * n_frames / 12)
 
-        out = _synth_pulse(values, arc, hold,
-                           AudioParams(pulse_sensitivity=1.0, presence=1.0),
-                           fps=12, n_samples=n_samples, sr=sr, bank=bank)
+        out = _synth_pulse(
+            values,
+            arc,
+            hold,
+            AudioParams(pulse_sensitivity=1.0, presence=1.0),
+            fps=12,
+            n_samples=n_samples,
+            sr=sr,
+            bank=bank,
+        )
 
         # Pulse samples are ~0.1s. Hold window: 12 frames = 1s starting at frame 12.
         # Use a window safely inside the hold (skip first 0.15s to let any tick
@@ -383,7 +461,9 @@ class TestBuildAudioTrack:
         )
 
     def test_arc_quarter_significantly_quieter_than_full(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Stronger arc-amplitude check: arc=[0.25,...] should drop RMS to roughly 1/4
         of arc=[1.0,...]. Catches a class of bugs where arc gets clipped or
@@ -416,7 +496,9 @@ class TestBuildAudioTrack:
         assert loud_rms > quiet_rms * 2, f"loud {loud_rms} should be ≥2x quiet {quiet_rms}"
 
     def test_channel_mix_mute_silences_layers(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Sidebar override: muting all four channels yields silence (RMS ~ 0)."""
         import wave
@@ -431,22 +513,25 @@ class TestBuildAudioTrack:
         )
         muted_all = tmp_path / "muted.wav"
         build_audio_track(
-            muted_all, **common,
+            muted_all,
+            **common,
             channel_mix={
-                "drone":   {"muted": True},
-                "pulse":   {"muted": True},
-                "accent":  {"muted": True},
+                "drone": {"muted": True},
+                "pulse": {"muted": True},
+                "accent": {"muted": True},
                 "texture": {"muted": True},
             },
         )
         with wave.open(str(muted_all), "rb") as w:
             frames = w.readframes(w.getnframes())
         ints = np.frombuffer(frames, dtype=np.int16).astype(np.float64) / 32767
-        rms = float(np.sqrt((ints ** 2).mean()))
+        rms = float(np.sqrt((ints**2).mean()))
         assert rms < 1e-6, f"all-muted output should be silent, got rms={rms}"
 
     def test_channel_mix_volume_scales(
-        self, tmp_path: Path, synthetic_samples_dir: Path,
+        self,
+        tmp_path: Path,
+        synthetic_samples_dir: Path,
     ):
         """Halving every channel volume halves the output RMS (linear scaling)."""
         import wave
@@ -464,17 +549,18 @@ class TestBuildAudioTrack:
             with wave.open(str(path), "rb") as w:
                 frames = w.readframes(w.getnframes())
             ints = np.frombuffer(frames, dtype=np.int16).astype(np.float64) / 32767
-            return float(np.sqrt((ints ** 2).mean()))
+            return float(np.sqrt((ints**2).mean()))
 
         full = tmp_path / "full.wav"
         half = tmp_path / "half.wav"
         build_audio_track(full, **common)  # default = 1.0 everywhere
         build_audio_track(
-            half, **common,
+            half,
+            **common,
             channel_mix={
-                "drone":   {"volume": 0.5},
-                "pulse":   {"volume": 0.5},
-                "accent":  {"volume": 0.5},
+                "drone": {"volume": 0.5},
+                "pulse": {"volume": 0.5},
+                "accent": {"volume": 0.5},
                 "texture": {"volume": 0.5},
             },
         )

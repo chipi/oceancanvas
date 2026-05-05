@@ -93,8 +93,13 @@ def detect_moments(
 
     # Extract labelled events
     events = _extract_events(
-        smoothed, peaks, records, thresh, inflections,
-        event_threshold, values,
+        smoothed,
+        peaks,
+        records,
+        thresh,
+        inflections,
+        event_threshold,
+        values,
     )
 
     return MomentSignal(
@@ -145,9 +150,7 @@ def _detect_records(values: list[float]) -> list[float]:
     return scores
 
 
-def _detect_thresholds(
-    values: list[float], thresholds: list[float]
-) -> list[float]:
+def _detect_thresholds(values: list[float], thresholds: list[float]) -> list[float]:
     """Threshold crossings: 1.0 when value crosses a boundary."""
     n = len(values)
     if not thresholds or n < 2:
@@ -156,9 +159,7 @@ def _detect_thresholds(
     scores = [0.0] * n
     for i in range(1, n):
         for t in thresholds:
-            crossed = (values[i - 1] < t <= values[i]) or (
-                values[i - 1] > t >= values[i]
-            )
+            crossed = (values[i - 1] < t <= values[i]) or (values[i - 1] > t >= values[i])
             if crossed:
                 scores[i] = 1.0
                 break
@@ -231,10 +232,12 @@ def _extract_events(
             "inflection": "Trend reversal",
         }
 
-        events.append(MomentEvent(
-            frame=i,
-            score=round(intensity[i], 3),
-            label=labels[dominant],
-            type=dominant,
-        ))
+        events.append(
+            MomentEvent(
+                frame=i,
+                score=round(intensity[i], 3),
+                label=labels[dominant],
+                type=dominant,
+            )
+        )
     return events

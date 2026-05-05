@@ -39,7 +39,9 @@
   color: var(--text-muted);
   text-decoration: none;
 }
-.topbarLink:hover { color: var(--intent-teal); }
+.topbarLink:hover {
+  color: var(--intent-teal);
+}
 
 .body {
   display: flex;
@@ -68,7 +70,9 @@
   text-align: left;
   cursor: pointer;
   border-left: 2px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .sourceActive {

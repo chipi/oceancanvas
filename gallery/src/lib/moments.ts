@@ -10,7 +10,7 @@ export interface MomentEvent {
   frame: number;
   score: number;
   label: string;
-  type: 'peak' | 'record' | 'threshold' | 'inflection';
+  type: "peak" | "record" | "threshold" | "inflection";
 }
 
 export interface MomentSignal {
@@ -60,14 +60,20 @@ export function detectMoments(
   for (let i = 0; i < intensity.length; i++) {
     if (intensity[i] < eventThreshold) continue;
 
-    const scores = { peak: peaks[i], record: records[i], inflection: inflections[i] };
-    const dominant = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as MomentEvent['type'];
+    const scores = {
+      peak: peaks[i],
+      record: records[i],
+      inflection: inflections[i],
+    };
+    const dominant = Object.entries(scores).sort(
+      (a, b) => b[1] - a[1],
+    )[0][0] as MomentEvent["type"];
     const val = values[i];
 
     const labels: Record<string, string> = {
       peak: `Anomaly peak (${val.toFixed(1)})`,
       record: `Record high (${val.toFixed(1)})`,
-      inflection: 'Trend reversal',
+      inflection: "Trend reversal",
     };
 
     events.push({
@@ -119,7 +125,10 @@ function detectInflections(values: number[]): number[] {
 
   for (let i = 1; i < diffs.length; i++) {
     if (diffs[i - 1] * diffs[i] < 0) {
-      scores[i + 1] = Math.min(1, Math.abs(diffs[i] - diffs[i - 1]) / (2 * maxDiff));
+      scores[i + 1] = Math.min(
+        1,
+        Math.abs(diffs[i] - diffs[i - 1]) / (2 * maxDiff),
+      );
     }
   }
   return scores;

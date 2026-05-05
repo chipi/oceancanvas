@@ -159,14 +159,20 @@
 }
 
 .yamlPre {
-  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
   font-size: 11px;
   line-height: 1.5;
 }
 
-.yamlStructural { color: var(--editor-structure); }
-.yamlCreative { color: var(--editor-creative); }
-.yamlMarker { color: var(--text-muted); }
+.yamlStructural {
+  color: var(--editor-structure);
+}
+.yamlCreative {
+  color: var(--editor-creative);
+}
+.yamlMarker {
+  color: var(--text-muted);
+}
 
 /* Action bar at bottom of controls */
 .actionBar {
@@ -188,8 +194,13 @@
   cursor: pointer;
 }
 
-.saveBtn:hover { background: rgba(93, 202, 165, 0.1); }
-.saveBtn:disabled { opacity: 0.5; cursor: default; }
+.saveBtn:hover {
+  background: rgba(93, 202, 165, 0.1);
+}
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 
 .discardBtn {
   font-size: 11px;

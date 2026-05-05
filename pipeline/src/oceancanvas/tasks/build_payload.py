@@ -208,12 +208,16 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
             fg_path = fg_dir / "latest.json" if fid.startswith("obis-") else fg_dir / f"{date}.json"
             if fg_path.exists():
                 fg_data = json.loads(fg_path.read_text())
-                foreground_layers.append({
-                    "source_id": fid,
-                    **_crop_to_region(fg_data, region["lat"], region["lon"]),
-                })
+                foreground_layers.append(
+                    {
+                        "source_id": fid,
+                        **_crop_to_region(fg_data, region["lat"], region["lon"]),
+                    }
+                )
         if foreground_layers:
-            payload["data"]["foreground"] = foreground_layers if len(foreground_layers) > 1 else foreground_layers[0]
+            payload["data"]["foreground"] = (
+                foreground_layers if len(foreground_layers) > 1 else foreground_layers[0]
+            )
 
     # Load coastline GeoJSON if available (shared across all scatter renders)
     # Check common locations: project root sketches/, Docker /sketches/
