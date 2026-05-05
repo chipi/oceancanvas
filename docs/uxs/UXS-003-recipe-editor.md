@@ -1,10 +1,10 @@
 # UXS-003 — Recipe Editor
 
 > **Status** · Draft v0.1 · April 2026 · drafted from prototype mockups (OC-02 Figs 4–5)
-> **IA anchor** · §surfaces/recipe-editor · §topbar-patterns/recipe-editor · §shared-tokens
+> **IA anchor** · surfaces/recipe-editor · topbar-patterns/recipe-editor · shared-tokens
 > **Related PRD** · [PRD-003 Recipe Editor](../prd/PRD-003-recipe-editor.md)
 > **Related ADRs** · [ADR-006 p5.js as sketch language](../adr/ADR-006-p5js-sketch-language.md) · [ADR-008 Shared payload format](../adr/ADR-008-shared-payload-format.md)
-> **Related RFCs** · [RFC-001 Recipe YAML schema](../rfc/RFC-001-recipe-yaml-schema.md) — *needs revision; the prototype shows a flat schema with comment-marked sections rather than the two-tier shape RFC-001 v0.1 proposed* · [RFC-004 Live preview architecture](../rfc/RFC-004-live-preview-architecture.md) · [RFC-005 YAML round-tripping](../rfc/RFC-005-yaml-round-tripping.md)
+> **Related RFCs** · [RFC-001 Recipe YAML schema](../rfc/RFC-001-recipe-yaml-schema.md) (Decided → [ADR-018](../adr/ADR-018-recipe-yaml-schema.md)) · [RFC-004 Live preview architecture](../rfc/RFC-004-live-preview-architecture.md) · [RFC-005 YAML round-tripping](../rfc/RFC-005-yaml-round-tripping.md)
 
 ---
 
@@ -154,7 +154,7 @@ The Recipe Editor introduces its own surface-specific tokens: the creative-line 
 
 | Region | Position / size | Tokens | Notes |
 |---|---|---|---|
-| **Topbar** | Full width, 42px | `surface` background, wordmark + recipe-id path in `text-secondary`, status badges on right | Per IA §topbar-patterns/recipe-editor. Status badges: `live · OISST` (data freshness), date in `text`, render type in `text-secondary` |
+| **Topbar** | Full width, 42px | `surface` background, wordmark + recipe-id path in `text-secondary`, status badges on right | Per IA topbar-patterns/recipe-editor. Status badges: `live · OISST` (data freshness), date in `text`, render type in `text-secondary` |
 | **Preview canvas** | Full width, ~38% of viewport height | `canvas` background, render output fills | The actual sketch render. `<iframe>` running the same payload format as pipeline (per ADR-008) |
 | **Preview metadata (top-left)** | Upper-left of preview area, padded | `type-label` for "FIELD RENDER" in `text-muted`, value in `domain-sst-accent` `type-data`, sublabel in `text-secondary` | "FIELD RENDER" / "14.2°" / "region mean · North Atlantic" |
 | **Preset name (top-right)** | Upper-right of preview, in a small `surface` panel | `text` for preset name, `text-muted` for source list | "Becalmed" / "SST · GEBCO" |
@@ -211,6 +211,6 @@ The Recipe Editor introduces its own surface-specific tokens: the creative-line 
 
 ## Notes for related RFCs
 
-**RFC-001 (Recipe YAML schema) needs revision.** The prototype's YAML mode shows a *flat* schema with comment markers demarcating the creative-controlled section, not the two-tier `creative:` / `technical:` schema RFC-001 v0.1 proposed. The flat schema is cleaner — power users edit any line without nesting; the editor parses comment markers to know which lines to render in `editor-creative`. RFC-001 v0.2 should adopt the flat-with-comments approach.
+**Recipe YAML shape is locked.** The editor's YAML mode uses the flat schema with comment markers described in [RFC-001](../rfc/RFC-001-recipe-yaml-schema.md) (Decided) and [ADR-018](../adr/ADR-018-recipe-yaml-schema.md). Power users edit any line without nesting; the editor parses comment markers to know which lines to render in `editor-creative`.
 
 **RFC-005 (YAML round-tripping) is unchanged in shape** — the matched / partially-custom / custom detection logic still applies, but it operates on lines below the `# ⊓ creative controls ⊓ ...` marker rather than on a separate `creative:` block. This UXS doesn't lock the matched/partially-custom/custom visual states yet — they're a future addition once the round-tripping is implemented.

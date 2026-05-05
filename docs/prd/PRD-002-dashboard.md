@@ -1,10 +1,10 @@
 # PRD-002 — Dashboard
 
 > **Status** · Draft v0.1 · April 2026
-> **Sources** · OC-02 §Surface 1 · OC-05 §View 1 · §View 2 · §View 3
-> **Audiences** · scientist-adjacent, curious-person (PA §audiences)
-> **Promises** · *grounded*, *editorial-dignity*, *citation-travels* (PA §promises)
-> **Principles** · *data-is-hero*, *aesthetic-traces-to-data* (PA §principles)
+> **Sources** · OC-02 Surface 1 · OC-05 View 1 · View 2 · View 3
+> **Audiences** · scientist-adjacent, curious-person (PA audiences)
+> **Promises** · *grounded*, *editorial-dignity*, *citation-travels* (PA promises)
+> **Principles** · *data-is-hero*, *aesthetic-traces-to-data* (PA principles)
 > **Why this is a PRD** · The dashboard is where ocean data is *read*. Whether it reads as editorial or as utilitarian is a product decision, not a design tweak.
 
 ---
@@ -71,6 +71,6 @@ The risk is highest at the source rail and the timeline scrubber, both the most 
 
 ## Links
 
-- **Source** — OC-02 §Surface 1 (Dashboard) · OC-05 §View 1 · §View 2 · §View 3
-- **PA** — §audiences · §promises · §principles
+- **Source** — OC-02 Surface 1 (Dashboard) · OC-05 View 1 · View 2 · View 3
+- **PA** — audiences · promises · principles
 - **Related PRDs** — PRD-001 Recipe (the dashboard hands off region and source) · PRD-003 Recipe Editor (the surface the region passes to)

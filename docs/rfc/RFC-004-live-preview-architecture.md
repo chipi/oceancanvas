@@ -1,7 +1,7 @@
 # RFC-004 — Live preview architecture
 
 > **Status** · Decided · closed 2026-04-30 → [ADR-020](../adr/ADR-020-live-preview-architecture.md)
-> **TA anchor** · §components/render-system · §components/web-frontend · §constraints (shared payload, determinism)
+> **TA anchor** · components/render-system · components/web-frontend · constraints (shared payload, determinism)
 > **Related** · PRD-003 Recipe Editor · RFC-002 Render payload format · ADR-008 Shared payload format
 > **Closes into** · [ADR-020](../adr/ADR-020-live-preview-architecture.md)
 > **Why this is an RFC** · The Recipe Editor's live preview is the primary surface where artists see their work take shape. It must be both *responsive* (fast feedback during exploration) and *faithful* (what you see is what the pipeline will render). These goals pull in opposite directions. The architecture choice has consequences for the editor's feel, the pipeline's reliability, and the trust between author and tool.
@@ -38,8 +38,8 @@ The four cases want different fidelity/responsiveness ratios. A unified architec
 
 ## Constraints
 
-- *Shared payload format* — same `window.OCEAN_PAYLOAD` shape in editor and pipeline (TA §constraints; ADR-008).
-- *Determinism* — same payload + same sketch = same render (TA §constraints). Any difference in output means a difference in input.
+- *Shared payload format* — same `window.OCEAN_PAYLOAD` shape in editor and pipeline (TA constraints; ADR-008).
+- *Determinism* — same payload + same sketch = same render (TA constraints). Any difference in output means a difference in input.
 - *No editor-only sketch code* — sketches must not branch on a "preview mode" flag. The sketch is one code path with one set of inputs.
 
 ## Proposed approach
@@ -108,7 +108,7 @@ Rejected because it violates the no-editor-only-sketch-code constraint. The whol
 
 ## Links
 
-- **TA** — §components/render-system · §components/web-frontend · §constraints (shared payload, determinism)
+- **TA** — components/render-system · components/web-frontend · constraints (shared payload, determinism)
 - **Related PRDs** — PRD-003 Recipe Editor (this RFC was flagged in its open threads)
 - **Related ADRs** — ADR-008 Shared payload format
 - **Related RFCs** — RFC-002 Render payload format

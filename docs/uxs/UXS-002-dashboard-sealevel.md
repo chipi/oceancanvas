@@ -1,7 +1,7 @@
 # UXS-002 — Dashboard, Sea Level editorial spread
 
 > **Status** · Draft v0.1 · April 2026 · drafted from prototype mockup (OC-02 Fig 3)
-> **IA anchor** · §surfaces/dashboard · §topbar-patterns/dashboard-editorial-spread · §shared-tokens
+> **IA anchor** · surfaces/dashboard · topbar-patterns/dashboard-editorial-spread · shared-tokens
 > **Related PRD** · [PRD-002 Dashboard](../prd/PRD-002-dashboard.md)
 > **Related ADRs** · [ADR-009 deck.gl + MapLibre](../adr/ADR-009-deck-gl-maplibre.md) · [ADR-010 Observable Plot](../adr/ADR-010-observable-plot.md) · [ADR-017 One editorial layout per source](../adr/ADR-017-one-layout-per-source.md)
 > **Related UXS** · [UXS-001](UXS-001-dashboard-sst.md) — established the per-source-spread pattern this one adapts
@@ -108,7 +108,7 @@ The spread is full-width-curve dominant. The curve occupies roughly the upper-th
 
 | Region | Position | Tokens | Notes |
 |---|---|---|---|
-| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, `/SEA LEVEL` label in `text-secondary`, source-switcher chip on right | Per IA §topbar-patterns/dashboard-editorial-spread |
+| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, `/SEA LEVEL` label in `text-secondary`, source-switcher chip on right | Per IA topbar-patterns/dashboard-editorial-spread |
 | **Eyebrow** | Top-left of body | `domain-sealevel-accent`, `type-label` spaced caps | "GLOBAL MEAN SEA LEVEL · 1993→2026" |
 | **Rate callouts** | Top-right of body, stacked | `domain-sealevel-accent` for "long-term rate"; `domain-sealevel-hot` for "Accel."; `text-secondary` for sub-line | "3.7 mm/yr long-term rate" / "+5.1 mm/yr Accel." / "2020→2026 (accelerating)" |
 | **Rise curve** | Full width, ~280px tall | `domain-sealevel-accent` line at 1.5px, `domain-sealevel-fill-soft` area, dashed `border-strong` baseline at 0, `text-muted` `type-axis` for vertical scale labels | The editorial subject. Continuous from 1993 to today. |

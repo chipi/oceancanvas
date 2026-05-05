@@ -1,7 +1,7 @@
 # UXS-004 — Gallery
 
 > **Status** · v0.2 · April 2026 · redesigned from hero+strip+grid to masonry+detail
-> **IA anchor** · §surfaces/gallery · §topbar-patterns/gallery · §shared-tokens
+> **IA anchor** · surfaces/gallery · topbar-patterns/gallery · shared-tokens
 > **Related PRD** · [PRD-004 Gallery](../prd/PRD-004-gallery.md)
 > **Related ADRs** · [ADR-004 Three-layer data store](../adr/ADR-004-three-layer-data-store.md) · [ADR-012 Caddy as static file server](../adr/ADR-012-caddy-static-server.md)
 
@@ -124,7 +124,7 @@ Focused view of a single recipe's latest render. The render sits on the left; th
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-The context panel serves the *editorial-dignity* promise (PA §promises) and the *citation-travels* promise. The render is the art; the panel is the reading. Together they communicate that the art is grounded in real measurement.
+The context panel serves the *editorial-dignity* promise (PA promises) and the *citation-travels* promise. The render is the art; the panel is the reading. Together they communicate that the art is grounded in real measurement.
 
 ### Detail view elements
 

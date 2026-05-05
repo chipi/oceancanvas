@@ -2,7 +2,7 @@
 
 > **Status** · Superseded by [ADR-027](ADR-027-generative-audio-composition.md)
 > **Date** · 2026-05-03
-> **TA anchor** · §components/render-system
+> **TA anchor** · components/render-system
 > **Related RFC** · RFC-006 (closes)
 
 ## Context

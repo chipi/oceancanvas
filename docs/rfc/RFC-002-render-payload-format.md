@@ -1,7 +1,7 @@
 # RFC-002 — Render payload format
 
 > **Status** · Decided · closed 2026-04-30 → [ADR-019](../adr/ADR-019-render-payload-schema.md)
-> **TA anchor** · §contracts/render-payload · §components/render-system · §constraints (shared payload)
+> **TA anchor** · contracts/render-payload · components/render-system · constraints (shared payload)
 > **Related** · RFC-001 Recipe YAML schema · RFC-004 Live preview architecture · ADR-008 Shared payload format
 > **Closes into** · ADR-008 (locked principle) + [ADR-019](../adr/ADR-019-render-payload-schema.md) (schema details)
 > **Why this is an RFC** · The render payload is the contract between the pipeline (or live editor) and the p5.js sketch. Multiple plausible representations exist with real trade-offs around browser load time, server-side parity, and debuggability. The principle of "one payload format for both contexts" is locked (ADR-008); the actual schema is open.
@@ -37,8 +37,8 @@ The same sketch reads this payload in the editor preview (live) and in the pipel
 
 ## Constraints
 
-- *Shared payload format* — same shape for editor and Puppeteer (TA §constraints; locked by ADR-008).
-- *Determinism* — same payload + same sketch = same render bytes (TA §constraints).
+- *Shared payload format* — same shape for editor and Puppeteer (TA constraints; locked by ADR-008).
+- *Determinism* — same payload + same sketch = same render bytes (TA constraints).
 - *File-based storage in v1* — payload is a file on disk, not a database query result.
 
 ## Proposed approach
@@ -136,7 +136,7 @@ Rejected because it adds a non-trivial library dependency for browser code, and 
 
 ## Links
 
-- **TA** — §contracts/render-payload · §components/render-system · §constraints (shared payload format)
+- **TA** — contracts/render-payload · components/render-system · constraints (shared payload format)
 - **Related ADRs** — ADR-008 (shared payload format principle, already accepted)
 - **Related RFCs** — RFC-001 Recipe YAML schema · RFC-004 Live preview architecture
 

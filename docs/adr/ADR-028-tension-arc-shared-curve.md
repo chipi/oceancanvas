@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-05-04
-> **TA anchor** · §components/render-system · §contracts/recipe-yaml · §contracts/render-payload
+> **TA anchor** · components/render-system · contracts/recipe-yaml · contracts/render-payload
 > **Related RFC** · RFC-011 (closes)
 > **Related PRD** · PRD-006 (the user-value argument this ADR serves)
 

@@ -1,7 +1,7 @@
 # UXS-005 — Video Editor
 
 > **Status** · Draft v0.1 · April 2026 · drafted from prototype mockup (OC-02 Fig 7)
-> **IA anchor** · §surfaces/video-editor · §topbar-patterns/video-editor · §shared-tokens
+> **IA anchor** · surfaces/video-editor · topbar-patterns/video-editor · shared-tokens
 > **Related PRD** · [PRD-005 Video Editor](../prd/PRD-005-video-editor.md) — *the overlay list in this UXS is concrete; PRD-005 should be updated to enumerate the same overlays*
 > **Related ADRs** · [ADR-004 Three-layer data store](../adr/ADR-004-three-layer-data-store.md)
 > **Related RFCs** · [RFC-006 Audio system](../rfc/RFC-006-audio-system.md) · [RFC-007 Key moment detection](../rfc/RFC-007-key-moment-detection.md)
@@ -111,7 +111,7 @@ The marker colours intentionally match the source palette so that the timeline r
 
 | Region | Position / size | Tokens | Notes |
 |---|---|---|---|
-| **Topbar** | Full width, 42px | `surface` background, wordmark on left, two-segment path in `text-secondary`, `export MP4` in `intent-info` on right | Per IA §topbar-patterns/video-editor |
+| **Topbar** | Full width, 42px | `surface` background, wordmark on left, two-segment path in `text-secondary`, `export MP4` in `intent-info` on right | Per IA topbar-patterns/video-editor |
 | **Preview area** | ~75% of viewport width, full height between topbar and footer | `canvas` background, render frame fills | Updates as playback advances |
 | **Sparkline (in-preview, top-left)** | Upper-left of preview, ~150×60px, padded ~24px from edges | `surface` 80% background, line in `domain-sst-accent` 1px, current-frame dot in `text` filled circle 4px | Shows the data trend across the full sequence; current position dot moves with playback |
 | **NEW RECORD banner (in-preview)** | Centred horizontally, ~30% of preview width, ~36px tall | `videoeditor-banner` background, `intent-alert` text, `intent-alert` 1px border | Appears when a record key-moment fires; only visible during the moment, otherwise hidden. Animation timing in RFC-007 |

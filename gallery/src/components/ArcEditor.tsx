@@ -1,5 +1,5 @@
 /**
- * ArcEditor — RFC-011 §"Recipe schema" / PRD-006 §"The experience".
+ * ArcEditor — RFC-011 "Recipe schema" / PRD-006 "The experience".
  *
  * Small SVG curve editor that lets the recipe author pick a tension-arc
  * preset and drag the peak. Lives beside the mixer + EQ in the Video Editor

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-04-30
-> **TA anchor** · §contracts/render-payload · §components/render-system
+> **TA anchor** · contracts/render-payload · components/render-system
 > **Related RFC** · RFC-002 (closes)
 > **Related PRDs** · PRD-001 Recipe
 

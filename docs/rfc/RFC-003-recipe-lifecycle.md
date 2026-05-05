@@ -1,10 +1,10 @@
 # RFC-003 — Recipe lifecycle on source unavailability
 
 > **Status** · Decided · closed 2026-05-03 → [ADR-025](../adr/ADR-025-recipe-lifecycle.md)
-> **TA anchor** · §components/pipeline · §constraints (determinism, attribution)
+> **TA anchor** · components/pipeline · constraints (determinism, attribution)
 > **Related** · PRD-001 Recipe · OC-03 Data Catalog
 > **Closes into** · [ADR-025](../adr/ADR-025-recipe-lifecycle.md)
-> **Why this is an RFC** · Recipes are durable — they run forever once authored (PA §principles/recipes-are-durable). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do *something*. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.
+> **Why this is an RFC** · Recipes are durable — they run forever once authored (PA, principle *recipes-are-durable*). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do *something*. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.
 
 ---
 
@@ -20,7 +20,7 @@ The choices look simple in isolation but each one has consequences that ripple t
 - *Fall back to last known data*. Use yesterday's data; mark it clearly.
 - *Substitute* with a related source. Use SST-CCI when OISST is down.
 
-Each of these has implications for the *accumulation* promise (PA §promises/accumulation), the *attribution-baked-in* principle, and the artist's relationship to their work. The deliberation is real because there is no obvious right answer — pause is conservative but creates archive gaps; fall-back is convenient but breaks attribution; substitute is clever but breaks determinism.
+Each of these has implications for the *accumulation* promise (PA promises/accumulation), the *attribution-baked-in* principle, and the artist's relationship to their work. The deliberation is real because there is no obvious right answer — pause is conservative but creates archive gaps; fall-back is convenient but breaks attribution; substitute is clever but breaks determinism.
 
 ## Use cases
 
@@ -41,9 +41,9 @@ The four cases want different behaviours. A unified approach that covers all fou
 
 ## Constraints
 
-- *Determinism* — same recipe + same data = same render (TA §constraints). A "fall back to yesterday" approach must record exactly what data was used.
-- *Attribution baked in* — every render shows its source (TA §constraints). Substitution silently breaks this.
-- *Daily clock is sacred* — the pipeline runs once per day; we cannot rely on retries (TA §constraints).
+- *Determinism* — same recipe + same data = same render (TA constraints). A "fall back to yesterday" approach must record exactly what data was used.
+- *Attribution baked in* — every render shows its source (TA constraints). Substitution silently breaks this.
+- *Daily clock is sacred* — the pipeline runs once per day; we cannot rely on retries (TA constraints).
 - *File-based storage in v1* — recipe state (active, paused, broken) is a flag in a file, not a database row.
 
 ## Proposed approach
@@ -118,6 +118,6 @@ Rejected for transient outages — most pause-and-recover scenarios should not r
 
 ## Links
 
-- **TA** — §components/pipeline · §constraints (determinism, attribution)
+- **TA** — components/pipeline · constraints (determinism, attribution)
 - **Related PRDs** — PRD-001 Recipe (this RFC was flagged in its open threads)
 - **Related sources** — OC-03 Data Catalog (source SLAs, where they exist)

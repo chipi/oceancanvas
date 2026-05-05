@@ -12,7 +12,7 @@
 # all services that need them. Read-only where the service shouldn't write.
 #
 # To run: `docker compose up`. To trigger a pipeline run now: `make pipeline-run`.
-# Troubleshooting common issues: see docs/get-started.md § Troubleshooting.
+# Troubleshooting: docs/get-started.md (Troubleshooting).
 
 services:
   # ── Prefect's state DB ──────────────────────────────────────────────────

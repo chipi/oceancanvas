@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/web-frontend
+> **TA anchor** · components/web-frontend
 > **Related PRDs** — PRD-002 Dashboard
 
 ## Context
@@ -25,7 +25,7 @@ The cost of this approach is real — more design and code per source. The cost 
 
 ## Alternatives considered
 
-- **Shared template with per-source variables** — one layout, each source plugs values into it. Rejected because it breaks the editorial-dignity promise (PA §promises/editorial-dignity). All sources end up looking the same; the visual character that makes each source legible is lost.
+- **Shared template with per-source variables** — one layout, each source plugs values into it. Rejected because it breaks the editorial-dignity promise (PA promises/editorial-dignity). All sources end up looking the same; the visual character that makes each source legible is lost.
 - **Two-tier (shared default + custom overrides)** — sources with no custom layout fall back to a default. Rejected because the "default" becomes the path of least resistance and most sources end up there. The forcing function is what makes the system work.
 
 ## Consequences

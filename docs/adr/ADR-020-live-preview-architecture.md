@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-04-30
-> **TA anchor** · §components/render-system · §components/web-frontend · §constraints
+> **TA anchor** · components/render-system · components/web-frontend · constraints
 > **Related RFC** · RFC-004 (closes)
 > **Related PRDs** · PRD-003 Recipe Editor
 

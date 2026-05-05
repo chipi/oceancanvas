@@ -1,7 +1,7 @@
 # RFC-006 — Audio system design
 
 > **Status** · Decided · closed 2026-05-03 → [ADR-026](../adr/ADR-026-audio-stem-system.md)
-> **TA anchor** · §components/render-system · §contracts (audio scalars in payload)
+> **TA anchor** · components/render-system · contracts (audio scalars in payload)
 > **Related** · PRD-005 Video Editor · RFC-002 Render payload format · RFC-007 Key moment detection
 > **Closes into** · [ADR-026](../adr/ADR-026-audio-stem-system.md)
 > **Why this is an RFC** · The audio system is the most ambitious piece of OceanCanvas's enrichment surface, and the one where "decoration vs. data" is hardest to get right (PRD-005 sharpest threat). Multiple plausible architectures exist with real trade-offs around fidelity, dependency cost, and authorship. This is the meatiest RFC in the system.
@@ -44,9 +44,9 @@ Each trades off authorship, dependency cost, fidelity, and licensing differently
 
 ## Constraints
 
-- *Determinism* — same inputs → same audio bytes (TA §constraints). Generative APIs that introduce per-call randomness must be seedable or cached.
-- *Self-hostable* — the system must work without commercial APIs as a fallback (TA §constraints).
-- *Daily clock* — audio is generated at *export* time, not pipeline time. The pipeline produces frames; the video editor produces film + audio (TA §constraints).
+- *Determinism* — same inputs → same audio bytes (TA constraints). Generative APIs that introduce per-call randomness must be seedable or cached.
+- *Self-hostable* — the system must work without commercial APIs as a fallback (TA constraints).
+- *Daily clock* — audio is generated at *export* time, not pipeline time. The pipeline produces frames; the video editor produces film + audio (TA constraints).
 - *Attribution baked in* — music attribution travels with the export. Both the data sources and the audio source/license must be in the bundled metadata.
 
 ## Proposed approach
@@ -124,6 +124,6 @@ Rejected because envelope modulation alone cannot create the qualitative shifts 
 
 ## Links
 
-- **TA** — §components/render-system · §contracts (audio scalars in payload) · §constraints (determinism, self-hostable)
+- **TA** — components/render-system · contracts (audio scalars in payload) · constraints (determinism, self-hostable)
 - **Related PRDs** — PRD-005 Video Editor (this RFC was flagged in its open threads)
 - **Related RFCs** — RFC-002 Render payload format · RFC-007 Key moment detection

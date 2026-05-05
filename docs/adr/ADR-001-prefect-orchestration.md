@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/pipeline · §stack
+> **TA anchor** · components/pipeline · stack
 > **Related PRDs** — PRD-001 Recipe (the pipeline executes recipes daily)
 
 ## Context
@@ -23,7 +23,7 @@ Prefect's `@task` / `@flow` decorator model maps cleanly onto Python fetcher fun
 
 - **Airflow** — designed for hundreds of tasks across enterprise pipelines. Too heavy for six tasks; the operational overhead of an Airflow deployment exceeds the value.
 - **Bare cron** — gives no retry, no caching, no logs, no UI. Acceptable at 1 task; insufficient at 6 and brittle as the project grows.
-- **Prefect Cloud (managed)** — adds an external dependency that breaks the self-hostable constraint (TA §constraints).
+- **Prefect Cloud (managed)** — adds an external dependency that breaks the self-hostable constraint (TA constraints).
 
 ## Consequences
 

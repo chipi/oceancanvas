@@ -1,7 +1,7 @@
 # RFC-NNN — [Topic]
 
 > **Status** · Draft v0.1 · [date]
-> **TA anchor** · §components/[…] · §contracts/[…] · §constraints (which ones apply)
+> **TA anchor** · components/[…] · contracts/[…] · constraints (which ones apply)
 > **Related** · PRDs, RFCs, ADRs this RFC depends on or affects
 > **Closes into** · ADR-NNN (pending)
 > **Why this is an RFC** · [One sentence: what genuinely open question is being argued. If the answer is mostly known going in, this is an ADR being written in the wrong shape — close the file and start over as an ADR.]
@@ -10,7 +10,7 @@
 
 ## The question
 
-[2–3 paragraphs framing the open question. What is the technical decision that has to be made? Why is it open — what makes it not obvious? What constraints from TA bound the answer?]
+[2–3 paragraphs framing the open question. What is the technical decision that has to be made? Why is it open — what makes it not obvious? What constraints from `OC_TA.md` bound the answer?]
 
 ## Use cases
 
@@ -29,7 +29,7 @@
 
 ## Constraints
 
-[From TA §constraints. What cannot change. Any answer must honour these.]
+[From `OC_TA.md` (**Constraints**). What cannot change. Any answer must honour these.]
 
 - [Constraint 1, with TA reference]
 - [Constraint 2, with TA reference]
@@ -78,7 +78,7 @@
 ## Links
 
 - **Source** — relevant OC-04 section
-- **TA** — §components/[…] · §contracts/[…] · §constraints
+- **TA** — components/[…] · contracts/[…] · constraints
 - **Related PRDs** — [if this RFC was triggered by a PRD's open thread]
 
 ---

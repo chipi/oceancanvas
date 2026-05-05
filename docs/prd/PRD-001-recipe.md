@@ -1,10 +1,10 @@
 # PRD-001 — Recipe (the authored work)
 
 > **Status** · Draft v0.1 · April 2026
-> **Sources** · OC-01 §Three layers (Layer 2 — Create) · OC-02 §The concept · §The creative loop · OC-04 §Recipe editor studio
-> **Audiences** · artist, climate-communicator (PA §audiences)
-> **Promises** · *authored*, *grounded*, *accumulation*, *citation-travels* (PA §promises)
-> **Principles** · *aesthetic-traces-to-data*, *determinism*, *recipes-are-durable*, *attribution-baked-in* (PA §principles)
+> **Sources** · OC-01 Three layers (Layer 2 — Create) · OC-02 The concept · The creative loop · OC-04 Recipe editor studio
+> **Audiences** · artist, climate-communicator (PA audiences)
+> **Promises** · *authored*, *grounded*, *accumulation*, *citation-travels* (PA promises)
+> **Principles** · *aesthetic-traces-to-data*, *determinism*, *recipes-are-durable*, *attribution-baked-in* (PA principles)
 > **Why this is a PRD** · A recipe is the central creative artefact of OceanCanvas. The argument for what a recipe *is* — and what kind of relationship it creates between author and work — has to be made before any of the surface PRDs can land.
 
 ---
@@ -68,6 +68,6 @@ The whole frame depends on whether the recipe surface (editor, file format, gall
 
 ## Links
 
-- **Source** — OC-01 §Three layers (Layer 2 — Create) · OC-02 §The concept · §The creative loop · OC-04 §Recipe editor studio
-- **PA** — §audiences · §promises · §principles
+- **Source** — OC-01 Three layers (Layer 2 — Create) · OC-02 The concept · The creative loop · OC-04 Recipe editor studio
+- **PA** — audiences · promises · principles
 - **Related PRDs** — PRD-003 Recipe Editor (authoring) · PRD-004 Gallery (presentation) · PRD-005 Video Editor (accumulation in time)

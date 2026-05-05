@@ -2,7 +2,7 @@
 
 > **Status** · v0.2 · April 2026 · revised against prototype mockup (OC-02 Figs 1–2)
 > **Visual fidelity** · Verified against prototype. Some details (e.g., precise hero number font weight) interpreted from a partially-rendered PDF where some glyphs garbled at export — flagged inline.
-> **IA anchor** · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §topbar-patterns/dashboard-editorial-spread · §shell-regions/source-rail · §shared-tokens
+> **IA anchor** · surfaces/dashboard · topbar-patterns/dashboard-main-view · topbar-patterns/dashboard-editorial-spread · shell-regions/source-rail · shared-tokens
 > **Related PRD** · [PRD-002 Dashboard](../prd/PRD-002-dashboard.md)
 > **Related ADRs** · [ADR-009 deck.gl + MapLibre](../adr/ADR-009-deck-gl-maplibre.md) · [ADR-010 Observable Plot](../adr/ADR-010-observable-plot.md) · [ADR-017 One editorial layout per source](../adr/ADR-017-one-layout-per-source.md)
 > **Related RFC** · *None yet — Dashboard behavioural rules (timeline scrubber animation, source-rail tab transitions, hover debounce, source-switcher chip behaviour) need an RFC when implemented.*
@@ -31,13 +31,13 @@ The Dashboard's SST experience is the canonical first surface — the one PRD-00
 
 ## Theme
 
-Dark only. Per `OC_IA.md §shared-tokens`, all OceanCanvas surfaces are dark-only.
+Dark only. Per `OC_IA.md shared-tokens`, all OceanCanvas surfaces are dark-only.
 
 ## Tokens
 
 ### Inherited from IA
 
-All surface, text, intent, typography, and spacing tokens are inherited from `OC_IA.md §shared-tokens`. This UXS uses them by name without restating values.
+All surface, text, intent, typography, and spacing tokens are inherited from `OC_IA.md shared-tokens`. This UXS uses them by name without restating values.
 
 - **Surface** · `canvas`, `surface`, `elevated`, `overlay`, `border`, `border-strong`
 - **Text** · `text`, `text-secondary`, `text-muted`, `text-disabled`
@@ -106,7 +106,7 @@ The main view is the Dashboard's primary entry. Today's global SST as a full-ble
 
 | Region | Position / size | Tokens | Notes |
 |---|---|---|---|
-| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, path in `text-secondary`, timestamp in `text-muted` | Per IA §topbar-patterns/dashboard-main-view |
+| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, path in `text-secondary`, timestamp in `text-muted` | Per IA topbar-patterns/dashboard-main-view |
 | **Source rail** | Left, ~96px wide, full height | `canvas` background; active source label in `domain-sst-accent`; inactive labels in `text-muted`; no border, no fill | Active state is text-colour only — not a left border or background |
 | **Map canvas** | Full bleed of remaining area | `canvas` map background, optional grid lines at `border` opacity | deck.gl BitmapLayer rendering SST data |
 | **Hover coords** | Top-left of map area, ~120px from rail edge | `text-secondary`, `type-axis` monospace | Updates with cursor position over map |
@@ -176,7 +176,7 @@ The editorial spread is the Dashboard going deeper on SST. Two-column hero (numb
 
 | Region | Position | Tokens | Notes |
 |---|---|---|---|
-| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, `/DATA EXPLORER` label in `text-secondary`, source-switcher chip on right with `elevated` background | Per IA §topbar-patterns/dashboard-editorial-spread |
+| **Topbar** | Full width, 42px | `surface` background, wordmark in `text`, `/DATA EXPLORER` label in `text-secondary`, source-switcher chip on right with `elevated` background | Per IA topbar-patterns/dashboard-editorial-spread |
 | **Eyebrow** | Top-left, body content area | `domain-sst-accent`, `type-data` | "North Atlantic · April 25 2026" — region + date in source colour, not muted spaced caps. **This is the surface's eyebrow, not a section label.** |
 | **Hero number** | Below eyebrow, left column | `type-hero`, `domain-sst-accent` (per prototype — verified against Fig 2 even where rendering is partial) | "14.2°" |
 | **Hero subtitle** | Below hero number | `type-body`, `text-secondary` | "Mean SST across the North Atlantic basin, 30°N–65°N" |
@@ -214,7 +214,7 @@ Static visual states only. Behaviour (timing, transitions) is RFC territory.
 
 ## Acceptance criteria
 
-- [ ] Topbar matches the per-view pattern in IA §topbar-patterns (main view → path + UTC time; editorial spread → `/DATA EXPLORER` + source-switcher chip)
+- [ ] Topbar matches the per-view pattern in IA topbar-patterns (main view → path + UTC time; editorial spread → `/DATA EXPLORER` + source-switcher chip)
 - [ ] Source rail's active state is text colour only — no left border, no background fill
 - [ ] Stats overlay renders as three separate cards stacked vertically, not a single card with three values
 - [ ] Mini sparkline appears *below* the timeline scrubber, not above
@@ -223,7 +223,7 @@ Static visual states only. Behaviour (timing, transitions) is RFC territory.
 - [ ] Editorial spread anomaly bars positioned to the right of the trend chart, not below
 - [ ] Data-strip values render in `domain-sst-accent`, not white
 - [ ] All colours use semantic tokens — no one-off hex outside the `domain-sst-*` definitions in this doc
-- [ ] All foreground/background pairings use matching token pairs from this UXS or `OC_IA.md §shared-tokens`
+- [ ] All foreground/background pairings use matching token pairs from this UXS or `OC_IA.md shared-tokens`
 - [ ] No chart borders, no boxed numbers, no light-mode backgrounds
 - [ ] Map renders via deck.gl BitmapLayer (per ADR-009); time-series via Observable Plot (per ADR-010)
 - [ ] Citation footer present on every view; format `[source] · [resolution] · [cadence] · [date range]`
@@ -235,5 +235,5 @@ Static visual states only. Behaviour (timing, transitions) is RFC territory.
 
 ## Changelog
 
-- **v0.2 · April 2026** — Revised against prototype mockup (OC-02 Figs 1–2). Major changes: topbar split into main-view and editorial-spread variants per IA §topbar-patterns; source-rail active state changed from "2px coloured left border" to "text colour only"; stats overlay redrawn as three stacked cards; mini sparkline moved below the timeline scrubber; hover coordinates added to upper-left of map area; legend strip narrowed and moved to top-right vertical; editorial spread eyebrow changed to `domain-sst-accent` colour; anomaly bars moved to right of trend chart; "art potential" block removed (not in prototype). Added source-switcher chip component to editorial-spread state table.
+- **v0.2 · April 2026** — Revised against prototype mockup (OC-02 Figs 1–2). Major changes: topbar split into main-view and editorial-spread variants per IA topbar-patterns; source-rail active state changed from "2px coloured left border" to "text colour only"; stats overlay redrawn as three stacked cards; mini sparkline moved below the timeline scrubber; hover coordinates added to upper-left of map area; legend strip narrowed and moved to top-right vertical; editorial spread eyebrow changed to `domain-sst-accent` colour; anomaly bars moved to right of trend chart; "art potential" block removed (not in prototype). Added source-switcher chip component to editorial-spread state table.
 - **v0.1 · April 2026** — Initial draft, written from OC-05 figure descriptions before prototype access. Superseded by v0.2.

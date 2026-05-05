@@ -8,13 +8,14 @@ cd oceancanvas
 docker compose up
 ```
 
-Five containers start: the pipeline, the gallery, Prefect (orchestration), Postgres (Prefect state), and the recipe save server.
+Six services start: Postgres (Prefect state), Prefect Server, the pipeline worker, the gallery (Caddy + static app), the recipe save server, and the video export server.
 
 | Service | URL |
 |---|---|
 | Gallery | `localhost:8080` |
 | Prefect UI | `localhost:4200` |
 | Recipe save server | `localhost:3001` |
+| Video export server | `localhost:3002` |
 
 The pipeline runs daily at 06:00 UTC. Manual runs trigger via the Prefect UI or:
 
@@ -109,7 +110,7 @@ The most common things that go wrong on first run, and how to unstick them.
 
 - **Docker Desktop not running.** On macOS / Windows, the Docker daemon has to be started before any compose command. Open Docker Desktop, wait for it to say "Docker is running."
 - **Permission denied on `/var/run/docker.sock` (Linux).** Add your user to the `docker` group: `sudo usermod -aG docker $USER`, then log out and back in.
-- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `GALLERY_PORT=8090 docker compose up`. Same for 4200 (Prefect UI) and 3001 (save server).
+- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `GALLERY_PORT=8090 docker compose up`. Same for 4200 (Prefect UI), 3001 (recipe save), and 3002 (video export).
 
 ### Pipeline never runs / renders never appear
 
@@ -142,6 +143,6 @@ The most common things that go wrong on first run, and how to unstick them.
 
 ### Still stuck
 
-- Check logs: `docker compose logs pipeline` (or `gallery` / `prefect` / `recipe-server`).
+- Check logs: `docker compose logs pipeline` (or `gallery`, `prefect-server`, `recipe-server`, `export-server`).
 - Verify the manifest: `cat renders/manifest.json | head` — if it's `{ "recipes": {} }`, the pipeline hasn't run yet.
 - Open an issue with the failing command, error output, OS, and what you tried. The maintainer reads them.

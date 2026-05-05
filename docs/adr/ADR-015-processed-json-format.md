@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §contracts/processed-data · §components/data-store
+> **TA anchor** · contracts/processed-data · components/data-store
 
 ## Context
 

@@ -1,10 +1,10 @@
 # PRD-NNN — [Feature Name]
 
 > **Status** · Draft v0.1 · [date]
-> **Sources** · OC-02 §[section] · OC-05 §[section]
-> **Audiences** · [audience-1], [audience-2] (PA §audiences)
-> **Promises** · *[promise-1]*, *[promise-2]* (PA §promises)
-> **Principles** · *[principle-1]*, *[principle-2]* (PA §principles)
+> **Sources** · OC-02 [section] · OC-05 [section]
+> **Audiences** · [audience-1], [audience-2] (PA audiences)
+> **Promises** · *[promise-1]*, *[promise-2]* (PA promises)
+> **Principles** · *[principle-1]*, *[principle-2]* (PA principles)
 > **Why this is a PRD** · [One sentence: what user-value question is argued here. If this sentence is hard to write, it is not a PRD — it is an RFC or an ADR.]
 
 ---

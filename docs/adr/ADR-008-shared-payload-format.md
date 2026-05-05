@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §contracts/render-payload · §constraints
+> **TA anchor** · contracts/render-payload · constraints
 
 ## Context
 

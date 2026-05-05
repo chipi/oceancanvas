@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/service-layer · §stack · §constraints (self-hostable)
+> **TA anchor** · components/service-layer · stack · constraints (self-hostable)
 
 ## Context
 

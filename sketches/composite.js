@@ -20,7 +20,7 @@
  *   - foreground_colormap — separate colormap for the overlay (default arctic)
  *   - context_layer — coastline (default), none
  *
- * Determinism rules (TA §constraints):
+ * Determinism rules (TA constraints):
  *   - randomSeed() in setup
  *   - no clock-dependent APIs
  *   - window.__RENDER_COMPLETE = true on finish

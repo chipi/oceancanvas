@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-05-02
-> **TA anchor** · §components/pipeline · §stack
+> **TA anchor** · components/pipeline · stack
 > **Related RFC** · RFC-009 (closes)
 
 ## Context

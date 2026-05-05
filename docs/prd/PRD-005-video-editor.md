@@ -1,10 +1,10 @@
 # PRD-005 — Video Editor
 
 > **Status** · Draft v0.3 · April 2026 (supersedes v0.2 — reshaped to match PRD template)
-> **Sources** · OC-02 §Surface 4 · OC-04 §Video editor · OC-05 §Video editor
-> **Audiences** · climate-communicator, artist (PA §audiences)
-> **Promises** · *accumulation*, *citation-travels*, *editorial-dignity* (PA §promises)
-> **Principles** · *aesthetic-traces-to-data*, *attribution-baked-in* (PA §principles)
+> **Sources** · OC-02 Surface 4 · OC-04 Video editor · OC-05 Video editor
+> **Audiences** · climate-communicator, artist (PA audiences)
+> **Promises** · *accumulation*, *citation-travels*, *editorial-dignity* (PA promises)
+> **Principles** · *aesthetic-traces-to-data*, *attribution-baked-in* (PA principles)
 > **Why this is a PRD** · A timelapse turns daily-render accumulation into something a person can actually *show* someone. Whether the result feels like data brought to life — or like a slideshow with music — is a product judgment, not an export-format decision.
 
 ---
@@ -67,8 +67,8 @@ What kills the threat: a viewer noticing — even unconsciously — that the mus
 
 ## Links
 
-- **Source** — OC-02 §Surface 4 · OC-04 §Video editor · OC-05 §Video editor
-- **PA** — §audiences · §promises · §principles
+- **Source** — OC-02 Surface 4 · OC-04 Video editor · OC-05 Video editor
+- **PA** — audiences · promises · principles
 - **Related PRDs** — PRD-001 Recipe (the work the timelapse is *of*) · PRD-004 Gallery (the entry point — `timelapse ↗`)
 - **Related UXS** — UXS-005 Video Editor (visual contract, overlay enumeration)
 - **Related RFCs** — RFC-006 Audio system · RFC-007 Key moment detection

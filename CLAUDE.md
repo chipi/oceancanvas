@@ -55,7 +55,7 @@ These are decided. Don't propose alternatives in code review or refactors. If a 
 | Recipe authorship | Single-author in Phase 1 | ADR-016 |
 | Editorial layout | One per source | ADR-017 |
 
-Full reference with rationale: `docs/adr/OC_TA.md` §stack.
+Full reference with rationale: `docs/adr/OC_TA.md` (**Stack**).
 
 ---
 
@@ -77,7 +77,7 @@ These hold across every PR. Code that violates one of these is broken even if it
 
 **Attribution baked in.** Source attribution is part of every render. Removing it requires deliberate code change; including it is the default.
 
-Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
+Full reference with rationale: `docs/adr/OC_TA.md` (**Constraints**).
 
 ---
 
@@ -121,7 +121,7 @@ Full reference with rationale: `docs/adr/OC_TA.md` §constraints.
 - Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 - Scope optional but encouraged: `feat(pipeline): add discover task for OISST`.
 - Body explains the *why*, not the *what*. The diff is the what.
-- Reference the ADR/RFC/PRD that the commit serves: `Closes RFC-001 → ADR-NNN` or `Implements PRD-002 §"The experience"`.
+- Reference the ADR/RFC/PRD that the commit serves: `Closes RFC-001 → ADR-NNN` or `Implements PRD-002 "The experience"`.
 
 ### Branches
 
@@ -150,8 +150,8 @@ The mechanics of how PRDs / RFCs / ADRs / UXSes interact, in operational form.
 ### When code requires a documentation update
 
 - **New surface or major surface change** → update `docs/uxs/OC_IA.md` first, then add or revise the relevant UXS.
-- **New shared design token** → add to `OC_IA.md §shared-tokens`. Don't define it locally in a UXS or hardcode it in a component.
-- **New tech decision (single, settled)** → write an ADR. Append-only. Update `OC_TA.md §map` and `OC_TA.md §stack` if relevant.
+- **New shared design token** → add to `OC_IA.md` (**Shared tokens**). Don't define it locally in a UXS or hardcode it in a component.
+- **New tech decision (single, settled)** → write an ADR. Append-only. Update `OC_TA.md` (**Map**) and (**Stack**) if relevant.
 - **Open technical question with alternatives** → write an RFC. Closes into an ADR when the decision is forced by implementation reality.
 - **New audience or new product promise** → update `OC_PA.md`. Existing PRDs that should reference it get cross-linked.
 - **New user-facing experience** → write a PRD in blog-post format using the template.
@@ -162,9 +162,9 @@ When you change one doc, ask which other docs read from it. Six places update to
 
 1. New ADR file in `docs/adr/`
 2. RFC status flips to Decided
-3. `OC_TA.md §map` RFC table row flips
-4. `OC_TA.md §map` ADR table gains the row
-5. `OC_TA.md §stack` updates if stack-affecting
+3. `OC_TA.md` (**Map**) RFC table row flips
+4. `OC_TA.md` (**Map**) ADR table gains the row
+5. `OC_TA.md` (**Stack**) updates if stack-affecting
 6. `rfc/index.md` and `adr/index.md` mirror
 
 Forget any of these and silent drift starts. The fix is cheap when caught early, painful when not.
@@ -180,7 +180,7 @@ Forget any of these and silent drift starts. The fix is cheap when caught early,
 | What's the open technical question? | RFC |
 | What technical decision is locked? | ADR |
 | What components, contracts, constraints govern the system? | TA |
-| What's the current architecture state board? | TA §map |
+| What's the current architecture state board? | `OC_TA.md` (**Map**) |
 
 If a piece of writing doesn't fit any of those, it probably doesn't belong in `docs/`.
 
@@ -201,7 +201,7 @@ Code identifiers (variables, functions, classes) follow standard language conven
 ### Do
 
 - Read `docs/adr/OC_TA.md` and `docs/prd/OC_PA.md` at the start of any non-trivial session. They are the structural foundation.
-- Reference the relevant PRD section when implementing a surface ("PRD-002 §The experience" describes the dashboard interaction this commit implements).
+- Reference the relevant PRD section when implementing a surface ("PRD-002 The experience" describes the dashboard interaction this commit implements).
 - Honour the constraints — file-based storage, determinism, daily cadence, no auth, self-hostable, shared payload, baked attribution.
 - Write tests against synthetic data, not live data. The CI gate (ADR-014) requires this.
 - Update `docs/` when changing the system's structure, contracts, or surfaces. Same commit if possible.
@@ -217,7 +217,7 @@ Code identifiers (variables, functions, classes) follow standard language conven
 - Don't edit ADRs after acceptance. Append a new ADR that supersedes; mark the old one Superseded with a forward link.
 - Don't write a PRD for infrastructure work. Pipelines, data formats, render mechanics — those are RFCs and ADRs. PRDs argue for user-value experiences.
 - Don't close an RFC into an ADR before implementation forces the decision. Closing prematurely commits to a schema before the parser meets its first edge case.
-- Don't introduce engagement metrics. PA §principles names `no-engagement-chrome`. No view counts, no likes, no streaks, no virality features.
+- Don't introduce engagement metrics. PA principles names `no-engagement-chrome`. No view counts, no likes, no streaks, no virality features.
 - Don't add behavioural rules to a UXS. Animation timing, debounce, transitions, keyboard sequences — those go in an RFC. UXS specifies static appearance only.
 
 ---
@@ -227,7 +227,7 @@ Code identifiers (variables, functions, classes) follow standard language conven
 Three default moves when you're unsure how to proceed:
 
 1. **Re-read the PRD or RFC the work serves.** If the work doesn't serve any PRD or RFC, ask whether the work should happen at all in Phase 1.
-2. **Check `OC_TA.md §constraints`.** If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.
+2. **Check** `OC_TA.md` (**Constraints**). If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.
 3. **Look for a similar existing artifact.** All five PRDs are in template shape. All ADRs follow the same structure. If you're writing something new, the precedent likely exists.
 
 If none of those resolve the question, write an RFC. Open questions are a normal state — captured in writing, they make decisions explicit; left in your head, they leak into code as inconsistency.

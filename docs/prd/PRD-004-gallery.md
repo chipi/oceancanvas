@@ -1,10 +1,10 @@
 # PRD-004 — Gallery
 
 > **Status** · Draft v0.2 · April 2026 (supersedes earlier v0.1 numbered PRD-007)
-> **Sources** · OC-02 §Surface 3 · OC-05 §View 1 · OC-04 §Gallery
-> **Audiences** · curious-person, climate-communicator (PA §audiences)
-> **Promises** · *accumulation*, *self-curating*, *editorial-dignity* (PA §promises)
-> **Principles** · *data-is-hero*, *no-engagement-chrome*, *daily-clock-is-sacred* (PA §principles)
+> **Sources** · OC-02 Surface 3 · OC-05 View 1 · OC-04 Gallery
+> **Audiences** · curious-person, climate-communicator (PA audiences)
+> **Promises** · *accumulation*, *self-curating*, *editorial-dignity* (PA promises)
+> **Principles** · *data-is-hero*, *no-engagement-chrome*, *daily-clock-is-sacred* (PA principles)
 > **Why this is a PRD** · The gallery is the public face of the work and the closing surface of the creative loop. Whether the work *feels alive* is a product decision that has to be made before the surface is built.
 
 ---
@@ -65,6 +65,6 @@ This is the assumption underneath the entire project. If it fails for OceanCanva
 
 ## Links
 
-- **Source** — OC-02 §Surface 3 · OC-05 §View 1 · OC-04 §Gallery
-- **PA** — §audiences · §promises · §principles
+- **Source** — OC-02 Surface 3 · OC-05 View 1 · OC-04 Gallery
+- **PA** — audiences · promises · principles
 - **Related PRDs** — PRD-001 Recipe (the works displayed) · PRD-003 Recipe Editor (where new pieces are made) · PRD-005 Video Editor (the timelapse hand-off)

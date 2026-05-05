@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/service-layer · §stack
+> **TA anchor** · components/service-layer · stack
 
 ## Context
 

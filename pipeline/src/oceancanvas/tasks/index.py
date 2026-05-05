@@ -91,7 +91,7 @@ def index(data_dir: Path, recipes_dir: Path, renders_dir: Path) -> Path:
         entry.update(meta)
 
     # generated_at is operational metadata, not render output.
-    # Determinism (TA §constraints) applies to PNGs — the manifest
+    # Determinism (OC_TA.md, Constraints) applies to PNGs — the manifest
     # records when the scan ran and is expected to change on re-run.
     manifest = {
         "generated_at": datetime.now(UTC).isoformat(),

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/data-store
+> **TA anchor** · components/data-store
 
 ## Context
 

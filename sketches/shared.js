@@ -10,7 +10,7 @@
  * All sketches depend on these. Changes here propagate to all render types.
  */
 
-// Canvas background — matches --canvas token #030B10 from IA §shared-tokens
+// Canvas background — matches --canvas token #030B10 from IA shared-tokens
 const CANVAS_BG = [3, 11, 16];
 
 // NaN placeholder value — convention documented in RFC-002 v0.2
@@ -96,7 +96,7 @@ function thermalColor(t) {
 
 /**
  * Draw source attribution text at the bottom-left of the canvas.
- * Baked into every render per TA §constraints/attribution-baked-in.
+ * Baked into every render per TA constraints/attribution-baked-in.
  */
 function drawAttribution(payload, w, h) {
   const primary = payload.data?.primary || {};

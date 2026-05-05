@@ -1,4 +1,4 @@
-# Implementation — Phase 3 kickoff
+# Implementation — Phase 1 kickoff
 
 > How Phase 1 gets built. What ships first, what gates the next slice, what order the rest follows.
 
@@ -41,6 +41,8 @@ The thinnest end-to-end slice that produces a daily-updating public artefact. Th
 
 GEBCO bathymetry is one-time static data, fetched once and reused — not a daily integration.
 
+*Slice 1 validated two daily-integrated sources (OISST, Argo). Additional no-auth sources wired in Phase 1 are listed in `CLAUDE.md`; the same six-task pipeline shape applies.*
+
 **The full pipeline.** All six tasks: `discover` → `fetch` → `process` → `build_payload` → `render` → `index`. Runs daily at 06:00 UTC. Outputs:
 
 - `data/sources/oisst/{date}.nc` and `data/sources/argo/{date}.json` — raw data
@@ -71,11 +73,11 @@ GEBCO bathymetry is one-time static data, fetched once and reused — not a dail
 - Build the pipeline Docker image
 - Run a synthetic-data e2e test of the full pipeline (discover → render → manifest) using fixture data
 
-**The deployment.** `docker compose up` brings up four containers per ADR-011: pipeline, prefect-server, postgres (Prefect state DB), gallery (Caddy). Volumes mount `data/`, `recipes/`, `renders/` from the host.
+**The deployment.** `docker compose up` brings up **six** services: `postgres`, `prefect-server`, `pipeline`, `gallery` (Caddy + static build), `recipe-server`, and `export-server` ([ADR-011](docs/adr/ADR-011-docker-compose.md), [ADR-029](docs/adr/ADR-029-compose-sidecar-services.md)). Volumes mount `data/`, `recipes/`, `renders/`, `sketches/`, and `audio/` (export) from the host as each service requires.
 
 ### What this proves
 
-- **The architecture closes.** Pipeline produces what gallery reads. The contracts in TA §contracts (recipe.yaml, processed JSON, render payload, manifest.json) are real, not theoretical.
+- **The architecture closes.** Pipeline produces what gallery reads. The contracts in `OC_TA.md` (**Contracts**) — recipe.yaml, processed JSON, render payload, manifest.json — are real, not theoretical.
 - **The shared payload format works for three render types.** The same payload structure feeds three different sketches. If the format is too field-centric, this slice exposes it.
 - **The accumulation promise is visible.** The 14-day strip shows accumulated history. With three recipes running daily, the gallery starts looking like work after two weeks.
 - **Determinism holds.** Re-running the pipeline produces byte-identical PNGs.
@@ -98,7 +100,7 @@ This is also when several RFCs close into ADRs:
 - **RFC-002 (Render payload format)** — three render types consume the same payload structure. Lock the format.
 - **RFC-003 (Recipe lifecycle on source unavailability)** — fourteen days of operation surface what happens when ERDDAP is slow or Argo's index is delayed. Decide and lock.
 
-If the pipeline misses a day or the gallery breaks on a fresh deploy, fix that before adding anything. Daily cadence is sacred (TA §constraints).
+If the pipeline misses a day or the gallery breaks on a fresh deploy, fix that before adding anything. Daily cadence is sacred (`OC_TA.md`, **Constraints**).
 
 ---
 
@@ -114,7 +116,7 @@ The full creative loop closes. Authoring and reading — the surfaces a person u
 
 **Gallery hero added.** The full-bleed hero per UXS-004 — today's featured render with metadata overlay and the now-real `recipe ↗` action. Cards in the grid also gain the `recipe ↗` action linking to the Recipe Editor at `/recipes/{id}`.
 
-**Cross-surface state-passing.** Per IA §navigation:
+**Cross-surface state-passing.** Per IA navigation:
 
 - Dashboard "select region" mode passes lat/lon to `/recipes/new`
 - Gallery `recipe ↗` actions pass recipe id to `/recipes/{id}`
@@ -187,7 +189,7 @@ A slice ships when:
 
 - Its acceptance criteria pass — UXS acceptance criteria for surface slices, concrete artefact checks for backend slices
 - CI is green
-- The constraints in TA §constraints hold — determinism, daily cadence, no auth, file-based, self-hostable, shared payload, attribution baked in
+- The constraints in `OC_TA.md` (**Constraints**) hold — determinism, daily cadence, no auth, file-based, self-hostable, shared payload, attribution baked in
 - It runs on a fresh `docker compose up` from `git clone`
 
 A slice does *not* ship when:
@@ -206,14 +208,14 @@ Implementation produces feedback. Where that feedback lands depends on what kind
 
 | Implementation finding | Where it goes |
 |---|---|
-| RFC's proposed approach survives implementation cleanly | Close RFC into ADR; update TA §map and §stack |
+| RFC's proposed approach survives implementation cleanly | Close RFC into ADR; update `OC_TA.md` (**Map**) and (**Stack**) |
 | RFC's proposed approach needs adjustment | Revise RFC; bump the version; do *not* close yet |
 | A constraint feels limiting in practice | This is the real test — most likely the constraint is right and the impulse is wrong. If genuinely wrong, write an ADR superseding the constraint |
-| New audience surfaced through user testing | Update PA §audiences |
-| New surface needed | Update IA §surfaces; write a new PRD; draft a UXS |
-| New shared design token discovered | Add to IA §shared-tokens; remove any local definitions in UXSes |
+| New audience surfaced through user testing | Update PA audiences |
+| New surface needed | Update IA surfaces; write a new PRD; draft a UXS |
+| New shared design token discovered | Add to IA shared-tokens; remove any local definitions in UXSes |
 | Surface contract changes (URL, navigation, shell) | Update IA first, then the affected UXS |
-| New stack choice forced by implementation reality | Write an ADR; update TA §stack |
+| New stack choice forced by implementation reality | Write an ADR; update `OC_TA.md` (**Stack**) |
 
 When you change one doc, ask which other docs read from it. Update them in the same commit when possible.
 
@@ -257,8 +259,8 @@ The second commit starts Slice 1.
 - **`docs/adr/OC_TA.md`** — components, contracts, constraints, stack, state board
 - **`docs/prd/OC_PA.md`** — audiences, promises, principles
 - **`docs/uxs/OC_IA.md`** — surfaces, navigation, shared tokens
-- **The PRDs** — `docs/prd/PRD-001..005.md`
-- **The UXSes** — `docs/uxs/UXS-001..005.md`
-- **The RFCs** — `docs/rfc/RFC-001..007.md`
-- **The ADRs** — `docs/adr/ADR-001..017.md`
-- **The concept package** — OC-00 through OC-05 at the project root
+- **The PRDs** — `docs/prd/PRD-001` … `PRD-006.md` (see [`docs/prd/index.md`](docs/prd/index.md))
+- **The UXSes** — `docs/uxs/UXS-001` … `UXS-005.md` (see [`docs/uxs/index.md`](docs/uxs/index.md))
+- **The RFCs** — `docs/rfc/RFC-001` … `RFC-011.md` (see [`docs/rfc/index.md`](docs/rfc/index.md))
+- **The ADRs** — `docs/adr/` through [ADR-029](docs/adr/ADR-029-compose-sidecar-services.md); canonical list in [`OC_TA.md` (Map)](docs/adr/OC_TA.md#map)
+- **The concept package** — OC-00 through OC-05 in [`docs/concept/`](docs/concept/)

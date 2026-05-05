@@ -3,7 +3,7 @@
  *
  * Used in the Gallery detail view context panel to provide
  * attribution, explanation, and educational value per the
- * editorial-dignity and citation-travels promises (PA §promises).
+ * editorial-dignity and citation-travels promises (OC_PA.md, promises).
  */
 
 export interface SourceInfo {

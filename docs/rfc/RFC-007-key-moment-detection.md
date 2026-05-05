@@ -1,7 +1,7 @@
 # RFC-007 — Key moment detection
 
 > **Status** · Decided · closed 2026-05-03 → [ADR-024](../adr/ADR-024-key-moment-detection.md)
-> **TA anchor** · §components/render-system · §contracts (audio scalars in payload)
+> **TA anchor** · components/render-system · contracts (audio scalars in payload)
 > **Related** · PRD-005 Video Editor · RFC-006 Audio system
 > **Closes into** · [ADR-024](../adr/ADR-024-key-moment-detection.md)
 > **Why this is an RFC** · Audio swells and overlay markers must fire at the same frames — when the music swells, the record-flash appears, the anomaly bar peaks. PRD-005's sharpest threat (audio reads as decorative) is defeated specifically when the visual and audio events are demonstrably synchronised. They share a single per-frame intensity signal. The algorithm that produces that signal is open: multiple plausible approaches, each detecting different kinds of "moment."
@@ -43,8 +43,8 @@ The four use cases want different relative weights on the four signals. A unifie
 
 ## Constraints
 
-- *Determinism* — same time series + same parameters → same intensity signal (TA §constraints).
-- *Single source of truth for moments* — audio and overlays compute from the same algorithm output. No separate moment-detection paths (TA §constraints).
+- *Determinism* — same time series + same parameters → same intensity signal (TA constraints).
+- *Single source of truth for moments* — audio and overlays compute from the same algorithm output. No separate moment-detection paths (TA constraints).
 - *No machine learning models in v1* — the algorithm must be classical (statistical, threshold-based). Trainable models are deferred.
 
 ## Proposed approach
@@ -138,6 +138,6 @@ Rejected because the four-detector model with configurable weights handles per-s
 
 ## Links
 
-- **TA** — §components/render-system · §contracts (audio scalars)
+- **TA** — components/render-system · contracts (audio scalars)
 - **Related PRDs** — PRD-005 Video Editor
 - **Related RFCs** — RFC-006 Audio system (consumes this signal)

@@ -1,10 +1,10 @@
 # PRD-006 — The piece
 
 > **Status** · Accepted · May 2026 (v0.5.0 implementation closed via [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md))
-> **Sources** · OC-02 §Surface 4 · OC-04 §Video editor · OC-05 §Video editor
-> **Audiences** · artist, climate-communicator, curious-person (PA §audiences)
-> **Promises** · *grounded*, *editorial-dignity*, *accumulation* (PA §promises)
-> **Principles** · *aesthetic-traces-to-data*, *determinism*, *data-is-hero* (PA §principles)
+> **Sources** · OC-02 Surface 4 · OC-04 Video editor · OC-05 Video editor
+> **Audiences** · artist, climate-communicator, curious-person (PA audiences)
+> **Promises** · *grounded*, *editorial-dignity*, *accumulation* (PA promises)
+> **Principles** · *aesthetic-traces-to-data*, *determinism*, *data-is-hero* (PA principles)
 > **Why this is a PRD** · v0.4.0 ships generative audio that follows the data and a Video Editor that exports an MP4. The two follow the data in parallel, not together. Whether shaping image and sound from a single authored curve changes what the daily render *is* — turns a render-with-soundtrack into a piece — is a product judgment, not an export-format decision.
 
 ---
@@ -58,14 +58,14 @@ Counter-evidence we want: a viewer naming the held moment unprompted, or describ
 
 - ~~**RFC-011 — Tension arc as shared primitive.**~~ Closed v0.5.0 → [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md).
 - ~~**Audio "drop to drone only" at held moment.**~~ Implemented as a v0.5.0 follow-up: the held seconds suppress new pulse + accent firings and mute the texture layer; drone holds full. The bell that fires at the moment frame rings out naturally into the held window. The lede's gesture lands.
-- **UXS-005 update.** The Video Editor surface contract gains the arc editor block (landed in [UXS-005](../uxs/UXS-005-video-editor.md) §"Audio sidebar").
+- **UXS-005 update.** The Video Editor surface contract gains the arc editor block (landed in [UXS-005](../uxs/UXS-005-video-editor.md) "Audio sidebar").
 - **PRD-007 — Modal scales.** Audio musicality, second pass. Drafts when this milestone retrospective is in.
 - **Phase 4 PRDs.** Timeframe-mixing pieces (ghost accumulation, temporal split, rewind). Each is its own PRD when the time comes; all of them build on the arc primitive locked in ADR-028.
 
 ## Links
 
 - **Source** — research input from the v0.4.0 retrospective working notes (not committed)
-- **PA** — §audiences (artist, climate-communicator, curious-person) · §promises (grounded, editorial-dignity, accumulation) · §principles (aesthetic-traces-to-data, determinism, data-is-hero)
+- **PA** — audiences (artist, climate-communicator, curious-person) · promises (grounded, editorial-dignity, accumulation) · principles (aesthetic-traces-to-data, determinism, data-is-hero)
 - **Related PRDs** — PRD-005 Video Editor (the surface this PRD extends)
 - **Related RFCs** — RFC-011 Tension arc as shared primitive (the technical close)
 - **Foundation** — RFC-010 → ADR-027 (generative audio, v0.4.0)

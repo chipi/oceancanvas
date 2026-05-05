@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/render-system · §stack
+> **TA anchor** · components/render-system · stack
 
 ## Context
 

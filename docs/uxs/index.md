@@ -2,7 +2,7 @@
 
 UX Specifications for OceanCanvas. One UXS per surface (or per source spread, where ADR-017 applies). Each UXS defines the static visual contract — tokens, layout, component states, accessibility — for one surface.
 
-The reference document for this folder is [`OC_IA.md`](OC_IA.md) — Information Architecture. Every UXS anchors to IA's `§surfaces`, `§topbar-patterns`, and `§shared-tokens` sections. UXS documents inherit shared tokens from IA; they define per-surface and per-source tokens themselves.
+The reference document for this folder is [`OC_IA.md`](OC_IA.md) — Information Architecture. Every UXS anchors to IA's `surfaces`, `topbar-patterns`, and `shared-tokens` sections. UXS documents inherit shared tokens from IA; they define per-surface and per-source tokens themselves.
 
 ## What gets a UXS
 
@@ -23,11 +23,11 @@ If the work is *structural* (a new surface, a new navigation path, a new URL), u
 
 | UXS | Surface | Status | IA anchor |
 |---|---|---|---|
-| [UXS-001](UXS-001-dashboard-sst.md) | Dashboard, SST main view + editorial spread | Draft v0.2 | §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §topbar-patterns/dashboard-editorial-spread |
-| [UXS-002](UXS-002-dashboard-sealevel.md) | Dashboard, Sea Level editorial spread | Draft v0.1 | §surfaces/dashboard · §topbar-patterns/dashboard-editorial-spread |
-| [UXS-003](UXS-003-recipe-editor.md) | Recipe Editor (creative + YAML modes) | Draft v0.1 | §surfaces/recipe-editor · §topbar-patterns/recipe-editor |
-| [UXS-004](UXS-004-gallery.md) | Gallery (front page) | Draft v0.1 | §surfaces/gallery · §topbar-patterns/gallery |
-| [UXS-005](UXS-005-video-editor.md) | Video Editor | Draft v0.1 | §surfaces/video-editor · §topbar-patterns/video-editor |
+| [UXS-001](UXS-001-dashboard-sst.md) | Dashboard, SST main view + editorial spread | Draft v0.2 | surfaces/dashboard · topbar-patterns/dashboard-main-view · topbar-patterns/dashboard-editorial-spread |
+| [UXS-002](UXS-002-dashboard-sealevel.md) | Dashboard, Sea Level editorial spread | Draft v0.1 | surfaces/dashboard · topbar-patterns/dashboard-editorial-spread |
+| [UXS-003](UXS-003-recipe-editor.md) | Recipe Editor (creative + YAML modes) | Draft v0.1 | surfaces/recipe-editor · topbar-patterns/recipe-editor |
+| [UXS-004](UXS-004-gallery.md) | Gallery (front page) | Draft v0.1 | surfaces/gallery · topbar-patterns/gallery |
+| [UXS-005](UXS-005-video-editor.md) | Video Editor | Draft v0.1 | surfaces/video-editor · topbar-patterns/video-editor |
 
 ### Deferred (not yet drafted)
 
@@ -59,4 +59,4 @@ Drafting these UXSes from the prototypes surfaced changes that other docs need:
 |---|---|
 | **RFC-001 Recipe YAML schema** | Revise from two-tier (`creative:` / `technical:`) schema to flat schema with comment-marker sections (`# ⊓ creative controls ⊓ ...`). The prototype's YAML mode shows the flat-with-comments approach, which is cleaner. UXS-003 documents the visual contract; RFC-001 v0.2 should match. |
 | **PRD-005 Video Editor** | Enumerate the overlays explicitly. UXS-005 lists the 10 concrete overlays (8 default-enabled, 2 deferred). PRD-005 currently references "audio + overlay enrichment" without listing the surface controls; v0.2 should reference UXS-005's overlay list. |
-| **OC_IA §topbar-patterns** | New section in IA v0.2 capturing the per-surface topbar variation seen across all five prototypes. (Already done.) |
+| **OC_IA topbar-patterns** | New section in IA v0.2 capturing the per-surface topbar variation seen across all five prototypes. (Already done.) |

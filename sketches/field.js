@@ -11,7 +11,7 @@
  *   - tail_length: controls contrast curve (higher = more contrast)
  *   - speed_scale: controls brightness shift (higher = brighter)
  *
- * Determinism rules (TA §constraints/deterministic-rendering):
+ * Determinism rules (TA constraints/deterministic-rendering):
  *   - Always call randomSeed() in setup
  *   - Never use Date.now(), millis(), or clock-dependent APIs
  *   - Signal completion via window.__RENDER_COMPLETE = true

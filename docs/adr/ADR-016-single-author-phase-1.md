@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/data-store · §constraints
+> **TA anchor** · components/data-store · constraints
 > **Related PRDs** — PRD-001 Recipe (this constraint was flagged in its open threads)
 
 ## Context
@@ -19,7 +19,7 @@ Phase 1 recipes are single-author. The recipe YAML has one `author` field. There
 
 - *Self-hostable* — the typical OceanCanvas instance is one person on their machine. Multi-author features add complexity that nobody needs at this scale.
 - *Sharp scope* — adding multi-author later is straightforward (extend the schema, add a permissions layer). Removing multi-author features once added is harder. Defer until there's a real pull.
-- *Authorship is a creative claim* — a recipe is named, intentional creative work (PA §promises/authored). Single authorship matches this character.
+- *Authorship is a creative claim* — a recipe is named, intentional creative work (PA promises/authored). Single authorship matches this character.
 
 ## Alternatives considered
 

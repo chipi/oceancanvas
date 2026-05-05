@@ -246,7 +246,7 @@ def _build_arc_chain(arc: list[float], duration_sec: float) -> str:
     entry. Filter graph length is bounded by duration in seconds (≤60 keys
     for a 60s timelapse).
 
-    Mappings (RFC-011 §"ffmpeg filter graph consumption"):
+    Mappings (RFC-011, "ffmpeg filter graph consumption"):
       • saturation = 1.0 - 0.35 * arc[t]   — image cools toward the peak
       • vignette angle = PI/5 - PI/15 * arc[t] — vignette tightens at peak
     """

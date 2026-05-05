@@ -2,7 +2,7 @@
 
 The browser-side of OceanCanvas. React + Vite + TypeScript. Reads `renders/manifest.json`, renders the four customer-facing surfaces, hosts the live preview for the Recipe Editor, drives the Video Editor's audio engine.
 
-For *why* the gallery is what it is, see [PRD-004 Gallery](../docs/prd/PRD-004-gallery.md). For the visual contract, see [UXS-004 Gallery](../docs/uxs/UXS-004-gallery.md). For the architectural decisions that shape this code, see [`OC_TA.md`](../docs/adr/OC_TA.md) `§components/web-frontend`.
+For *why* the gallery is what it is, see [PRD-004 Gallery](../docs/prd/PRD-004-gallery.md). For the visual contract, see [UXS-004 Gallery](../docs/uxs/UXS-004-gallery.md). For the architectural decisions that shape this code, see [`OC_TA.md`](../docs/adr/OC_TA.md) (**Components** → web-frontend).
 
 ---
 

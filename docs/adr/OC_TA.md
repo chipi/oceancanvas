@@ -10,13 +10,13 @@ This document holds the structural reasoning that every RFC and ADR inherits —
 
 TA holds *what is true across the system*. Per-question deliberation lives in RFCs ([`../rfc/`](../rfc/index.md)). Per-decision commitment lives in ADRs (this folder). TA is the document RFCs and ADRs anchor to so they don't have to carry that work themselves.
 
-The §map at the bottom is the live state board — it is the single place to see what is open, what is decided, and what supersedes what. The folder-local indexes ([`./index.md`](index.md) for ADRs, [`../rfc/index.md`](../rfc/index.md) for RFCs) mirror the relevant slice of §map for direct discovery.
+The map at the bottom is the live state board — it is the single place to see what is open, what is decided, and what supersedes what. The folder-local indexes ([`./index.md`](index.md) for ADRs, [`../rfc/index.md`](../rfc/index.md) for RFCs) mirror the relevant slice of map for direct discovery.
 
 ---
 
-## §components
+## components
 
-OceanCanvas is six subsystems with sharp boundaries. Each subsystem owns its concerns; cross-subsystem communication happens only through the contracts in §contracts.
+OceanCanvas is six subsystems with sharp boundaries. Each subsystem owns its concerns; cross-subsystem communication happens only through the contracts documented under **Contracts** below.
 
 ### pipeline
 
@@ -32,11 +32,11 @@ The p5.js + Puppeteer rendering subsystem. Browser-side: the same sketch runs in
 
 ### web-frontend
 
-Static React app served from `gallery/`. deck.gl + MapLibre for spatial rendering. Observable Plot for time series. Reads `data/processed/` files and `manifest.json` directly as static assets. No runtime API server. Owns: the dashboard, the recipe editor, the gallery, the video editor — all four customer-facing surfaces.
+Static React app served from `gallery/`. deck.gl + MapLibre for spatial rendering. Observable Plot for time series. Reads `data/processed/` files and `manifest.json` directly as static assets. There is no application database or bespoke REST API for ocean data: persistence stays file-based. The gallery build is served by Caddy, which reverse-proxies narrow `/api/*` paths to small Node sidecars for recipe YAML save and video export ([ADR-029](ADR-029-compose-sidecar-services.md)). Owns: the dashboard, the recipe editor, the gallery, the video editor — all four customer-facing surfaces.
 
 ### service-layer
 
-Docker Compose stack. Four containers: `postgres` (Prefect state DB), `prefect-server` (Prefect Server), `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving the built React app). Volumes mount `data/`, `recipes/`, `renders/` from the host. Owns: deployment, container orchestration, the runnable system.
+Docker Compose stack. **Six** services: `postgres` (Prefect state DB), `prefect-server` (Prefect Server), `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving the built React app and proxying `/api/*`), `recipe-server` (Node — recipe YAML save on port 3001), `export-server` (Node — video export trigger on port 3002). Volumes mount `data/`, `recipes/`, `renders/`, `sketches/`, and (for export) `audio/` from the host as required by each service. Owns: deployment, container orchestration, the runnable system. Baseline Compose decision: [ADR-011](ADR-011-docker-compose.md); sidecar pattern: [ADR-029](ADR-029-compose-sidecar-services.md).
 
 ### ci
 
@@ -44,13 +44,13 @@ GitHub Actions for code validation only. Lint, unit tests, build Docker image, r
 
 ---
 
-## §contracts
+## contracts
 
 The data shapes that flow between components. Every contract is a stable interface — components on either side depend on it, and changing it is a breaking change.
 
 ### recipe.yaml
 
-The authored work. One YAML file per recipe in `recipes/`. Specifies: id, name, region (lat/lon bounds), source(s), render type, creative parameters, optional sketch override. Read by the pipeline at fetch and render time. Read by the recipe editor for round-tripping. Schema defined by **RFC-001 → ADR (pending)**.
+The authored work. One YAML file per recipe in `recipes/`. Specifies: id, name, region (lat/lon bounds), source(s), render type, creative parameters, optional sketch override. Read by the pipeline at fetch and render time. Read by the recipe editor for round-tripping. Schema defined by **[ADR-018](ADR-018-recipe-yaml-schema.md)** (closes RFC-001).
 
 ### data/processed/{source}/{date}.*
 
@@ -58,7 +58,7 @@ The pipeline's intermediate format. Three files per source per date: `.json` (fl
 
 ### render payload (`window.OCEAN_PAYLOAD`)
 
-The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by **RFC-002 → ADR (pending)**.
+The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by **[ADR-008](ADR-008-shared-payload-format.md)** and **[ADR-019](ADR-019-render-payload-schema.md)** (RFC-002).
 
 ### creative state → technical parameters
 
@@ -70,7 +70,7 @@ The gallery index. Lists all recipes, all render dates, dimensions and metadata 
 
 ---
 
-## §constraints
+## constraints
 
 The non-negotiables. Every RFC must honour these. A change to any of them is a major architectural shift requiring its own ADR and likely an updated TA.
 
@@ -100,11 +100,11 @@ The Recipe Editor's live preview runs the same p5.js sketch with the same payloa
 
 ### attribution baked in
 
-Source attribution is part of every render. Removing it requires a deliberate code change; including it is the default. (The promise side of this constraint lives in `OC_PA.md §promises/citation-travels`.)
+Source attribution is part of every render. Removing it requires a deliberate code change; including it is the default. (The promise side of this constraint lives in `OC_PA.md`, promise *citation-travels*.)
 
 ---
 
-## §stack
+## stack
 
 The locked tech choices. Each entry points to its ADR. Changes happen by writing a new ADR that supersedes the existing one — never by edit-in-place.
 
@@ -121,6 +121,7 @@ The locked tech choices. Each entry points to its ADR. Changes happen by writing
 | **Browser spatial rendering** | deck.gl + MapLibre GL | [ADR-009](ADR-009-deck-gl-maplibre.md) |
 | **Browser charts** | Observable Plot | [ADR-010](ADR-010-observable-plot.md) |
 | **Deployment** | Docker Compose | [ADR-011](ADR-011-docker-compose.md) |
+| **Compose HTTP sidecars** | Node services for recipe save + video export | [ADR-029](ADR-029-compose-sidecar-services.md) |
 | **Static file server** | Caddy | [ADR-012](ADR-012-caddy-static-server.md) |
 | **CI** | GitHub Actions, code-only | [ADR-013](ADR-013-github-actions-code-only.md) |
 | **CI gate** | Synthetic-data e2e | [ADR-014](ADR-014-synthetic-e2e-gate.md) |
@@ -130,7 +131,7 @@ The locked tech choices. Each entry points to its ADR. Changes happen by writing
 
 ---
 
-## §map
+## map
 
 The live state board. Open RFCs are under deliberation. Decided RFCs have closed into ADRs. ADRs are accepted or superseded.
 
@@ -182,6 +183,7 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [ADR-026](ADR-026-audio-stem-system.md) | Audio stem system | Superseded by ADR-027 |
 | [ADR-027](ADR-027-generative-audio-composition.md) | Generative audio composition | Accepted |
 | [ADR-028](ADR-028-tension-arc-shared-curve.md) | Tension arc as shared primitive | Accepted |
+| [ADR-029](ADR-029-compose-sidecar-services.md) | Compose sidecars for recipe save and video export | Accepted |
 
 ---
 
@@ -190,16 +192,16 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 RFCs and ADRs link into TA sections by anchor. The conventions:
 
 ```
-TA anchor · §components/pipeline · §contracts/recipe-yaml
-Constraints · file-based storage in v1, deterministic rendering (TA §constraints)
-Stack · Prefect, p5.js, Puppeteer (TA §stack)
+TA anchor · components/pipeline · contracts/recipe-yaml
+Constraints · file-based storage in v1, deterministic rendering (OC_TA.md, Constraints)
+Stack · Prefect, p5.js, Puppeteer (OC_TA.md, Stack)
 ```
 
 ADRs in this folder reference TA with relative paths (`OC_TA.md` — same folder). RFCs in `../rfc/` reference TA with `../adr/OC_TA.md`.
 
 An RFC that doesn't reference any TA section is a smell. It usually means either (a) the question can be answered without affecting the architecture, in which case it should not be an RFC, or (b) the RFC is restating TA-level content instead of using it.
 
-ADRs reference the TA section they constrain or unlock. An ADR that locks a component or contract should be explicitly linked from the corresponding §components or §contracts entry.
+ADRs reference the TA section they constrain or unlock. An ADR that locks a component or contract should be explicitly linked from the corresponding components or contracts entry.
 
 ---
 
@@ -221,4 +223,4 @@ TA does not hold per-question deliberation, per-decision rationale, narrative ex
 - **Phase 2 image serving.** Cloudflare R2 is named in OC-04 but not yet decided. Becomes an ADR when public hosting is on the table.
 - **Database upgrade.** SQLite is permitted under ADR-005 if the manifest grows; the threshold isn't defined. Worth an ADR if the trigger is hit.
 - **Multi-recipe authoring.** PRD-001 confirms single-author in Phase 1 (ADR-016). Multi-author is deferred indefinitely; document the deferral in TA when revisited.
-- **Source extension RFCs.** Adding new no-auth sources beyond the OC-03 catalog probably doesn't need RFCs (each is a fetcher and a process step). New auth-required sources do — they cross §constraints/no-auth-sources.
+- **Source extension RFCs.** Adding new no-auth sources beyond the OC-03 catalog probably doesn't need RFCs (each is a fetcher and a process step). New auth-required sources do — they cross the **no-auth sources only in Phase 1** constraint under **Constraints** above.

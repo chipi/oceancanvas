@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-05-03
-> **TA anchor** · §components/render-system
+> **TA anchor** · components/render-system
 > **Related RFC** · RFC-007 (closes)
 
 ## Context

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/web-frontend · §stack
+> **TA anchor** · components/web-frontend · stack
 
 ## Context
 

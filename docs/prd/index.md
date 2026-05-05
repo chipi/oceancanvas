@@ -4,7 +4,7 @@ Product Requirements Documents for OceanCanvas. One per customer-facing experien
 
 ## What gets a PRD
 
-A PRD is for work where the **user-value argument** needs to be made — not for every feature, and not for plumbing. Pipeline ingestion, data processing, rendering mechanics, file format schemas: those are RFCs and ADRs anchored to OC-04.
+A PRD is for work where the **user-value argument** needs to be made — not for every feature, and not for plumbing. Pipeline ingestion, data processing, rendering mechanics, file format schemas: those are RFCs and ADRs anchored to OC-04 (concept) and `OC_TA.md` (settled contracts).
 
 The bar: if the "Why this is a PRD" sentence in the header is hard to write, the work belongs elsewhere.
 
@@ -25,7 +25,7 @@ All PRDs anchor to a shared reference document that holds audiences, promises, a
 | [PRD-003](PRD-003-recipe-editor.md) | Recipe Editor | Draft v0.1 | artist |
 | [PRD-004](PRD-004-gallery.md) | Gallery | Draft v0.2 | curious-person, climate-communicator |
 | [PRD-005](PRD-005-video-editor.md) | Video Editor | Draft v0.3 | climate-communicator, artist |
-| [PRD-006](PRD-006-piece.md) | The piece (audio-video as one designed work) | Draft v0.1 | artist, climate-communicator, curious-person |
+| [PRD-006](PRD-006-piece.md) | The piece (audio-video as one designed work) | Accepted · May 2026 | artist, climate-communicator, curious-person |
 
 ## Numbering
 

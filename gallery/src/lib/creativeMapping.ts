@@ -30,7 +30,7 @@ export interface TechnicalParams {
 export type AccentStyle = 'chime' | 'bell' | 'ping' | 'drop';
 export type DroneWaveform = 'sine' | 'triangle' | 'sawtooth' | 'square';
 
-/** Audio parameters derived from creative state — RFC-010 §"Creative state → audio parameters". */
+/** Audio parameters derived from creative state — RFC-010, "Creative state → audio parameters". */
 export interface AudioParams {
   drone_waveform: DroneWaveform;
   drone_glide: number;        // 0 = instant, 1 = very slow portamento
@@ -144,7 +144,7 @@ export function isMatched(state: CreativeState, technical: TechnicalParams): boo
 }
 
 /**
- * Map creative state to audio parameters per RFC-010 §"Creative state → audio parameters".
+ * Map creative state to audio parameters per RFC-010, "Creative state → audio parameters".
  *
  *   colour_character → drone waveform (sine → triangle → sawtooth)
  *   temporal_weight  → drone glide (instant → slow portamento)

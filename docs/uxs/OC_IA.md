@@ -10,21 +10,21 @@ This document holds the structural map of OceanCanvas — the surfaces the produ
 
 IA holds *what is true across the UX*. Per-surface visual contracts live in UXS documents. Behavioural rules (animation timing, debounce intervals, keyboard shortcuts) belong in RFCs in the tech plane, not here.
 
-The §surface-map at the bottom is the visual reference for how surfaces relate. The §url-structure section is the canonical address space for the product.
+The surface-map at the bottom is the visual reference for how surfaces relate. The url-structure section is the canonical address space for the product.
 
 ---
 
-## §overview
+## overview
 
 OceanCanvas has **four primary surfaces** plus one **mode** that opens within a primary surface. All surfaces share a dark canvas, editorial typography, and a common state model (region selection, active recipe, active source) that persists across navigation.
 
-Surface navigation in OceanCanvas is **not via a persistent global nav bar.** Each surface has its own topbar pattern (see §topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have `recipe ↗` and `timelapse ↗` actions that jump to the editor or the video editor for that specific recipe.
+Surface navigation in OceanCanvas is **not via a persistent global nav bar.** Each surface has its own topbar pattern (see topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have `recipe ↗` and `timelapse ↗` actions that jump to the editor or the video editor for that specific recipe.
 
 The product's information architecture reflects its central activity: the creative loop. Dashboard exploration leads to recipe authoring; recipe rendering leads to gallery accumulation; gallery viewing leads to video assembly; video patterns prompt new recipes. The four surfaces are the four points on this loop.
 
 ---
 
-## §surfaces
+## surfaces
 
 The four primary surfaces and one mode. Each is a destination with its own URL, its own purpose, its own UXS document(s).
 
@@ -41,7 +41,7 @@ The data exploration surface. Two views: a **main view** with full-bleed source 
 The creative surface where data becomes art. A single preview canvas above a flip toggle; below the toggle, the controls flip between Creative mode (mood preset, energy×presence, colour character, temporal weight) and YAML mode (the recipe file with creative-driven lines highlighted in amber). A "sketch editor ↗" link opens the raw p5.js sketch.
 
 - **PRD** · [PRD-003 Recipe Editor](../prd/PRD-003-recipe-editor.md)
-- **UXS** · UXS-NNN (deferred)
+- **UXS** · [UXS-003 Recipe Editor](UXS-003-recipe-editor.md)
 - **URL** · `/recipes/{id}` for an existing recipe; `/recipes/new` for authoring
 
 ### Gallery
@@ -49,7 +49,7 @@ The creative surface where data becomes art. A single preview canvas above a fli
 The public face. A living archive of accumulated daily renders. Hero (today's featured recipe at full bleed with `timelapse ↗` · `recipe ↗` · `download` actions) + 14-day strip (the same recipe's recent history) + grid (every active recipe rendered today). Updates automatically when the pipeline runs — no manual curation. The default landing surface.
 
 - **PRD** · [PRD-004 Gallery](../prd/PRD-004-gallery.md)
-- **UXS** · UXS-NNN (deferred)
+- **UXS** · [UXS-004 Gallery](UXS-004-gallery.md) (per-surface contract); recipe-page and single-render deep views remain tracked in [uxs/index.md](index.md)
 - **URL** · `/` (default landing), `/gallery/{recipe}` for a specific recipe page, `/gallery/{recipe}/{date}` for a specific render
 
 ### Video Editor
@@ -57,7 +57,7 @@ The public face. A living archive of accumulated daily renders. Hero (today's fe
 The timelapse studio. Assembles a recipe's accumulated PNG renders into an MP4 with optional audio (RFC-006) and overlay annotations. Frames already exist as stored renders; the editor is assembly and enrichment, not creation. Right-side panel has Sequence · Audio · Overlays sections.
 
 - **PRD** · [PRD-005 Video Editor](../prd/PRD-005-video-editor.md)
-- **UXS** · UXS-NNN (deferred)
+- **UXS** · [UXS-005 Video Editor](UXS-005-video-editor.md)
 - **URL** · `/timelapse/{recipe}`
 
 ### Sketch Editor (mode, not a surface)
@@ -69,7 +69,7 @@ A full-screen mode that opens from within the Recipe Editor for power users writ
 
 ---
 
-## §topbar-patterns
+## topbar-patterns
 
 The topbar varies per surface — it is contextual chrome (breadcrumb + actions), not persistent global navigation. Each surface defines its topbar in its UXS, but the patterns rhyme. All topbars are 42px tall, against `surface` background, with the wordmark on the left.
 
@@ -125,7 +125,7 @@ The topbar varies per surface — it is contextual chrome (breadcrumb + actions)
 
 ---
 
-## §navigation
+## navigation
 
 How surfaces connect. Without a global nav, navigation is *contextual* — each surface offers paths to other surfaces relevant to its own work.
 
@@ -156,7 +156,7 @@ State transitions are explicit — no surface silently inherits state from anoth
 
 ---
 
-## §url-structure
+## url-structure
 
 The canonical address space. Every surface is addressable by URL. Every meaningful sub-state has its own URL when it makes sense to share or bookmark.
 
@@ -182,13 +182,13 @@ URL design conventions:
 
 ---
 
-## §shell-regions
+## shell-regions
 
 The persistent chrome. UXS documents inherit these.
 
 ### Topbar (42px)
 
-See §topbar-patterns above for the per-surface variations.
+See topbar-patterns above for the per-surface variations.
 
 ### Source rail (Dashboard main view only, ~96px wide)
 
@@ -196,11 +196,11 @@ The Dashboard's main view has a left-side rail listing available data sources. A
 
 ### Citation footer (Dashboard, Recipe Editor, Video Editor)
 
-A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the *attribution-baked-in* constraint (TA §constraints, PA §promises/citation-travels). Format: `[source] · [resolution] · [cadence] · [date range] · OceanCanvas`. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.
+A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the *attribution-baked-in* constraint (`OC_TA.md`, **Constraints**; `OC_PA.md`, promise *citation-travels*). Format: `[source] · [resolution] · [cadence] · [date range] · OceanCanvas`. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.
 
 ---
 
-## §shared-tokens
+## shared-tokens
 
 Design tokens that genuinely apply across all surfaces. Per-surface and per-source tokens live in the relevant UXS.
 
@@ -250,7 +250,7 @@ Base unit: 4px. All spacing in surfaces uses multiples: 4 / 8 / 12 / 16 / 24 / 3
 
 ---
 
-## §state-persistence
+## state-persistence
 
 What carries across surface transitions. State that doesn't appear here resets at each surface load.
 
@@ -267,21 +267,21 @@ Phase 1 has no auth, no user accounts, no per-user state. State persistence is v
 
 ---
 
-## §entry-points
+## entry-points
 
 How a person first reaches each surface.
 
 | Surface | Direct URL | From another surface | External link |
 |---|---|---|---|
 | Gallery | ✓ (default `/`) | Editor "save recipe"; topbar wordmark from anywhere | ✓ (shareable render URLs) |
-| Dashboard | ✓ (`/dashboard`) | None in v1 (deliberate — see §navigation) | ✓ (shareable spread URLs) |
+| Dashboard | ✓ (`/dashboard`) | None in v1 (deliberate — see navigation) | ✓ (shareable spread URLs) |
 | Recipe Editor | ✓ (`/recipes/{id}`) | Dashboard "select region"; Gallery `recipe ↗` | — |
 | Video Editor | ✓ (`/timelapse/{recipe}`) | Gallery `timelapse ↗` | ✓ (shareable timelapse URLs once exported) |
 | Sketch Editor (mode) | — | Recipe Editor only | — |
 
 ---
 
-## §surface-map
+## surface-map
 
 ```
                      ┌──────────────────────────┐
@@ -289,7 +289,7 @@ How a person first reaches each surface.
                      │     OCEANCANVAS          │
                      └──────────────────────────┘
 
-     each surface has its own topbar pattern (see §topbar-patterns)
+     each surface has its own topbar pattern (see topbar-patterns)
 
    ┌──────────┐    ┌──────────────┐    ┌──────────┐    ┌──────────────┐
    │ Dashboard│    │Recipe Editor │    │ Gallery  │    │ Video Editor │
@@ -328,8 +328,8 @@ How a person first reaches each surface.
 UXS documents anchor to IA sections. The conventions:
 
 ```
-IA anchor · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §shared-tokens
-Tokens inherited · §shared-tokens (canvas, surface, text, intent)
+IA anchor · surfaces/dashboard · topbar-patterns/dashboard-main-view · shared-tokens
+Tokens inherited · shared-tokens (canvas, surface, text, intent)
 Domain tokens defined here · domain-sst-* (per-source palette)
 Behaviour reference · RFC-NNN (animation, debounce — not in UXS)
 ```
@@ -353,7 +353,7 @@ IA does not hold per-surface visual contracts, behaviour rules, or implementatio
 
 ## Open threads
 
-- **UXS coverage.** Phase 1 ships UXS-001 (Dashboard SST main view + spread). Other surfaces (Recipe Editor, Gallery, Video Editor) and other source spreads (Sea Level, Salinity, etc.) are deferred until needed for implementation. With prototypes now available, drafting them is straightforward.
+- **UXS coverage.** UXS-001 (Dashboard SST), UXS-002 (Sea Level spread), UXS-003 (Recipe Editor), UXS-004 (Gallery), and UXS-005 (Video Editor) exist; per-recipe gallery deep pages and additional source spreads remain to be drafted when implementation needs them.
 - **Sketch editor mode contract.** Currently no UXS — full-screen code editor with payload pre-loaded. Warrants a UXS once visual conventions are firmed up.
 - **Mobile / narrow-viewport.** All prototypes are desktop-first. Mobile behaviour deferred — when revisited, may be a new RFC (responsive strategy) rather than IA changes.
 - **Source switcher chip in Dashboard editorial spread.** Behaviour (whether it triggers a hard navigation or an in-place transition) belongs in an RFC for Dashboard interactions; how it looks belongs in UXS-001.
@@ -362,5 +362,5 @@ IA does not hold per-surface visual contracts, behaviour rules, or implementatio
 
 ## Changelog
 
-- **v0.2 · April 2026** — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added §topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated §url-structure to add `/dashboard/{source}/explorer` for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.
+- **v0.2 · April 2026** — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated url-structure to add `/dashboard/{source}/explorer` for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.
 - **v0.1 · April 2026** — Initial draft, written before prototype access. Superseded by v0.2.

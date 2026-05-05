@@ -49,7 +49,7 @@ The render is deterministic: same payload → byte-identical PNG (per the projec
 3. **Read one of the existing sketches** as a reference (`field.js` is the most representative).
 4. **Build incrementally with `test.html`** — you don't need the pipeline running. Edit `test.html`'s `window.OCEAN_PAYLOAD` to point at synthetic data, refresh the browser.
 5. **Add the new type** to the enum in [`pipeline/src/oceancanvas/schemas/recipe-schema.json`](../pipeline/src/oceancanvas/schemas/recipe-schema.json) — `render.type.enum`. Recipes referencing the new type will then validate.
-6. **Update** [`recipes/README.md`](../recipes/README.md) §"Render types" with what the new type is for.
+6. **Update** [`recipes/README.md`](../recipes/README.md) "Render types" with what the new type is for.
 7. **Author** at least one recipe using the new type so the gallery has something to render.
 
 The renderer subprocess in `pipeline/src/oceancanvas/renderer/` already auto-discovers sketch files in this folder. No code change needed there — drop the new `.js` in, recipes can reference it.

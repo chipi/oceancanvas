@@ -1,7 +1,7 @@
 # RFC-001 — Recipe YAML schema
 
 > **Status** · Decided · closed 2026-04-30 → [ADR-018](../adr/ADR-018-recipe-yaml-schema.md)
-> **TA anchor** · §contracts/recipe-yaml · §components/pipeline · §components/render-system
+> **TA anchor** · contracts/recipe-yaml · components/pipeline · components/render-system
 > **Related** · PRD-001 Recipe · PRD-003 Recipe Editor · UXS-003 Recipe Editor · RFC-002 Render payload format · RFC-005 YAML round-tripping
 > **Closes into** · [ADR-018](../adr/ADR-018-recipe-yaml-schema.md)
 > **Why this is an RFC** · The recipe YAML is the durable artefact of authorship. Its shape determines whether recipes feel like authored works or like configurations, and whether the editor's creative-parameters surface can round-trip cleanly. Multiple plausible schemas exist; the deliberation is genuine.
@@ -39,9 +39,9 @@ The schema is the contract between the editor, the pipeline, and the artist. Get
 
 ## Constraints
 
-- *File-based storage in v1* — recipes are flat files under version control (TA §constraints).
-- *Determinism* — same recipe + same data = same render (TA §constraints). The schema cannot contain implicit time-dependent fields.
-- *Shared payload format* — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA §constraints).
+- *File-based storage in v1* — recipes are flat files under version control (TA constraints).
+- *Determinism* — same recipe + same data = same render (TA constraints). The schema cannot contain implicit time-dependent fields.
+- *Shared payload format* — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA constraints).
 
 ## Proposed approach
 
@@ -158,7 +158,7 @@ Rejected because it adds complexity for no clear benefit. The single-marker conv
 
 ## Links
 
-- **TA** — §contracts/recipe-yaml · §components/pipeline · §components/render-system · §constraints
+- **TA** — contracts/recipe-yaml · components/pipeline · components/render-system · constraints
 - **Related PRDs** — PRD-001 Recipe · PRD-003 Recipe Editor
 - **Related UXS** — UXS-003 Recipe Editor (visual contract for the YAML mode this schema feeds)
 - **Related RFCs** — RFC-002 Render payload format · RFC-005 YAML round-tripping

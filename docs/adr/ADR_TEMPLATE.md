@@ -2,7 +2,7 @@
 
 > **Status** · Accepted | Superseded by ADR-NNN
 > **Date** · [date]
-> **TA anchor** · §components/[…] or §contracts/[…] or §stack
+> **TA anchor** · components/[…] or contracts/[…] or stack (`OC_TA.md`)
 > **Related RFC** · RFC-NNN (if this ADR closes an RFC)
 > **Related PRDs** · [if this ADR was triggered by a PRD]
 

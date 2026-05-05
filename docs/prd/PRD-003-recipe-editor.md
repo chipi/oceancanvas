@@ -1,10 +1,10 @@
 # PRD-003 — Recipe Editor
 
 > **Status** · Draft v0.1 · April 2026
-> **Sources** · OC-02 §Surface 2 · OC-04 §Recipe editor studio
-> **Audiences** · artist (PA §audiences)
-> **Promises** · *authored*, *grounded* (PA §promises)
-> **Principles** · *aesthetic-traces-to-data*, *data-is-hero* (PA §principles)
+> **Sources** · OC-02 Surface 2 · OC-04 Recipe editor studio
+> **Audiences** · artist (PA audiences)
+> **Promises** · *authored*, *grounded* (PA promises)
+> **Principles** · *aesthetic-traces-to-data*, *data-is-hero* (PA principles)
 > **Why this is a PRD** · The recipe-as-concept (PRD-001) requires an authoring surface. The argument for *how authoring should feel* — at the level of artistic intent rather than parameter manipulation — is product judgment, not interface design.
 
 ---
@@ -69,6 +69,6 @@ The risk is highest in the first sixty seconds of someone's first session. The v
 
 ## Links
 
-- **Source** — OC-02 §Surface 2 · OC-04 §Recipe editor studio
-- **PA** — §audiences · §promises · §principles
+- **Source** — OC-02 Surface 2 · OC-04 Recipe editor studio
+- **PA** — audiences · promises · principles
 - **Related PRDs** — PRD-001 Recipe (the artefact this surface authors) · PRD-002 Dashboard (hands off the region) · PRD-004 Gallery (where the saved work appears)

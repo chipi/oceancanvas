@@ -1,7 +1,7 @@
 # RFC-011 — Tension arc as shared primitive
 
 > **Status** · Decided · closes into [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md)
-> **TA anchor** · §components/render-system · §contracts/recipe-yaml · §contracts/render-payload · §constraints
+> **TA anchor** · components/render-system · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · PRD-006 The piece · ADR-027 Generative audio composition · ADR-008 Shared payload format · ADR-024 Key moment detection
 > **Closes into** · [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md) (locks the arc representation, expansion logic, and consumer protocol)
 > **Why this is an RFC** · The tension arc has to be authored once in the recipe and consumed identically by three independent systems — the browser audio engines, the pipeline audio synthesis, and the ffmpeg filter graph that keys the visual filters. How it is represented in YAML, where it is expanded into a per-frame array, and how that array reaches each consumer all have plausible alternatives with real trade-offs.
@@ -35,11 +35,11 @@ Three forces apply: the curve must be **author-friendly** (a recipe author shoul
 
 ## Constraints
 
-- **File-based YAML storage** (TA §constraints). No database; arc parameters live in the recipe file alongside `render:` and `audio:`.
+- **File-based YAML storage** (TA constraints). No database; arc parameters live in the recipe file alongside `render:` and `audio:`.
 - **Shared payload format** (ADR-008). The arc array has to round-trip through the render payload because the browser preview and the pipeline both need it; whatever shape the YAML stores must serialize cleanly into the payload.
-- **Deterministic rendering** (TA §constraints). Visual frames remain byte-identical for the same recipe + data + date; the arc must not introduce non-determinism. Audio is "perceptually identical" per ADR-027.
-- **Daily cadence** (TA §constraints). Expansion must be cheap enough to run as part of the once-daily pipeline render without measurable overhead.
-- **Self-hostable** (TA §constraints). No remote curve-rendering services; expansion happens locally in the pipeline and the browser.
+- **Deterministic rendering** (TA constraints). Visual frames remain byte-identical for the same recipe + data + date; the arc must not introduce non-determinism. Audio is "perceptually identical" per ADR-027.
+- **Daily cadence** (TA constraints). Expansion must be cheap enough to run as part of the once-daily pipeline render without measurable overhead.
+- **Self-hostable** (TA constraints). No remote curve-rendering services; expansion happens locally in the pipeline and the browser.
 
 ## Proposed approach
 

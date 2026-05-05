@@ -1,7 +1,7 @@
 # RFC-005 — YAML round-tripping
 
 > **Status** · Decided · closed 2026-04-30 → [ADR-021](../adr/ADR-021-yaml-round-tripping.md)
-> **TA anchor** · §contracts/recipe-yaml · §components/web-frontend
+> **TA anchor** · contracts/recipe-yaml · components/web-frontend
 > **Related** · PRD-003 Recipe Editor · UXS-003 Recipe Editor · RFC-001 Recipe YAML schema
 > **Closes into** · [ADR-021](../adr/ADR-021-yaml-round-tripping.md)
 > **Why this is an RFC** · The Recipe Editor's flip between Creative mode and YAML mode is a core artistic surface (PRD-003). Creative mode generates YAML; YAML mode allows direct edits. When a power user changes a value in YAML and flips back to Creative, what happens? The deliberation is not whether to support this — both modes must exist (PRD-003 sharpest threat) — but how the round-trip handles divergence between the two representations.
@@ -37,8 +37,8 @@ There is no perfect answer. The mapping creative-state → technical-params is m
 
 ## Constraints
 
-- *Determinism* — creative-state-to-technical mapping must be a pure function. Same creative state always produces the same technical values (TA §constraints).
-- *File-based storage* — recipes are flat YAML; the editor cannot rely on hidden metadata in a database (TA §constraints).
+- *Determinism* — creative-state-to-technical mapping must be a pure function. Same creative state always produces the same technical values (TA constraints).
+- *File-based storage* — recipes are flat YAML; the editor cannot rely on hidden metadata in a database (TA constraints).
 - *Flat schema with marker* — the schema (per RFC-001 v0.2) is flat; round-tripping operates on lines below the marker, not on a separate `creative:` block.
 - *No editor-only sketch code* — the round-tripping logic lives in the editor, not in the sketch.
 
@@ -126,7 +126,7 @@ Rejected because it makes the YAML mode feel hostile. PRD-003's sharpest threat 
 
 ## Links
 
-- **TA** — §contracts/recipe-yaml · §components/web-frontend
+- **TA** — contracts/recipe-yaml · components/web-frontend
 - **Related PRDs** — PRD-003 Recipe Editor (this RFC was flagged in its open threads)
 - **Related UXS** — UXS-003 Recipe Editor (visual contract for the YAML mode this RFC operates on)
 - **Related RFCs** — RFC-001 Recipe YAML schema (the schema this RFC operates on)

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-05-03
-> **TA anchor** · §components/render-system · §contracts/recipe-yaml
+> **TA anchor** · components/render-system · contracts/recipe-yaml
 > **Related RFC** · RFC-010 (closes)
 > **Supersedes** · ADR-026
 
@@ -23,7 +23,7 @@ Four-layer generative audio engine, deterministic, with synthesis on both ends:
 
 **Pipeline export** uses pure-Python synthesis (`numpy` + stdlib `wave`) producing a deterministic stereo WAV; ffmpeg only decodes the pre-rendered MP3 samples and encodes the final mix as AAC inside the MP4. The synthesis math mirrors the browser engine so preview and export sound the same.
 
-**Recipes author audio character** via the `audio:` block beneath the creative-controls marker. Six fields (`drone_waveform`, `drone_glide`, `pulse_sensitivity`, `presence`, `accent_style`, `texture_density`) are derived mechanically from the same creative axes that produce the visual params, per RFC-010 §"Creative state → audio parameters".
+**Recipes author audio character** via the `audio:` block beneath the creative-controls marker. Six fields (`drone_waveform`, `drone_glide`, `pulse_sensitivity`, `presence`, `accent_style`, `texture_density`) are derived mechanically from the same creative axes that produce the visual params, per RFC-010 "Creative state → audio parameters".
 
 ## Rationale
 
@@ -33,7 +33,7 @@ Four-layer generative audio engine, deterministic, with synthesis on both ends:
 
 **Byte-budget.** Seven small MP3 samples (~210 KB total) replace the previous 3.5 MB of stem files. Drone is fully synthesised — no asset.
 
-**Determinism, with one concession.** Visual renders remain byte-identical (preserves the §constraints rule). Audio synthesis is deterministic at the WAV level — same recipe + same data = byte-identical synth WAV (proven by `pipeline/tests/unit/test_audio.py::test_same_inputs_same_output`). However, AAC encoding through ffmpeg may produce non-byte-identical MP4 audio across ffmpeg versions, so the export-level guarantee is "perceptually identical" rather than byte-identical.
+**Determinism, with one concession.** Visual renders remain byte-identical (preserves the constraints rule). Audio synthesis is deterministic at the WAV level — same recipe + same data = byte-identical synth WAV (proven by `pipeline/tests/unit/test_audio.py::test_same_inputs_same_output`). However, AAC encoding through ffmpeg may produce non-byte-identical MP4 audio across ffmpeg versions, so the export-level guarantee is "perceptually identical" rather than byte-identical.
 
 **Recipe parity.** The same `creative_to_audio` mapping runs in both TS (gallery) and Python (pipeline). Cross-validation tests assert identical outputs (`test_creative_mapping.py::TestCreativeToAudio::test_matches_typescript_output`).
 
@@ -50,6 +50,6 @@ Four-layer generative audio engine, deterministic, with synthesis on both ends:
 
 ## Open follow-ups
 
-- **Drone timbre.** Oscillator-based drone may read as synthetic. RFC-010 §"Open questions" anticipated this. If reviewer feedback finds it cold, swap drone to pitch-shifted sample of a real bowed instrument (one extra ~50 KB asset). Not blocking.
+- **Drone timbre.** Oscillator-based drone may read as synthetic. RFC-010 "Open questions" anticipated this. If reviewer feedback finds it cold, swap drone to pitch-shifted sample of a real bowed instrument (one extra ~50 KB asset). Not blocking.
 - **Browser-export parity for preset overrides.** When the user picks an override preset (e.g. `storm-surge`) in the Video Editor, that override does not flow to the export — export reads the recipe's authored `audio:` block. Fine for v1; revisit if authors complain.
 - **Audio attribution.** Synthesised drone + filtered noise + ffmpeg-lavfi samples are entirely procedural with no third-party audio. `audio/ATTRIBUTION.md` updated to reflect "synthesised with ffmpeg lavfi; no external audio sources" once stems are removed.

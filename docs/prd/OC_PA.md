@@ -12,9 +12,9 @@ PA holds *what is true across the product*. Per-feature argument lives in PRDs. 
 
 ---
 
-## §audiences
+## audiences
 
-OceanCanvas is for anyone curious about the ocean who cares how things look. Five audiences are named explicitly because each shapes specific PRDs differently. PRDs reference audiences as `(PA §audiences/artist)`.
+OceanCanvas is for anyone curious about the ocean who cares how things look. Five audiences are named explicitly because each shapes specific PRDs differently. PRDs reference audiences as `(PA audiences/artist)`.
 
 ### artist
 
@@ -38,9 +38,9 @@ Wants to build something real with open data. Finds the generative art angle mor
 
 ---
 
-## §promises
+## promises
 
-Promises are the impact-level commitments OceanCanvas makes to its audiences. Each PRD acts on a subset. PRDs reference promises as `(PA §promises/accumulation)`.
+Promises are the impact-level commitments OceanCanvas makes to its audiences. Each PRD acts on a subset. PRDs reference promises as `(PA promises/accumulation)`.
 
 ### authored
 
@@ -72,9 +72,9 @@ Open data. No accounts, no API keys, no auth in Phase 1. Self-hostable end-to-en
 
 ---
 
-## §principles
+## principles
 
-Principles are the rules followed when building any feature. They constrain the solution space. Every PRD inherits these without arguing them. PRDs reference principles as `(PA §principles/data-is-hero)`.
+Principles are the rules followed when building any feature. They constrain the solution space. Every PRD inherits these without arguing them. PRDs reference principles as `(PA principles/data-is-hero)`.
 
 ### data-is-hero
 
@@ -110,9 +110,9 @@ No source requiring authentication ships in Phase 1. No API keys, no accounts. I
 
 ---
 
-## §map
+## map
 
-Five PRDs define OceanCanvas at the feature level. Each makes a specific argument for one experience. Implementation work (RFCs, ADRs, UXS) anchors to PRDs.
+Six PRDs define OceanCanvas at the feature level: five for the core product surfaces and recipe primitive, plus **PRD-006** for the *piece* (audio–video as one designed work). Implementation work (RFCs, ADRs, UXS) anchors to PRDs.
 
 | PRD | Title | Primary audiences | Acts on promises | Inherits principles |
 |---|---|---|---|---|
@@ -121,10 +121,11 @@ Five PRDs define OceanCanvas at the feature level. Each makes a specific argumen
 | **PRD-003** | Recipe Editor | artist | *authored*, *grounded* | *aesthetic-traces-to-data*, *data-is-hero* |
 | **PRD-004** | Gallery | curious-person, climate-communicator | *accumulation*, *self-curating*, *editorial-dignity* | *data-is-hero*, *no-engagement-chrome*, *daily-clock-is-sacred* |
 | **PRD-005** | Video Editor | climate-communicator, artist | *accumulation*, *citation-travels*, *editorial-dignity* | *aesthetic-traces-to-data*, *attribution-baked-in* |
+| **PRD-006** | The piece (audio–video as one designed work) | artist, climate-communicator, curious-person | *grounded*, *editorial-dignity*, *accumulation* | *aesthetic-traces-to-data*, *determinism*, *data-is-hero* |
 
-**Numbering** — fresh, replacing the earlier 1–10 list. The pipeline, processing, and rendering items in the original index are not PRDs (no user-value argument to make for them); they live as RFCs and ADRs anchored to OC-04.
+**Numbering** — fresh, replacing the earlier 1–10 list. The pipeline, processing, and rendering items in the original index are not PRDs (no user-value argument to make for them); they live as RFCs and ADRs anchored to OC-04 and `OC_TA.md`.
 
-**Audio and overlay enrichment** are not separate PRDs. They fold into PRD-005 (Video Editor) as parts of one experience. Their technical implementation gets one or more RFCs.
+**Audio and overlay enrichment** are not separate PRDs beyond PRD-005 and PRD-006: PRD-005 is the Video Editor surface; PRD-006 argues for treating image and sound as one authored curve. Technical implementation is RFC/ADR territory.
 
 ---
 
@@ -133,9 +134,9 @@ Five PRDs define OceanCanvas at the feature level. Each makes a specific argumen
 PRDs link into PA sections by anchor. The convention:
 
 ```
-Primary audiences · curious-person, climate-communicator (PA §audiences)
-Acts on promises  · accumulation, self-curating, editorial-dignity (PA §promises)
-Inherits          · data-is-hero, no-engagement-chrome, daily-clock-is-sacred (PA §principles)
+Primary audiences · curious-person, climate-communicator (PA audiences)
+Acts on promises  · accumulation, self-curating, editorial-dignity (PA promises)
+Inherits          · data-is-hero, no-engagement-chrome, daily-clock-is-sacred (PA principles)
 ```
 
 A PRD that references PA can drop its own audience description, its own restatement of principles, and its own argument for why the project's core promises matter. That work happens here, once.
@@ -154,7 +155,7 @@ A PRD that does *not* reference any PA section is a smell. It usually means eith
 | **PRD** | Argument, per-feature | The case for one experience. Read when working on it. |
 | **OC_IA** | Reference, structural | Navigation, surface relationships. Linked to from UXS. |
 | **UXS** | Contract, per-surface | Static visual contract for one surface. |
-| **OC-04 Tech Architecture** | Decision record + map | Technical decisions and open questions. |
+| **OC-04 Pipeline Architecture** (concept) | Narrative | Technical concept at the idea level; settled contracts live in `OC_TA.md`. |
 | **RFC** | Proposal, per-question | One open technical question. |
 | **ADR** | Record, per-decision | One decision, closed. |
 

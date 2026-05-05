@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-04-30
-> **TA anchor** · §contracts/recipe-yaml · §components/pipeline · §components/render-system
+> **TA anchor** · contracts/recipe-yaml · components/pipeline · components/render-system
 > **Related RFC** · RFC-001 (closes)
 > **Related PRDs** · PRD-001 Recipe · PRD-003 Recipe Editor
 

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · 2026-04-30
-> **TA anchor** · §contracts/recipe-yaml · §components/web-frontend
+> **TA anchor** · contracts/recipe-yaml · components/web-frontend
 > **Related RFC** · RFC-005 (closes)
 > **Related PRDs** · PRD-003 Recipe Editor
 

@@ -2,7 +2,7 @@
 
 > **Status** · Accepted
 > **Date** · April 2026
-> **TA anchor** · §components/pipeline · §stack
+> **TA anchor** · components/pipeline · stack
 
 ## Context
 

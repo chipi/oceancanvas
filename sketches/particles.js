@@ -6,7 +6,7 @@
  * (gradient-perpendicular, a visual heuristic for ocean currents).
  * Depends on shared.js (loaded first by the renderer).
  *
- * Determinism rules (TA §constraints/deterministic-rendering):
+ * Determinism rules (TA constraints/deterministic-rendering):
  *   - Always call randomSeed() in setup
  *   - Never use Date.now(), millis(), or clock-dependent APIs
  *   - Signal completion via window.__RENDER_COMPLETE = true

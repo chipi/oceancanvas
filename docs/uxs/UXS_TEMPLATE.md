@@ -1,7 +1,7 @@
 # UXS-NNN — [Surface name]
 
 > **Status** · Draft v0.1 · [date]
-> **IA anchor** · §surfaces/[…] · §shell-regions/[…] · §shared-tokens
+> **IA anchor** · surfaces/[…] · shell-regions/[…] · shared-tokens
 > **Related PRD** · PRD-NNN
 > **Related ADRs** · ADR-NNN, ADR-NNN
 > **Related RFC** · RFC-NNN (for behavioural rules — animation, debounce, keyboard)
@@ -30,7 +30,7 @@
 
 ## Theme
 
-Dark only. (OceanCanvas is dark-only by design — see `OC_IA.md §shared-tokens`.)
+Dark only. (OceanCanvas is dark-only by design — see `OC_IA.md shared-tokens`.)
 
 ## Tokens
 
@@ -38,9 +38,9 @@ Dark only. (OceanCanvas is dark-only by design — see `OC_IA.md §shared-tokens
 
 [Reference the shared tokens this UXS uses. Don't restate values — just reference.]
 
-- **Surface** · `canvas`, `surface`, `overlay`, `border` (`OC_IA.md §shared-tokens/surface-tokens`)
-- **Text** · `text`, `text-secondary`, `text-muted` (`OC_IA.md §shared-tokens/text-tokens`)
-- **Intent** · `intent-alert`, `intent-info` (`OC_IA.md §shared-tokens/intent-tokens`)
+- **Surface** · `canvas`, `surface`, `overlay`, `border` (`OC_IA.md shared-tokens/surface-tokens`)
+- **Text** · `text`, `text-secondary`, `text-muted` (`OC_IA.md shared-tokens/text-tokens`)
+- **Intent** · `intent-alert`, `intent-info` (`OC_IA.md shared-tokens/intent-tokens`)
 - **Typography** · `type-hero`, `type-display`, `type-data`, `type-body`, `type-axis`, `type-label`
 - **Spacing** · base unit 4px
 
@@ -92,7 +92,7 @@ Dark only. (OceanCanvas is dark-only by design — see `OC_IA.md §shared-tokens
 ## Acceptance criteria
 
 - [ ] All colours use semantic tokens — no one-off hex values
-- [ ] All foreground/background pairings use matching token pairs from this spec or IA's `§shared-tokens`
+- [ ] All foreground/background pairings use matching token pairs from this spec or IA's `shared-tokens`
 - [ ] Domain tokens used only for source identity — intent tokens are not used to indicate sources
 - [ ] No chart borders, no boxed numbers, no light-mode backgrounds
 - [ ] Numbers at correct typography token per the layout tables
