@@ -73,7 +73,7 @@ GEBCO bathymetry is one-time static data, fetched once and reused — not a dail
 - Build the pipeline Docker image
 - Run a synthetic-data e2e test of the full pipeline (discover → render → manifest) using fixture data
 
-**The deployment.** `docker compose up` brings up **six** services: `postgres`, `prefect-server`, `pipeline`, `gallery` (Caddy + static build), `recipe-server`, and `export-server` ([ADR-011](docs/adr/ADR-011-docker-compose.md), [ADR-029](docs/adr/ADR-029-compose-sidecar-services.md)). Volumes mount `data/`, `recipes/`, `renders/`, `sketches/`, and `audio/` (export) from the host as each service requires.
+**The deployment.** `docker compose up` brings up **six** services: `postgres`, `prefect-server`, `pipeline`, `gallery` (Caddy + static build), `recipe-server`, and `export-server` ([ADR-011](adr/ADR-011-docker-compose.md), [ADR-029](adr/ADR-029-compose-sidecar-services.md)). Volumes mount `data/`, `recipes/`, `renders/`, `sketches/`, and `audio/` (export) from the host as each service requires.
 
 ### What this proves
 
@@ -259,8 +259,8 @@ The second commit starts Slice 1.
 - **`docs/adr/OC_TA.md`** — components, contracts, constraints, stack, state board
 - **`docs/prd/OC_PA.md`** — audiences, promises, principles
 - **`docs/uxs/OC_IA.md`** — surfaces, navigation, shared tokens
-- **The PRDs** — `docs/prd/PRD-001` … `PRD-006.md` (see [`docs/prd/index.md`](docs/prd/index.md))
-- **The UXSes** — `docs/uxs/UXS-001` … `UXS-005.md` (see [`docs/uxs/index.md`](docs/uxs/index.md))
-- **The RFCs** — `docs/rfc/RFC-001` … `RFC-011.md` (see [`docs/rfc/index.md`](docs/rfc/index.md))
-- **The ADRs** — `docs/adr/` through [ADR-029](docs/adr/ADR-029-compose-sidecar-services.md); canonical list in [`OC_TA.md` (Map)](docs/adr/OC_TA.md#map)
-- **The concept package** — OC-00 through OC-05 in [`docs/concept/`](docs/concept/)
+- **The PRDs** — `docs/prd/PRD-001` … `PRD-006.md` (see [`prd/index.md`](prd/index.md))
+- **The UXSes** — `docs/uxs/UXS-001` … `UXS-005.md` (see [`uxs/index.md`](uxs/index.md))
+- **The RFCs** — `docs/rfc/RFC-001` … `RFC-011.md` (see [`rfc/index.md`](rfc/index.md))
+- **The ADRs** — `docs/adr/` through [ADR-029](adr/ADR-029-compose-sidecar-services.md); canonical list in [`OC_TA.md` (Map)](adr/OC_TA.md#map)
+- **The concept package** — OC-00 through OC-05 in [`concept/00-package-introduction.md`](concept/00-package-introduction.md)

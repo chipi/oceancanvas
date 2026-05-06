@@ -44,6 +44,6 @@ Together with the four services above, the **production Compose stack is six ser
 
 ## Implementation notes
 
-- [`compose/docker-compose.yml`](../../compose/docker-compose.yml) — `recipe-server` and `export-server` service definitions; `gallery` `depends_on` includes `recipe-server`.
-- [`gallery/Caddyfile`](../../gallery/Caddyfile) — `/api/recipes` proxy to recipe-server.
-- [`gallery/server/save-recipe.mjs`](../../gallery/server/save-recipe.mjs), [`gallery/server/export-video.mjs`](../../gallery/server/export-video.mjs).
+- [`compose/docker-compose.yml`](https://github.com/chipi/oceancanvas/blob/main/compose/docker-compose.yml) — `recipe-server` and `export-server` service definitions; `gallery` `depends_on` includes `recipe-server`.
+- [`gallery/Caddyfile`](https://github.com/chipi/oceancanvas/blob/main/gallery/Caddyfile) — `/api/recipes` proxy to recipe-server.
+- [`gallery/server/save-recipe.mjs`](https://github.com/chipi/oceancanvas/blob/main/gallery/server/save-recipe.mjs), [`gallery/server/export-video.mjs`](https://github.com/chipi/oceancanvas/blob/main/gallery/server/export-video.mjs).
