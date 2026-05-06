@@ -320,9 +320,77 @@ test('detail view handles unknown recipe gracefully', async ({ page }) => {
   await expect(page.locator('body')).toContainText(/(not found|OCEANCANVAS)/i);
 });
 
-test('video editor loads for a recipe', async ({ page }) => {
-  await page.goto('/timelapse/test-field');
-  await expect(page.locator('body')).toContainText(/timelapse editor|OCEANCANVAS/i);
+// ═══════════════════════════════════════════════
+// Route smoke — cover every Route in gallery/src/App.tsx once.
+// Deeper behaviour stays in the sections above; add a line here when routes change.
+// ═══════════════════════════════════════════════
+
+test.describe('route smoke (all pages)', () => {
+  test('/gallery serves the same grid surface as /', async ({ page }) => {
+    await page.goto('/gallery');
+    await expect(page.locator('body')).toContainText('OCEANCANVAS');
+    await expect(page.locator('[role="button"]').first()).toBeVisible({
+      timeout: 10000,
+    });
+  });
+
+  test('/gallery/:recipe/:date deep link', async ({ page, request }) => {
+    const manifest = await (await request.get('/renders/manifest.json')).json();
+    const latest = manifest.recipes['test-field'].latest as string;
+    expect(latest?.length).toBeGreaterThan(0);
+
+    await page.goto(`/gallery/test-field/${latest}`);
+    await expect(page.locator('body')).toContainText('OCEANCANVAS');
+    await expect(page.locator('body')).toContainText('ABOUT THIS DATA');
+    await expect(page.locator('img').first()).toBeVisible();
+  });
+
+  test('/recipes without id (bare editor)', async ({ page }) => {
+    await page.goto('/recipes');
+    await expect(page.locator('body')).toContainText('OCEANCANVAS');
+    await expect(page.locator('body')).toContainText('new-recipe');
+  });
+
+  const dashboardSources: Array<[string, string]> = [
+    ['north-atlantic-sst', 'SST'],
+    ['argo-global', 'Argo'],
+    ['whale-shark', 'Whale'],
+    ['leatherback-turtle', 'Leatherback'],
+    ['elephant-seal', 'Elephant'],
+  ];
+  for (const [slug, needle] of dashboardSources) {
+    test(`/dashboard/${slug}`, async ({ page }) => {
+      await page.goto(`/dashboard/${slug}`);
+      await expect(page.locator('body')).toContainText('OCEANCANVAS');
+      await expect(page.locator('body')).toContainText(needle);
+    });
+  }
+
+  const explorerSlugs = [
+    'north-atlantic-sst',
+    'argo-global',
+    'whale-shark',
+    'leatherback-turtle',
+    'elephant-seal',
+    'oisst',
+  ];
+  for (const slug of explorerSlugs) {
+    test(`/dashboard/${slug}/explorer`, async ({ page }) => {
+      await page.goto(`/dashboard/${slug}/explorer`);
+      await expect(page.locator('body')).toContainText('DATA EXPLORER');
+      await expect(page.locator('body')).toContainText('OCEANCANVAS');
+    });
+  }
+
+  test('/timelapse/:recipe shows editor chrome', async ({ page }) => {
+    await page.goto('/timelapse/test-field');
+    await expect(page.locator('body')).toContainText('timelapse editor');
+    await expect(
+      page.locator('button', { hasText: 'download' }).first(),
+    ).toBeVisible();
+    await expect(page.locator('a', { hasText: '← gallery' })).toBeVisible();
+    await expect(page.locator('a', { hasText: '← recipe' })).toBeVisible();
+  });
 });
 
 // ═══════════════════════════════════════════════
