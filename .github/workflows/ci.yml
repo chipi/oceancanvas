@@ -49,8 +49,6 @@ jobs:
     needs: [lint, test-pipeline, test-gallery, test-renderer]
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure .env exists for Compose validation
-        run: test -f .env || cp .env.example .env
       # Prod stack (ADR-011) plus e2e image — same steps on PR and push to main.
       # Image tags match docker-compose.test.yml (same project name), so --no-build avoids rebuilding pipeline/gallery.
       - name: Validate Compose files

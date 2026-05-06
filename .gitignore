@@ -10,7 +10,6 @@ renders/*
 manifest.json
 
 # Environment
-.env
 .venv/
 __pycache__/
 *.pyc
