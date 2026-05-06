@@ -7,7 +7,7 @@ Surface captures used by the project's docs (README, quickstart, concept package
 The capture script needs the full Docker stack up with rendered data:
 
 ```bash
-docker compose up               # in one terminal
+docker compose -f compose/docker-compose.yml up               # in one terminal
 make pipeline-run               # ensure recipes have rendered (skip if already)
 
 # in another terminal, from repo root:

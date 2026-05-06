@@ -6,6 +6,9 @@
         docs-install docs-serve docs-build docs-deploy \
         gebco-download backup restore
 
+COMPOSE_PROD := compose/docker-compose.yml
+COMPOSE_TEST := compose/docker-compose.test.yml
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -23,13 +26,13 @@ gebco-download: ## Download GEBCO subset from GitHub Release
 # ── Full stack ────────────────────────────────────
 
 up: ## Start all services (docker compose up -d)
-	docker compose up -d
+	docker compose -f $(COMPOSE_PROD) up -d
 
 down: ## Stop all services
-	docker compose down
+	docker compose -f $(COMPOSE_PROD) down
 
 logs: ## Follow all container logs
-	docker compose logs -f
+	docker compose -f $(COMPOSE_PROD) logs -f
 
 restart: down up ## Restart all services
 
@@ -48,7 +51,7 @@ pipeline-test-int: ## Run pipeline integration tests (hits real APIs)
 	cd pipeline && uv run pytest tests/integration/ -v -m slow
 
 pipeline-run: ## Trigger a manual pipeline run
-	docker compose exec pipeline python -m oceancanvas.flow
+	docker compose -f $(COMPOSE_PROD) exec pipeline python -m oceancanvas.flow
 
 pipeline-shell: ## Open a Python shell with pipeline deps
 	cd pipeline && uv run python
@@ -81,7 +84,7 @@ render-test: ## Run renderer tests
 # ── Docker ────────────────────────────────────────
 
 build: ## Build all Docker images
-	docker compose build
+	docker compose -f $(COMPOSE_PROD) build
 
 build-pipeline: ## Build pipeline image only
 	docker build -t oceancanvas-pipeline -f pipeline/Dockerfile .
@@ -94,8 +97,8 @@ build-gallery: ## Build gallery image only
 ci: lint pipeline-test gallery-test render-test build e2e ## Run full CI locally
 
 e2e: ## Run end-to-end tests via Docker Compose
-	docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from e2e
-	docker compose -f docker-compose.test.yml down
+	docker compose -f $(COMPOSE_TEST) up --build --abort-on-container-exit --exit-code-from e2e
+	docker compose -f $(COMPOSE_TEST) down
 
 screenshots: ## Regenerate docs/concept/images/*.png from the running stack
 	@echo "Regenerating screenshots — make sure 'docker compose up' is running with rendered data"

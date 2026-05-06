@@ -69,7 +69,7 @@ If `data/processed/oisst/2026-04-25.json` already exists, the task is a cache hi
 | `manifest.json` | Gallery index. Rebuilt from scratch by Task 06 on every run. |
 | `pipeline/` | Python + Node.js source code. **Committed to repo.** |
 | `gallery/` | React application source. **Committed to repo.** |
-| `docker-compose.yml` | Container definitions. **Committed to repo.** |
+| `compose/docker-compose.yml` | Container definitions. **Committed to repo.** |
 
 ---
 
@@ -120,7 +120,7 @@ There is no data API server at runtime. Everything the browser needs is served a
 
 | Context | Description |
 |---|---|
-| **GitHub** | Code repository. Pipeline source, recipes, gallery React source, Dockerfile, docker-compose.yml. **Not** data/sources/, data/processed/, renders/. |
+| **GitHub** | Code repository. Pipeline source, recipes, gallery React source, Dockerfile, `compose/docker-compose.yml`. **Not** data/sources/, data/processed/, renders/. |
 | **Docker Compose** | Four services: `postgres` (Prefect state DB), `prefect-server` (Prefect Server), `pipeline` (Python 3.12 + Node.js 20 + Chromium), `gallery` (Caddy serving React). |
 | **Where it runs** | M4 Pro for dev (current prod). Hetzner CAX21 (4 vCPU ARM, 8GB RAM, ~€6/month) for VPS. |
 

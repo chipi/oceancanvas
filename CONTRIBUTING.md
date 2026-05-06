@@ -114,7 +114,7 @@ cd gallery  && npm test
 # Run alongside unit tests; both load from tests/cross-validation/*.json
 
 # End-to-end (Docker Compose stack against fixture data)
-docker compose -f docker-compose.test.yml up --build
+docker compose -f compose/docker-compose.test.yml up --build
 ```
 
 Every PR should land green. The CI gate per [ADR-014](docs/adr/ADR-014-synthetic-e2e-gate.md) is the e2e against synthetic data — production data isn't fetched in CI.

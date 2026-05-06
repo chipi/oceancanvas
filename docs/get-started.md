@@ -5,7 +5,7 @@
 ```bash
 git clone https://github.com/chipi/oceancanvas.git
 cd oceancanvas
-docker compose up
+docker compose -f compose/docker-compose.yml up
 ```
 
 Six services start: Postgres (Prefect state), Prefect Server, the pipeline worker, the gallery (Caddy + static app), the recipe save server, and the video export server.
@@ -106,11 +106,11 @@ No API keys. No accounts. No cloud dependencies.
 
 The most common things that go wrong on first run, and how to unstick them.
 
-### `docker compose up` exits immediately or hangs
+### `docker compose -f compose/docker-compose.yml up` exits immediately or hangs
 
 - **Docker Desktop not running.** On macOS / Windows, the Docker daemon has to be started before any compose command. Open Docker Desktop, wait for it to say "Docker is running."
 - **Permission denied on `/var/run/docker.sock` (Linux).** Add your user to the `docker` group: `sudo usermod -aG docker $USER`, then log out and back in.
-- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `GALLERY_PORT=8090 docker compose up`. Same for 4200 (Prefect UI), 3001 (recipe save), and 3002 (video export).
+- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `GALLERY_PORT=8090 docker compose -f compose/docker-compose.yml up`. Same for 4200 (Prefect UI), 3001 (recipe save), and 3002 (video export).
 
 ### Pipeline never runs / renders never appear
 
@@ -143,6 +143,6 @@ The most common things that go wrong on first run, and how to unstick them.
 
 ### Still stuck
 
-- Check logs: `docker compose logs pipeline` (or `gallery`, `prefect-server`, `recipe-server`, `export-server`).
+- Check logs: `docker compose -f compose/docker-compose.yml logs pipeline` (or `gallery`, `prefect-server`, `recipe-server`, `export-server`).
 - Verify the manifest: `cat renders/manifest.json | head` — if it's `{ "recipes": {} }`, the pipeline hasn't run yet.
 - Open an issue with the failing command, error output, OS, and what you tried. The maintainer reads them.

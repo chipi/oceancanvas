@@ -22,7 +22,7 @@ This is not a dashboard. It is not a research tool. It is a project where the oc
 ```bash
 git clone https://github.com/chipi/oceancanvas.git
 cd oceancanvas
-docker compose up
+docker compose -f compose/docker-compose.yml up
 ```
 
 Open `http://localhost:8080`. Need help? → [`docs/quickstart.md`](docs/quickstart.md) for a 5-minute walkthrough; [`docs/get-started.md`](docs/get-started.md) for full setup including local dev and troubleshooting.

@@ -11,7 +11,7 @@
 
 ## Decision
 
-Add two dedicated Node.js 20 sidecar services in the root `docker-compose.yml`:
+Add two dedicated Node.js 20 sidecar services in `compose/docker-compose.yml`:
 
 - **`recipe-server`** — listens on port 3001; `POST /api/recipes/{slug}` writes YAML under `recipes/`. The `gallery` service’s Caddy reverse-proxies `/api/recipes` to this container.
 - **`export-server`** — listens on port 3002; triggers `oceancanvas export-video` (or equivalent) for timelapse export, with access to `renders/` and read-only `audio/`.
@@ -44,6 +44,6 @@ Together with the four services above, the **production Compose stack is six ser
 
 ## Implementation notes
 
-- Root [`docker-compose.yml`](../../docker-compose.yml) — `recipe-server` and `export-server` service definitions; `gallery` `depends_on` includes `recipe-server`.
+- [`compose/docker-compose.yml`](../../compose/docker-compose.yml) — `recipe-server` and `export-server` service definitions; `gallery` `depends_on` includes `recipe-server`.
 - [`gallery/Caddyfile`](../../gallery/Caddyfile) — `/api/recipes` proxy to recipe-server.
 - [`gallery/server/save-recipe.mjs`](../../gallery/server/save-recipe.mjs), [`gallery/server/export-video.mjs`](../../gallery/server/export-video.mjs).

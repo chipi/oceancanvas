@@ -1,18 +1,18 @@
 services:
   pipeline:
     build:
-      context: .
+      context: ..
       dockerfile: pipeline/Dockerfile
     environment:
       PREFECT_API_URL: ""
     volumes:
-      - ./pipeline/tests/fixtures/oisst:/data/sources/oisst
-      - ./pipeline/tests/fixtures/argo:/data/sources/argo
-      - ./pipeline/tests/fixtures/gebco:/data/gebco
-      - ./pipeline/tests/fixtures/recipes:/recipes
+      - ../pipeline/tests/fixtures/oisst:/data/sources/oisst
+      - ../pipeline/tests/fixtures/argo:/data/sources/argo
+      - ../pipeline/tests/fixtures/gebco:/data/gebco
+      - ../pipeline/tests/fixtures/recipes:/recipes
       - test-processed:/data/processed
       - test-renders:/renders
-      - ./sketches:/sketches:ro
+      - ../sketches:/sketches:ro
     command: python -m oceancanvas.flow --test-mode
 
   recipe-server:
@@ -23,11 +23,11 @@ services:
       RECIPES_DIR: /recipes
       SAVE_PORT: "3001"
     volumes:
-      - ./gallery/server:/app/server:ro
-      - ./pipeline/tests/fixtures/recipes:/recipes
+      - ../gallery/server:/app/server:ro
+      - ../pipeline/tests/fixtures/recipes:/recipes
 
   gallery:
-    build: ./gallery
+    build: ../gallery
     ports:
       - "8080:8080"
     environment:
@@ -35,8 +35,8 @@ services:
     volumes:
       - test-processed:/data/processed:ro
       - test-renders:/renders:ro
-      - ./pipeline/tests/fixtures/recipes:/recipes:ro
-      - ./sketches:/sketches:ro
+      - ../pipeline/tests/fixtures/recipes:/recipes:ro
+      - ../sketches:/sketches:ro
     depends_on:
       pipeline:
         condition: service_completed_successfully
@@ -49,7 +49,7 @@ services:
       retries: 10
 
   e2e:
-    build: ./e2e
+    build: ../e2e
     depends_on:
       gallery:
         condition: service_healthy

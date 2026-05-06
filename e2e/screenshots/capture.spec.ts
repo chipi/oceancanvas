@@ -4,7 +4,7 @@
  * settle, and writes a deterministic 2× PNG.
  *
  * Prerequisites:
- *   - `docker compose up` running with rendered data in renders/
+ *   - `docker compose -f compose/docker-compose.yml up` running with rendered data in renders/
  *   - At least one recipe with multiple dates (for Video Editor capture)
  *   - At least one recipe with audio + tension_arc blocks (most recipes
  *     will have these after the v0.5.0 migration)

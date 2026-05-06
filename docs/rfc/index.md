@@ -50,7 +50,7 @@ When an RFC closes:
 RFCs and ADRs are independently numbered. The canonical list is **RFC-001 through RFC-011** in the table above. An earlier draft used a different 7-RFC numbering — three topics were demoted to ADRs once the deliberation turned out to be smaller than expected:
 
 - *Processed JSON format* (was RFC-003) → [ADR-015](../adr/ADR-015-processed-json-format.md).
-- *Docker Compose stack* (was RFC-004) → [ADR-011](../adr/ADR-011-docker-compose.md) + the `docker-compose.yml` config file itself.
+- *Docker Compose stack* (was RFC-004) → [ADR-011](../adr/ADR-011-docker-compose.md) + the `compose/docker-compose.yml` config file itself.
 - *GitHub Actions CI* (was RFC-007) → [ADR-013](../adr/ADR-013-github-actions-code-only.md) + [ADR-014](../adr/ADR-014-synthetic-e2e-gate.md).
 
 The current list adds three RFCs surfaced from PRD open threads: *Recipe lifecycle* (RFC-003), *Live preview architecture* (RFC-004), *YAML round-tripping* (RFC-005).

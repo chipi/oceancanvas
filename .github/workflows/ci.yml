@@ -50,15 +50,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # Prod stack (ADR-011) plus e2e image — same steps on PR and push to main.
-      # Image tags match docker-compose.test.yml (same project name), so --no-build avoids rebuilding pipeline/gallery.
+      # Image tags match compose/docker-compose.test.yml (same project name), so
+      # --no-build avoids rebuilding pipeline/gallery.
       - name: Validate Compose files
-        run: docker compose config --quiet && docker compose -f docker-compose.test.yml config --quiet
+        run: docker compose -f compose/docker-compose.yml config --quiet && docker compose -f compose/docker-compose.test.yml config --quiet
       - name: Build Docker images
         run: |
-          docker compose build
-          docker compose -f docker-compose.test.yml build e2e
+          docker compose -f compose/docker-compose.yml build
+          docker compose -f compose/docker-compose.test.yml build e2e
       - name: Run e2e stack
-        run: docker compose -f docker-compose.test.yml up --no-build --abort-on-container-exit --exit-code-from e2e
+        run: docker compose -f compose/docker-compose.test.yml up --no-build --abort-on-container-exit --exit-code-from e2e
 
   deploy-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

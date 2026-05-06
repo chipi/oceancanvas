@@ -243,7 +243,7 @@ data/
   .gitkeep
 renders/
   .gitkeep
-docker-compose.yml
+compose/docker-compose.yml
 .github/workflows/ci.yml
 ```
 

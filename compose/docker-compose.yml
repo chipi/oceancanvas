@@ -11,8 +11,8 @@
 # Volume mounts colocate /data, /recipes, /renders, /sketches, /audio across
 # all services that need them. Read-only where the service shouldn't write.
 #
-# To run: `docker compose up`. To trigger a pipeline run now: `make pipeline-run`.
-# Troubleshooting: docs/get-started.md (Troubleshooting).
+# To run: `docker compose -f compose/docker-compose.yml up`. To trigger a pipeline run now:
+# `make pipeline-run`. Troubleshooting: docs/get-started.md (Troubleshooting).
 
 services:
   # ── Prefect's state DB ──────────────────────────────────────────────────
@@ -59,16 +59,16 @@ services:
   # renders accumulate; sketches are read-only (the p5.js render code).
   pipeline:
     build:
-      context: .
+      context: ..
       dockerfile: pipeline/Dockerfile
-    env_file: .env
+    env_file: ../.env
     environment:
       PREFECT_API_URL: http://prefect-server:4200/api
     volumes:
-      - ./data:/data
-      - ./recipes:/recipes:ro
-      - ./renders:/renders
-      - ./sketches:/sketches:ro
+      - ../data:/data
+      - ../recipes:/recipes:ro
+      - ../renders:/renders
+      - ../sketches:/sketches:ro
     depends_on:
       prefect-server:
         condition: service_healthy
@@ -85,16 +85,16 @@ services:
   # host, /recipes/*.yaml for the editor. /api/* is reverse-proxied to
   # recipe-server (per gallery/Caddyfile). All static — no app DB.
   gallery:
-    build: ./gallery
+    build: ../gallery
     ports:
       - "8080:8080"
     environment:
       RECIPE_SERVER: recipe-server:3001
     volumes:
-      - ./data/processed:/data/processed:ro
-      - ./renders:/renders:ro
-      - ./recipes:/recipes:ro
-      - ./sketches:/sketches:ro
+      - ../data/processed:/data/processed:ro
+      - ../renders:/renders:ro
+      - ../recipes:/recipes:ro
+      - ../sketches:/sketches:ro
     depends_on:
       pipeline:
         condition: service_started
@@ -118,8 +118,8 @@ services:
       RECIPES_DIR: /recipes
       SAVE_PORT: "3001"
     volumes:
-      - ./gallery/server:/app/server:ro
-      - ./recipes:/recipes
+      - ../gallery/server:/app/server:ro
+      - ../recipes:/recipes
     ports:
       - "3001:3001"
     healthcheck:
@@ -141,9 +141,9 @@ services:
       RENDERS_DIR: /renders
       EXPORT_PORT: "3002"
     volumes:
-      - ./gallery/server:/app/server:ro
-      - ./renders:/renders
-      - ./audio:/audio:ro
+      - ../gallery/server:/app/server:ro
+      - ../renders:/renders
+      - ../audio:/audio:ro
     ports:
       - "3002:3002"
 

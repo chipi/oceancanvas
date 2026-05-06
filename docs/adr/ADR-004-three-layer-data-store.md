@@ -41,4 +41,4 @@ The dashboard reads from `data/processed/` directly as static assets — no API 
 
 - Top-level folders in repo root.
 - Pipeline tasks read/write only their owned layer.
-- Mounts as Docker volumes in `docker-compose.yml`.
+- Mounts as Docker volumes in `compose/docker-compose.yml`.

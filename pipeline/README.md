@@ -46,7 +46,7 @@ The daily flow is six tasks in this order. Each has its own module under `src/oc
 **Inside Docker.** From the repo root:
 
 ```bash
-docker compose up
+docker compose -f compose/docker-compose.yml up
 make pipeline-run    # trigger immediately rather than waiting for 06:00 UTC
 ```
 

@@ -10,7 +10,7 @@ OceanCanvas runs as a service: scheduled pipeline, a static web frontend, the Pr
 
 ## Decision
 
-Docker Compose is the deployment model. One `docker-compose.yml` defines the full stack: `pipeline`, `gallery`, `prefect-server`, and `postgres` (Prefect's state database) containers. Volumes mount `data/`, `recipes/`, `renders/` from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.
+Docker Compose is the deployment model. One `compose/docker-compose.yml` defines the full stack: `pipeline`, `gallery`, `prefect-server`, and `postgres` (Prefect's state database) containers. Volumes mount `data/`, `recipes/`, `renders/` from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.
 
 ## Rationale
 
@@ -21,7 +21,7 @@ Docker Compose is the deployment model. One `docker-compose.yml` defines the ful
 ## Alternatives considered
 
 - **Kubernetes** — over-engineered for four containers running on one machine. The operational overhead of Kubernetes is more than the value at this scale. Revisit when (if) OceanCanvas multi-tenants.
-- **Plain systemd / docker run scripts** — works, but `docker-compose.yml` is more declarative and self-documenting than a collection of shell scripts.
+- **Plain systemd / docker run scripts** — works, but `compose/docker-compose.yml` is more declarative and self-documenting than a collection of shell scripts.
 - **Nomad** — capable but adds an orchestrator most contributors don't know.
 - **Fly.io / Railway / managed PaaS** — works for hosted instances but breaks the self-hostable property.
 
@@ -38,7 +38,7 @@ Docker Compose is the deployment model. One `docker-compose.yml` defines the ful
 
 ## Implementation notes
 
-- `docker-compose.yml` in repo root.
+- `compose/docker-compose.yml`.
 - Four services: `postgres`, `prefect-server`, `pipeline`, `gallery`.
 - Volumes: `./data`, `./recipes`, `./renders`.
 - Production uses the same file with environment-specific overrides via `docker-compose.prod.yml`.

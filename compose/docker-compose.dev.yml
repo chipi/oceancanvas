@@ -2,14 +2,14 @@
 services:
   pipeline:
     build:
-      context: .
+      context: ..
       dockerfile: pipeline/Dockerfile
     volumes:
-      - ./pipeline/src:/app/src
-      - ./data:/data
-      - ./recipes:/recipes:ro
-      - ./renders:/renders
-      - ./sketches:/sketches:ro
+      - ../pipeline/src:/app/src
+      - ../data:/data
+      - ../recipes:/recipes:ro
+      - ../renders:/renders
+      - ../sketches:/sketches:ro
     command: python -m oceancanvas.deploy
 
   gallery:

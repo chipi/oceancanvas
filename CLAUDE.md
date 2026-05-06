@@ -27,7 +27,7 @@ This file is the orientation document for any AI assistant working on the codeba
 - `recipes/` — YAML files; the authored works.
 - `data/` — Three-layer store. `data/sources/` (raw), `data/processed/` (browser-friendly), not committed to git.
 - `renders/` — Daily PNG outputs per recipe. Not committed to git.
-- `docker-compose.yml` — Six containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint), export-server (Node.js video export).
+- `compose/docker-compose.yml` — Six containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint), export-server (Node.js video export).
 
 ---
 
@@ -137,7 +137,7 @@ Three tiers, each validating different boundaries:
 
 **Tier 2 — Cross-validation** (`tests/cross-validation/`). Shared JSON fixtures validated independently by Python and TypeScript. Confirms implementations that must be identical (creative mapping) produce the same outputs.
 
-**Tier 3 — End-to-end** (`e2e/tests/`). Playwright tests against the full Docker Compose stack (`docker-compose.test.yml`). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.
+**Tier 3 — End-to-end** (`e2e/tests/`). Playwright tests against the full Docker Compose stack (`compose/docker-compose.test.yml`). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.
 
 Key boundary: the e2e tests validate that pipeline output (renders, manifest) is correctly served by Caddy and consumed by the React gallery. Unit tests cannot cover this boundary.
 

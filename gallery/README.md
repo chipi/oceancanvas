@@ -27,7 +27,7 @@ For *why* the gallery is what it is, see [PRD-004 Gallery](../docs/prd/PRD-004-g
 **Inside Docker (matches production).** From the repo root:
 
 ```bash
-docker compose up gallery
+docker compose -f compose/docker-compose.yml up gallery
 # → http://localhost:8080
 ```
 
