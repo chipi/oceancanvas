@@ -40,7 +40,10 @@ THERMAL_STOPS = np.array(
 
 def _apply_thermal_colormap(data: np.ndarray, vmin: float, vmax: float) -> np.ndarray:
     """Map float values to RGB using the thermal colormap. Returns (H, W, 3) uint8."""
+    nan_mask = np.isnan(data)
     normalised = np.clip((data - vmin) / (vmax - vmin), 0, 1)
+    # Keep NaNs out of integer indexing math; they are painted as canvas later.
+    normalised = np.nan_to_num(normalised, nan=0.0, posinf=1.0, neginf=0.0)
     n_stops = len(THERMAL_STOPS)
     indices = normalised * (n_stops - 1)
     lower = np.floor(indices).astype(int)
@@ -49,7 +52,6 @@ def _apply_thermal_colormap(data: np.ndarray, vmin: float, vmax: float) -> np.nd
 
     rgb = (1 - frac) * THERMAL_STOPS[lower] + frac * THERMAL_STOPS[upper]
     # NaN pixels → canvas background colour
-    nan_mask = np.isnan(data)
     rgb[nan_mask] = [3, 11, 16]  # canvas #030B10
     return rgb.astype(np.uint8)
 
