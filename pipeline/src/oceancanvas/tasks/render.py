@@ -25,7 +25,10 @@ from oceancanvas.constants import RENDER_CONCURRENCY
 from oceancanvas.io import atomic_write_bytes
 from oceancanvas.log import get_logger
 
-RENDERER_PATH = Path(__file__).parent.parent / "renderer" / "render.mjs"
+_DEFAULT_RENDERER_PATH = Path(__file__).parent.parent / "renderer" / "render.mjs"
+RENDERER_PATH = Path(
+    os.environ.get("OCEANCANVAS_RENDERER_PATH", str(_DEFAULT_RENDERER_PATH)),
+)
 RENDER_TIMEOUT = 120  # seconds
 
 # PNG magic bytes

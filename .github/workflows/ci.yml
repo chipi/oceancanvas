@@ -46,6 +46,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [lint, test-pipeline, test-gallery, test-renderer]
     steps:
       - uses: actions/checkout@v4
@@ -59,7 +60,11 @@ jobs:
           docker compose -f compose/docker-compose.yml build
           docker compose -f compose/docker-compose.test.yml build e2e
       - name: Run e2e stack
+        timeout-minutes: 20
         run: docker compose -f compose/docker-compose.test.yml up --no-build --abort-on-container-exit --exit-code-from e2e
+      - name: Tear down e2e stack
+        if: always()
+        run: docker compose -f compose/docker-compose.test.yml down -v --remove-orphans
 
   deploy-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PUPPETEER_SKIP_DOWNLOAD=true
+# Use source-tree renderer path so Node resolves local node_modules.
+ENV OCEANCANVAS_RENDERER_PATH=/app/src/oceancanvas/renderer/render.mjs
 
 # Python deps — copy full source so pip install works
 COPY pipeline/pyproject.toml ./pyproject.toml
