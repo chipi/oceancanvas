@@ -23,6 +23,26 @@ from oceancanvas.tasks.process import process
 from oceancanvas.tasks.render import cleanup_workers, render, render_one
 
 
+def _exec_task(
+    task_obj: object,
+    use_prefect_tasks: bool,
+    /,
+    *args: object,
+    **kwargs: object,
+) -> object:
+    """Run a Prefect task inside the flow (tracked) or as a plain call (e2e --test-mode).
+
+    Calling a @task-decorated function outside an active flow starts Prefect's ephemeral
+    API and breaks EventsWorker when the process exits — avoid that for `python -m ... --test-mode`.
+    """
+    if use_prefect_tasks:
+        return task_obj(*args, **kwargs)  # type: ignore[operator]
+    fn = getattr(task_obj, "fn", None)
+    if fn is None:
+        raise TypeError("Expected a Prefect task object with a .fn wrapper")
+    return fn(*args, **kwargs)
+
+
 @flow(name="daily_ocean_pipeline", log_prints=True, task_runner=ConcurrentTaskRunner())
 def daily_ocean_pipeline(test_mode: bool = False) -> None:
     """Daily pipeline: discover, fetch, process, build_payload, render, index.
@@ -40,6 +60,7 @@ def daily_ocean_pipeline(test_mode: bool = False) -> None:
         renders_dir=renders_dir,
         test_mode=test_mode,
         logger=logger,
+        use_prefect_tasks=True,
     )
 
 
@@ -49,6 +70,8 @@ def _run_pipeline_core(
     renders_dir: Path,
     test_mode: bool,
     logger: logging.Logger,
+    *,
+    use_prefect_tasks: bool = True,
 ) -> None:
     """Run pipeline logic independent of Prefect flow wiring."""
 
@@ -67,20 +90,33 @@ def _run_pipeline_core(
             logger.info("Test mode: skipping discover and fetch")
             dates_to_fetch = {}
         else:
-            dates_to_fetch = discover(data_dir, recipes_dir, renders_dir)
-            fetch(data_dir, recipes_dir, renders_dir, dates_to_fetch=dates_to_fetch)
+            dates_to_fetch = _exec_task(
+                discover,
+                use_prefect_tasks,
+                data_dir,
+                recipes_dir,
+                renders_dir,
+            )
+            _exec_task(
+                fetch,
+                use_prefect_tasks,
+                data_dir,
+                recipes_dir,
+                renders_dir,
+                dates_to_fetch=dates_to_fetch,
+            )
 
-        process(data_dir, recipes_dir, renders_dir)
+        _exec_task(process, use_prefect_tasks, data_dir, recipes_dir, renders_dir)
 
         if test_mode:
             # Sequential mode for test — simpler, no threading
-            build_payload(data_dir, recipes_dir, renders_dir)
-            render(data_dir, recipes_dir, renders_dir)
+            _exec_task(build_payload, use_prefect_tasks, data_dir, recipes_dir, renders_dir)
+            _exec_task(render, use_prefect_tasks, data_dir, recipes_dir, renders_dir)
         else:
             # Parallel mode: fan out per recipe
             _parallel_build_and_render(data_dir, recipes_dir, renders_dir, logger)
 
-        index(data_dir, recipes_dir, renders_dir)
+        _exec_task(index, use_prefect_tasks, data_dir, recipes_dir, renders_dir)
 
         logger.info("Pipeline complete")
     finally:
@@ -135,6 +171,7 @@ if __name__ == "__main__":
             renders_dir=Path(os.environ.get("RENDERS_DIR", "/renders")),
             test_mode=True,
             logger=logger,
+            use_prefect_tasks=False,
         )
     else:
         daily_ocean_pipeline(test_mode=False)

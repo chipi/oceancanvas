@@ -70,8 +70,9 @@ test('gallery tiles show metadata on hover', async ({ page }) => {
   await page.goto('/');
   const tile = page.locator('[role="button"]').first();
   await expect(tile).toBeVisible({ timeout: 10000 });
+  const overlay = tile.locator('[class*="tileOverlay"]');
   await tile.hover();
-  await expect(tile.locator('div')).toBeVisible();
+  await expect(overlay).toBeVisible();
 });
 
 test('clicking a gallery tile navigates to detail view', async ({ page }) => {
@@ -158,7 +159,7 @@ test('detail view — Esc returns to gallery', async ({ page }) => {
 
 test('dashboard loads with SST view', async ({ page }) => {
   await page.goto('/dashboard');
-  await expect(page.locator('body')).toContainText('sea surface temperature');
+  await expect(page.locator('body')).toContainText('sea surface temp');
 });
 
 test('dashboard shows source rail', async ({ page }) => {
@@ -238,8 +239,8 @@ test('recipe editor has save button', async ({ page }) => {
 
 test('recipe editor has navigation links for existing recipe', async ({ page }) => {
   await page.goto('/recipes/test-field');
-  await expect(page.locator('a', { hasText: 'view ↗' })).toBeVisible();
-  await expect(page.locator('a', { hasText: 'gallery ↗' })).toBeVisible();
+  await expect(page.locator('a', { hasText: '← view' })).toBeVisible();
+  await expect(page.locator('a', { hasText: '← gallery' })).toBeVisible();
 });
 
 // ═══════════════════════════════════════════════
@@ -288,7 +289,7 @@ test('full flow: gallery → detail → recipe editor → gallery', async ({ pag
   await page.waitForURL(/\/gallery\/.+/);
   await page.click('a:has-text("recipe ↗")');
   await page.waitForURL(/\/recipes\/.+/);
-  await page.click('a:has-text("gallery ↗")');
+  await page.click('a:has-text("← gallery")');
   await page.waitForURL('/');
 });
 
@@ -298,7 +299,7 @@ test('full flow: dashboard → create recipe → gallery', async ({ page }) => {
   if (await btn.isVisible()) {
     await btn.click();
     await page.waitForURL(/\/recipes\/new/);
-    await page.click('a:has-text("gallery ↗")');
+    await page.click('a:has-text("← gallery")');
     await page.waitForURL('/');
   }
 });

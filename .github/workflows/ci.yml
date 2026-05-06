@@ -63,9 +63,16 @@ jobs:
         run: |
           docker compose -f compose/docker-compose.yml build
           docker compose -f compose/docker-compose.test.yml build e2e
+      # Do not use --abort-on-container-exit: the one-shot pipeline exits 0 first and
+      # Compose treats that as a project abort, racing gallery/e2e and killing sidecars.
       - name: Run e2e stack
         timeout-minutes: 20
-        run: docker compose -f compose/docker-compose.test.yml up --no-build --abort-on-container-exit --exit-code-from e2e
+        run: |
+          set -euo pipefail
+          docker compose -f compose/docker-compose.test.yml up -d --no-build
+          e2e_id=$(docker compose -f compose/docker-compose.test.yml ps -q e2e)
+          code=$(docker wait "$e2e_id")
+          exit "$code"
       - name: Tear down e2e stack
         if: always()
         run: docker compose -f compose/docker-compose.test.yml down -v --remove-orphans

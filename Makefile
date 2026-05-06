@@ -97,8 +97,11 @@ build-gallery: ## Build gallery image only
 ci: lint pipeline-test gallery-test render-test build e2e ## Run full CI locally
 
 e2e: ## Run end-to-end tests via Docker Compose
-	docker compose -f $(COMPOSE_TEST) up --build --abort-on-container-exit --exit-code-from e2e
-	docker compose -f $(COMPOSE_TEST) down
+	docker compose -f $(COMPOSE_TEST) up --build -d
+	e2e_id=$$(docker compose -f $(COMPOSE_TEST) ps -q e2e); \
+	code=$$(docker wait $$e2e_id); \
+	docker compose -f $(COMPOSE_TEST) down -v --remove-orphans; \
+	exit $$code
 
 screenshots: ## Regenerate docs/concept/images/*.png from the running stack
 	@echo "Regenerating screenshots — make sure 'docker compose up' is running with rendered data"
