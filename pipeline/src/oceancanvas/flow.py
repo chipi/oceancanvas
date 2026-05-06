@@ -6,6 +6,7 @@ Run via serve (deploy.py), CLI (oceancanvas run), or directly: python -m oceanca
 """
 
 import fcntl
+import logging
 import os
 import sys
 from pathlib import Path
@@ -33,6 +34,23 @@ def daily_ocean_pipeline(test_mode: bool = False) -> None:
     data_dir = Path(os.environ.get("DATA_DIR", "/data"))
     recipes_dir = Path(os.environ.get("RECIPES_DIR", "/recipes"))
     renders_dir = Path(os.environ.get("RENDERS_DIR", "/renders"))
+    _run_pipeline_core(
+        data_dir=data_dir,
+        recipes_dir=recipes_dir,
+        renders_dir=renders_dir,
+        test_mode=test_mode,
+        logger=logger,
+    )
+
+
+def _run_pipeline_core(
+    data_dir: Path,
+    recipes_dir: Path,
+    renders_dir: Path,
+    test_mode: bool,
+    logger: logging.Logger,
+) -> None:
+    """Run pipeline logic independent of Prefect flow wiring."""
 
     # File lock prevents concurrent pipeline runs from corrupting shared files.
     lock_path = data_dir / ".pipeline.lock"
@@ -108,4 +126,15 @@ def _parallel_build_and_render(
 
 if __name__ == "__main__":
     test_mode = "--test-mode" in sys.argv
-    daily_ocean_pipeline(test_mode=test_mode)
+    if test_mode:
+        # Keep e2e test-mode deterministic and quiet by avoiding Prefect runtime services.
+        logger = get_logger()
+        _run_pipeline_core(
+            data_dir=Path(os.environ.get("DATA_DIR", "/data")),
+            recipes_dir=Path(os.environ.get("RECIPES_DIR", "/recipes")),
+            renders_dir=Path(os.environ.get("RENDERS_DIR", "/renders")),
+            test_mode=True,
+            logger=logger,
+        )
+    else:
+        daily_ocean_pipeline(test_mode=False)
