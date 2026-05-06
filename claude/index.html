@@ -2472,7 +2472,7 @@
 <li><code>recipes/</code> — YAML files; the authored works.</li>
 <li><code>data/</code> — Three-layer store. <code>data/sources/</code> (raw), <code>data/processed/</code> (browser-friendly), not committed to git.</li>
 <li><code>renders/</code> — Daily PNG outputs per recipe. Not committed to git.</li>
-<li><code>docker-compose.yml</code> — Six containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint), export-server (Node.js video export).</li>
+<li><code>compose/docker-compose.yml</code> — Six containers: pipeline, gallery, prefect-server, postgres (Prefect state DB), recipe-server (Node.js save endpoint), export-server (Node.js video export).</li>
 </ul>
 <hr />
 <h2 id="the-locked-stack">The locked stack</h2>
@@ -2573,7 +2573,7 @@
 </tr>
 </tbody>
 </table>
-<p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> §stack.</p>
+<p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> (<strong>Stack</strong>).</p>
 <hr />
 <h2 id="the-non-negotiable-constraints">The non-negotiable constraints</h2>
 <p>These hold across every PR. Code that violates one of these is broken even if it works.</p>
@@ -2584,7 +2584,7 @@
 <p><strong>Self-hostable end-to-end.</strong> Anyone with Docker can clone the repo and run the full stack. No cloud-only services in the critical path.</p>
 <p><strong>Shared payload format.</strong> The Recipe Editor's live preview runs the same p5.js sketch with the same payload format that the Puppeteer pipeline renders with. If the editor preview looks right, the pipeline render looks right. Divergence is a bug.</p>
 <p><strong>Attribution baked in.</strong> Source attribution is part of every render. Removing it requires deliberate code change; including it is the default.</p>
-<p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> §constraints.</p>
+<p>Full reference with rationale: <code>docs/adr/OC_TA.md</code> (<strong>Constraints</strong>).</p>
 <hr />
 <h2 id="code-conventions">Code conventions</h2>
 <h3 id="python-pipeline">Python (pipeline)</h3>
@@ -2625,7 +2625,7 @@
 <li>Conventional commits: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>refactor:</code>, <code>test:</code>, <code>chore:</code>.</li>
 <li>Scope optional but encouraged: <code>feat(pipeline): add discover task for OISST</code>.</li>
 <li>Body explains the <em>why</em>, not the <em>what</em>. The diff is the what.</li>
-<li>Reference the ADR/RFC/PRD that the commit serves: <code>Closes RFC-001 → ADR-NNN</code> or <code>Implements PRD-002 §"The experience"</code>.</li>
+<li>Reference the ADR/RFC/PRD that the commit serves: <code>Closes RFC-001 → ADR-NNN</code> or <code>Implements PRD-002 "The experience"</code>.</li>
 </ul>
 <h3 id="branches">Branches</h3>
 <ul>
@@ -2637,7 +2637,7 @@
 <p>Three tiers, each validating different boundaries:</p>
 <p><strong>Tier 1 — Unit tests</strong> (<code>pipeline/tests/unit/</code>, <code>gallery/src/**/*.test.ts</code>). Test individual functions in isolation. Mock external dependencies (fetch, subprocess, filesystem). Fastest feedback loop. Run via <code>uv run pytest</code> and <code>npm test</code>.</p>
 <p><strong>Tier 2 — Cross-validation</strong> (<code>tests/cross-validation/</code>). Shared JSON fixtures validated independently by Python and TypeScript. Confirms implementations that must be identical (creative mapping) produce the same outputs.</p>
-<p><strong>Tier 3 — End-to-end</strong> (<code>e2e/tests/</code>). Playwright tests against the full Docker Compose stack (<code>docker-compose.test.yml</code>). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.</p>
+<p><strong>Tier 3 — End-to-end</strong> (<code>e2e/tests/</code>). Playwright tests against the full Docker Compose stack (<code>compose/docker-compose.test.yml</code>). Pipeline runs in test mode on fixture data, gallery serves the output, e2e tests validate the complete pipeline→gallery data flow. Tests assert on data correctness (manifest content, PNG loads, API responses), not just DOM presence.</p>
 <p>Key boundary: the e2e tests validate that pipeline output (renders, manifest) is correctly served by Caddy and consumed by the React gallery. Unit tests cannot cover this boundary.</p>
 <hr />
 <h2 id="doc-system-rules">Doc-system rules</h2>
@@ -2645,8 +2645,8 @@
 <h3 id="when-code-requires-a-documentation-update">When code requires a documentation update</h3>
 <ul>
 <li><strong>New surface or major surface change</strong> → update <code>docs/uxs/OC_IA.md</code> first, then add or revise the relevant UXS.</li>
-<li><strong>New shared design token</strong> → add to <code>OC_IA.md §shared-tokens</code>. Don't define it locally in a UXS or hardcode it in a component.</li>
-<li><strong>New tech decision (single, settled)</strong> → write an ADR. Append-only. Update <code>OC_TA.md §map</code> and <code>OC_TA.md §stack</code> if relevant.</li>
+<li><strong>New shared design token</strong> → add to <code>OC_IA.md</code> (<strong>Shared tokens</strong>). Don't define it locally in a UXS or hardcode it in a component.</li>
+<li><strong>New tech decision (single, settled)</strong> → write an ADR. Append-only. Update <code>OC_TA.md</code> (<strong>Map</strong>) and (<strong>Stack</strong>) if relevant.</li>
 <li><strong>Open technical question with alternatives</strong> → write an RFC. Closes into an ADR when the decision is forced by implementation reality.</li>
 <li><strong>New audience or new product promise</strong> → update <code>OC_PA.md</code>. Existing PRDs that should reference it get cross-linked.</li>
 <li><strong>New user-facing experience</strong> → write a PRD in blog-post format using the template.</li>
@@ -2656,9 +2656,9 @@
 <ol>
 <li>New ADR file in <code>docs/adr/</code></li>
 <li>RFC status flips to Decided</li>
-<li><code>OC_TA.md §map</code> RFC table row flips</li>
-<li><code>OC_TA.md §map</code> ADR table gains the row</li>
-<li><code>OC_TA.md §stack</code> updates if stack-affecting</li>
+<li><code>OC_TA.md</code> (<strong>Map</strong>) RFC table row flips</li>
+<li><code>OC_TA.md</code> (<strong>Map</strong>) ADR table gains the row</li>
+<li><code>OC_TA.md</code> (<strong>Stack</strong>) updates if stack-affecting</li>
 <li><code>rfc/index.md</code> and <code>adr/index.md</code> mirror</li>
 </ol>
 <p>Forget any of these and silent drift starts. The fix is cheap when caught early, painful when not.</p>
@@ -2701,7 +2701,7 @@
 </tr>
 <tr>
 <td>What's the current architecture state board?</td>
-<td>TA §map</td>
+<td><code>OC_TA.md</code> (<strong>Map</strong>)</td>
 </tr>
 </tbody>
 </table>
@@ -2716,7 +2716,7 @@
 <h3 id="do">Do</h3>
 <ul>
 <li>Read <code>docs/adr/OC_TA.md</code> and <code>docs/prd/OC_PA.md</code> at the start of any non-trivial session. They are the structural foundation.</li>
-<li>Reference the relevant PRD section when implementing a surface ("PRD-002 §The experience" describes the dashboard interaction this commit implements).</li>
+<li>Reference the relevant PRD section when implementing a surface ("PRD-002 The experience" describes the dashboard interaction this commit implements).</li>
 <li>Honour the constraints — file-based storage, determinism, daily cadence, no auth, self-hostable, shared payload, baked attribution.</li>
 <li>Write tests against synthetic data, not live data. The CI gate (ADR-014) requires this.</li>
 <li>Update <code>docs/</code> when changing the system's structure, contracts, or surfaces. Same commit if possible.</li>
@@ -2732,7 +2732,7 @@
 <li>Don't edit ADRs after acceptance. Append a new ADR that supersedes; mark the old one Superseded with a forward link.</li>
 <li>Don't write a PRD for infrastructure work. Pipelines, data formats, render mechanics — those are RFCs and ADRs. PRDs argue for user-value experiences.</li>
 <li>Don't close an RFC into an ADR before implementation forces the decision. Closing prematurely commits to a schema before the parser meets its first edge case.</li>
-<li>Don't introduce engagement metrics. PA §principles names <code>no-engagement-chrome</code>. No view counts, no likes, no streaks, no virality features.</li>
+<li>Don't introduce engagement metrics. PA principles names <code>no-engagement-chrome</code>. No view counts, no likes, no streaks, no virality features.</li>
 <li>Don't add behavioural rules to a UXS. Animation timing, debounce, transitions, keyboard sequences — those go in an RFC. UXS specifies static appearance only.</li>
 </ul>
 <hr />
@@ -2740,7 +2740,7 @@
 <p>Three default moves when you're unsure how to proceed:</p>
 <ol>
 <li><strong>Re-read the PRD or RFC the work serves.</strong> If the work doesn't serve any PRD or RFC, ask whether the work should happen at all in Phase 1.</li>
-<li><strong>Check <code>OC_TA.md §constraints</code>.</strong> If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.</li>
+<li><strong>Check</strong> <code>OC_TA.md</code> (<strong>Constraints</strong>). If the work would violate a constraint, stop. The constraint is intentional; it has its own ADR.</li>
 <li><strong>Look for a similar existing artifact.</strong> All five PRDs are in template shape. All ADRs follow the same structure. If you're writing something new, the precedent likely exists.</li>
 </ol>
 <p>If none of those resolve the question, write an RFC. Open questions are a normal state — captured in writing, they make decisions explicit; left in your head, they leak into code as inconsistency.</p>

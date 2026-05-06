@@ -2119,7 +2119,7 @@
 <p>Surface captures used by the project's docs (README, quickstart, concept package). Regenerated automatically from the running stack via Playwright — they are documentation artefacts, not hand-curated PNGs.</p>
 <h2 id="regenerate">Regenerate</h2>
 <p>The capture script needs the full Docker stack up with rendered data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w">               </span><span class="c1"># in one terminal</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose/docker-compose.yml<span class="w"> </span>up<span class="w">               </span><span class="c1"># in one terminal</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>make<span class="w"> </span>pipeline-run<span class="w">               </span><span class="c1"># ensure recipes have rendered (skip if already)</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># in another terminal, from repo root:</span>

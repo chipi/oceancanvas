@@ -2333,7 +2333,7 @@
 <h1 id="rfc-006-audio-system-design">RFC-006 — Audio system design</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-05-03 → <a href="../../adr/ADR-026-audio-stem-system/">ADR-026</a>
-<strong>TA anchor</strong> · §components/render-system · §contracts (audio scalars in payload)
+<strong>TA anchor</strong> · components/render-system · contracts (audio scalars in payload)
 <strong>Related</strong> · PRD-005 Video Editor · RFC-002 Render payload format · RFC-007 Key moment detection
 <strong>Closes into</strong> · <a href="../../adr/ADR-026-audio-stem-system/">ADR-026</a>
 <strong>Why this is an RFC</strong> · The audio system is the most ambitious piece of OceanCanvas's enrichment surface, and the one where "decoration vs. data" is hardest to get right (PRD-005 sharpest threat). Multiple plausible architectures exist with real trade-offs around fidelity, dependency cost, and authorship. This is the meatiest RFC in the system.</p>
@@ -2372,9 +2372,9 @@
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li><em>Determinism</em> — same inputs → same audio bytes (TA §constraints). Generative APIs that introduce per-call randomness must be seedable or cached.</li>
-<li><em>Self-hostable</em> — the system must work without commercial APIs as a fallback (TA §constraints).</li>
-<li><em>Daily clock</em> — audio is generated at <em>export</em> time, not pipeline time. The pipeline produces frames; the video editor produces film + audio (TA §constraints).</li>
+<li><em>Determinism</em> — same inputs → same audio bytes (TA constraints). Generative APIs that introduce per-call randomness must be seedable or cached.</li>
+<li><em>Self-hostable</em> — the system must work without commercial APIs as a fallback (TA constraints).</li>
+<li><em>Daily clock</em> — audio is generated at <em>export</em> time, not pipeline time. The pipeline produces frames; the video editor produces film + audio (TA constraints).</li>
 <li><em>Attribution baked in</em> — music attribution travels with the export. Both the data sources and the audio source/license must be in the bundled metadata.</li>
 </ul>
 <h2 id="proposed-approach">Proposed approach</h2>
@@ -2428,7 +2428,7 @@
 </ul>
 <h2 id="links">Links</h2>
 <ul>
-<li><strong>TA</strong> — §components/render-system · §contracts (audio scalars in payload) · §constraints (determinism, self-hostable)</li>
+<li><strong>TA</strong> — components/render-system · contracts (audio scalars in payload) · constraints (determinism, self-hostable)</li>
 <li><strong>Related PRDs</strong> — PRD-005 Video Editor (this RFC was flagged in its open threads)</li>
 <li><strong>Related RFCs</strong> — RFC-002 Render payload format · RFC-007 Key moment detection</li>
 </ul>

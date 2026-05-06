@@ -2322,7 +2322,7 @@
 <h1 id="rfc-002-render-payload-format">RFC-002 — Render payload format</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-04-30 → <a href="../../adr/ADR-019-render-payload-schema/">ADR-019</a>
-<strong>TA anchor</strong> · §contracts/render-payload · §components/render-system · §constraints (shared payload)
+<strong>TA anchor</strong> · contracts/render-payload · components/render-system · constraints (shared payload)
 <strong>Related</strong> · RFC-001 Recipe YAML schema · RFC-004 Live preview architecture · ADR-008 Shared payload format
 <strong>Closes into</strong> · ADR-008 (locked principle) + <a href="../../adr/ADR-019-render-payload-schema/">ADR-019</a> (schema details)
 <strong>Why this is an RFC</strong> · The render payload is the contract between the pipeline (or live editor) and the p5.js sketch. Multiple plausible representations exist with real trade-offs around browser load time, server-side parity, and debuggability. The principle of "one payload format for both contexts" is locked (ADR-008); the actual schema is open.</p>
@@ -2354,8 +2354,8 @@
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li><em>Shared payload format</em> — same shape for editor and Puppeteer (TA §constraints; locked by ADR-008).</li>
-<li><em>Determinism</em> — same payload + same sketch = same render bytes (TA §constraints).</li>
+<li><em>Shared payload format</em> — same shape for editor and Puppeteer (TA constraints; locked by ADR-008).</li>
+<li><em>Determinism</em> — same payload + same sketch = same render bytes (TA constraints).</li>
 <li><em>File-based storage in v1</em> — payload is a file on disk, not a database query result.</li>
 </ul>
 <h2 id="proposed-approach">Proposed approach</h2>
@@ -2434,7 +2434,7 @@
 </ul>
 <h2 id="links">Links</h2>
 <ul>
-<li><strong>TA</strong> — §contracts/render-payload · §components/render-system · §constraints (shared payload format)</li>
+<li><strong>TA</strong> — contracts/render-payload · components/render-system · constraints (shared payload format)</li>
 <li><strong>Related ADRs</strong> — ADR-008 (shared payload format principle, already accepted)</li>
 <li><strong>Related RFCs</strong> — RFC-001 Recipe YAML schema · RFC-004 Live preview architecture</li>
 </ul>

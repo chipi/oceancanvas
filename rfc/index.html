@@ -2125,7 +2125,7 @@
 
 <h1 id="rfc-index">RFC Index</h1>
 <p>Requests for Comments — open technical questions for OceanCanvas. Each RFC explores a single question with alternatives and trade-offs, then closes into one or more ADRs.</p>
-<p>The reference document for the technical plane is <a href="../adr/OC_TA/"><code>OC_TA.md</code></a>, which lives with the ADRs (the settled tier). RFCs anchor to TA's §components, §contracts, and §constraints sections. Once an RFC closes, it produces ADRs that update TA.</p>
+<p>The reference document for the technical plane is <a href="../adr/OC_TA/"><code>OC_TA.md</code></a>, which lives with the ADRs (the settled tier). RFCs anchor to the <strong>Components</strong>, <strong>Contracts</strong>, and <strong>Constraints</strong> sections of <code>OC_TA.md</code>. Once an RFC closes, it produces ADRs that update <code>OC_TA.md</code>.</p>
 <p>For settled architectural decisions, see <a href="../adr/"><code>../adr/</code></a>.</p>
 <h2 id="what-gets-an-rfc">What gets an RFC</h2>
 <p>An open technical question with plausible alternatives and trade-offs that require deliberation. RFCs explore. They do not specify implementation. They close into one or more ADRs once a decision is made.</p>
@@ -2166,93 +2166,93 @@
 <td>Recipe YAML schema</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-018-recipe-yaml-schema/">ADR-018</a></td>
-<td>§contracts/recipe-yaml</td>
+<td>contracts/recipe-yaml</td>
 </tr>
 <tr>
 <td><a href="RFC-002-render-payload-format/">RFC-002</a></td>
 <td>Render payload format</td>
 <td>Decided</td>
 <td>ADR-008 + <a href="../adr/ADR-019-render-payload-schema/">ADR-019</a></td>
-<td>§contracts/render-payload</td>
+<td>contracts/render-payload</td>
 </tr>
 <tr>
 <td><a href="RFC-003-recipe-lifecycle/">RFC-003</a></td>
 <td>Recipe lifecycle on source unavailability</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-025-recipe-lifecycle/">ADR-025</a></td>
-<td>§components/pipeline · §constraints</td>
+<td>components/pipeline · constraints</td>
 </tr>
 <tr>
 <td><a href="RFC-004-live-preview-architecture/">RFC-004</a></td>
 <td>Live preview architecture</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-020-live-preview-architecture/">ADR-020</a></td>
-<td>§components/render-system · §components/web-frontend</td>
+<td>components/render-system · components/web-frontend</td>
 </tr>
 <tr>
 <td><a href="RFC-005-yaml-round-tripping/">RFC-005</a></td>
 <td>YAML round-tripping</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-021-yaml-round-tripping/">ADR-021</a></td>
-<td>§contracts/recipe-yaml</td>
+<td>contracts/recipe-yaml</td>
 </tr>
 <tr>
 <td><a href="RFC-006-audio-system/">RFC-006</a></td>
 <td>Audio system design</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-026-audio-stem-system/">ADR-026</a></td>
-<td>§components/render-system</td>
+<td>components/render-system</td>
 </tr>
 <tr>
 <td><a href="RFC-007-key-moment-detection/">RFC-007</a></td>
 <td>Key moment detection</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-024-key-moment-detection/">ADR-024</a></td>
-<td>§components/render-system</td>
+<td>components/render-system</td>
 </tr>
 <tr>
 <td><a href="RFC-008-v2/">RFC-008</a></td>
 <td>Pipeline parallelisation strategy</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-023-pipeline-parallelisation/">ADR-023</a></td>
-<td>§components/pipeline</td>
+<td>components/pipeline</td>
 </tr>
 <tr>
 <td><a href="RFC-009/">RFC-009</a></td>
 <td>Pipeline CLI interface</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-022-cli-entry-point/">ADR-022</a></td>
-<td>§components/pipeline</td>
+<td>components/pipeline</td>
 </tr>
 <tr>
 <td><a href="RFC-010-generative-audio-composition/">RFC-010</a></td>
 <td>Generative audio composition</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-027-generative-audio-composition/">ADR-027</a> (supersedes ADR-026)</td>
-<td>§components/render-system</td>
+<td>components/render-system</td>
 </tr>
 <tr>
 <td><a href="RFC-011-tension-arc/">RFC-011</a></td>
 <td>Tension arc as shared primitive</td>
 <td>Decided</td>
 <td><a href="../adr/ADR-028-tension-arc-shared-curve/">ADR-028</a></td>
-<td>§components/render-system · §contracts/recipe-yaml · §contracts/render-payload</td>
+<td>components/render-system · contracts/recipe-yaml · contracts/render-payload</td>
 </tr>
 </tbody>
 </table>
 <h2 id="state-map">State map</h2>
-<p>The live state of all RFCs and ADRs lives in <a href="../adr/OC_TA/#map"><code>OC_TA.md §map</code></a>. This index mirrors the RFC portion. ADRs (settled decisions) are tracked in <a href="../adr/"><code>../adr/index.md</code></a>.</p>
+<p>The live state of all RFCs and ADRs lives in <a href="../adr/OC_TA/#map"><code>OC_TA.md</code> (Map)</a>. This index mirrors the RFC portion. ADRs (settled decisions) are tracked in <a href="../adr/"><code>../adr/index.md</code></a>.</p>
 <p>When an RFC closes:</p>
 <ol>
 <li>Its status here flips from <em>Draft v0.1</em> (or whatever revision) to <em>Decided</em>.</li>
 <li>One or more ADR files appear in <code>../adr/</code>.</li>
-<li>TA §map's RFC row gets <em>Decided</em> and links to the closing ADR(s); §stack picks up new entries if the RFC unlocked stack-level decisions.</li>
+<li>The RFC row in <code>OC_TA.md</code> (Map) flips to <em>Decided</em> and links to the closing ADR(s); the <strong>Stack</strong> table picks up new entries if the RFC unlocked stack-level decisions.</li>
 </ol>
 <h2 id="a-note-on-numbering">A note on numbering</h2>
-<p>RFCs and ADRs are independently numbered. The current RFC list (1–7) replaces an earlier 7-RFC draft — three were demoted to ADRs once the deliberation turned out to be smaller than expected:</p>
+<p>RFCs and ADRs are independently numbered. The canonical list is <strong>RFC-001 through RFC-011</strong> in the table above. An earlier draft used a different 7-RFC numbering — three topics were demoted to ADRs once the deliberation turned out to be smaller than expected:</p>
 <ul>
 <li><em>Processed JSON format</em> (was RFC-003) → <a href="../adr/ADR-015-processed-json-format/">ADR-015</a>.</li>
-<li><em>Docker Compose stack</em> (was RFC-004) → <a href="../adr/ADR-011-docker-compose/">ADR-011</a> + the <code>docker-compose.yml</code> config file itself.</li>
+<li><em>Docker Compose stack</em> (was RFC-004) → <a href="../adr/ADR-011-docker-compose/">ADR-011</a> + the <code>compose/docker-compose.yml</code> config file itself.</li>
 <li><em>GitHub Actions CI</em> (was RFC-007) → <a href="../adr/ADR-013-github-actions-code-only/">ADR-013</a> + <a href="../adr/ADR-014-synthetic-e2e-gate/">ADR-014</a>.</li>
 </ul>
 <p>The current list adds three RFCs surfaced from PRD open threads: <em>Recipe lifecycle</em> (RFC-003), <em>Live preview architecture</em> (RFC-004), <em>YAML round-tripping</em> (RFC-005).</p>

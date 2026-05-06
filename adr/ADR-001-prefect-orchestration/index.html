@@ -2240,7 +2240,7 @@
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/pipeline · §stack
+<strong>TA anchor</strong> · components/pipeline · stack
 <strong>Related PRDs</strong> — PRD-001 Recipe (the pipeline executes recipes daily)</p>
 </blockquote>
 <h2 id="context">Context</h2>
@@ -2254,7 +2254,7 @@
 <ul>
 <li><strong>Airflow</strong> — designed for hundreds of tasks across enterprise pipelines. Too heavy for six tasks; the operational overhead of an Airflow deployment exceeds the value.</li>
 <li><strong>Bare cron</strong> — gives no retry, no caching, no logs, no UI. Acceptable at 1 task; insufficient at 6 and brittle as the project grows.</li>
-<li><strong>Prefect Cloud (managed)</strong> — adds an external dependency that breaks the self-hostable constraint (TA §constraints).</li>
+<li><strong>Prefect Cloud (managed)</strong> — adds an external dependency that breaks the self-hostable constraint (TA constraints).</li>
 </ul>
 <h2 id="consequences">Consequences</h2>
 <p><strong>Positive:</strong>
@@ -2267,7 +2267,7 @@
 <h2 id="implementation-notes">Implementation notes</h2>
 <ul>
 <li>Pipeline source code in <code>pipeline/</code>.</li>
-<li>Prefect Server container in <code>docker-compose.yml</code>.</li>
+<li>Prefect Server container in <code>compose/docker-compose.yml</code>.</li>
 <li>Daily schedule defined in <code>pipeline/src/oceancanvas/deploy.py</code> (uses <code>flow.serve()</code> with cron).</li>
 </ul>
 

@@ -2240,7 +2240,7 @@
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/data-store</p>
+<strong>TA anchor</strong> · components/data-store</p>
 </blockquote>
 <h2 id="context">Context</h2>
 <p>The pipeline produces and consumes data in several distinct stages: raw fetched files in their native formats, browser-friendly intermediate formats, and the final daily renders. Mixing these in one folder confuses access patterns and makes it hard to reason about regenerability.</p>
@@ -2270,7 +2270,7 @@
 <ul>
 <li>Top-level folders in repo root.</li>
 <li>Pipeline tasks read/write only their owned layer.</li>
-<li>Mounts as Docker volumes in <code>docker-compose.yml</code>.</li>
+<li>Mounts as Docker volumes in <code>compose/docker-compose.yml</code>.</li>
 </ul>
 
 

@@ -2344,7 +2344,7 @@
 <h1 id="rfc-001-recipe-yaml-schema">RFC-001 — Recipe YAML schema</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-04-30 → <a href="../../adr/ADR-018-recipe-yaml-schema/">ADR-018</a>
-<strong>TA anchor</strong> · §contracts/recipe-yaml · §components/pipeline · §components/render-system
+<strong>TA anchor</strong> · contracts/recipe-yaml · components/pipeline · components/render-system
 <strong>Related</strong> · PRD-001 Recipe · PRD-003 Recipe Editor · UXS-003 Recipe Editor · RFC-002 Render payload format · RFC-005 YAML round-tripping
 <strong>Closes into</strong> · <a href="../../adr/ADR-018-recipe-yaml-schema/">ADR-018</a>
 <strong>Why this is an RFC</strong> · The recipe YAML is the durable artefact of authorship. Its shape determines whether recipes feel like authored works or like configurations, and whether the editor's creative-parameters surface can round-trip cleanly. Multiple plausible schemas exist; the deliberation is genuine.</p>
@@ -2378,9 +2378,9 @@
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li><em>File-based storage in v1</em> — recipes are flat files under version control (TA §constraints).</li>
-<li><em>Determinism</em> — same recipe + same data = same render (TA §constraints). The schema cannot contain implicit time-dependent fields.</li>
-<li><em>Shared payload format</em> — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA §constraints).</li>
+<li><em>File-based storage in v1</em> — recipes are flat files under version control (TA constraints).</li>
+<li><em>Determinism</em> — same recipe + same data = same render (TA constraints). The schema cannot contain implicit time-dependent fields.</li>
+<li><em>Shared payload format</em> — whatever the pipeline produces from a recipe must work for both browser preview and Puppeteer render (TA constraints).</li>
 </ul>
 <h2 id="proposed-approach">Proposed approach</h2>
 <p>A <strong>flat schema with a comment-marker delimiter</strong>. All keys live at the top level. A single line comment — <code># ⊓ creative controls ⊓</code> — divides the file into two sections: above it, structural fields (the recipe's identity, region, sources, schedule); below it, creative state and the technical parameters derived from creative state. The editor renders lines below the marker in <code>editor-creative</code> (amber) and lines above in <code>editor-structure</code> (teal).</p>
@@ -2473,7 +2473,7 @@
 </ul>
 <h2 id="links">Links</h2>
 <ul>
-<li><strong>TA</strong> — §contracts/recipe-yaml · §components/pipeline · §components/render-system · §constraints</li>
+<li><strong>TA</strong> — contracts/recipe-yaml · components/pipeline · components/render-system · constraints</li>
 <li><strong>Related PRDs</strong> — PRD-001 Recipe · PRD-003 Recipe Editor</li>
 <li><strong>Related UXS</strong> — UXS-003 Recipe Editor (visual contract for the YAML mode this schema feeds)</li>
 <li><strong>Related RFCs</strong> — RFC-002 Render payload format · RFC-005 YAML round-tripping</li>

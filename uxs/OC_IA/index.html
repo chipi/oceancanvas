@@ -591,7 +591,7 @@
   <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §overview
+        overview
       
     </span>
   </a>
@@ -602,12 +602,12 @@
   <a href="#surfaces" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §surfaces
+        surfaces
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§surfaces">
+    <nav class="md-nav" aria-label="surfaces">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -674,12 +674,12 @@
   <a href="#topbar-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §topbar-patterns
+        topbar-patterns
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§topbar-patterns">
+    <nav class="md-nav" aria-label="topbar-patterns">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -757,12 +757,12 @@
   <a href="#navigation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §navigation
+        navigation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§navigation">
+    <nav class="md-nav" aria-label="navigation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -807,7 +807,7 @@
   <a href="#url-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §url-structure
+        url-structure
       
     </span>
   </a>
@@ -818,12 +818,12 @@
   <a href="#shell-regions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §shell-regions
+        shell-regions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§shell-regions">
+    <nav class="md-nav" aria-label="shell-regions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -868,12 +868,12 @@
   <a href="#shared-tokens" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §shared-tokens
+        shared-tokens
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§shared-tokens">
+    <nav class="md-nav" aria-label="shared-tokens">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -940,7 +940,7 @@
   <a href="#state-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §state-persistence
+        state-persistence
       
     </span>
   </a>
@@ -951,7 +951,7 @@
   <a href="#entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §entry-points
+        entry-points
       
     </span>
   </a>
@@ -962,7 +962,7 @@
   <a href="#surface-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §surface-map
+        surface-map
       
     </span>
   </a>
@@ -2604,14 +2604,14 @@
 </ul>
 <p>This document holds the structural map of OceanCanvas — the surfaces the product is composed of, how they connect, what URLs address them, what chrome persists across them, and what design tokens they share. Individual UXS documents link into specific sections rather than restating navigation or shared tokens per surface.</p>
 <p>IA holds <em>what is true across the UX</em>. Per-surface visual contracts live in UXS documents. Behavioural rules (animation timing, debounce intervals, keyboard shortcuts) belong in RFCs in the tech plane, not here.</p>
-<p>The §surface-map at the bottom is the visual reference for how surfaces relate. The §url-structure section is the canonical address space for the product.</p>
+<p>The surface-map at the bottom is the visual reference for how surfaces relate. The url-structure section is the canonical address space for the product.</p>
 <hr />
-<h2 id="overview">§overview</h2>
+<h2 id="overview">overview</h2>
 <p>OceanCanvas has <strong>four primary surfaces</strong> plus one <strong>mode</strong> that opens within a primary surface. All surfaces share a dark canvas, editorial typography, and a common state model (region selection, active recipe, active source) that persists across navigation.</p>
-<p>Surface navigation in OceanCanvas is <strong>not via a persistent global nav bar.</strong> Each surface has its own topbar pattern (see §topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have <code>recipe ↗</code> and <code>timelapse ↗</code> actions that jump to the editor or the video editor for that specific recipe.</p>
+<p>Surface navigation in OceanCanvas is <strong>not via a persistent global nav bar.</strong> Each surface has its own topbar pattern (see topbar-patterns) tailored to its context. People reach surfaces via direct URLs and via in-context links: Dashboard's "select region" mode passes lat/lon to the Recipe Editor; Gallery cards have <code>recipe ↗</code> and <code>timelapse ↗</code> actions that jump to the editor or the video editor for that specific recipe.</p>
 <p>The product's information architecture reflects its central activity: the creative loop. Dashboard exploration leads to recipe authoring; recipe rendering leads to gallery accumulation; gallery viewing leads to video assembly; video patterns prompt new recipes. The four surfaces are the four points on this loop.</p>
 <hr />
-<h2 id="surfaces">§surfaces</h2>
+<h2 id="surfaces">surfaces</h2>
 <p>The four primary surfaces and one mode. Each is a destination with its own URL, its own purpose, its own UXS document(s).</p>
 <h3 id="dashboard">Dashboard</h3>
 <p>The data exploration surface. Two views: a <strong>main view</strong> with full-bleed source heatmap (today's data over the world map) and per-source <strong>editorial spreads</strong> that read like magazine pages. Per <a href="../../adr/ADR-017-one-layout-per-source/">ADR-017</a>, each source has its own editorial layout — SST has its thermal heatmap and 41-year trend, sea level has its full-width rise curve. The dashboard is <em>the entry point to the recipe editor</em> — drawing a region on a source's map passes the bounds directly to the editor.</p>
@@ -2624,21 +2624,21 @@
 <p>The creative surface where data becomes art. A single preview canvas above a flip toggle; below the toggle, the controls flip between Creative mode (mood preset, energy×presence, colour character, temporal weight) and YAML mode (the recipe file with creative-driven lines highlighted in amber). A "sketch editor ↗" link opens the raw p5.js sketch.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-003-recipe-editor/">PRD-003 Recipe Editor</a></li>
-<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>UXS</strong> · <a href="../UXS-003-recipe-editor/">UXS-003 Recipe Editor</a></li>
 <li><strong>URL</strong> · <code>/recipes/{id}</code> for an existing recipe; <code>/recipes/new</code> for authoring</li>
 </ul>
 <h3 id="gallery">Gallery</h3>
 <p>The public face. A living archive of accumulated daily renders. Hero (today's featured recipe at full bleed with <code>timelapse ↗</code> · <code>recipe ↗</code> · <code>download</code> actions) + 14-day strip (the same recipe's recent history) + grid (every active recipe rendered today). Updates automatically when the pipeline runs — no manual curation. The default landing surface.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-004-gallery/">PRD-004 Gallery</a></li>
-<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>UXS</strong> · <a href="../UXS-004-gallery/">UXS-004 Gallery</a> (per-surface contract); recipe-page and single-render deep views remain tracked in <a href="../">uxs/index.md</a></li>
 <li><strong>URL</strong> · <code>/</code> (default landing), <code>/gallery/{recipe}</code> for a specific recipe page, <code>/gallery/{recipe}/{date}</code> for a specific render</li>
 </ul>
 <h3 id="video-editor">Video Editor</h3>
 <p>The timelapse studio. Assembles a recipe's accumulated PNG renders into an MP4 with optional audio (RFC-006) and overlay annotations. Frames already exist as stored renders; the editor is assembly and enrichment, not creation. Right-side panel has Sequence · Audio · Overlays sections.</p>
 <ul>
 <li><strong>PRD</strong> · <a href="../../prd/PRD-005-video-editor/">PRD-005 Video Editor</a></li>
-<li><strong>UXS</strong> · UXS-NNN (deferred)</li>
+<li><strong>UXS</strong> · <a href="../UXS-005-video-editor/">UXS-005 Video Editor</a></li>
 <li><strong>URL</strong> · <code>/timelapse/{recipe}</code></li>
 </ul>
 <h3 id="sketch-editor-mode-not-a-surface">Sketch Editor (mode, not a surface)</h3>
@@ -2648,7 +2648,7 @@
 <li>Returns to the Recipe Editor with the modified sketch on save.</li>
 </ul>
 <hr />
-<h2 id="topbar-patterns">§topbar-patterns</h2>
+<h2 id="topbar-patterns">topbar-patterns</h2>
 <p>The topbar varies per surface — it is contextual chrome (breadcrumb + actions), not persistent global navigation. Each surface defines its topbar in its UXS, but the patterns rhyme. All topbars are 42px tall, against <code>surface</code> background, with the wordmark on the left.</p>
 <h3 id="dashboard-main-view">Dashboard — main view</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>[OCEANCANVAS]    /sea surface temperature ⊓ NOAA OISST                  25 APR 2026 / 06:00 UTC
@@ -2691,7 +2691,7 @@
 <li><strong>No persistent four-surface nav menu.</strong> Surface switching is via direct URLs (which users bookmark or share) and via in-context links from one surface to another.</li>
 </ul>
 <hr />
-<h2 id="navigation">§navigation</h2>
+<h2 id="navigation">navigation</h2>
 <p>How surfaces connect. Without a global nav, navigation is <em>contextual</em> — each surface offers paths to other surfaces relevant to its own work.</p>
 <h3 id="cross-surface-transitions-state-passing">Cross-surface transitions (state-passing)</h3>
 <table>
@@ -2766,7 +2766,7 @@
 <li><em>No link from Gallery to Dashboard exists in v1.</em> This is intentional — the Gallery is for browsing renders; the Dashboard is for exploring data. They are different activities. Users who want to author a recipe go from Gallery → existing recipe → editor, or from Dashboard via region selection.</li>
 </ul>
 <hr />
-<h2 id="url-structure">§url-structure</h2>
+<h2 id="url-structure">url-structure</h2>
 <p>The canonical address space. Every surface is addressable by URL. Every meaningful sub-state has its own URL when it makes sense to share or bookmark.</p>
 <table>
 <thead>
@@ -2841,16 +2841,16 @@
 <li><strong>Source slugs.</strong> Match the source-id in the OC-03 catalog: <code>sst</code>, <code>sea-level</code>, <code>salinity</code>, <code>sea-ice</code>, <code>chlorophyll</code>, etc.</li>
 </ul>
 <hr />
-<h2 id="shell-regions">§shell-regions</h2>
+<h2 id="shell-regions">shell-regions</h2>
 <p>The persistent chrome. UXS documents inherit these.</p>
 <h3 id="topbar-42px">Topbar (42px)</h3>
-<p>See §topbar-patterns above for the per-surface variations.</p>
+<p>See topbar-patterns above for the per-surface variations.</p>
 <h3 id="source-rail-dashboard-main-view-only-96px-wide">Source rail (Dashboard main view only, ~96px wide)</h3>
 <p>The Dashboard's main view has a left-side rail listing available data sources. Active source has its label rendered in the source's accent token (e.g., <code>domain-sst-accent</code> for SST); other sources in <code>text-muted</code>. <em>No left border, no background fill — purely text-colour treatment.</em> The rail does not appear in editorial spreads or in any other surface.</p>
 <h3 id="citation-footer-dashboard-recipe-editor-video-editor">Citation footer (Dashboard, Recipe Editor, Video Editor)</h3>
-<p>A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the <em>attribution-baked-in</em> constraint (TA §constraints, PA §promises/citation-travels). Format: <code>[source] · [resolution] · [cadence] · [date range] · OceanCanvas</code>. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.</p>
+<p>A whisper-thin attribution strip at the bottom of editorial views. Lists source(s) used and the project name. Required by the <em>attribution-baked-in</em> constraint (<code>OC_TA.md</code>, <strong>Constraints</strong>; <code>OC_PA.md</code>, promise <em>citation-travels</em>). Format: <code>[source] · [resolution] · [cadence] · [date range] · OceanCanvas</code>. Gallery uses a different footer style (descriptive label of the page composition), not the attribution footer.</p>
 <hr />
-<h2 id="shared-tokens">§shared-tokens</h2>
+<h2 id="shared-tokens">shared-tokens</h2>
 <p>Design tokens that genuinely apply across all surfaces. Per-surface and per-source tokens live in the relevant UXS.</p>
 <h3 id="surface-tokens">Surface tokens</h3>
 <table>
@@ -2994,7 +2994,7 @@
 <h3 id="spacing-scale">Spacing scale</h3>
 <p>Base unit: 4px. All spacing in surfaces uses multiples: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64.</p>
 <hr />
-<h2 id="state-persistence">§state-persistence</h2>
+<h2 id="state-persistence">state-persistence</h2>
 <p>What carries across surface transitions. State that doesn't appear here resets at each surface load.</p>
 <table>
 <thead>
@@ -3039,7 +3039,7 @@
 </table>
 <p>Phase 1 has no auth, no user accounts, no per-user state. State persistence is via URLs and URL query parameters — never via localStorage or cookies (per the artifact constraints in TA).</p>
 <hr />
-<h2 id="entry-points">§entry-points</h2>
+<h2 id="entry-points">entry-points</h2>
 <p>How a person first reaches each surface.</p>
 <table>
 <thead>
@@ -3060,7 +3060,7 @@
 <tr>
 <td>Dashboard</td>
 <td>✓ (<code>/dashboard</code>)</td>
-<td>None in v1 (deliberate — see §navigation)</td>
+<td>None in v1 (deliberate — see navigation)</td>
 <td>✓ (shareable spread URLs)</td>
 </tr>
 <tr>
@@ -3084,13 +3084,13 @@
 </tbody>
 </table>
 <hr />
-<h2 id="surface-map">§surface-map</h2>
+<h2 id="surface-map">surface-map</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>                     ┌──────────────────────────┐
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                     │    Wordmark (clickable)  │  ← always returns to Gallery
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                     │     OCEANCANVAS          │
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                     └──────────────────────────┘
 <a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>     each surface has its own topbar pattern (see §topbar-patterns)
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>     each surface has its own topbar pattern (see topbar-patterns)
 <a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>   ┌──────────┐    ┌──────────────┐    ┌──────────┐    ┌──────────────┐
 <a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>   │ Dashboard│    │Recipe Editor │    │ Gallery  │    │ Video Editor │
@@ -3124,8 +3124,8 @@
 <hr />
 <h2 id="how-uxs-documents-reference-this-doc">How UXS documents reference this doc</h2>
 <p>UXS documents anchor to IA sections. The conventions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>IA anchor · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §shared-tokens
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Tokens inherited · §shared-tokens (canvas, surface, text, intent)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>IA anchor · surfaces/dashboard · topbar-patterns/dashboard-main-view · shared-tokens
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Tokens inherited · shared-tokens (canvas, surface, text, intent)
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Domain tokens defined here · domain-sst-* (per-source palette)
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Behaviour reference · RFC-NNN (animation, debounce — not in UXS)
 </code></pre></div>
@@ -3167,7 +3167,7 @@
 <hr />
 <h2 id="open-threads">Open threads</h2>
 <ul>
-<li><strong>UXS coverage.</strong> Phase 1 ships UXS-001 (Dashboard SST main view + spread). Other surfaces (Recipe Editor, Gallery, Video Editor) and other source spreads (Sea Level, Salinity, etc.) are deferred until needed for implementation. With prototypes now available, drafting them is straightforward.</li>
+<li><strong>UXS coverage.</strong> UXS-001 (Dashboard SST), UXS-002 (Sea Level spread), UXS-003 (Recipe Editor), UXS-004 (Gallery), and UXS-005 (Video Editor) exist; per-recipe gallery deep pages and additional source spreads remain to be drafted when implementation needs them.</li>
 <li><strong>Sketch editor mode contract.</strong> Currently no UXS — full-screen code editor with payload pre-loaded. Warrants a UXS once visual conventions are firmed up.</li>
 <li><strong>Mobile / narrow-viewport.</strong> All prototypes are desktop-first. Mobile behaviour deferred — when revisited, may be a new RFC (responsive strategy) rather than IA changes.</li>
 <li><strong>Source switcher chip in Dashboard editorial spread.</strong> Behaviour (whether it triggers a hard navigation or an in-place transition) belongs in an RFC for Dashboard interactions; how it looks belongs in UXS-001.</li>
@@ -3175,7 +3175,7 @@
 <hr />
 <h2 id="changelog">Changelog</h2>
 <ul>
-<li><strong>v0.2 · April 2026</strong> — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added §topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated §url-structure to add <code>/dashboard/{source}/explorer</code> for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.</li>
+<li><strong>v0.2 · April 2026</strong> — Revised against prototype mockups (OC-02 Figs 1–7). Major changes: removed the persistent four-surface nav assumption; added topbar-patterns showing the per-surface variation; changed source rail's active state from "2px coloured left border" to "text colour only"; clarified that surface navigation is contextual (URL + in-context links), not via a global menu. Updated url-structure to add <code>/dashboard/{source}/explorer</code> for editorial spread mode. Added Gallery filter pills as a recognised topbar pattern.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, written before prototype access. Superseded by v0.2.</li>
 </ul>
 

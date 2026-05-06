@@ -390,10 +390,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#docker-compose-up-exits-immediately-or-hangs" class="md-nav__link">
+  <a href="#docker-compose-f-composedocker-composeyml-up-exits-immediately-or-hangs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        docker compose up exits immediately or hangs
+        docker compose -f compose/docker-compose.yml up exits immediately or hangs
       
     </span>
   </a>
@@ -2319,9 +2319,9 @@
 <h2 id="run-it">Run it</h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/chipi/oceancanvas.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>oceancanvas
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose/docker-compose.yml<span class="w"> </span>up
 </code></pre></div>
-<p>Five containers start: the pipeline, the gallery, Prefect (orchestration), Postgres (Prefect state), and the recipe save server.</p>
+<p>Six services start: Postgres (Prefect state), Prefect Server, the pipeline worker, the gallery (Caddy + static app), the recipe save server, and the video export server.</p>
 <table>
 <thead>
 <tr>
@@ -2341,6 +2341,10 @@
 <tr>
 <td>Recipe save server</td>
 <td><code>localhost:3001</code></td>
+</tr>
+<tr>
+<td>Video export server</td>
+<td><code>localhost:3002</code></td>
 </tr>
 </tbody>
 </table>
@@ -2423,11 +2427,11 @@
 <hr />
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>The most common things that go wrong on first run, and how to unstick them.</p>
-<h3 id="docker-compose-up-exits-immediately-or-hangs"><code>docker compose up</code> exits immediately or hangs</h3>
+<h3 id="docker-compose-f-composedocker-composeyml-up-exits-immediately-or-hangs"><code>docker compose -f compose/docker-compose.yml up</code> exits immediately or hangs</h3>
 <ul>
 <li><strong>Docker Desktop not running.</strong> On macOS / Windows, the Docker daemon has to be started before any compose command. Open Docker Desktop, wait for it to say "Docker is running."</li>
 <li><strong>Permission denied on <code>/var/run/docker.sock</code> (Linux).</strong> Add your user to the <code>docker</code> group: <code>sudo usermod -aG docker $USER</code>, then log out and back in.</li>
-<li><strong>Port 8080 already in use.</strong> Another process is bound to the gallery port. Stop it (<code>lsof -i :8080</code> to find), or override: <code>GALLERY_PORT=8090 docker compose up</code>. Same for 4200 (Prefect UI) and 3001 (save server).</li>
+<li><strong>Port 8080 already in use.</strong> Another process is bound to the gallery port. Stop it (<code>lsof -i :8080</code> to find), or override: <code>GALLERY_PORT=8090 docker compose -f compose/docker-compose.yml up</code>. Same for 4200 (Prefect UI), 3001 (recipe save), and 3002 (video export).</li>
 </ul>
 <h3 id="pipeline-never-runs-renders-never-appear">Pipeline never runs / renders never appear</h3>
 <ul>
@@ -2460,7 +2464,7 @@
 </ul>
 <h3 id="still-stuck">Still stuck</h3>
 <ul>
-<li>Check logs: <code>docker compose logs pipeline</code> (or <code>gallery</code> / <code>prefect</code> / <code>recipe-server</code>).</li>
+<li>Check logs: <code>docker compose -f compose/docker-compose.yml logs pipeline</code> (or <code>gallery</code>, <code>prefect-server</code>, <code>recipe-server</code>, <code>export-server</code>).</li>
 <li>Verify the manifest: <code>cat renders/manifest.json | head</code> — if it's <code>{ "recipes": {} }</code>, the pipeline hasn't run yet.</li>
 <li>Open an issue with the failing command, error output, OS, and what you tried. The maintainer reads them.</li>
 </ul>

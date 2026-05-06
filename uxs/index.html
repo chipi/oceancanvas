@@ -2117,7 +2117,7 @@
 
 <h1 id="uxs-index">UXS Index</h1>
 <p>UX Specifications for OceanCanvas. One UXS per surface (or per source spread, where ADR-017 applies). Each UXS defines the static visual contract — tokens, layout, component states, accessibility — for one surface.</p>
-<p>The reference document for this folder is <a href="OC_IA/"><code>OC_IA.md</code></a> — Information Architecture. Every UXS anchors to IA's <code>§surfaces</code>, <code>§topbar-patterns</code>, and <code>§shared-tokens</code> sections. UXS documents inherit shared tokens from IA; they define per-surface and per-source tokens themselves.</p>
+<p>The reference document for this folder is <a href="OC_IA/"><code>OC_IA.md</code></a> — Information Architecture. Every UXS anchors to IA's <code>surfaces</code>, <code>topbar-patterns</code>, and <code>shared-tokens</code> sections. UXS documents inherit shared tokens from IA; they define per-surface and per-source tokens themselves.</p>
 <h2 id="what-gets-a-uxs">What gets a UXS</h2>
 <p>The static visual contract for one surface — tokens, layout, component appearance, accessibility targets. UXS documents are the implementation contract for frontend work.</p>
 <p>If the work is <em>behavioural</em> (animation timing, debounce, keyboard transitions, scroll behaviour, focus management sequences), it belongs in an <a href="../rfc/">RFC</a>, not a UXS. The UXS specifies static appearance; the RFC specifies how the surface moves.</p>
@@ -2156,31 +2156,31 @@
 <td><a href="UXS-001-dashboard-sst/">UXS-001</a></td>
 <td>Dashboard, SST main view + editorial spread</td>
 <td>Draft v0.2</td>
-<td>§surfaces/dashboard · §topbar-patterns/dashboard-main-view · §topbar-patterns/dashboard-editorial-spread</td>
+<td>surfaces/dashboard · topbar-patterns/dashboard-main-view · topbar-patterns/dashboard-editorial-spread</td>
 </tr>
 <tr>
 <td><a href="UXS-002-dashboard-sealevel/">UXS-002</a></td>
 <td>Dashboard, Sea Level editorial spread</td>
 <td>Draft v0.1</td>
-<td>§surfaces/dashboard · §topbar-patterns/dashboard-editorial-spread</td>
+<td>surfaces/dashboard · topbar-patterns/dashboard-editorial-spread</td>
 </tr>
 <tr>
 <td><a href="UXS-003-recipe-editor/">UXS-003</a></td>
 <td>Recipe Editor (creative + YAML modes)</td>
 <td>Draft v0.1</td>
-<td>§surfaces/recipe-editor · §topbar-patterns/recipe-editor</td>
+<td>surfaces/recipe-editor · topbar-patterns/recipe-editor</td>
 </tr>
 <tr>
 <td><a href="UXS-004-gallery/">UXS-004</a></td>
 <td>Gallery (front page)</td>
 <td>Draft v0.1</td>
-<td>§surfaces/gallery · §topbar-patterns/gallery</td>
+<td>surfaces/gallery · topbar-patterns/gallery</td>
 </tr>
 <tr>
 <td><a href="UXS-005-video-editor/">UXS-005</a></td>
 <td>Video Editor</td>
 <td>Draft v0.1</td>
-<td>§surfaces/video-editor · §topbar-patterns/video-editor</td>
+<td>surfaces/video-editor · topbar-patterns/video-editor</td>
 </tr>
 </tbody>
 </table>
@@ -2255,7 +2255,7 @@
 <td>Enumerate the overlays explicitly. UXS-005 lists the 10 concrete overlays (8 default-enabled, 2 deferred). PRD-005 currently references "audio + overlay enrichment" without listing the surface controls; v0.2 should reference UXS-005's overlay list.</td>
 </tr>
 <tr>
-<td><strong>OC_IA §topbar-patterns</strong></td>
+<td><strong>OC_IA topbar-patterns</strong></td>
 <td>New section in IA v0.2 capturing the per-surface topbar variation seen across all five prototypes. (Already done.)</td>
 </tr>
 </tbody>

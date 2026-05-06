@@ -2333,8 +2333,8 @@
 <h1 id="rfc-009-pipeline-cli-interface">RFC-009 — Pipeline CLI Interface</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-05-02 → <a href="../../adr/ADR-022-cli-entry-point/">ADR-022</a>
-<strong>TA anchor</strong> · §pipeline/tasks · §deployment · §constraints
-<strong>Related</strong> · OC-04 §six-pipeline-tasks · OC-04 §deployment · RFC-008 (parallelisation)
+<strong>TA anchor</strong> · components/pipeline · constraints
+<strong>Related</strong> · OC-04 six-pipeline-tasks · OC-04 deployment · RFC-008 (parallelisation)
 <strong>Closes into</strong> · <a href="../../adr/ADR-022-cli-entry-point/">ADR-022</a>
 <strong>Why this is an RFC</strong> · The pipeline currently has no defined entry point for ad-hoc invocation. The Prefect server handles the scheduled daily run, but there is no sanctioned way to trigger a backfill, re-render a single date, or inspect pipeline state without going through Docker internals or the Prefect UI directly. Adding a CLI requires deciding how it relates to the Prefect server — whether it calls flows directly, dispatches through the server, or both — and that relationship determines how observability is split across invocation modes. This is a genuine design question with real trade-offs between simplicity and visibility.</p>
 </blockquote>
@@ -2364,7 +2364,7 @@
 </ul>
 <hr />
 <h2 id="constraints">Constraints</h2>
-<p>From OC-04 §constraints and §deployment:</p>
+<p>From OC-04 constraints and deployment:</p>
 <ul>
 <li>The pipeline container runs Python + Node + Chromium inside Docker Compose. The CLI runs inside this container; <code>docker compose exec pipeline oc &lt;command&gt;</code> is the invocation pattern from the host.</li>
 <li>Alternatively, if the CLI is installed in the host Python environment (outside Docker), it can connect to the pipeline's file system via mounted volumes. This is a secondary invocation path, not the primary.</li>
@@ -2492,7 +2492,7 @@
 <hr />
 <h2 id="links">Links</h2>
 <ul>
-<li>OC-04 Technical Architecture — §six-pipeline-tasks, §deployment, §tech-stack</li>
+<li>OC-04 Technical Architecture — six-pipeline-tasks, deployment, tech-stack</li>
 <li>RFC-008 — Pipeline Parallelisation Strategy (backfill flow, RENDER_CONCURRENCY)</li>
 <li>RFC-001 — Recipe YAML schema (open question 3: start_date field)</li>
 <li>Prefect docs — flow invocation without server, client API for server dispatch</li>

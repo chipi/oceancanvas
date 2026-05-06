@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#implementation-phase-3-kickoff" class="md-skip">
+        <a href="#implementation-phase-1-kickoff" class="md-skip">
           Skip to content
         </a>
       
@@ -2373,7 +2373,7 @@
   
 
 
-<h1 id="implementation-phase-3-kickoff">Implementation — Phase 3 kickoff</h1>
+<h1 id="implementation-phase-1-kickoff">Implementation — Phase 1 kickoff</h1>
 <blockquote>
 <p>How Phase 1 gets built. What ships first, what gates the next slice, what order the rest follows.</p>
 </blockquote>
@@ -2405,6 +2405,7 @@
 <li>Argo float daily index — daily JSON, no authentication. Serves the scatter recipe.</li>
 </ul>
 <p>GEBCO bathymetry is one-time static data, fetched once and reused — not a daily integration.</p>
+<p><em>Slice 1 validated two daily-integrated sources (OISST, Argo). Additional no-auth sources wired in Phase 1 are listed in <code>CLAUDE.md</code>; the same six-task pipeline shape applies.</em></p>
 <p><strong>The full pipeline.</strong> All six tasks: <code>discover</code> → <code>fetch</code> → <code>process</code> → <code>build_payload</code> → <code>render</code> → <code>index</code>. Runs daily at 06:00 UTC. Outputs:</p>
 <ul>
 <li><code>data/sources/oisst/{date}.nc</code> and <code>data/sources/argo/{date}.json</code> — raw data</li>
@@ -2435,10 +2436,10 @@
 <li>Build the pipeline Docker image</li>
 <li>Run a synthetic-data e2e test of the full pipeline (discover → render → manifest) using fixture data</li>
 </ul>
-<p><strong>The deployment.</strong> <code>docker compose up</code> brings up four containers per ADR-011: pipeline, prefect-server, postgres (Prefect state DB), gallery (Caddy). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host.</p>
+<p><strong>The deployment.</strong> <code>docker compose up</code> brings up <strong>six</strong> services: <code>postgres</code>, <code>prefect-server</code>, <code>pipeline</code>, <code>gallery</code> (Caddy + static build), <code>recipe-server</code>, and <code>export-server</code> (<a href="../adr/ADR-011-docker-compose/">ADR-011</a>, <a href="../adr/ADR-029-compose-sidecar-services/">ADR-029</a>). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code>, <code>sketches/</code>, and <code>audio/</code> (export) from the host as each service requires.</p>
 <h3 id="what-this-proves">What this proves</h3>
 <ul>
-<li><strong>The architecture closes.</strong> Pipeline produces what gallery reads. The contracts in TA §contracts (recipe.yaml, processed JSON, render payload, manifest.json) are real, not theoretical.</li>
+<li><strong>The architecture closes.</strong> Pipeline produces what gallery reads. The contracts in <code>OC_TA.md</code> (<strong>Contracts</strong>) — recipe.yaml, processed JSON, render payload, manifest.json — are real, not theoretical.</li>
 <li><strong>The shared payload format works for three render types.</strong> The same payload structure feeds three different sketches. If the format is too field-centric, this slice exposes it.</li>
 <li><strong>The accumulation promise is visible.</strong> The 14-day strip shows accumulated history. With three recipes running daily, the gallery starts looking like work after two weeks.</li>
 <li><strong>Determinism holds.</strong> Re-running the pipeline produces byte-identical PNGs.</li>
@@ -2459,7 +2460,7 @@
 <li><strong>RFC-002 (Render payload format)</strong> — three render types consume the same payload structure. Lock the format.</li>
 <li><strong>RFC-003 (Recipe lifecycle on source unavailability)</strong> — fourteen days of operation surface what happens when ERDDAP is slow or Argo's index is delayed. Decide and lock.</li>
 </ul>
-<p>If the pipeline misses a day or the gallery breaks on a fresh deploy, fix that before adding anything. Daily cadence is sacred (TA §constraints).</p>
+<p>If the pipeline misses a day or the gallery breaks on a fresh deploy, fix that before adding anything. Daily cadence is sacred (<code>OC_TA.md</code>, <strong>Constraints</strong>).</p>
 <hr />
 <h2 id="slice-2-recipe-editor-dashboard">Slice 2 — Recipe Editor + Dashboard</h2>
 <p>The full creative loop closes. Authoring and reading — the surfaces a person uses to make and read the work. The hero from Slice 1's deferred gallery scope earns its place here, because there's now a Recipe Editor and a Recipe page (deferred or stubbed) to link to.</p>
@@ -2467,7 +2468,7 @@
 <p><strong>The Recipe Editor.</strong> Per UXS-003. Preview canvas at the top, flip bar between Creative and YAML modes, the four creative-control surfaces (mood preset, energy×presence, colour character, temporal weight), the YAML mode with comment-marker amber highlighting, save/discard. Live preview running the same shared payload format the pipeline uses.</p>
 <p><strong>The Dashboard.</strong> Per UXS-001 (SST main view + editorial spread). Source rail with SST active, full-bleed thermal heatmap, three stacked stats cards, vertical legend, timeline scrubber, mini sparkline below. Editorial spread with 41-year trend chart and last-10-years anomaly bars.</p>
 <p><strong>Gallery hero added.</strong> The full-bleed hero per UXS-004 — today's featured render with metadata overlay and the now-real <code>recipe ↗</code> action. Cards in the grid also gain the <code>recipe ↗</code> action linking to the Recipe Editor at <code>/recipes/{id}</code>.</p>
-<p><strong>Cross-surface state-passing.</strong> Per IA §navigation:</p>
+<p><strong>Cross-surface state-passing.</strong> Per IA navigation:</p>
 <ul>
 <li>Dashboard "select region" mode passes lat/lon to <code>/recipes/new</code></li>
 <li>Gallery <code>recipe ↗</code> actions pass recipe id to <code>/recipes/{id}</code></li>
@@ -2520,7 +2521,7 @@
 <ul>
 <li>Its acceptance criteria pass — UXS acceptance criteria for surface slices, concrete artefact checks for backend slices</li>
 <li>CI is green</li>
-<li>The constraints in TA §constraints hold — determinism, daily cadence, no auth, file-based, self-hostable, shared payload, attribution baked in</li>
+<li>The constraints in <code>OC_TA.md</code> (<strong>Constraints</strong>) hold — determinism, daily cadence, no auth, file-based, self-hostable, shared payload, attribution baked in</li>
 <li>It runs on a fresh <code>docker compose up</code> from <code>git clone</code></li>
 </ul>
 <p>A slice does <em>not</em> ship when:</p>
@@ -2543,7 +2544,7 @@
 <tbody>
 <tr>
 <td>RFC's proposed approach survives implementation cleanly</td>
-<td>Close RFC into ADR; update TA §map and §stack</td>
+<td>Close RFC into ADR; update <code>OC_TA.md</code> (<strong>Map</strong>) and (<strong>Stack</strong>)</td>
 </tr>
 <tr>
 <td>RFC's proposed approach needs adjustment</td>
@@ -2555,15 +2556,15 @@
 </tr>
 <tr>
 <td>New audience surfaced through user testing</td>
-<td>Update PA §audiences</td>
+<td>Update PA audiences</td>
 </tr>
 <tr>
 <td>New surface needed</td>
-<td>Update IA §surfaces; write a new PRD; draft a UXS</td>
+<td>Update IA surfaces; write a new PRD; draft a UXS</td>
 </tr>
 <tr>
 <td>New shared design token discovered</td>
-<td>Add to IA §shared-tokens; remove any local definitions in UXSes</td>
+<td>Add to IA shared-tokens; remove any local definitions in UXSes</td>
 </tr>
 <tr>
 <td>Surface contract changes (URL, navigation, shell)</td>
@@ -2571,7 +2572,7 @@
 </tr>
 <tr>
 <td>New stack choice forced by implementation reality</td>
-<td>Write an ADR; update TA §stack</td>
+<td>Write an ADR; update <code>OC_TA.md</code> (<strong>Stack</strong>)</td>
 </tr>
 </tbody>
 </table>
@@ -2596,7 +2597,7 @@
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  .gitkeep
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>renders/
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  .gitkeep
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>docker-compose.yml
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>compose/docker-compose.yml
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>.github/workflows/ci.yml
 </code></pre></div>
 <p>No code yet — just the structure. The structure itself is a commit because every subsequent commit anchors to it. Anchor it intentionally rather than letting it accrete.</p>
@@ -2608,11 +2609,11 @@
 <li><strong><code>docs/adr/OC_TA.md</code></strong> — components, contracts, constraints, stack, state board</li>
 <li><strong><code>docs/prd/OC_PA.md</code></strong> — audiences, promises, principles</li>
 <li><strong><code>docs/uxs/OC_IA.md</code></strong> — surfaces, navigation, shared tokens</li>
-<li><strong>The PRDs</strong> — <code>docs/prd/PRD-001..005.md</code></li>
-<li><strong>The UXSes</strong> — <code>docs/uxs/UXS-001..005.md</code></li>
-<li><strong>The RFCs</strong> — <code>docs/rfc/RFC-001..007.md</code></li>
-<li><strong>The ADRs</strong> — <code>docs/adr/ADR-001..017.md</code></li>
-<li><strong>The concept package</strong> — OC-00 through OC-05 at the project root</li>
+<li><strong>The PRDs</strong> — <code>docs/prd/PRD-001</code> … <code>PRD-006.md</code> (see <a href="../prd/"><code>prd/index.md</code></a>)</li>
+<li><strong>The UXSes</strong> — <code>docs/uxs/UXS-001</code> … <code>UXS-005.md</code> (see <a href="../uxs/"><code>uxs/index.md</code></a>)</li>
+<li><strong>The RFCs</strong> — <code>docs/rfc/RFC-001</code> … <code>RFC-011.md</code> (see <a href="../rfc/"><code>rfc/index.md</code></a>)</li>
+<li><strong>The ADRs</strong> — <code>docs/adr/</code> through <a href="../adr/ADR-029-compose-sidecar-services/">ADR-029</a>; canonical list in <a href="../adr/OC_TA/#map"><code>OC_TA.md</code> (Map)</a></li>
+<li><strong>The concept package</strong> — OC-00 through OC-05 in <a href="../concept/00-package-introduction/"><code>concept/00-package-introduction.md</code></a></li>
 </ul>
 
 

@@ -2229,7 +2229,7 @@
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · 2026-05-03
-<strong>TA anchor</strong> · §components/render-system · §contracts/recipe-yaml
+<strong>TA anchor</strong> · components/render-system · contracts/recipe-yaml
 <strong>Related RFC</strong> · RFC-010 (closes)
 <strong>Supersedes</strong> · ADR-026</p>
 </blockquote>
@@ -2245,12 +2245,12 @@
 </ol>
 <p><strong>Browser preview</strong> uses the Web Audio API: <code>OscillatorNode</code> for drone, scheduled <code>AudioBufferSourceNode</code> taps for pulse, one-shot <code>AudioBufferSourceNode</code> for accent, looping <code>AudioBufferSourceNode</code> + <code>BiquadFilterNode</code> for texture. All four layers share a master <code>GainNode</code>.</p>
 <p><strong>Pipeline export</strong> uses pure-Python synthesis (<code>numpy</code> + stdlib <code>wave</code>) producing a deterministic stereo WAV; ffmpeg only decodes the pre-rendered MP3 samples and encodes the final mix as AAC inside the MP4. The synthesis math mirrors the browser engine so preview and export sound the same.</p>
-<p><strong>Recipes author audio character</strong> via the <code>audio:</code> block beneath the creative-controls marker. Six fields (<code>drone_waveform</code>, <code>drone_glide</code>, <code>pulse_sensitivity</code>, <code>presence</code>, <code>accent_style</code>, <code>texture_density</code>) are derived mechanically from the same creative axes that produce the visual params, per RFC-010 §"Creative state → audio parameters".</p>
+<p><strong>Recipes author audio character</strong> via the <code>audio:</code> block beneath the creative-controls marker. Six fields (<code>drone_waveform</code>, <code>drone_glide</code>, <code>pulse_sensitivity</code>, <code>presence</code>, <code>accent_style</code>, <code>texture_density</code>) are derived mechanically from the same creative axes that produce the visual params, per RFC-010 "Creative state → audio parameters".</p>
 <h2 id="rationale">Rationale</h2>
 <p><strong>The data performs.</strong> Drone pitch literally rises with SST. Pulse accelerates during volatility. Records ring a chime. Texture breathes seasonally. A viewer feels the music respond to what they see, which was the sharpest threat in PRD-005.</p>
 <p><strong>Self-hostable, no API.</strong> All synthesis runs locally — Web Audio in the browser, numpy in the pipeline. No Mubert/Beatoven dependency; no licensing surface; no key management.</p>
 <p><strong>Byte-budget.</strong> Seven small MP3 samples (~210 KB total) replace the previous 3.5 MB of stem files. Drone is fully synthesised — no asset.</p>
-<p><strong>Determinism, with one concession.</strong> Visual renders remain byte-identical (preserves the §constraints rule). Audio synthesis is deterministic at the WAV level — same recipe + same data = byte-identical synth WAV (proven by <code>pipeline/tests/unit/test_audio.py::test_same_inputs_same_output</code>). However, AAC encoding through ffmpeg may produce non-byte-identical MP4 audio across ffmpeg versions, so the export-level guarantee is "perceptually identical" rather than byte-identical.</p>
+<p><strong>Determinism, with one concession.</strong> Visual renders remain byte-identical (preserves the constraints rule). Audio synthesis is deterministic at the WAV level — same recipe + same data = byte-identical synth WAV (proven by <code>pipeline/tests/unit/test_audio.py::test_same_inputs_same_output</code>). However, AAC encoding through ffmpeg may produce non-byte-identical MP4 audio across ffmpeg versions, so the export-level guarantee is "perceptually identical" rather than byte-identical.</p>
 <p><strong>Recipe parity.</strong> The same <code>creative_to_audio</code> mapping runs in both TS (gallery) and Python (pipeline). Cross-validation tests assert identical outputs (<code>test_creative_mapping.py::TestCreativeToAudio::test_matches_typescript_output</code>).</p>
 <h2 id="implementation-notes">Implementation notes</h2>
 <ul>
@@ -2265,7 +2265,7 @@
 </ul>
 <h2 id="open-follow-ups">Open follow-ups</h2>
 <ul>
-<li><strong>Drone timbre.</strong> Oscillator-based drone may read as synthetic. RFC-010 §"Open questions" anticipated this. If reviewer feedback finds it cold, swap drone to pitch-shifted sample of a real bowed instrument (one extra ~50 KB asset). Not blocking.</li>
+<li><strong>Drone timbre.</strong> Oscillator-based drone may read as synthetic. RFC-010 "Open questions" anticipated this. If reviewer feedback finds it cold, swap drone to pitch-shifted sample of a real bowed instrument (one extra ~50 KB asset). Not blocking.</li>
 <li><strong>Browser-export parity for preset overrides.</strong> When the user picks an override preset (e.g. <code>storm-surge</code>) in the Video Editor, that override does not flow to the export — export reads the recipe's authored <code>audio:</code> block. Fine for v1; revisit if authors complain.</li>
 <li><strong>Audio attribution.</strong> Synthesised drone + filtered noise + ffmpeg-lavfi samples are entirely procedural with no third-party audio. <code>audio/ATTRIBUTION.md</code> updated to reflect "synthesised with ffmpeg lavfi; no external audio sources" once stems are removed.</li>
 </ul>

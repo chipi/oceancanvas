@@ -2333,10 +2333,10 @@
 <h1 id="rfc-003-recipe-lifecycle-on-source-unavailability">RFC-003 — Recipe lifecycle on source unavailability</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-05-03 → <a href="../../adr/ADR-025-recipe-lifecycle/">ADR-025</a>
-<strong>TA anchor</strong> · §components/pipeline · §constraints (determinism, attribution)
+<strong>TA anchor</strong> · components/pipeline · constraints (determinism, attribution)
 <strong>Related</strong> · PRD-001 Recipe · OC-03 Data Catalog
 <strong>Closes into</strong> · <a href="../../adr/ADR-025-recipe-lifecycle/">ADR-025</a>
-<strong>Why this is an RFC</strong> · Recipes are durable — they run forever once authored (PA §principles/recipes-are-durable). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do <em>something</em>. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.</p>
+<strong>Why this is an RFC</strong> · Recipes are durable — they run forever once authored (PA, principle <em>recipes-are-durable</em>). But sources are not durable. ERDDAP endpoints go down, ESA reorganises portals, NOAA changes URL conventions. When a recipe's source becomes unavailable mid-recipe-life, the system has to do <em>something</em>. Multiple plausible behaviours exist with real trade-offs around archive integrity and user experience.</p>
 </blockquote>
 <hr />
 <h2 id="the-question">The question</h2>
@@ -2349,7 +2349,7 @@
 <li><em>Fall back to last known data</em>. Use yesterday's data; mark it clearly.</li>
 <li><em>Substitute</em> with a related source. Use SST-CCI when OISST is down.</li>
 </ul>
-<p>Each of these has implications for the <em>accumulation</em> promise (PA §promises/accumulation), the <em>attribution-baked-in</em> principle, and the artist's relationship to their work. The deliberation is real because there is no obvious right answer — pause is conservative but creates archive gaps; fall-back is convenient but breaks attribution; substitute is clever but breaks determinism.</p>
+<p>Each of these has implications for the <em>accumulation</em> promise (PA promises/accumulation), the <em>attribution-baked-in</em> principle, and the artist's relationship to their work. The deliberation is real because there is no obvious right answer — pause is conservative but creates archive gaps; fall-back is convenient but breaks attribution; substitute is clever but breaks determinism.</p>
 <h2 id="use-cases">Use cases</h2>
 <ol>
 <li><strong>Transient outage.</strong> ERDDAP is down for an afternoon, comes back the next morning. The pipeline should not panic.</li>
@@ -2368,9 +2368,9 @@
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li><em>Determinism</em> — same recipe + same data = same render (TA §constraints). A "fall back to yesterday" approach must record exactly what data was used.</li>
-<li><em>Attribution baked in</em> — every render shows its source (TA §constraints). Substitution silently breaks this.</li>
-<li><em>Daily clock is sacred</em> — the pipeline runs once per day; we cannot rely on retries (TA §constraints).</li>
+<li><em>Determinism</em> — same recipe + same data = same render (TA constraints). A "fall back to yesterday" approach must record exactly what data was used.</li>
+<li><em>Attribution baked in</em> — every render shows its source (TA constraints). Substitution silently breaks this.</li>
+<li><em>Daily clock is sacred</em> — the pipeline runs once per day; we cannot rely on retries (TA constraints).</li>
 <li><em>File-based storage in v1</em> — recipe state (active, paused, broken) is a flag in a file, not a database row.</li>
 </ul>
 <h2 id="proposed-approach">Proposed approach</h2>
@@ -2425,7 +2425,7 @@
 </ul>
 <h2 id="links">Links</h2>
 <ul>
-<li><strong>TA</strong> — §components/pipeline · §constraints (determinism, attribution)</li>
+<li><strong>TA</strong> — components/pipeline · constraints (determinism, attribution)</li>
 <li><strong>Related PRDs</strong> — PRD-001 Recipe (this RFC was flagged in its open threads)</li>
 <li><strong>Related sources</strong> — OC-03 Data Catalog (source SLAs, where they exist)</li>
 </ul>

@@ -563,12 +563,12 @@
   <a href="#audiences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §audiences
+        audiences
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§audiences">
+    <nav class="md-nav" aria-label="audiences">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -635,12 +635,12 @@
   <a href="#promises" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §promises
+        promises
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§promises">
+    <nav class="md-nav" aria-label="promises">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -729,12 +729,12 @@
   <a href="#principles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §principles
+        principles
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§principles">
+    <nav class="md-nav" aria-label="principles">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -834,7 +834,7 @@
   <a href="#map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §map
+        map
       
     </span>
   </a>
@@ -2494,8 +2494,8 @@
 <p>This document holds the structural reasoning that every PRD inherits — the audiences OceanCanvas serves, the promises made to them, the principles every feature follows, and the map of which PRDs exist. Individual PRDs link into specific sections rather than restating audiences or principles per feature.</p>
 <p>PA holds <em>what is true across the product</em>. Per-feature argument lives in PRDs. Visual contract lives in UXS. Technical decisions live in ADRs. PA is the document PRDs anchor to so they don't have to carry that work themselves.</p>
 <hr />
-<h2 id="audiences">§audiences</h2>
-<p>OceanCanvas is for anyone curious about the ocean who cares how things look. Five audiences are named explicitly because each shapes specific PRDs differently. PRDs reference audiences as <code>(PA §audiences/artist)</code>.</p>
+<h2 id="audiences">audiences</h2>
+<p>OceanCanvas is for anyone curious about the ocean who cares how things look. Five audiences are named explicitly because each shapes specific PRDs differently. PRDs reference audiences as <code>(PA audiences/artist)</code>.</p>
 <h3 id="artist">artist</h3>
 <p>Wants to make generative art that is about something real. Finds purely algorithmic work empty. Has no interest in NetCDF but is drawn to the idea that the Gulf Stream can be a painting. Cares deeply about authorship, control, and durability of the work.</p>
 <h3 id="climate-communicator">climate-communicator</h3>
@@ -2507,8 +2507,8 @@
 <h3 id="developer">developer</h3>
 <p>Wants to build something real with open data. Finds the generative art angle more interesting than yet another dashboard. Drawn to the technical challenge of a pipeline that runs itself.</p>
 <hr />
-<h2 id="promises">§promises</h2>
-<p>Promises are the impact-level commitments OceanCanvas makes to its audiences. Each PRD acts on a subset. PRDs reference promises as <code>(PA §promises/accumulation)</code>.</p>
+<h2 id="promises">promises</h2>
+<p>Promises are the impact-level commitments OceanCanvas makes to its audiences. Each PRD acts on a subset. PRDs reference promises as <code>(PA promises/accumulation)</code>.</p>
 <h3 id="authored">authored</h3>
 <p>Every render is part of a named, intentional work. Recipes are not roll-of-the-dice generation — they are authored pieces that happen to be alive. <em>Serves: artist, climate-communicator.</em></p>
 <h3 id="grounded">grounded</h3>
@@ -2524,8 +2524,8 @@
 <h3 id="open">open</h3>
 <p>Open data. No accounts, no API keys, no auth in Phase 1. Self-hostable end-to-end. Anyone can clone the repo and run the system on their own machine. <em>Serves: developer, scientist-adjacent.</em> (Compare principle: <em>open-by-default</em>.)</p>
 <hr />
-<h2 id="principles">§principles</h2>
-<p>Principles are the rules followed when building any feature. They constrain the solution space. Every PRD inherits these without arguing them. PRDs reference principles as <code>(PA §principles/data-is-hero)</code>.</p>
+<h2 id="principles">principles</h2>
+<p>Principles are the rules followed when building any feature. They constrain the solution space. Every PRD inherits these without arguing them. PRDs reference principles as <code>(PA principles/data-is-hero)</code>.</p>
 <h3 id="data-is-hero">data-is-hero</h3>
 <p>Every interface element exists to make the data visible. Chrome serves the data, never the other way around. Borders, backgrounds, decorative elements that compete with the data are out by default.</p>
 <h3 id="aesthetic-traces-to-data">aesthetic-traces-to-data</h3>
@@ -2543,8 +2543,8 @@
 <h3 id="open-by-default">open-by-default</h3>
 <p>No source requiring authentication ships in Phase 1. No API keys, no accounts. If a source becomes essential and requires auth later, that is a deliberate ADR, not a drift. (Compare promise: <em>open</em>.)</p>
 <hr />
-<h2 id="map">§map</h2>
-<p>Five PRDs define OceanCanvas at the feature level. Each makes a specific argument for one experience. Implementation work (RFCs, ADRs, UXS) anchors to PRDs.</p>
+<h2 id="map">map</h2>
+<p>Six PRDs define OceanCanvas at the feature level: five for the core product surfaces and recipe primitive, plus <strong>PRD-006</strong> for the <em>piece</em> (audio–video as one designed work). Implementation work (RFCs, ADRs, UXS) anchors to PRDs.</p>
 <table>
 <thead>
 <tr>
@@ -2591,16 +2591,23 @@
 <td><em>accumulation</em>, <em>citation-travels</em>, <em>editorial-dignity</em></td>
 <td><em>aesthetic-traces-to-data</em>, <em>attribution-baked-in</em></td>
 </tr>
+<tr>
+<td><strong>PRD-006</strong></td>
+<td>The piece (audio–video as one designed work)</td>
+<td>artist, climate-communicator, curious-person</td>
+<td><em>grounded</em>, <em>editorial-dignity</em>, <em>accumulation</em></td>
+<td><em>aesthetic-traces-to-data</em>, <em>determinism</em>, <em>data-is-hero</em></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Numbering</strong> — fresh, replacing the earlier 1–10 list. The pipeline, processing, and rendering items in the original index are not PRDs (no user-value argument to make for them); they live as RFCs and ADRs anchored to OC-04.</p>
-<p><strong>Audio and overlay enrichment</strong> are not separate PRDs. They fold into PRD-005 (Video Editor) as parts of one experience. Their technical implementation gets one or more RFCs.</p>
+<p><strong>Numbering</strong> — fresh, replacing the earlier 1–10 list. The pipeline, processing, and rendering items in the original index are not PRDs (no user-value argument to make for them); they live as RFCs and ADRs anchored to OC-04 and <code>OC_TA.md</code>.</p>
+<p><strong>Audio and overlay enrichment</strong> are not separate PRDs beyond PRD-005 and PRD-006: PRD-005 is the Video Editor surface; PRD-006 argues for treating image and sound as one authored curve. Technical implementation is RFC/ADR territory.</p>
 <hr />
 <h2 id="how-prds-reference-this-doc">How PRDs reference this doc</h2>
 <p>PRDs link into PA sections by anchor. The convention:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Primary audiences · curious-person, climate-communicator (PA §audiences)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Acts on promises  · accumulation, self-curating, editorial-dignity (PA §promises)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Inherits          · data-is-hero, no-engagement-chrome, daily-clock-is-sacred (PA §principles)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Primary audiences · curious-person, climate-communicator (PA audiences)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Acts on promises  · accumulation, self-curating, editorial-dignity (PA promises)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Inherits          · data-is-hero, no-engagement-chrome, daily-clock-is-sacred (PA principles)
 </code></pre></div>
 <p>A PRD that references PA can drop its own audience description, its own restatement of principles, and its own argument for why the project's core promises matter. That work happens here, once.</p>
 <p>A PRD that does <em>not</em> reference any PA section is a smell. It usually means either (a) the feature does not fit the product's promises, in which case it should not be a PRD, or (b) the PRD is restating PA-level reasoning instead of using it.</p>
@@ -2646,9 +2653,9 @@
 <td>Static visual contract for one surface.</td>
 </tr>
 <tr>
-<td><strong>OC-04 Tech Architecture</strong></td>
-<td>Decision record + map</td>
-<td>Technical decisions and open questions.</td>
+<td><strong>OC-04 Pipeline Architecture</strong> (concept)</td>
+<td>Narrative</td>
+<td>Technical concept at the idea level; settled contracts live in <code>OC_TA.md</code>.</td>
 </tr>
 <tr>
 <td><strong>RFC</strong></td>

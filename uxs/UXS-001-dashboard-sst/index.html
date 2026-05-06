@@ -2323,7 +2323,7 @@
 <blockquote>
 <p><strong>Status</strong> · v0.2 · April 2026 · revised against prototype mockup (OC-02 Figs 1–2)
 <strong>Visual fidelity</strong> · Verified against prototype. Some details (e.g., precise hero number font weight) interpreted from a partially-rendered PDF where some glyphs garbled at export — flagged inline.
-<strong>IA anchor</strong> · §surfaces/dashboard · §topbar-patterns/dashboard-main-view · §topbar-patterns/dashboard-editorial-spread · §shell-regions/source-rail · §shared-tokens
+<strong>IA anchor</strong> · surfaces/dashboard · topbar-patterns/dashboard-main-view · topbar-patterns/dashboard-editorial-spread · shell-regions/source-rail · shared-tokens
 <strong>Related PRD</strong> · <a href="../../prd/PRD-002-dashboard/">PRD-002 Dashboard</a>
 <strong>Related ADRs</strong> · <a href="../../adr/ADR-009-deck-gl-maplibre/">ADR-009 deck.gl + MapLibre</a> · <a href="../../adr/ADR-010-observable-plot/">ADR-010 Observable Plot</a> · <a href="../../adr/ADR-017-one-layout-per-source/">ADR-017 One editorial layout per source</a>
 <strong>Related RFC</strong> · <em>None yet — Dashboard behavioural rules (timeline scrubber animation, source-rail tab transitions, hover debounce, source-switcher chip behaviour) need an RFC when implemented.</em></p>
@@ -2344,10 +2344,10 @@
 <p><strong>Non-goals</strong> · per-source editorial spreads for sources other than SST (each gets its own UXS); the Recipe Editor, Gallery, Video Editor (separate UXSes); Dashboard's "select region" mode UI (will live in a future Dashboard-interaction RFC + an extension to this UXS or a sibling UXS); behavioural rules.</p>
 <p><strong>Boundary note</strong> · Timeline scrubber animation, source-rail tab transitions, hover debounce, source-switcher chip dropdown timing, and date-change reflow behaviour belong in an RFC. The first time these need to be implemented, write that RFC. This UXS specifies static appearance only.</p>
 <h2 id="theme">Theme</h2>
-<p>Dark only. Per <code>OC_IA.md §shared-tokens</code>, all OceanCanvas surfaces are dark-only.</p>
+<p>Dark only. Per <code>OC_IA.md shared-tokens</code>, all OceanCanvas surfaces are dark-only.</p>
 <h2 id="tokens">Tokens</h2>
 <h3 id="inherited-from-ia">Inherited from IA</h3>
-<p>All surface, text, intent, typography, and spacing tokens are inherited from <code>OC_IA.md §shared-tokens</code>. This UXS uses them by name without restating values.</p>
+<p>All surface, text, intent, typography, and spacing tokens are inherited from <code>OC_IA.md shared-tokens</code>. This UXS uses them by name without restating values.</p>
 <ul>
 <li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>elevated</code>, <code>overlay</code>, <code>border</code>, <code>border-strong</code></li>
 <li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code>, <code>text-disabled</code></li>
@@ -2461,7 +2461,7 @@
 <td><strong>Topbar</strong></td>
 <td>Full width, 42px</td>
 <td><code>surface</code> background, wordmark in <code>text</code>, path in <code>text-secondary</code>, timestamp in <code>text-muted</code></td>
-<td>Per IA §topbar-patterns/dashboard-main-view</td>
+<td>Per IA topbar-patterns/dashboard-main-view</td>
 </tr>
 <tr>
 <td><strong>Source rail</strong></td>
@@ -2581,7 +2581,7 @@
 <td><strong>Topbar</strong></td>
 <td>Full width, 42px</td>
 <td><code>surface</code> background, wordmark in <code>text</code>, <code>/DATA EXPLORER</code> label in <code>text-secondary</code>, source-switcher chip on right with <code>elevated</code> background</td>
-<td>Per IA §topbar-patterns/dashboard-editorial-spread</td>
+<td>Per IA topbar-patterns/dashboard-editorial-spread</td>
 </tr>
 <tr>
 <td><strong>Eyebrow</strong></td>
@@ -2752,7 +2752,7 @@
 </ul>
 <h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
-<li>[ ] Topbar matches the per-view pattern in IA §topbar-patterns (main view → path + UTC time; editorial spread → <code>/DATA EXPLORER</code> + source-switcher chip)</li>
+<li>[ ] Topbar matches the per-view pattern in IA topbar-patterns (main view → path + UTC time; editorial spread → <code>/DATA EXPLORER</code> + source-switcher chip)</li>
 <li>[ ] Source rail's active state is text colour only — no left border, no background fill</li>
 <li>[ ] Stats overlay renders as three separate cards stacked vertically, not a single card with three values</li>
 <li>[ ] Mini sparkline appears <em>below</em> the timeline scrubber, not above</li>
@@ -2761,7 +2761,7 @@
 <li>[ ] Editorial spread anomaly bars positioned to the right of the trend chart, not below</li>
 <li>[ ] Data-strip values render in <code>domain-sst-accent</code>, not white</li>
 <li>[ ] All colours use semantic tokens — no one-off hex outside the <code>domain-sst-*</code> definitions in this doc</li>
-<li>[ ] All foreground/background pairings use matching token pairs from this UXS or <code>OC_IA.md §shared-tokens</code></li>
+<li>[ ] All foreground/background pairings use matching token pairs from this UXS or <code>OC_IA.md shared-tokens</code></li>
 <li>[ ] No chart borders, no boxed numbers, no light-mode backgrounds</li>
 <li>[ ] Map renders via deck.gl BitmapLayer (per ADR-009); time-series via Observable Plot (per ADR-010)</li>
 <li>[ ] Citation footer present on every view; format <code>[source] · [resolution] · [cadence] · [date range]</code></li>
@@ -2772,7 +2772,7 @@
 <hr />
 <h2 id="changelog">Changelog</h2>
 <ul>
-<li><strong>v0.2 · April 2026</strong> — Revised against prototype mockup (OC-02 Figs 1–2). Major changes: topbar split into main-view and editorial-spread variants per IA §topbar-patterns; source-rail active state changed from "2px coloured left border" to "text colour only"; stats overlay redrawn as three stacked cards; mini sparkline moved below the timeline scrubber; hover coordinates added to upper-left of map area; legend strip narrowed and moved to top-right vertical; editorial spread eyebrow changed to <code>domain-sst-accent</code> colour; anomaly bars moved to right of trend chart; "art potential" block removed (not in prototype). Added source-switcher chip component to editorial-spread state table.</li>
+<li><strong>v0.2 · April 2026</strong> — Revised against prototype mockup (OC-02 Figs 1–2). Major changes: topbar split into main-view and editorial-spread variants per IA topbar-patterns; source-rail active state changed from "2px coloured left border" to "text colour only"; stats overlay redrawn as three stacked cards; mini sparkline moved below the timeline scrubber; hover coordinates added to upper-left of map area; legend strip narrowed and moved to top-right vertical; editorial spread eyebrow changed to <code>domain-sst-accent</code> colour; anomaly bars moved to right of trend chart; "art potential" block removed (not in prototype). Added source-switcher chip component to editorial-spread state table.</li>
 <li><strong>v0.1 · April 2026</strong> — Initial draft, written from OC-05 figure descriptions before prototype access. Superseded by v0.2.</li>
 </ul>
 

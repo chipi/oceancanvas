@@ -2311,8 +2311,8 @@
 <h1 id="rfc-008-pipeline-parallelisation-strategy">RFC-008 — Pipeline Parallelisation Strategy</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-05-02 → <a href="../../adr/ADR-023-pipeline-parallelisation/">ADR-023</a>
-<strong>TA anchor</strong> · §pipeline/tasks · §constraints
-<strong>Related</strong> · OC-04 §six-pipeline-tasks · OC-02 §creative-loop · RFC-009 (CLI)
+<strong>TA anchor</strong> · pipeline/tasks · constraints
+<strong>Related</strong> · OC-04 six-pipeline-tasks · OC-02 creative-loop · RFC-009 (CLI)
 <strong>Closes into</strong> · <a href="../../adr/ADR-023-pipeline-parallelisation/">ADR-023</a>
 <strong>Why this is an RFC</strong> · The daily pipeline and historical backfill both have parallelisable stages, but the right concurrency model — and its safe upper bound on this hardware — is not yet decided. Choosing the wrong model (e.g. threading for CPU-bound work, or uncapped Chromium instances) risks correctness failures or RAM exhaustion. The answer requires measuring actual render time and Chromium memory footprint before it can be locked.</p>
 </blockquote>
@@ -2338,7 +2338,7 @@
 </ul>
 <hr />
 <h2 id="constraints">Constraints</h2>
-<p>From OC-04 §constraints:</p>
+<p>From OC-04 constraints:</p>
 <ul>
 <li>Orchestration is Prefect. The task runner is the correct insertion point for concurrency; the task functions themselves stay unchanged.</li>
 <li>Deployment target is Docker Compose on this machine. No distributed workers, no Kubernetes.</li>
@@ -2406,8 +2406,8 @@
 <hr />
 <h2 id="links">Links</h2>
 <ul>
-<li>OC-04 Technical Architecture — §six-pipeline-tasks, §constraints, §tech-stack</li>
-<li>OC-02 Project Concept — §creative-loop (step 05 Accumulate)</li>
+<li>OC-04 Technical Architecture — six-pipeline-tasks, constraints, tech-stack</li>
+<li>OC-02 Project Concept — creative-loop (step 05 Accumulate)</li>
 <li>RFC-009 — CLI Interface (backfill flow entry point: <code>oc backfill</code>)</li>
 <li>Prefect docs — <code>ConcurrentTaskRunner</code>, <code>.submit()</code>, flow-level concurrency limits</li>
 </ul>

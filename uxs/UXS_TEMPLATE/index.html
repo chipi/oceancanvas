@@ -2118,7 +2118,7 @@
 <h1 id="uxs-nnn-surface-name">UXS-NNN — [Surface name]</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · [date]
-<strong>IA anchor</strong> · §surfaces/[…] · §shell-regions/[…] · §shared-tokens
+<strong>IA anchor</strong> · surfaces/[…] · shell-regions/[…] · shared-tokens
 <strong>Related PRD</strong> · PRD-NNN
 <strong>Related ADRs</strong> · ADR-NNN, ADR-NNN
 <strong>Related RFC</strong> · RFC-NNN (for behavioural rules — animation, debounce, keyboard)</p>
@@ -2138,14 +2138,14 @@
 <p><strong>Non-goals</strong> · [explicitly what this UXS does <em>not</em> cover — usually deferred surfaces or surfaces with their own UXS]</p>
 <p><strong>Boundary note</strong> · Behaviour (animation timing, debounce, keyboard shortcuts, scroll behaviour, focus management transitions) belongs in [RFC-NNN], not here. If you find yourself writing "when the user clicks X, Y animates to Z" in this doc, that sentence belongs in the RFC.</p>
 <h2 id="theme">Theme</h2>
-<p>Dark only. (OceanCanvas is dark-only by design — see <code>OC_IA.md §shared-tokens</code>.)</p>
+<p>Dark only. (OceanCanvas is dark-only by design — see <code>OC_IA.md shared-tokens</code>.)</p>
 <h2 id="tokens">Tokens</h2>
 <h3 id="inherited-from-ia">Inherited from IA</h3>
 <p>[Reference the shared tokens this UXS uses. Don't restate values — just reference.]</p>
 <ul>
-<li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>overlay</code>, <code>border</code> (<code>OC_IA.md §shared-tokens/surface-tokens</code>)</li>
-<li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code> (<code>OC_IA.md §shared-tokens/text-tokens</code>)</li>
-<li><strong>Intent</strong> · <code>intent-alert</code>, <code>intent-info</code> (<code>OC_IA.md §shared-tokens/intent-tokens</code>)</li>
+<li><strong>Surface</strong> · <code>canvas</code>, <code>surface</code>, <code>overlay</code>, <code>border</code> (<code>OC_IA.md shared-tokens/surface-tokens</code>)</li>
+<li><strong>Text</strong> · <code>text</code>, <code>text-secondary</code>, <code>text-muted</code> (<code>OC_IA.md shared-tokens/text-tokens</code>)</li>
+<li><strong>Intent</strong> · <code>intent-alert</code>, <code>intent-info</code> (<code>OC_IA.md shared-tokens/intent-tokens</code>)</li>
 <li><strong>Typography</strong> · <code>type-hero</code>, <code>type-display</code>, <code>type-data</code>, <code>type-body</code>, <code>type-axis</code>, <code>type-label</code></li>
 <li><strong>Spacing</strong> · base unit 4px</li>
 </ul>
@@ -2244,7 +2244,7 @@
 <h2 id="acceptance-criteria">Acceptance criteria</h2>
 <ul>
 <li>[ ] All colours use semantic tokens — no one-off hex values</li>
-<li>[ ] All foreground/background pairings use matching token pairs from this spec or IA's <code>§shared-tokens</code></li>
+<li>[ ] All foreground/background pairings use matching token pairs from this spec or IA's <code>shared-tokens</code></li>
 <li>[ ] Domain tokens used only for source identity — intent tokens are not used to indicate sources</li>
 <li>[ ] No chart borders, no boxed numbers, no light-mode backgrounds</li>
 <li>[ ] Numbers at correct typography token per the layout tables</li>

@@ -2240,7 +2240,7 @@
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/ci</p>
+<strong>TA anchor</strong> · components/ci</p>
 </blockquote>
 <h2 id="context">Context</h2>
 <p>ADR-013 establishes that GitHub Actions runs code validation only, not the production pipeline. But unit tests alone don't catch integration problems — task ordering issues, payload-format mismatches, render failures. We need an end-to-end check that the pipeline can produce a render, but it must run without depending on real source endpoints.</p>

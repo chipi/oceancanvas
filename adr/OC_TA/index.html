@@ -535,12 +535,12 @@
   <a href="#components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §components
+        components
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§components">
+    <nav class="md-nav" aria-label="components">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -618,12 +618,12 @@
   <a href="#contracts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §contracts
+        contracts
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§contracts">
+    <nav class="md-nav" aria-label="contracts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -690,12 +690,12 @@
   <a href="#constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §constraints
+        constraints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§constraints">
+    <nav class="md-nav" aria-label="constraints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -784,7 +784,7 @@
   <a href="#stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §stack
+        stack
       
     </span>
   </a>
@@ -795,12 +795,12 @@
   <a href="#map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        §map
+        map
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="§map">
+    <nav class="md-nav" aria-label="map">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2510,10 +2510,10 @@
 </ul>
 <p>This document holds the structural reasoning that every RFC and ADR inherits — the components OceanCanvas is built from, the contracts between them, the constraints every change must honour, the locked stack, and the state board of every architectural question. Individual RFCs and ADRs link into specific sections rather than restating components or constraints per artifact.</p>
 <p>TA holds <em>what is true across the system</em>. Per-question deliberation lives in RFCs (<a href="../../rfc/"><code>../rfc/</code></a>). Per-decision commitment lives in ADRs (this folder). TA is the document RFCs and ADRs anchor to so they don't have to carry that work themselves.</p>
-<p>The §map at the bottom is the live state board — it is the single place to see what is open, what is decided, and what supersedes what. The folder-local indexes (<a href="../"><code>./index.md</code></a> for ADRs, <a href="../../rfc/"><code>../rfc/index.md</code></a> for RFCs) mirror the relevant slice of §map for direct discovery.</p>
+<p>The map at the bottom is the live state board — it is the single place to see what is open, what is decided, and what supersedes what. The folder-local indexes (<a href="../"><code>./index.md</code></a> for ADRs, <a href="../../rfc/"><code>../rfc/index.md</code></a> for RFCs) mirror the relevant slice of map for direct discovery.</p>
 <hr />
-<h2 id="components">§components</h2>
-<p>OceanCanvas is six subsystems with sharp boundaries. Each subsystem owns its concerns; cross-subsystem communication happens only through the contracts in §contracts.</p>
+<h2 id="components">components</h2>
+<p>OceanCanvas is six subsystems with sharp boundaries. Each subsystem owns its concerns; cross-subsystem communication happens only through the contracts documented under <strong>Contracts</strong> below.</p>
 <h3 id="pipeline">pipeline</h3>
 <p>The Prefect-orchestrated daily flow. Six tasks: discover (latest available date per source) → fetch (raw data to <code>data/sources/</code>) → process (raw to <code>data/processed/</code>) → build payload (per recipe) → render (Puppeteer + p5.js) → index (rebuild <code>manifest.json</code>). Runs at 06:00 UTC. Self-hosted in a Docker container. Owns: data acquisition, format normalisation, render orchestration.</p>
 <h3 id="data-store">data-store</h3>
@@ -2521,26 +2521,26 @@
 <h3 id="render-system">render-system</h3>
 <p>The p5.js + Puppeteer rendering subsystem. Browser-side: the same sketch runs in the Recipe Editor preview and in the Puppeteer headless render. Server-side: Node.js subprocess launches Chromium, injects the render payload, waits for <code>window.__RENDER_COMPLETE</code>, screenshots the canvas. Owns: deterministic image production from a recipe + a payload.</p>
 <h3 id="web-frontend">web-frontend</h3>
-<p>Static React app served from <code>gallery/</code>. deck.gl + MapLibre for spatial rendering. Observable Plot for time series. Reads <code>data/processed/</code> files and <code>manifest.json</code> directly as static assets. No runtime API server. Owns: the dashboard, the recipe editor, the gallery, the video editor — all four customer-facing surfaces.</p>
+<p>Static React app served from <code>gallery/</code>. deck.gl + MapLibre for spatial rendering. Observable Plot for time series. Reads <code>data/processed/</code> files and <code>manifest.json</code> directly as static assets. There is no application database or bespoke REST API for ocean data: persistence stays file-based. The gallery build is served by Caddy, which reverse-proxies narrow <code>/api/*</code> paths to small Node sidecars for recipe YAML save and video export (<a href="../ADR-029-compose-sidecar-services/">ADR-029</a>). Owns: the dashboard, the recipe editor, the gallery, the video editor — all four customer-facing surfaces.</p>
 <h3 id="service-layer">service-layer</h3>
-<p>Docker Compose stack. Four containers: <code>postgres</code> (Prefect state DB), <code>prefect-server</code> (Prefect Server), <code>pipeline</code> (Python 3.12 + Node.js 20 + Chromium), <code>gallery</code> (Caddy serving the built React app). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host. Owns: deployment, container orchestration, the runnable system.</p>
+<p>Docker Compose stack. <strong>Six</strong> services: <code>postgres</code> (Prefect state DB), <code>prefect-server</code> (Prefect Server), <code>pipeline</code> (Python 3.12 + Node.js 20 + Chromium), <code>gallery</code> (Caddy serving the built React app and proxying <code>/api/*</code>), <code>recipe-server</code> (Node — recipe YAML save on port 3001), <code>export-server</code> (Node — video export trigger on port 3002). Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code>, <code>sketches/</code>, and (for export) <code>audio/</code> from the host as required by each service. Owns: deployment, container orchestration, the runnable system. Baseline Compose decision: <a href="../ADR-011-docker-compose/">ADR-011</a>; sidecar pattern: <a href="../ADR-029-compose-sidecar-services/">ADR-029</a>.</p>
 <h3 id="ci">ci</h3>
 <p>GitHub Actions for code validation only. Lint, unit tests, build Docker image, run a synthetic-data e2e test of the full pipeline. Never runs the production data pipeline. Owns: code-quality gating between development and production.</p>
 <hr />
-<h2 id="contracts">§contracts</h2>
+<h2 id="contracts">contracts</h2>
 <p>The data shapes that flow between components. Every contract is a stable interface — components on either side depend on it, and changing it is a breaking change.</p>
 <h3 id="recipeyaml">recipe.yaml</h3>
-<p>The authored work. One YAML file per recipe in <code>recipes/</code>. Specifies: id, name, region (lat/lon bounds), source(s), render type, creative parameters, optional sketch override. Read by the pipeline at fetch and render time. Read by the recipe editor for round-tripping. Schema defined by <strong>RFC-001 → ADR (pending)</strong>.</p>
+<p>The authored work. One YAML file per recipe in <code>recipes/</code>. Specifies: id, name, region (lat/lon bounds), source(s), render type, creative parameters, optional sketch override. Read by the pipeline at fetch and render time. Read by the recipe editor for round-tripping. Schema defined by <strong><a href="../ADR-018-recipe-yaml-schema/">ADR-018</a></strong> (closes RFC-001).</p>
 <h3 id="dataprocessedsourcedate">data/processed/{source}/{date}.*</h3>
 <p>The pipeline's intermediate format. Three files per source per date: <code>.json</code> (flat float32 array + shape + min/max + lat/lon range + metadata), <code>.png</code> (colourised tile at processing-region resolution), <code>.meta.json</code> (statistics sidecar). Read by the dashboard for live visualisation, by the render-payload builder for recipe assembly. Format defined by <strong>ADR-015</strong>.</p>
 <h3 id="render-payload-windowocean_payload">render payload (<code>window.OCEAN_PAYLOAD</code>)</h3>
-<p>The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by <strong>RFC-002 → ADR (pending)</strong>.</p>
+<p>The data structure injected into the p5.js sketch at render time. Contains primary source array, context data (bathymetry), audio scalars, region bounds, recipe metadata. Same payload format used in the Recipe Editor preview and in the Puppeteer pipeline render — this parity is non-negotiable. Schema defined by <strong><a href="../ADR-008-shared-payload-format/">ADR-008</a></strong> and <strong><a href="../ADR-019-render-payload-schema/">ADR-019</a></strong> (RFC-002).</p>
 <h3 id="creative-state-technical-parameters">creative state → technical parameters</h3>
 <p>Maps mood presets and creative controls (energy×presence, colour character, temporal weight) to render parameters (colormap, opacity, particle_count, etc.). Implemented identically in TypeScript (<code>gallery/src/lib/creativeMapping.ts</code>) and Python (<code>pipeline/src/oceancanvas/creative_mapping.py</code>). Both must produce identical outputs — divergence is a bug. Used by the Recipe Editor to translate artistic intent into p5.js render config, and by the pipeline when processing recipes authored via the editor.</p>
 <h3 id="manifestjson">manifest.json</h3>
 <p>The gallery index. Lists all recipes, all render dates, dimensions and metadata for each. Rebuilt from scratch by pipeline Task 06 (Index). Read by the React gallery and the video editor. No partial updates — full rebuild each day.</p>
 <hr />
-<h2 id="constraints">§constraints</h2>
+<h2 id="constraints">constraints</h2>
 <p>The non-negotiables. Every RFC must honour these. A change to any of them is a major architectural shift requiring its own ADR and likely an updated TA.</p>
 <h3 id="file-based-storage-in-v1">file-based storage in v1</h3>
 <p>No database. Recipe configs are YAML files. Pipeline state is JSON. Manifest is JSON. Renders are PNGs on disk. The system is <code>git clone</code> + <code>docker compose up</code>-able with no service dependencies. SQLite is permitted if the manifest grows large enough to require it; nothing more in Phase 1.</p>
@@ -2555,9 +2555,9 @@
 <h3 id="shared-payload-format-for-preview-and-pipeline">shared payload format for preview and pipeline</h3>
 <p>The Recipe Editor's live preview runs the same p5.js sketch with the same payload format that the Puppeteer pipeline renders with. If the editor preview looks right, the pipeline render looks right. Any divergence between these paths is a bug, not a trade-off.</p>
 <h3 id="attribution-baked-in">attribution baked in</h3>
-<p>Source attribution is part of every render. Removing it requires a deliberate code change; including it is the default. (The promise side of this constraint lives in <code>OC_PA.md §promises/citation-travels</code>.)</p>
+<p>Source attribution is part of every render. Removing it requires a deliberate code change; including it is the default. (The promise side of this constraint lives in <code>OC_PA.md</code>, promise <em>citation-travels</em>.)</p>
 <hr />
-<h2 id="stack">§stack</h2>
+<h2 id="stack">stack</h2>
 <p>The locked tech choices. Each entry points to its ADR. Changes happen by writing a new ADR that supersedes the existing one — never by edit-in-place.</p>
 <table>
 <thead>
@@ -2624,6 +2624,11 @@
 <td><a href="../ADR-011-docker-compose/">ADR-011</a></td>
 </tr>
 <tr>
+<td><strong>Compose HTTP sidecars</strong></td>
+<td>Node services for recipe save + video export</td>
+<td><a href="../ADR-029-compose-sidecar-services/">ADR-029</a></td>
+</tr>
+<tr>
 <td><strong>Static file server</strong></td>
 <td>Caddy</td>
 <td><a href="../ADR-012-caddy-static-server/">ADR-012</a></td>
@@ -2656,7 +2661,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="map">§map</h2>
+<h2 id="map">map</h2>
 <p>The live state board. Open RFCs are under deliberation. Decided RFCs have closed into ADRs. ADRs are accepted or superseded.</p>
 <h3 id="rfcs-folder-index">RFCs · <a href="../../rfc/">folder index</a></h3>
 <table>
@@ -2887,18 +2892,23 @@
 <td>Tension arc as shared primitive</td>
 <td>Accepted</td>
 </tr>
+<tr>
+<td><a href="../ADR-029-compose-sidecar-services/">ADR-029</a></td>
+<td>Compose sidecars for recipe save and video export</td>
+<td>Accepted</td>
+</tr>
 </tbody>
 </table>
 <hr />
 <h2 id="how-rfcs-and-adrs-reference-this-doc">How RFCs and ADRs reference this doc</h2>
 <p>RFCs and ADRs link into TA sections by anchor. The conventions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TA anchor · §components/pipeline · §contracts/recipe-yaml
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Constraints · file-based storage in v1, deterministic rendering (TA §constraints)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Stack · Prefect, p5.js, Puppeteer (TA §stack)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TA anchor · components/pipeline · contracts/recipe-yaml
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Constraints · file-based storage in v1, deterministic rendering (OC_TA.md, Constraints)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Stack · Prefect, p5.js, Puppeteer (OC_TA.md, Stack)
 </code></pre></div>
 <p>ADRs in this folder reference TA with relative paths (<code>OC_TA.md</code> — same folder). RFCs in <code>../rfc/</code> reference TA with <code>../adr/OC_TA.md</code>.</p>
 <p>An RFC that doesn't reference any TA section is a smell. It usually means either (a) the question can be answered without affecting the architecture, in which case it should not be an RFC, or (b) the RFC is restating TA-level content instead of using it.</p>
-<p>ADRs reference the TA section they constrain or unlock. An ADR that locks a component or contract should be explicitly linked from the corresponding §components or §contracts entry.</p>
+<p>ADRs reference the TA section they constrain or unlock. An ADR that locks a component or contract should be explicitly linked from the corresponding components or contracts entry.</p>
 <hr />
 <h2 id="what-this-doc-is-not">What this doc is not</h2>
 <table>
@@ -2939,7 +2949,7 @@
 <li><strong>Phase 2 image serving.</strong> Cloudflare R2 is named in OC-04 but not yet decided. Becomes an ADR when public hosting is on the table.</li>
 <li><strong>Database upgrade.</strong> SQLite is permitted under ADR-005 if the manifest grows; the threshold isn't defined. Worth an ADR if the trigger is hit.</li>
 <li><strong>Multi-recipe authoring.</strong> PRD-001 confirms single-author in Phase 1 (ADR-016). Multi-author is deferred indefinitely; document the deferral in TA when revisited.</li>
-<li><strong>Source extension RFCs.</strong> Adding new no-auth sources beyond the OC-03 catalog probably doesn't need RFCs (each is a fetcher and a process step). New auth-required sources do — they cross §constraints/no-auth-sources.</li>
+<li><strong>Source extension RFCs.</strong> Adding new no-auth sources beyond the OC-03 catalog probably doesn't need RFCs (each is a fetcher and a process step). New auth-required sources do — they cross the <strong>no-auth sources only in Phase 1</strong> constraint under <strong>Constraints</strong> above.</li>
 </ul>
 
 

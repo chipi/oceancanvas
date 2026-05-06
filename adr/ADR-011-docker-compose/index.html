@@ -2240,12 +2240,12 @@
 <blockquote>
 <p><strong>Status</strong> · Accepted
 <strong>Date</strong> · April 2026
-<strong>TA anchor</strong> · §components/service-layer · §stack · §constraints (self-hostable)</p>
+<strong>TA anchor</strong> · components/service-layer · stack · constraints (self-hostable)</p>
 </blockquote>
 <h2 id="context">Context</h2>
 <p>OceanCanvas runs as a service: scheduled pipeline, a static web frontend, the Prefect server. The stack must be the same on the developer's laptop, on a VPS, and on a self-hoster's machine. Multiple options exist (Kubernetes, plain systemd, custom shell scripts), each with different trade-offs.</p>
 <h2 id="decision">Decision</h2>
-<p>Docker Compose is the deployment model. One <code>docker-compose.yml</code> defines the full stack: <code>pipeline</code>, <code>gallery</code>, <code>prefect-server</code>, and <code>postgres</code> (Prefect's state database) containers. Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.</p>
+<p>Docker Compose is the deployment model. One <code>compose/docker-compose.yml</code> defines the full stack: <code>pipeline</code>, <code>gallery</code>, <code>prefect-server</code>, and <code>postgres</code> (Prefect's state database) containers. Volumes mount <code>data/</code>, <code>recipes/</code>, <code>renders/</code> from the host. The same compose file runs in development, on VPS, and on self-hosting installations — only the host changes.</p>
 <h2 id="rationale">Rationale</h2>
 <ul>
 <li><em>Self-hostable</em> — <code>git clone &amp;&amp; docker compose up</code> is the spell. No service dependencies, no credentials to set up, no orchestrator to install. Anyone with Docker can run the system.</li>
@@ -2255,7 +2255,7 @@
 <h2 id="alternatives-considered">Alternatives considered</h2>
 <ul>
 <li><strong>Kubernetes</strong> — over-engineered for four containers running on one machine. The operational overhead of Kubernetes is more than the value at this scale. Revisit when (if) OceanCanvas multi-tenants.</li>
-<li><strong>Plain systemd / docker run scripts</strong> — works, but <code>docker-compose.yml</code> is more declarative and self-documenting than a collection of shell scripts.</li>
+<li><strong>Plain systemd / docker run scripts</strong> — works, but <code>compose/docker-compose.yml</code> is more declarative and self-documenting than a collection of shell scripts.</li>
 <li><strong>Nomad</strong> — capable but adds an orchestrator most contributors don't know.</li>
 <li><strong>Fly.io / Railway / managed PaaS</strong> — works for hosted instances but breaks the self-hostable property.</li>
 </ul>
@@ -2269,7 +2269,7 @@
 - No built-in secret management beyond env files. Acceptable; v1 has no secrets to manage (no auth-required sources).</p>
 <h2 id="implementation-notes">Implementation notes</h2>
 <ul>
-<li><code>docker-compose.yml</code> in repo root.</li>
+<li><code>compose/docker-compose.yml</code>.</li>
 <li>Four services: <code>postgres</code>, <code>prefect-server</code>, <code>pipeline</code>, <code>gallery</code>.</li>
 <li>Volumes: <code>./data</code>, <code>./recipes</code>, <code>./renders</code>.</li>
 <li>Production uses the same file with environment-specific overrides via <code>docker-compose.prod.yml</code>.</li>

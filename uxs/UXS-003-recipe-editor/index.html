@@ -2328,10 +2328,10 @@
 <h1 id="uxs-003-recipe-editor">UXS-003 — Recipe Editor</h1>
 <blockquote>
 <p><strong>Status</strong> · Draft v0.1 · April 2026 · drafted from prototype mockups (OC-02 Figs 4–5)
-<strong>IA anchor</strong> · §surfaces/recipe-editor · §topbar-patterns/recipe-editor · §shared-tokens
+<strong>IA anchor</strong> · surfaces/recipe-editor · topbar-patterns/recipe-editor · shared-tokens
 <strong>Related PRD</strong> · <a href="../../prd/PRD-003-recipe-editor/">PRD-003 Recipe Editor</a>
 <strong>Related ADRs</strong> · <a href="../../adr/ADR-006-p5js-sketch-language/">ADR-006 p5.js as sketch language</a> · <a href="../../adr/ADR-008-shared-payload-format/">ADR-008 Shared payload format</a>
-<strong>Related RFCs</strong> · <a href="../../rfc/RFC-001-recipe-yaml-schema/">RFC-001 Recipe YAML schema</a> — <em>needs revision; the prototype shows a flat schema with comment-marked sections rather than the two-tier shape RFC-001 v0.1 proposed</em> · <a href="../../rfc/RFC-004-live-preview-architecture/">RFC-004 Live preview architecture</a> · <a href="../../rfc/RFC-005-yaml-round-tripping/">RFC-005 YAML round-tripping</a></p>
+<strong>Related RFCs</strong> · <a href="../../rfc/RFC-001-recipe-yaml-schema/">RFC-001 Recipe YAML schema</a> (Decided → <a href="../../adr/ADR-018-recipe-yaml-schema/">ADR-018</a>) · <a href="../../rfc/RFC-004-live-preview-architecture/">RFC-004 Live preview architecture</a> · <a href="../../rfc/RFC-005-yaml-round-tripping/">RFC-005 YAML round-tripping</a></p>
 </blockquote>
 <hr />
 <h2 id="why-this-uxs-exists">Why this UXS exists</h2>
@@ -2514,7 +2514,7 @@
 <td><strong>Topbar</strong></td>
 <td>Full width, 42px</td>
 <td><code>surface</code> background, wordmark + recipe-id path in <code>text-secondary</code>, status badges on right</td>
-<td>Per IA §topbar-patterns/recipe-editor. Status badges: <code>live · OISST</code> (data freshness), date in <code>text</code>, render type in <code>text-secondary</code></td>
+<td>Per IA topbar-patterns/recipe-editor. Status badges: <code>live · OISST</code> (data freshness), date in <code>text</code>, render type in <code>text-secondary</code></td>
 </tr>
 <tr>
 <td><strong>Preview canvas</strong></td>
@@ -2744,7 +2744,7 @@
 </ul>
 <hr />
 <h2 id="notes-for-related-rfcs">Notes for related RFCs</h2>
-<p><strong>RFC-001 (Recipe YAML schema) needs revision.</strong> The prototype's YAML mode shows a <em>flat</em> schema with comment markers demarcating the creative-controlled section, not the two-tier <code>creative:</code> / <code>technical:</code> schema RFC-001 v0.1 proposed. The flat schema is cleaner — power users edit any line without nesting; the editor parses comment markers to know which lines to render in <code>editor-creative</code>. RFC-001 v0.2 should adopt the flat-with-comments approach.</p>
+<p><strong>Recipe YAML shape is locked.</strong> The editor's YAML mode uses the flat schema with comment markers described in <a href="../../rfc/RFC-001-recipe-yaml-schema/">RFC-001</a> (Decided) and <a href="../../adr/ADR-018-recipe-yaml-schema/">ADR-018</a>. Power users edit any line without nesting; the editor parses comment markers to know which lines to render in <code>editor-creative</code>.</p>
 <p><strong>RFC-005 (YAML round-tripping) is unchanged in shape</strong> — the matched / partially-custom / custom detection logic still applies, but it operates on lines below the <code># ⊓ creative controls ⊓ ...</code> marker rather than on a separate <code>creative:</code> block. This UXS doesn't lock the matched/partially-custom/custom visual states yet — they're a future addition once the round-tripping is implemented.</p>
 
 

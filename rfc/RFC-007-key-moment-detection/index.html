@@ -2333,7 +2333,7 @@
 <h1 id="rfc-007-key-moment-detection">RFC-007 — Key moment detection</h1>
 <blockquote>
 <p><strong>Status</strong> · Decided · closed 2026-05-03 → <a href="../../adr/ADR-024-key-moment-detection/">ADR-024</a>
-<strong>TA anchor</strong> · §components/render-system · §contracts (audio scalars in payload)
+<strong>TA anchor</strong> · components/render-system · contracts (audio scalars in payload)
 <strong>Related</strong> · PRD-005 Video Editor · RFC-006 Audio system
 <strong>Closes into</strong> · <a href="../../adr/ADR-024-key-moment-detection/">ADR-024</a>
 <strong>Why this is an RFC</strong> · Audio swells and overlay markers must fire at the same frames — when the music swells, the record-flash appears, the anomaly bar peaks. PRD-005's sharpest threat (audio reads as decorative) is defeated specifically when the visual and audio events are demonstrably synchronised. They share a single per-frame intensity signal. The algorithm that produces that signal is open: multiple plausible approaches, each detecting different kinds of "moment."</p>
@@ -2371,8 +2371,8 @@
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
-<li><em>Determinism</em> — same time series + same parameters → same intensity signal (TA §constraints).</li>
-<li><em>Single source of truth for moments</em> — audio and overlays compute from the same algorithm output. No separate moment-detection paths (TA §constraints).</li>
+<li><em>Determinism</em> — same time series + same parameters → same intensity signal (TA constraints).</li>
+<li><em>Single source of truth for moments</em> — audio and overlays compute from the same algorithm output. No separate moment-detection paths (TA constraints).</li>
 <li><em>No machine learning models in v1</em> — the algorithm must be classical (statistical, threshold-based). Trainable models are deferred.</li>
 </ul>
 <h2 id="proposed-approach">Proposed approach</h2>
@@ -2442,7 +2442,7 @@
 </ul>
 <h2 id="links">Links</h2>
 <ul>
-<li><strong>TA</strong> — §components/render-system · §contracts (audio scalars)</li>
+<li><strong>TA</strong> — components/render-system · contracts (audio scalars)</li>
 <li><strong>Related PRDs</strong> — PRD-005 Video Editor</li>
 <li><strong>Related RFCs</strong> — RFC-006 Audio system (consumes this signal)</li>
 </ul>
