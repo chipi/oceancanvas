@@ -3,7 +3,12 @@
 import json
 from pathlib import Path
 
-from oceancanvas.tasks.obis import SPECIES, process_obis, process_obis_density
+from oceancanvas.tasks.obis import (
+    SPECIES,
+    process_obis,
+    process_obis_density,
+    process_obis_tracks,
+)
 
 
 class TestSpecies:
@@ -160,3 +165,106 @@ class TestProcessObisDensity:
         result = process_obis_density(sources_dir, processed_dir, "whale-shark", resolution=1.0)
         data = json.loads(result.read_text())
         assert data["max"] == 1.0  # only the year file counted, not latest
+
+
+class TestProcessObisTracks:
+    def _setup_sources(self, tmp_path: Path, records_by_year: dict) -> Path:
+        sources_dir = tmp_path / "sources" / "obis-whale-shark"
+        sources_dir.mkdir(parents=True)
+        for year, records in records_by_year.items():
+            (sources_dir / f"{year}-01-01.json").write_text(json.dumps(records))
+        return sources_dir
+
+    def test_groups_by_dataset_name(self, tmp_path: Path):
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {
+                "2020": [
+                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
+                     "datasetName": "Mafia Island Survey", "eventDate": "2020-03-01"},
+                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
+                     "datasetName": "Mafia Island Survey", "eventDate": "2020-03-15"},
+                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                     "datasetName": "Mafia Island Survey", "eventDate": "2020-04-01"},
+                    {"decimalLatitude": -10.0, "decimalLongitude": 30.0,
+                     "datasetName": "Mafia Island Survey", "eventDate": "2020-05-01"},
+                    {"decimalLatitude": -22.0, "decimalLongitude": 113.0,
+                     "datasetName": "Mafia Island Survey", "eventDate": "2020-06-01"},
+                    {"decimalLatitude": -22.0, "decimalLongitude": 113.0,
+                     "datasetName": "Ningaloo Reef Watch", "eventDate": "2020-04-15"},
+                ],
+            },
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_tracks(sources_dir, processed_dir, "whale-shark", min_track_length=2)
+        data = json.loads(result.read_text())
+        assert result.name == "tracks.json"
+        assert data["source_mode"] == "tracks"
+        assert data["shape"] == [1]  # only Mafia (5 points) passes min_track_length=2 with this data
+        # Wait — Ningaloo has 1 point, drops; Mafia has 5, keeps. shape=[1].
+        ids = {t["id"] for t in data["data"]}
+        assert "Mafia Island Survey" in ids
+
+    def test_drops_short_tracks(self, tmp_path: Path):
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {
+                "2020": [
+                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
+                     "datasetName": "Big", "eventDate": "2020-01-01"},
+                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                     "datasetName": "Big", "eventDate": "2020-02-01"},
+                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
+                     "datasetName": "Big", "eventDate": "2020-03-01"},
+                    {"decimalLatitude": 3.0, "decimalLongitude": 3.0,
+                     "datasetName": "Big", "eventDate": "2020-04-01"},
+                    {"decimalLatitude": 4.0, "decimalLongitude": 4.0,
+                     "datasetName": "Big", "eventDate": "2020-05-01"},
+                    {"decimalLatitude": 10.0, "decimalLongitude": 10.0,
+                     "datasetName": "Tiny", "eventDate": "2020-01-01"},
+                ],
+            },
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_tracks(sources_dir, processed_dir, "whale-shark", min_track_length=5)
+        data = json.loads(result.read_text())
+        ids = {t["id"] for t in data["data"]}
+        assert ids == {"Big"}
+
+    def test_sorts_points_by_date(self, tmp_path: Path):
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {
+                "2020": [
+                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
+                     "datasetName": "Test", "eventDate": "2020-06-01"},
+                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                     "datasetName": "Test", "eventDate": "2020-01-01"},
+                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
+                     "datasetName": "Test", "eventDate": "2020-03-01"},
+                ],
+            },
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_tracks(sources_dir, processed_dir, "whale-shark", min_track_length=2)
+        data = json.loads(result.read_text())
+        track = data["data"][0]
+        dates = [p["date"] for p in track["points"]]
+        assert dates == ["2020-01-01", "2020-03-01", "2020-06-01"]
+
+    def test_unknown_dataset_grouped_together(self, tmp_path: Path):
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {
+                "2020": [
+                    {"decimalLatitude": float(i), "decimalLongitude": float(i),
+                     "eventDate": f"2020-{i + 1:02d}-01"}
+                    for i in range(5)
+                ],
+            },
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_tracks(sources_dir, processed_dir, "whale-shark", min_track_length=2)
+        data = json.loads(result.read_text())
+        ids = {t["id"] for t in data["data"]}
+        assert ids == {"unknown"}

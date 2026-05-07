@@ -212,6 +212,98 @@ def fetch_obis_all(
     return new_years, skipped
 
 
+def process_obis_tracks(
+    sources_dir: Path,
+    processed_dir: Path,
+    species_slug: str,
+    min_track_length: int = 5,
+) -> Path:
+    """Group OBIS observations into per-dataset tracks ordered by date.
+
+    OBIS occurrence records do not carry per-animal identifiers, so we
+    group by `datasetName` as a proxy — each research dataset becomes one
+    "track" of sightings, sorted chronologically. Tracks shorter than
+    `min_track_length` points are dropped (noise).
+
+    Output JSON shape — particles.js track-mode contract (ADR-031):
+        {
+          "data": [{"id": str, "points": [{lat, lon, date}, ...]}, ...],
+          "shape": [n_tracks],
+          "lat_range": [...], "lon_range": [...],
+          "source_id": "obis-{species_slug}",
+          "date": "tracks",
+          "source_mode": "tracks"
+        }
+
+    The single artefact is written to processed_dir/obis-{species}/tracks.json.
+    """
+    from collections import defaultdict
+
+    logger = get_logger()
+    if not sources_dir.exists():
+        msg = f"No OBIS source directory: {sources_dir}"
+        raise ValueError(msg)
+
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for year_file in sorted(sources_dir.glob("*.json")):
+        if year_file.stem == "latest":
+            continue
+        records = json.loads(year_file.read_text())
+        for r in records:
+            lat = r.get("decimalLatitude")
+            lon = r.get("decimalLongitude")
+            if lat is None or lon is None:
+                continue
+            dataset = r.get("datasetName") or "unknown"
+            event_date = (r.get("eventDate") or "")[:10]
+            grouped[dataset].append(
+                {
+                    "lat": round(lat, 4),
+                    "lon": round(lon, 4),
+                    "date": event_date,
+                }
+            )
+
+    tracks: list[dict] = []
+    all_lats: list[float] = []
+    all_lons: list[float] = []
+    for dataset, points in grouped.items():
+        if len(points) < min_track_length:
+            continue
+        # Sort by date; stable on tie so geographic order preserves where dates collide.
+        points_sorted = sorted(points, key=lambda p: p["date"])
+        tracks.append({"id": dataset, "points": points_sorted})
+        all_lats.extend(p["lat"] for p in points_sorted)
+        all_lons.extend(p["lon"] for p in points_sorted)
+
+    if not all_lats:
+        all_lats = [0.0]
+        all_lons = [0.0]
+
+    payload = {
+        "data": tracks,
+        "shape": [len(tracks)],
+        "lat_range": [min(all_lats), max(all_lats)],
+        "lon_range": [min(all_lons), max(all_lons)],
+        "source_id": f"obis-{species_slug}",
+        "date": "tracks",
+        "source_mode": "tracks",
+    }
+
+    out_path = processed_dir / f"obis-{species_slug}" / "tracks.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(out_path, json.dumps(payload))
+    logger.info(
+        "OBIS %s tracks: %d datasets → %d tracks (≥%d points each) → %s",
+        species_slug,
+        len(grouped),
+        len(tracks),
+        min_track_length,
+        out_path,
+    )
+    return out_path
+
+
 def process_obis_density(
     sources_dir: Path,
     processed_dir: Path,

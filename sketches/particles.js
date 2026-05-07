@@ -1,9 +1,19 @@
 /**
  * OceanCanvas — particles render type.
  *
- * Renders flow field data as particle trails.
- * Flow vectors derived from SST spatial gradient
- * (gradient-perpendicular, a visual heuristic for ocean currents).
+ * Two modes — selected via `recipe.render.source_mode`:
+ *
+ *   flow (default) — gridded scalar field (e.g. OISST). Flow vectors derived
+ *     from spatial gradient (gradient-perpendicular heuristic). Particles
+ *     advect through the field, leaving fading trails. The classic
+ *     gulf-stream-thermal aesthetic.
+ *
+ *   tracks (ADR-031) — per-dataset point archives (e.g. OBIS biologging).
+ *     Each track is rendered as a coloured polyline ordered by date — head
+ *     bright, tail fading. Each dataset gets a distinct hue from the
+ *     colormap. The "animals as ocean sensors" aesthetic — the ocean's
+ *     structure as read by the species itself.
+ *
  * Depends on shared.js (loaded first by the renderer).
  *
  * Determinism rules (TA constraints/deterministic-rendering):
@@ -54,6 +64,7 @@ function setup() {
   const tailLength = payload.recipe?.render?.tail_length || 12;
   const speedScale = payload.recipe?.render?.speed_scale || 1.0;
   const colormapName = payload.recipe?.render?.colormap || 'thermal';
+  const sourceMode = payload.recipe?.render?.source_mode || 'flow';
   const stops = getColormap(colormapName);
 
   createCanvas(w, h);
@@ -63,7 +74,19 @@ function setup() {
   background(...CANVAS_BG);
 
   const primary = payload.data?.primary;
-  if (!primary || !primary.data || !primary.shape) {
+  if (!primary || !primary.data) {
+    window.__RENDER_COMPLETE = true;
+    return;
+  }
+
+  if (sourceMode === 'tracks') {
+    drawTracks(payload, primary, stops, opacity, w, h);
+    drawAttribution(payload, w, h);
+    window.__RENDER_COMPLETE = true;
+    return;
+  }
+
+  if (!primary.shape) {
     window.__RENDER_COMPLETE = true;
     return;
   }
@@ -126,4 +149,47 @@ function setup() {
 
   drawAttribution(payload, w, h);
   window.__RENDER_COMPLETE = true;
+}
+
+/**
+ * Track-mode (ADR-031): each track from the source is drawn as a coloured
+ * polyline ordered by date. Each dataset/track gets a distinct hue from
+ * the colormap (deterministic from track index), with the head bright and
+ * the tail fading — gives the visual sense of an animal moving through
+ * the ocean over time.
+ */
+function drawTracks(payload, primary, stops, opacity, w, h) {
+  const tracks = primary.data || [];
+  if (tracks.length === 0) return;
+
+  const region = payload.region || {};
+  const latMin = region.lat_min ?? -90;
+  const latMax = region.lat_max ?? 90;
+  const lonMin = region.lon_min ?? -180;
+  const lonMax = region.lon_max ?? 180;
+
+  noFill();
+  for (let ti = 0; ti < tracks.length; ti++) {
+    const track = tracks[ti];
+    const points = track.points || [];
+    if (points.length < 2) continue;
+
+    // Deterministic hue per track — spread across the colormap by index.
+    const t = tracks.length > 1 ? ti / (tracks.length - 1) : 0.5;
+    const [cr, cg, cb] = colorFromStops(stops, t);
+
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1];
+      const b = points[i];
+      const sxA = ((a.lon - lonMin) / (lonMax - lonMin)) * w;
+      const syA = ((latMax - a.lat) / (latMax - latMin)) * h;
+      const sxB = ((b.lon - lonMin) / (lonMax - lonMin)) * w;
+      const syB = ((latMax - b.lat) / (latMax - latMin)) * h;
+
+      const age = i / (points.length - 1);
+      stroke(cr, cg, cb, lerp(40, opacity, age));
+      strokeWeight(lerp(0.5, 2.0, age));
+      line(sxA, syA, sxB, syB);
+    }
+  }
 }

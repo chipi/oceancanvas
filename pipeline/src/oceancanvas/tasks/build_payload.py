@@ -68,6 +68,10 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
         if not flat:
             return processed
         if isinstance(flat[0], dict):
+            # Track data (ADR-031) — list of {id, points} objects. Pass through unchanged;
+            # the renderer projects per-track using the recipe region.
+            if "points" in flat[0]:
+                return processed
             filtered = [
                 p
                 for p in flat
@@ -148,10 +152,14 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
     render = recipe.get("render", {})
 
     aggregate = render.get("aggregate")
+    source_mode = render.get("source_mode")
     if aggregate == "density":
         # ADR-030: render.aggregate=density → load the static density grid instead of per-date data.
         resolution = render.get("resolution", 0.5)
         data_path = processed_dir / source_id / f"density-{float(resolution):g}.json"
+    elif source_mode == "tracks":
+        # ADR-031: render.source_mode=tracks → load the per-dataset track archive.
+        data_path = processed_dir / source_id / "tracks.json"
     else:
         data_path = processed_dir / source_id / f"{date}.json"
 
@@ -267,9 +275,13 @@ def build_one_payload(
         return None
 
     source_id = recipe["sources"]["primary"]
-    if recipe.get("render", {}).get("aggregate") == "density":
+    render_block = recipe.get("render", {})
+    if render_block.get("aggregate") == "density":
         # Density recipes are time-aggregated — single render keyed by a synthetic date.
         render_date = date or "aggregated"
+    elif render_block.get("source_mode") == "tracks":
+        # Tracks render the full archive — single static keyed by "tracks".
+        render_date = date or "tracks"
     else:
         render_date = date or _find_latest_date(processed_dir, source_id)
     if not render_date:
