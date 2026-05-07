@@ -527,16 +527,24 @@ def render_single(
         console.print(f"[red]Recipe not found: {recipe_path}[/red]")
         raise typer.Exit(1)
 
-    # Check processed data
+    # Check processed data — mirror build_payload's path resolution so
+    # aggregate (ADR-030) and tracks (ADR-031) recipes find their static artefact.
     try:
         with recipe_path.open() as f:
             recipe_data = yaml.safe_load(f)
         source_id = recipe_data.get("sources", {}).get("primary", "oisst")
+        render_block = recipe_data.get("render", {})
     except Exception as e:
         console.print(f"[red]Failed to read recipe: {e}[/red]")
         raise typer.Exit(1)
 
-    processed_path = DATA_DIR / "processed" / source_id / f"{date}.json"
+    if render_block.get("aggregate") == "density":
+        resolution = float(render_block.get("resolution", 0.5))
+        processed_path = DATA_DIR / "processed" / source_id / f"density-{resolution:g}.json"
+    elif render_block.get("source_mode") == "tracks":
+        processed_path = DATA_DIR / "processed" / source_id / "tracks.json"
+    else:
+        processed_path = DATA_DIR / "processed" / source_id / f"{date}.json"
     if not processed_path.exists():
         console.print(f"[red]No processed data: {processed_path}[/red]")
         console.print("Run the full pipeline first: [bold]oceancanvas run[/bold]")
