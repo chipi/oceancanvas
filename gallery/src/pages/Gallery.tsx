@@ -11,16 +11,64 @@ function renderUrl(recipe: string, date: string): string {
   return `/renders/${recipe}/${date}.png`;
 }
 
-/** Assign size tier — creates visual variety in the grid.
- *  First recipe (most renders) is large. Every 3rd is medium. Rest standard.
- *  This ensures variety even when all recipes have the same render count. */
-function getTier(
-  index: number,
+/** Build the tier sequence for the grid.
+ *
+ *  The first 6 items are the fixed loved start: large at 0, mediums at 2
+ *  and 5. Beyond that, the rhythm continues:
+ *
+ *    - One additional large per ~10-item block, position hash-jittered
+ *      (offset 1..4 within the block) so feature anchors don't sit at
+ *      periodic positions across blocks.
+ *    - Mediums scattered by deterministic hash (~40% target density),
+ *      with two guards: never two mediums adjacent, and force a medium
+ *      after 3 standards in a row so the rhythm never flat-lines.
+ *
+ *  Hash is keyed on index/blockStart, so the same recipe at the same
+ *  position always lands the same tier (no flicker on filter changes). */
+function buildTiers(
   total: number,
-): "large" | "medium" | "standard" {
-  if (index === 0) return "large";
-  if (total > 3 && (index === 2 || index === 5)) return "medium";
-  return "standard";
+): Array<"large" | "medium" | "standard"> {
+  const largePos = new Set<number>([0]);
+  for (let blockStart = 6; blockStart < total; blockStart += 10) {
+    const blockEnd = Math.min(blockStart + 9, total - 1);
+    const blockSize = blockEnd - blockStart + 1;
+    if (blockSize < 4) break;
+    const h = Math.sin(blockStart * 73.156) * 43758.5453;
+    const noise = h - Math.floor(h);
+    const offset = 1 + Math.floor(noise * Math.min(4, blockSize - 2));
+    largePos.add(blockStart + offset);
+  }
+
+  const tiers: Array<"large" | "medium" | "standard"> = [];
+  let stdRun = 0;
+  for (let i = 0; i < total; i++) {
+    if (largePos.has(i)) {
+      tiers.push("large");
+      stdRun = 0;
+    } else if (i < 6) {
+      if (i === 2 || i === 5) {
+        tiers.push("medium");
+        stdRun = 0;
+      } else {
+        tiers.push("standard");
+        stdRun++;
+      }
+    } else {
+      const h = Math.sin(i * 12.9898) * 43758.5453;
+      const noise = h - Math.floor(h);
+      const wantMedium = noise < 0.4;
+      const forceMedium = stdRun >= 3;
+      const prevMedium = tiers[i - 1] === "medium";
+      if ((wantMedium || forceMedium) && !prevMedium) {
+        tiers.push("medium");
+        stdRun = 0;
+      } else {
+        tiers.push("standard");
+        stdRun++;
+      }
+    }
+  }
+  return tiers;
 }
 
 export function Gallery() {
@@ -56,7 +104,7 @@ export function Gallery() {
             className={`${styles.filter} ${!filter ? styles.filterActive : ""}`}
             onClick={() => setFilter(null)}
           >
-            all
+            all sources
           </button>
           {sources.map((s) => (
             <button
@@ -83,43 +131,46 @@ export function Gallery() {
 
       {/* Masonry grid */}
       <div className={styles.masonry}>
-        {filtered.map((recipe, index) => {
-          const tier = getTier(index, filtered.length);
-          return (
-            <div
-              key={recipe.name}
-              className={`${styles.tile} ${styles[`tile_${tier}`]}`}
-              onClick={() => navigate(`/gallery/${recipe.name}`)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") navigate(`/gallery/${recipe.name}`);
-              }}
-              aria-label={`${recipe.name} — ${recipe.render_type} — ${recipe.latest}`}
-            >
-              <img
-                className={styles.tileImage}
-                src={renderUrl(recipe.name, recipe.latest)}
-                alt={recipe.name}
-                loading="lazy"
-                onError={handleImgError}
-              />
-              <div className={styles.tileOverlay}>
-                <div className={styles.tileName}>
-                  {recipe.title || recipe.name}
-                </div>
-                {recipe.description && (
-                  <div className={styles.tileDescription}>
-                    {recipe.description}
+        {(() => {
+          const tiers = buildTiers(filtered.length);
+          return filtered.map((recipe, index) => {
+            const tier = tiers[index];
+            return (
+              <div
+                key={recipe.name}
+                className={`${styles.tile} ${styles[`tile_${tier}`]}`}
+                onClick={() => navigate(`/gallery/${recipe.name}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") navigate(`/gallery/${recipe.name}`);
+                }}
+                aria-label={`${recipe.name} — ${recipe.render_type} — ${recipe.latest}`}
+              >
+                <img
+                  className={styles.tileImage}
+                  src={renderUrl(recipe.name, recipe.latest)}
+                  alt={recipe.name}
+                  loading="lazy"
+                  onError={handleImgError}
+                />
+                <div className={styles.tileOverlay}>
+                  <div className={styles.tileName}>
+                    {recipe.title || recipe.name}
                   </div>
-                )}
-                <div className={styles.tileMeta}>
-                  {recipe.render_type} · {recipe.source} · {recipe.latest}
+                  {recipe.description && (
+                    <div className={styles.tileDescription}>
+                      {recipe.description}
+                    </div>
+                  )}
+                  <div className={styles.tileMeta}>
+                    {recipe.render_type} · {recipe.source} · {recipe.latest}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          });
+        })()}
       </div>
     </div>
   );
