@@ -556,8 +556,15 @@ def render_single(
         console.print("Use --force to re-render.")
         return
 
-    if output_path.exists() and force:
-        output_path.unlink()
+    if force:
+        # build_one_payload short-circuits on existing payload file, so a stale
+        # payload would be reused even if the recipe or processed data changed.
+        # Drop both PNG and payload so --force genuinely rebuilds from sources.
+        if output_path.exists():
+            output_path.unlink()
+        payload_path = DATA_DIR / "payloads" / f"{recipe}__{date}.json"
+        if payload_path.exists():
+            payload_path.unlink()
 
     from oceancanvas.tasks.build_payload import build_one_payload
     from oceancanvas.tasks.render import render_one

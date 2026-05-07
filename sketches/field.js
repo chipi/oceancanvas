@@ -10,6 +10,10 @@
  *   - smooth: bilinear vs nearest-neighbor interpolation
  *   - tail_length: controls contrast curve (higher = more contrast)
  *   - speed_scale: controls brightness shift (higher = brighter)
+ *   - log_scale: apply log1p to values before normalisation. Useful for
+ *     density-aggregated grids (ADR-030) whose count distribution is
+ *     long-tailed — without this, hotspots saturate while the broader
+ *     pattern of medium-density cells crushes into background.
  *
  * Determinism rules (TA constraints/deterministic-rendering):
  *   - Always call randomSeed() in setup
@@ -42,8 +46,9 @@ function setup() {
 
   const dataArr = primary.data;
   const [rows, cols] = primary.shape;
-  const vmin = primary.min;
-  const vmax = primary.max;
+  const logScale = payload.recipe?.render?.log_scale === true;
+  const vmin = logScale ? Math.log1p(Math.max(0, primary.min)) : primary.min;
+  const vmax = logScale ? Math.log1p(Math.max(0, primary.max)) : primary.max;
   const stops = getColormap(colormapName);
 
   // Contrast curve: tail_length drives gamma (higher = more contrast)
@@ -69,9 +74,10 @@ function setup() {
         img.pixels[pi + 2] = CANVAS_BG[2];
         img.pixels[pi + 3] = 255;
       } else {
+        const v = logScale ? Math.log1p(Math.max(0, val)) : val;
         // Normalise and apply gamma for contrast.
         // Clamp before pow — float precision can produce tiny negatives.
-        let t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
+        let t = vmax !== vmin ? (v - vmin) / (vmax - vmin) : 0.5;
         t = constrain(t, 0, 1);
         t = Math.pow(t, gamma);
         const [cr, cg, cb] = colorFromStops(stops, t);

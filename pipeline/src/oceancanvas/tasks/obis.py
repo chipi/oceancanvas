@@ -217,13 +217,21 @@ def process_obis_tracks(
     processed_dir: Path,
     species_slug: str,
     min_track_length: int = 5,
+    max_gap_degrees: float = 5.0,
 ) -> Path:
     """Group OBIS observations into per-dataset tracks ordered by date.
 
     OBIS occurrence records do not carry per-animal identifiers, so we
     group by `datasetName` as a proxy — each research dataset becomes one
-    "track" of sightings, sorted chronologically. Tracks shorter than
-    `min_track_length` points are dropped (noise).
+    chronological track of sightings.
+
+    A single dataset often spans the globe (one programme records sightings
+    in many regions), and a naive date-sort produces line jumps across
+    oceans that read as visual noise rather than animal movement. So each
+    dataset's points are walked in date order and split into sub-tracks
+    wherever consecutive points jump more than `max_gap_degrees` (great-
+    circle approximation via Chebyshev). Sub-tracks shorter than
+    `min_track_length` are dropped.
 
     Output JSON shape — particles.js track-mode contract (ADR-031):
         {
@@ -268,13 +276,27 @@ def process_obis_tracks(
     all_lats: list[float] = []
     all_lons: list[float] = []
     for dataset, points in grouped.items():
-        if len(points) < min_track_length:
-            continue
         # Sort by date; stable on tie so geographic order preserves where dates collide.
         points_sorted = sorted(points, key=lambda p: p["date"])
-        tracks.append({"id": dataset, "points": points_sorted})
-        all_lats.extend(p["lat"] for p in points_sorted)
-        all_lons.extend(p["lon"] for p in points_sorted)
+
+        # Walk and split at large jumps so cross-ocean leaps don't render as line noise.
+        sub_tracks: list[list[dict]] = [[]]
+        prev: dict | None = None
+        for p in points_sorted:
+            if prev is not None:
+                gap = max(abs(p["lat"] - prev["lat"]), abs(p["lon"] - prev["lon"]))
+                if gap > max_gap_degrees:
+                    sub_tracks.append([])
+            sub_tracks[-1].append(p)
+            prev = p
+
+        for idx, sub in enumerate(sub_tracks):
+            if len(sub) < min_track_length:
+                continue
+            track_id = dataset if len(sub_tracks) == 1 else f"{dataset} #{idx + 1}"
+            tracks.append({"id": track_id, "points": sub})
+            all_lats.extend(p["lat"] for p in sub)
+            all_lons.extend(p["lon"] for p in sub)
 
     if not all_lats:
         all_lats = [0.0]
@@ -309,6 +331,7 @@ def process_obis_density(
     processed_dir: Path,
     species_slug: str,
     resolution: float = 0.5,
+    smoothing_radius: int = 3,
 ) -> Path:
     """Aggregate every OBIS year-file for a species into a 2D density grid.
 
@@ -317,6 +340,12 @@ def process_obis_density(
     render type contract — `data` is a row-major flat array with row 0 =
     lat_min, last row = lat_max (mirrors the OISST convention so field.js's
     dataRow remap works without changes). See ADR-030.
+
+    `smoothing_radius` applies a box blur to the binned grid (radius in
+    cells). Without it, sparse archives produce single-cell hotspots that
+    are visually invisible at typical render resolutions; with radius=3
+    on a 1° grid each hotspot spreads to a ~7° (~35px at 1920w) blob.
+    Set to 0 to disable.
 
     Returns the path to the written density file.
     """
@@ -350,6 +379,20 @@ def process_obis_density(
                 grid[r_idx, c_idx] += 1
                 n_records += 1
 
+    if smoothing_radius > 0:
+        # Box blur via summed-area table — O(rows·cols), no scipy dependency.
+        sat = np.zeros((lat_bins + 1, lon_bins + 1), dtype=np.float64)
+        sat[1:, 1:] = grid.cumsum(axis=0).cumsum(axis=1)
+        rows = np.arange(lat_bins)
+        cols = np.arange(lon_bins)
+        r0 = np.maximum(0, rows - smoothing_radius)[:, None]
+        r1 = np.minimum(lat_bins, rows + smoothing_radius + 1)[:, None]
+        c0 = np.maximum(0, cols - smoothing_radius)[None, :]
+        c1 = np.minimum(lon_bins, cols + smoothing_radius + 1)[None, :]
+        grid = (
+            (sat[r1, c1] - sat[r0, c1] - sat[r1, c0] + sat[r0, c0]) / ((r1 - r0) * (c1 - c0))
+        ).astype(np.float32)
+
     max_count = float(grid.max()) if grid.size > 0 else 0.0
     payload = {
         "data": grid.flatten().tolist(),
@@ -362,6 +405,7 @@ def process_obis_density(
         "date": "aggregated",
         "aggregate": "density",
         "resolution": resolution,
+        "smoothing_radius": smoothing_radius,
     }
 
     out_path = processed_dir / f"obis-{species_slug}" / f"density-{resolution:g}.json"

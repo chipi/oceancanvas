@@ -21,12 +21,13 @@ schedule: daily
 render:
   type: field
   aggregate: density                   # ADR-030 — bin point sources to 2D grid before render
-  resolution: 0.5                      # half-degree cells (~50km at the equator)
+  resolution: 1.0                      # 1° cells (~110km at equator) — readable size at 1920x1080
   colormap: thermal
   opacity: 1.0
   smooth: true
-  tail_length: 16                      # high-contrast gamma — hotspots burn against the cold cells
-  speed_scale: 1.1                     # slight brightness lift
+  log_scale: true                      # density distribution is long-tailed — log keeps medium cells legible
+  tail_length: 8                       # mid contrast over the log-scaled values
+  speed_scale: 1.2                     # slight brightness lift
   seed: 50
 audio:
   drone_waveform: triangle

@@ -27,9 +27,9 @@ render:
   tail_length: 16                      # high-contrast gamma — fronts and isotherms read sharper
   speed_scale: 1.1                     # slight brightness lift, push the warm tongue
   seed: 28
-  foreground_colormap: otherworldly    # cyan/white dots still pop against the saturated thermal
-  foreground_marker_size: 6
-  foreground_marker_opacity: 0.95
+  foreground_colormap: otherworldly    # cyan/white dots — high-contrast against the saturated thermal
+  foreground_marker_size: 10           # bigger so they register against the rich field
+  foreground_marker_opacity: 1.0
 audio:
   drone_waveform: triangle
   drone_glide: 0.6

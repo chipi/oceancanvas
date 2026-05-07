@@ -106,13 +106,16 @@ class TestProcessObisDensity:
         )
 
         processed_dir = tmp_path / "processed"
-        result = process_obis_density(sources_dir, processed_dir, "whale-shark", resolution=0.5)
+        result = process_obis_density(
+            sources_dir, processed_dir, "whale-shark", resolution=0.5, smoothing_radius=0
+        )
 
         assert result.exists()
         data = json.loads(result.read_text())
         assert data["shape"] == [360, 720]
         assert data["aggregate"] == "density"
         assert data["resolution"] == 0.5
+        assert data["smoothing_radius"] == 0
         assert data["source_id"] == "obis-whale-shark"
         assert data["max"] == 3.0  # three observations land in the (0,0) cell
 
@@ -128,9 +131,30 @@ class TestProcessObisDensity:
             },
         )
         processed_dir = tmp_path / "processed"
-        result = process_obis_density(sources_dir, processed_dir, "whale-shark", resolution=1.0)
+        result = process_obis_density(
+            sources_dir, processed_dir, "whale-shark", resolution=1.0, smoothing_radius=0
+        )
         data = json.loads(result.read_text())
         assert data["max"] == 1.0
+
+    def test_smoothing_spreads_hotspots(self, tmp_path: Path):
+        # A single observation creates a smoothed blob — neighbours pick up
+        # weight, max value drops because of the area average.
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {"2020": [{"decimalLatitude": 0.0, "decimalLongitude": 0.0}]},
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_density(
+            sources_dir, processed_dir, "whale-shark", resolution=1.0, smoothing_radius=3
+        )
+        data = json.loads(result.read_text())
+        # Max is 1/49 (raw 1 averaged over 7x7 kernel area) — no longer the raw count.
+        assert 0 < data["max"] < 1.0
+        assert data["smoothing_radius"] == 3
+        # Many cells now non-zero (the smoothing kernel spreads the single observation).
+        nonzero = sum(1 for v in data["data"] if v > 0)
+        assert nonzero > 1
 
     def test_resolution_changes_grid_size(self, tmp_path: Path):
         sources_dir = self._setup_sources(tmp_path, {"2020": []})
@@ -162,7 +186,9 @@ class TestProcessObisDensity:
             json.dumps([{"decimalLatitude": 0.0, "decimalLongitude": 0.0}])
         )
         processed_dir = tmp_path / "processed"
-        result = process_obis_density(sources_dir, processed_dir, "whale-shark", resolution=1.0)
+        result = process_obis_density(
+            sources_dir, processed_dir, "whale-shark", resolution=1.0, smoothing_radius=0
+        )
         data = json.loads(result.read_text())
         assert data["max"] == 1.0  # only the year file counted, not latest
 
@@ -180,16 +206,18 @@ class TestProcessObisTracks:
             tmp_path,
             {
                 "2020": [
-                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
+                    # Tight Mafia cluster — within max_gap_degrees, no splits
+                    {"decimalLatitude": -7.5, "decimalLongitude": 39.5,
                      "datasetName": "Mafia Island Survey", "eventDate": "2020-03-01"},
-                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
+                    {"decimalLatitude": -7.6, "decimalLongitude": 39.6,
                      "datasetName": "Mafia Island Survey", "eventDate": "2020-03-15"},
-                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                    {"decimalLatitude": -7.7, "decimalLongitude": 39.7,
                      "datasetName": "Mafia Island Survey", "eventDate": "2020-04-01"},
-                    {"decimalLatitude": -10.0, "decimalLongitude": 30.0,
+                    {"decimalLatitude": -7.8, "decimalLongitude": 39.8,
                      "datasetName": "Mafia Island Survey", "eventDate": "2020-05-01"},
-                    {"decimalLatitude": -22.0, "decimalLongitude": 113.0,
+                    {"decimalLatitude": -7.9, "decimalLongitude": 39.9,
                      "datasetName": "Mafia Island Survey", "eventDate": "2020-06-01"},
+                    # Single Ningaloo point — dropped by min_track_length
                     {"decimalLatitude": -22.0, "decimalLongitude": 113.0,
                      "datasetName": "Ningaloo Reef Watch", "eventDate": "2020-04-15"},
                 ],
@@ -200,10 +228,43 @@ class TestProcessObisTracks:
         data = json.loads(result.read_text())
         assert result.name == "tracks.json"
         assert data["source_mode"] == "tracks"
-        assert data["shape"] == [1]  # only Mafia (5 points) passes min_track_length=2 with this data
-        # Wait — Ningaloo has 1 point, drops; Mafia has 5, keeps. shape=[1].
+        assert data["shape"] == [1]
         ids = {t["id"] for t in data["data"]}
         assert "Mafia Island Survey" in ids
+
+    def test_splits_at_large_geographic_gaps(self, tmp_path: Path):
+        # Single dataset, but date-ordered points jump across oceans —
+        # those leaps should split the dataset into separate sub-tracks.
+        sources_dir = self._setup_sources(
+            tmp_path,
+            {
+                "2020": [
+                    # Cluster A: Mafia Island
+                    {"decimalLatitude": -7.5, "decimalLongitude": 39.5,
+                     "datasetName": "Global Programme", "eventDate": "2020-01-01"},
+                    {"decimalLatitude": -7.6, "decimalLongitude": 39.6,
+                     "datasetName": "Global Programme", "eventDate": "2020-01-15"},
+                    {"decimalLatitude": -7.7, "decimalLongitude": 39.7,
+                     "datasetName": "Global Programme", "eventDate": "2020-02-01"},
+                    # Cluster B: Galápagos (lon jump >5°)
+                    {"decimalLatitude": -0.7, "decimalLongitude": -90.5,
+                     "datasetName": "Global Programme", "eventDate": "2020-03-01"},
+                    {"decimalLatitude": -0.8, "decimalLongitude": -90.6,
+                     "datasetName": "Global Programme", "eventDate": "2020-03-15"},
+                    {"decimalLatitude": -0.9, "decimalLongitude": -90.7,
+                     "datasetName": "Global Programme", "eventDate": "2020-04-01"},
+                ],
+            },
+        )
+        processed_dir = tmp_path / "processed"
+        result = process_obis_tracks(
+            sources_dir, processed_dir, "whale-shark",
+            min_track_length=2, max_gap_degrees=5.0,
+        )
+        data = json.loads(result.read_text())
+        assert data["shape"] == [2]
+        ids = [t["id"] for t in data["data"]]
+        assert ids == ["Global Programme #1", "Global Programme #2"]
 
     def test_drops_short_tracks(self, tmp_path: Path):
         sources_dir = self._setup_sources(
@@ -212,13 +273,13 @@ class TestProcessObisTracks:
                 "2020": [
                     {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
                      "datasetName": "Big", "eventDate": "2020-01-01"},
-                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
                      "datasetName": "Big", "eventDate": "2020-02-01"},
-                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
+                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
                      "datasetName": "Big", "eventDate": "2020-03-01"},
-                    {"decimalLatitude": 3.0, "decimalLongitude": 3.0,
+                    {"decimalLatitude": 1.5, "decimalLongitude": 1.5,
                      "datasetName": "Big", "eventDate": "2020-04-01"},
-                    {"decimalLatitude": 4.0, "decimalLongitude": 4.0,
+                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
                      "datasetName": "Big", "eventDate": "2020-05-01"},
                     {"decimalLatitude": 10.0, "decimalLongitude": 10.0,
                      "datasetName": "Tiny", "eventDate": "2020-01-01"},
@@ -238,9 +299,9 @@ class TestProcessObisTracks:
                 "2020": [
                     {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
                      "datasetName": "Test", "eventDate": "2020-06-01"},
-                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
+                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
                      "datasetName": "Test", "eventDate": "2020-01-01"},
-                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
+                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
                      "datasetName": "Test", "eventDate": "2020-03-01"},
                 ],
             },
