@@ -145,16 +145,23 @@ def _find_latest_date(processed_dir: Path, source_id: str) -> str | None:
 def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path: Path) -> None:
     """Assemble the render payload for one recipe + one date."""
     source_id = recipe["sources"]["primary"]
-    data_path = processed_dir / source_id / f"{date}.json"
+    render = recipe.get("render", {})
+
+    aggregate = render.get("aggregate")
+    if aggregate == "density":
+        # ADR-030: render.aggregate=density → load the static density grid instead of per-date data.
+        resolution = render.get("resolution", 0.5)
+        data_path = processed_dir / source_id / f"density-{float(resolution):g}.json"
+    else:
+        data_path = processed_dir / source_id / f"{date}.json"
 
     if not data_path.exists():
-        msg = f"No processed data for {source_id}/{date}"
+        msg = f"No processed data for {data_path}"
         raise FileNotFoundError(msg)
 
     primary_data = json.loads(data_path.read_text())
 
     region = recipe["region"]
-    render = recipe.get("render", {})
     audio = recipe.get("audio")
     tension_arc = recipe.get("tension_arc")
 
@@ -260,7 +267,11 @@ def build_one_payload(
         return None
 
     source_id = recipe["sources"]["primary"]
-    render_date = date or _find_latest_date(processed_dir, source_id)
+    if recipe.get("render", {}).get("aggregate") == "density":
+        # Density recipes are time-aggregated — single render keyed by a synthetic date.
+        render_date = date or "aggregated"
+    else:
+        render_date = date or _find_latest_date(processed_dir, source_id)
     if not render_date:
         logger.info("No processed data for %s, skipping %s", source_id, recipe["name"])
         return None

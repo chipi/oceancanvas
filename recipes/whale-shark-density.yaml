@@ -1,0 +1,43 @@
+name: whale-shark-density
+title: Whale shark — fifty years, one image
+description: >
+  Every recorded whale-shark sighting since the 1970s, binned into a half-degree
+  grid and rendered as a single thermal heatfield. Bright cells are the
+  aggregation realms — Mafia Island, Ningaloo, Galápagos, Yucatán — burned
+  into one image. Sparse points become a continuous field; the species'
+  realm becomes legible at a glance.
+created: 2026-05-07
+author: chipi
+region:
+  lat: [-40, 40]
+  lon: [-180, 180]
+  name: Global tropics
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: field
+  aggregate: density                   # ADR-030 — bin point sources to 2D grid before render
+  resolution: 0.5                      # half-degree cells (~50km at the equator)
+  colormap: thermal
+  opacity: 1.0
+  smooth: true
+  tail_length: 16                      # high-contrast gamma — hotspots burn against the cold cells
+  speed_scale: 1.1                     # slight brightness lift
+  seed: 50
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.5
+  pulse_sensitivity: 0.4
+  presence: 0.7
+  accent_style: bell
+  texture_density: 0.35
+tension_arc:
+  preset: classic
+  peak_position: 0.6
+  peak_height: 0.95
+  release_steepness: 0.55
+  pin_key_moment: false

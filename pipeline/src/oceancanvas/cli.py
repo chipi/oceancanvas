@@ -368,7 +368,7 @@ def fetch_historical(
 
     elif source.startswith("obis-"):
         species = source.replace("obis-", "")
-        from oceancanvas.tasks.obis import fetch_obis_all, process_obis
+        from oceancanvas.tasks.obis import fetch_obis_all, process_obis, process_obis_density
 
         console.print(f"\n[cyan]Fetching all {species} records from OBIS...[/cyan]")
         new_years, skipped = fetch_obis_all(species, DATA_DIR)
@@ -383,6 +383,11 @@ def fetch_historical(
                 if src.exists():
                     process_obis(src, processed_dir, species, date=year_date)
             console.print("[green]Processing complete.[/green]")
+
+            # ADR-030: aggregate the full archive into a density grid for field-render recipes.
+            console.print("\n[cyan]Aggregating density grid (ADR-030)...[/cyan]")
+            process_obis_density(sources_dir, processed_dir, species)
+            console.print("[green]Density grid written.[/green]")
     else:
         console.print(f"[red]Unknown source: {source}[/red]")
         raise typer.Exit(1)

@@ -212,6 +212,81 @@ def fetch_obis_all(
     return new_years, skipped
 
 
+def process_obis_density(
+    sources_dir: Path,
+    processed_dir: Path,
+    species_slug: str,
+    resolution: float = 0.5,
+) -> Path:
+    """Aggregate every OBIS year-file for a species into a 2D density grid.
+
+    Bins every observation across the full archive into a global lat/lon
+    grid at the given resolution (degrees). Output JSON matches the field
+    render type contract — `data` is a row-major flat array with row 0 =
+    lat_min, last row = lat_max (mirrors the OISST convention so field.js's
+    dataRow remap works without changes). See ADR-030.
+
+    Returns the path to the written density file.
+    """
+    import numpy as np
+
+    logger = get_logger()
+    if not sources_dir.exists():
+        msg = f"No OBIS source directory: {sources_dir}"
+        raise ValueError(msg)
+
+    lat_min, lat_max = -90.0, 90.0
+    lon_min, lon_max = -180.0, 180.0
+    lat_bins = int(round((lat_max - lat_min) / resolution))
+    lon_bins = int(round((lon_max - lon_min) / resolution))
+
+    grid = np.zeros((lat_bins, lon_bins), dtype=np.float32)
+    n_records = 0
+
+    for year_file in sorted(sources_dir.glob("*.json")):
+        if year_file.stem == "latest":
+            continue
+        records = json.loads(year_file.read_text())
+        for r in records:
+            lat = r.get("decimalLatitude")
+            lon = r.get("decimalLongitude")
+            if lat is None or lon is None:
+                continue
+            r_idx = int((lat - lat_min) / resolution)
+            c_idx = int((lon - lon_min) / resolution)
+            if 0 <= r_idx < lat_bins and 0 <= c_idx < lon_bins:
+                grid[r_idx, c_idx] += 1
+                n_records += 1
+
+    max_count = float(grid.max()) if grid.size > 0 else 0.0
+    payload = {
+        "data": grid.flatten().tolist(),
+        "shape": [lat_bins, lon_bins],
+        "min": 0.0,
+        "max": max_count,
+        "lat_range": [lat_min, lat_max],
+        "lon_range": [lon_min, lon_max],
+        "source_id": f"obis-{species_slug}",
+        "date": "aggregated",
+        "aggregate": "density",
+        "resolution": resolution,
+    }
+
+    out_path = processed_dir / f"obis-{species_slug}" / f"density-{resolution:g}.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(out_path, json.dumps(payload))
+    logger.info(
+        "OBIS %s density: %d records → %dx%d grid (max=%.0f) → %s",
+        species_slug,
+        n_records,
+        lat_bins,
+        lon_bins,
+        max_count,
+        out_path,
+    )
+    return out_path
+
+
 def process_obis(
     raw_path: Path,
     processed_dir: Path,
