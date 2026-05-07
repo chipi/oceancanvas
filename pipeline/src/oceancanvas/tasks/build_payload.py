@@ -68,10 +68,53 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
         if not flat:
             return processed
         if isinstance(flat[0], dict):
-            # Track data (ADR-031) — list of {id, points} objects. Pass through unchanged;
-            # the renderer projects per-track using the recipe region.
+            # Track data (ADR-031) — list of {id, points} objects. Walk each
+            # track's points; keep only those within the region; re-split at
+            # >5° gaps; drop sub-tracks <5 points. Lets a tight regional
+            # recipe surface threads that pass through the region without
+            # needing region-specific aggregation.
             if "points" in flat[0]:
-                return processed
+                cropped_tracks: list[dict] = []
+                all_lats: list[float] = []
+                all_lons: list[float] = []
+                for tr in flat:
+                    pts = tr.get("points", [])
+                    in_region = [
+                        p for p in pts
+                        if lat_range[0] <= p.get("lat", 0) <= lat_range[1]
+                        and lon_range[0] <= p.get("lon", 0) <= lon_range[1]
+                    ]
+                    if not in_region:
+                        continue
+                    sub_tracks: list[list[dict]] = [[]]
+                    prev: dict | None = None
+                    for p in in_region:
+                        if prev is not None:
+                            gap = max(abs(p["lat"] - prev["lat"]), abs(p["lon"] - prev["lon"]))
+                            if gap > 5.0:
+                                sub_tracks.append([])
+                        sub_tracks[-1].append(p)
+                        prev = p
+                    base_id = tr.get("id", "track")
+                    for idx, sub in enumerate(sub_tracks):
+                        if len(sub) < 5:
+                            continue
+                        sub_id = base_id if len(sub_tracks) == 1 else f"{base_id} #{idx + 1}"
+                        cropped_tracks.append({"id": sub_id, "points": sub})
+                        all_lats.extend(p["lat"] for p in sub)
+                        all_lons.extend(p["lon"] for p in sub)
+                if not all_lats:
+                    all_lats = [lat_range[0]]
+                    all_lons = [lon_range[0]]
+                return {
+                    "data": cropped_tracks,
+                    "shape": [len(cropped_tracks)],
+                    "lat_range": [min(all_lats), max(all_lats)],
+                    "lon_range": [min(all_lons), max(all_lons)],
+                    "source_id": processed.get("source_id", ""),
+                    "date": processed.get("date", ""),
+                    "source_mode": processed.get("source_mode", "tracks"),
+                }
             filtered = [
                 p
                 for p in flat

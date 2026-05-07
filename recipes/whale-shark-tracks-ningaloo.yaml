@@ -1,0 +1,41 @@
+name: whale-shark-tracks-ningaloo
+title: Whale shark — Ningaloo, the Australian warmth
+description: >
+  Zoomed into the Indian Ocean's eastern edge — the Ningaloo Reef coast
+  and the Indo-Pacific belt around it. Forty years of sightings sorted
+  chronologically by research dataset, drawn as warm-palette threads
+  against deep navy. The thermal colormap reflects the Indian Ocean's
+  warm tongues that pull the sharks along the Australian shelf each
+  March through July.
+created: 2026-05-07
+author: chipi
+region:
+  lat: [-30, 0]
+  lon: [90, 145]
+  name: Eastern Indian Ocean
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  source_mode: tracks
+  colormap: thermal
+  color_by: hash                       # scatter hues across the palette per track
+  opacity: 0.95
+  seed: 113
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.55
+  pulse_sensitivity: 0.5
+  presence: 0.8
+  accent_style: chime
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 1.0
+  release_steepness: 0.6
+  pin_key_moment: true

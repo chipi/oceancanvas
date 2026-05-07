@@ -24,7 +24,7 @@ render:
   resolution: 1.0                      # 1° cells (~110km at equator) — readable size at 1920x1080
   colormap: thermal
   opacity: 1.0
-  smooth: true
+  smooth: false                        # sharp cell edges — data-side box blur (in process_obis_density) gives the colour richness; this drops bilinear scaling so tiles read crisp
   log_scale: true                      # density distribution is long-tailed — log keeps medium cells legible
   tail_length: 8                       # mid contrast over the log-scaled values
   speed_scale: 1.2                     # slight brightness lift

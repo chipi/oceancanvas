@@ -1,0 +1,41 @@
+name: whale-shark-tracks-mafia
+title: Whale shark — Mafia, the East African collision
+description: >
+  Zoomed into the western Indian Ocean — Mafia Island, the Mozambique
+  Channel, the East African shelf. The Agulhas Current sweeps warm
+  water past upwelling zones; whale sharks gather. Each research
+  dataset's sightings become a thread in the otherworldly palette —
+  cyan and green-white against dark navy, the colours of an exotic
+  ocean reading itself.
+created: 2026-05-07
+author: chipi
+region:
+  lat: [-25, 5]
+  lon: [25, 80]
+  name: Western Indian Ocean
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  source_mode: tracks
+  colormap: otherworldly
+  color_by: hash                       # scatter hues across the palette per track
+  opacity: 0.9
+  seed: 137
+audio:
+  drone_waveform: sawtooth
+  drone_glide: 0.5
+  pulse_sensitivity: 0.5
+  presence: 0.7
+  accent_style: ping
+  texture_density: 0.45
+tension_arc:
+  preset: classic
+  peak_position: 0.6
+  peak_height: 0.9
+  release_steepness: 0.55
+  pin_key_moment: false

@@ -1,0 +1,41 @@
+name: whale-shark-tracks-galapagos
+title: Whale shark — Eastern Pacific threads
+description: >
+  Zoomed into the eastern Pacific, where the cold Humboldt Current meets
+  the warm Panama Current and large pregnant females pass through. Each
+  research dataset's chronologically-ordered sightings becomes a thread
+  in the arctic palette — cool blues and ice-whites against the deep
+  navy. The stitching here is what tells the story; how researchers'
+  observation effort traces the animals' realm.
+created: 2026-05-07
+author: chipi
+region:
+  lat: [-15, 15]
+  lon: [-120, -65]
+  name: Eastern Pacific
+sources:
+  primary: obis-whale-shark
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: particles
+  source_mode: tracks
+  colormap: arctic
+  color_by: hash                       # scatter hues across the palette per track
+  opacity: 0.95
+  seed: 91
+audio:
+  drone_waveform: sine
+  drone_glide: 0.6
+  pulse_sensitivity: 0.4
+  presence: 0.75
+  accent_style: bell
+  texture_density: 0.3
+tension_arc:
+  preset: classic
+  peak_position: 0.6
+  peak_height: 0.95
+  release_steepness: 0.55
+  pin_key_moment: false

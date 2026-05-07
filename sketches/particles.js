@@ -154,9 +154,13 @@ function setup() {
 /**
  * Track-mode (ADR-031): each track from the source is drawn as a coloured
  * polyline ordered by date. Each dataset/track gets a distinct hue from
- * the colormap (deterministic from track index), with the head bright and
- * the tail fading — gives the visual sense of an animal moving through
- * the ocean over time.
+ * the colormap, with the head bright and the tail fading — gives the
+ * visual sense of an animal moving through the ocean over time.
+ *
+ * color_by recipe lever:
+ *   index (default) — track ti / (n-1), sequential ramp through the palette
+ *   hash            — deterministic hash of track id, scatters hues across
+ *                     the palette so adjacent tracks don't share a colour
  */
 function drawTracks(payload, primary, stops, opacity, w, h) {
   const tracks = primary.data || [];
@@ -167,6 +171,7 @@ function drawTracks(payload, primary, stops, opacity, w, h) {
   const latMax = region.lat_max ?? 90;
   const lonMin = region.lon_min ?? -180;
   const lonMax = region.lon_max ?? 180;
+  const colorBy = payload.recipe?.render?.color_by || 'index';
 
   noFill();
   for (let ti = 0; ti < tracks.length; ti++) {
@@ -174,8 +179,12 @@ function drawTracks(payload, primary, stops, opacity, w, h) {
     const points = track.points || [];
     if (points.length < 2) continue;
 
-    // Deterministic hue per track — spread across the colormap by index.
-    const t = tracks.length > 1 ? ti / (tracks.length - 1) : 0.5;
+    let t;
+    if (colorBy === 'hash') {
+      t = (hashString(track.id || `track-${ti}`) % 1000) / 1000;
+    } else {
+      t = tracks.length > 1 ? ti / (tracks.length - 1) : 0.5;
+    }
     const [cr, cg, cb] = colorFromStops(stops, t);
 
     for (let i = 1; i < points.length; i++) {
@@ -192,4 +201,13 @@ function drawTracks(payload, primary, stops, opacity, w, h) {
       line(sxA, syA, sxB, syB);
     }
   }
+}
+
+function hashString(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
 }
