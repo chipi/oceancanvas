@@ -103,8 +103,7 @@ function setup() {
     drawCoastlineToBuffer(overlay, coastline, w, h, latMin, latMax, lonMin, lonMax);
   }
 
-  // Step 3 — foreground dots. Accept either a single object or an array of
-  // layers (the three-species recipe uses multiple).
+  // Step 3 — foreground dots. Accept either a single object or an array of layers.
   const fg = payload.data?.foreground;
   const layers = Array.isArray(fg) ? fg : (fg ? [fg] : []);
   const fgStops = getColormap(fgColormap);

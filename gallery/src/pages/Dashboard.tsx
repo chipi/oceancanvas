@@ -26,9 +26,7 @@ interface ManifestRecipe {
 const SOURCES = [
   { id: "north-atlantic-sst", label: "SST", sub: "sea surface temp" },
   { id: "argo-global", label: "Argo", sub: "float profiles" },
-  { id: "whale-shark", label: "Whale shark", sub: "biologging" },
-  { id: "leatherback-turtle", label: "Leatherback", sub: "biologging" },
-  { id: "elephant-seal", label: "Elephant seal", sub: "biologging" },
+  { id: "whale-shark-on-sst", label: "Whale shark", sub: "biologging" },
 ];
 
 export function Dashboard() {

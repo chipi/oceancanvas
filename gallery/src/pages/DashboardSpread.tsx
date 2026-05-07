@@ -67,21 +67,9 @@ const SOURCES = [
     sub: "ifremer GDAC",
   },
   {
-    id: "whale-shark",
+    id: "whale-shark-on-sst",
     label: "Whale Shark",
     source: "obis-whale-shark",
-    sub: "OBIS",
-  },
-  {
-    id: "leatherback-turtle",
-    label: "Leatherback",
-    source: "obis-leatherback-turtle",
-    sub: "OBIS",
-  },
-  {
-    id: "elephant-seal",
-    label: "Elephant Seal",
-    source: "obis-elephant-seal",
     sub: "OBIS",
   },
 ];

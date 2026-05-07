@@ -67,7 +67,7 @@ The customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor
 Phase 1 ships:
 
 - The pipeline running daily, self-hosted via Docker Compose
-- Sources live: NOAA OISST sea surface temperature, Argo float density, OBIS biologging (whale shark, leatherback, elephant seal)
+- Sources live: NOAA OISST sea surface temperature, Argo float density, OBIS biologging (whale shark)
 - 11 authored recipes accumulating monthly renders back to 1981
 - All four customer-facing surfaces — Dashboard, Recipe Editor, Gallery, Video Editor
 - Generative audio (RFC-010 → ADR-027) and tension-arc audio-video coupling (RFC-011 → ADR-028)

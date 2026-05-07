@@ -355,9 +355,7 @@ test.describe('route smoke (all pages)', () => {
   const dashboardSources: Array<[string, string]> = [
     ['north-atlantic-sst', 'SST'],
     ['argo-global', 'Argo'],
-    ['whale-shark', 'Whale'],
-    ['leatherback-turtle', 'Leatherback'],
-    ['elephant-seal', 'Elephant'],
+    ['whale-shark-on-sst', 'Whale'],
   ];
   for (const [slug, needle] of dashboardSources) {
     test(`/dashboard/${slug}`, async ({ page }) => {
@@ -370,9 +368,7 @@ test.describe('route smoke (all pages)', () => {
   const explorerSlugs = [
     'north-atlantic-sst',
     'argo-global',
-    'whale-shark',
-    'leatherback-turtle',
-    'elephant-seal',
+    'whale-shark-on-sst',
     'oisst',
   ];
   for (const slug of explorerSlugs) {

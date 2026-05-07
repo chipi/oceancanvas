@@ -23,8 +23,6 @@ OBIS_API = "https://api.obis.org/v3"
 # Species configs: scientific name → slug
 SPECIES = {
     "whale-shark": "Rhincodon typus",
-    "leatherback-turtle": "Dermochelys coriacea",
-    "elephant-seal": "Mirounga leonina",
 }
 
 

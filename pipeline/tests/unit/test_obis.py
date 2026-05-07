@@ -9,8 +9,6 @@ from oceancanvas.tasks.obis import SPECIES, process_obis
 class TestSpecies:
     def test_known_species(self):
         assert "whale-shark" in SPECIES
-        assert "leatherback-turtle" in SPECIES
-        assert "elephant-seal" in SPECIES
 
     def test_scientific_names(self):
         assert SPECIES["whale-shark"] == "Rhincodon typus"
