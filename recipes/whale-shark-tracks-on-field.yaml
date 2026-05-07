@@ -1,0 +1,46 @@
+name: whale-shark-tracks-on-field
+title: Whale shark — threads through the warm
+description: >
+  The thermal field underneath, the animals' threads on top. Each research
+  dataset's chronologically-ordered sightings are drawn as a coloured polyline
+  over the SST — the sharks' paths revealed against the warmth they followed.
+  The 28°C isotherm, made visible as a band, becomes a frontier the threads
+  trace and skirt. Variant C of the whale-shark comparison: A's rich field
+  plus B's tracks, composed.
+created: 2026-05-07
+author: chipi
+region:
+  lat: [-40, 40]
+  lon: [-180, 180]
+  name: Global tropics
+sources:
+  primary: oisst                       # the field underneath
+  foreground: obis-whale-shark         # the threads on top
+  context: gebco
+schedule: daily
+
+# ⊓ creative controls ⊓
+render:
+  type: composite
+  colormap: thermal
+  opacity: 0.95
+  smooth: true
+  tail_length: 16                      # high-contrast SST gamma — fronts read sharp
+  speed_scale: 1.1                     # slight brightness lift on the field
+  seed: 31
+  foreground_source_mode: tracks       # ADR-031 — load the OBIS track archive
+  foreground_colormap: arctic          # cool threads against the warm field — opposing palette
+  foreground_marker_opacity: 0.9
+audio:
+  drone_waveform: triangle
+  drone_glide: 0.55
+  pulse_sensitivity: 0.45
+  presence: 0.75
+  accent_style: bell
+  texture_density: 0.4
+tension_arc:
+  preset: classic
+  peak_position: 0.65
+  peak_height: 0.95
+  release_steepness: 0.6
+  pin_key_moment: false

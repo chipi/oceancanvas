@@ -215,12 +215,18 @@ def _build_one_payload(recipe: dict, processed_dir: Path, date: str, output_path
     # the all-time aggregated point cloud; other sources fall back to the
     # same date as the primary render.
     foreground_id = recipe.get("sources", {}).get("foreground")
+    foreground_source_mode = render.get("foreground_source_mode")
     if foreground_id:
         fg_ids = [foreground_id] if isinstance(foreground_id, str) else list(foreground_id)
         foreground_layers = []
         for fid in fg_ids:
             fg_dir = processed_dir / fid
-            fg_path = fg_dir / "latest.json" if fid.startswith("obis-") else fg_dir / f"{date}.json"
+            if foreground_source_mode == "tracks" and fid.startswith("obis-"):
+                fg_path = fg_dir / "tracks.json"
+            elif fid.startswith("obis-"):
+                fg_path = fg_dir / "latest.json"
+            else:
+                fg_path = fg_dir / f"{date}.json"
             if fg_path.exists():
                 fg_data = json.loads(fg_path.read_text())
                 foreground_layers.append(

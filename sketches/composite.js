@@ -20,6 +20,8 @@
  *   - speed_scale — brightness multiplier for the field (0.2→2.0 maps to 0.7→1.3)
  *   - foreground_marker_size, foreground_marker_opacity — apply to overlay
  *   - foreground_colormap — separate colormap for the overlay (default arctic)
+ *   - foreground_source_mode — "scatter" (default) or "tracks" (ADR-031). When
+ *     "tracks", foreground items shaped {id, points:[…]} render as polylines.
  *   - context_layer — coastline (default), none
  *
  * Determinism rules (TA constraints):
@@ -114,7 +116,7 @@ function setup() {
     drawCoastlineToBuffer(overlay, coastline, w, h, latMin, latMax, lonMin, lonMax);
   }
 
-  // Step 3 — foreground dots. Accept either a single object or an array of layers.
+  // Step 3 — point-format foregrounds rasterise into the overlay buffer.
   const fg = payload.data?.foreground;
   const layers = Array.isArray(fg) ? fg : (fg ? [fg] : []);
   const fgStops = getColormap(fgColormap);
@@ -129,8 +131,42 @@ function setup() {
   overlay.updatePixels();
   image(overlay, 0, 0);
 
+  // Step 4 — track-format foregrounds (ADR-031) draw on top of the overlay
+  // using the canvas line API. Each track is a coloured polyline with a
+  // head-bright/tail-fading gradient, mirroring particles.js track-mode.
+  for (const layer of layers) {
+    if (Array.isArray(layer.data) && layer.data.length > 0 &&
+        typeof layer.data[0] === 'object' && 'points' in layer.data[0]) {
+      drawTracksOnCanvas(layer.data, w, h, latMin, latMax, lonMin, lonMax,
+                         fgStops, fgMarkerOpacity);
+    }
+  }
+
   drawAttribution(payload, w, h);
   window.__RENDER_COMPLETE = true;
+}
+
+function drawTracksOnCanvas(tracks, w, h, latMin, latMax, lonMin, lonMax, stops, opacity) {
+  noFill();
+  for (let ti = 0; ti < tracks.length; ti++) {
+    const track = tracks[ti];
+    const points = track.points || [];
+    if (points.length < 2) continue;
+    const t = tracks.length > 1 ? ti / (tracks.length - 1) : 0.5;
+    const [cr, cg, cb] = colorFromStops(stops, t);
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1];
+      const b = points[i];
+      const sxA = ((a.lon - lonMin) / (lonMax - lonMin)) * w;
+      const syA = ((latMax - a.lat) / (latMax - latMin)) * h;
+      const sxB = ((b.lon - lonMin) / (lonMax - lonMin)) * w;
+      const syB = ((latMax - b.lat) / (latMax - latMin)) * h;
+      const age = i / (points.length - 1);
+      stroke(cr, cg, cb, lerp(40, opacity, age));
+      strokeWeight(lerp(0.5, 2.0, age));
+      line(sxA, syA, sxB, syB);
+    }
+  }
 }
 
 // ── Helpers (mirrors of scatter.js — kept inline because the renderer

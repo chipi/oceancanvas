@@ -77,7 +77,8 @@
         "marker_opacity": { "type": "number", "minimum": 0, "maximum": 1 },
         "aggregate": { "type": "string", "enum": ["density"], "description": "ADR-030. Process-side directive: bin point sources to a 2D grid before rendering." },
         "resolution": { "type": "number", "minimum": 0.1, "maximum": 5.0, "description": "Bin size in degrees for aggregate modes." },
-        "source_mode": { "type": "string", "enum": ["flow", "tracks"], "description": "ADR-031. Particles render data-shape directive: flow=gridded vector field (default), tracks=per-animal time-ordered point arrays." }
+        "source_mode": { "type": "string", "enum": ["flow", "tracks"], "description": "ADR-031. Particles render data-shape directive: flow=gridded vector field (default), tracks=per-animal time-ordered point arrays." },
+        "foreground_source_mode": { "type": "string", "enum": ["scatter", "tracks"], "description": "Composite render foreground-layer mode: scatter=point dots (default), tracks=per-dataset polylines (composite render with particles-track aesthetic on top)." }
       }
     },
     "audio": {
