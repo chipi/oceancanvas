@@ -1,7 +1,3 @@
-# Status: NEEDS feature → issue #99 (composite render type — multi-source
-# z-ordered layers). Today recipes run a single render type from one source;
-# this one needs schema for layered renders and a composite sketch.
-
 name: whale-shark-on-sst
 title: Whale shark — reading the ocean
 description: >
@@ -26,11 +22,13 @@ schedule: daily
 render:
   type: composite
   colormap: thermal
-  opacity: 0.7                         # dim the SST so dots read clearly on top
+  opacity: 0.95                        # let the SST field carry its own weight
   smooth: true
+  tail_length: 16                      # high-contrast gamma — fronts and isotherms read sharper
+  speed_scale: 1.1                     # slight brightness lift, push the warm tongue
   seed: 28
-  foreground_colormap: otherworldly    # high-contrast cyan/white against red SST
-  foreground_marker_size: 7
+  foreground_colormap: otherworldly    # cyan/white dots still pop against the saturated thermal
+  foreground_marker_size: 6
   foreground_marker_opacity: 0.95
 audio:
   drone_waveform: triangle

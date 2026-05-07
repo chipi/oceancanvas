@@ -16,6 +16,8 @@
  *
  * Recipe controls:
  *   - colormap, opacity, smooth — apply to the field background
+ *   - tail_length — gamma curve for the field (3→24 maps to 0.6→1.8 gamma)
+ *   - speed_scale — brightness multiplier for the field (0.2→2.0 maps to 0.7→1.3)
  *   - foreground_marker_size, foreground_marker_opacity — apply to overlay
  *   - foreground_colormap — separate colormap for the overlay (default arctic)
  *   - context_layer — coastline (default), none
@@ -34,11 +36,18 @@ function setup() {
 
   const colormapName = payload.recipe?.render?.colormap || 'thermal';
   const opacity = (payload.recipe?.render?.opacity ?? 1.0) * 255;
+  const doSmooth = payload.recipe?.render?.smooth ?? true;
+  const tailLength = payload.recipe?.render?.tail_length || 12;
+  const speedScale = payload.recipe?.render?.speed_scale || 1.0;
   const fgColormap = payload.recipe?.render?.foreground_colormap || 'arctic';
   const fgMarkerSize = payload.recipe?.render?.foreground_marker_size || 4;
   const fgMarkerOpacity = (payload.recipe?.render?.foreground_marker_opacity ?? 0.85) * 255;
   const fgColorBy = payload.recipe?.render?.foreground_color_by || 'value';
   const contextLayer = payload.recipe?.render?.context_layer || 'coastline';
+
+  // Mirror field.js tone-shaping so composites can match the field-type recipes' presence.
+  const gamma = lerp(0.6, 1.8, constrain((tailLength - 3) / 21, 0, 1));
+  const brightness = lerp(0.7, 1.3, constrain((speedScale - 0.2) / 1.8, 0, 1));
 
   createCanvas(w, h);
   randomSeed(seed);
@@ -80,15 +89,17 @@ function setup() {
         } else {
           let t = vmax !== vmin ? (val - vmin) / (vmax - vmin) : 0.5;
           t = constrain(t, 0, 1);
+          t = Math.pow(t, gamma);
           const [cr, cg, cb] = colorFromStops(stops, t);
-          fieldImg.pixels[pi] = cr;
-          fieldImg.pixels[pi + 1] = cg;
-          fieldImg.pixels[pi + 2] = cb;
+          fieldImg.pixels[pi] = constrain(cr * brightness, 0, 255);
+          fieldImg.pixels[pi + 1] = constrain(cg * brightness, 0, 255);
+          fieldImg.pixels[pi + 2] = constrain(cb * brightness, 0, 255);
           fieldImg.pixels[pi + 3] = opacity;
         }
       }
     }
     fieldImg.updatePixels();
+    if (!doSmooth) noSmooth();
     image(fieldImg, 0, 0, w, h);
   }
 
