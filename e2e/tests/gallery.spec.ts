@@ -381,7 +381,7 @@ test.describe('route smoke (all pages)', () => {
 
   test('/timelapse/:recipe shows editor chrome', async ({ page }) => {
     await page.goto('/timelapse/test-field');
-    await expect(page.locator('body')).toContainText('timelapse editor');
+    await expect(page.locator('body')).toContainText('TIMELAPSE EDITOR');
     await expect(
       page.locator('button', { hasText: 'download' }).first(),
     ).toBeVisible();

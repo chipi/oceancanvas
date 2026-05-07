@@ -25,8 +25,17 @@
   text-decoration: none;
 }
 
-.topbarPath {
+.topbarLabel {
   font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.topbarChip {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 4px 12px;
+  background: var(--elevated);
+  border-radius: 3px;
   color: var(--text-secondary);
 }
 

@@ -164,7 +164,7 @@ export function DashboardSpread() {
         </a>
         <span className={styles.topbarLabel}>/DATA EXPLORER</span>
         <span className={styles.topbarChip}>
-          {active.label} ⊓ {active.sub}
+          {active.label} · {active.sub}
         </span>
         <nav className={styles.topbarNav}>
           <a href="/" className={styles.topbarLink}>
@@ -308,8 +308,8 @@ export function DashboardSpread() {
             <div className={styles.chartPlaceholder}>
               <div className={styles.chartTitle}>
                 {isOisst
-                  ? `SST DISTRIBUTION ⊓ ${entry?.latest || ""}`
-                  : `${active.label.toUpperCase()} ⊓ OBSERVATIONS OVER TIME`}
+                  ? `SST DISTRIBUTION · ${entry?.latest || ""}`
+                  : `${active.label.toUpperCase()} · OBSERVATIONS OVER TIME`}
               </div>
               <div className={styles.chartBody}>
                 <ChartErrorBoundary key={activeIdx}>
@@ -336,8 +336,8 @@ export function DashboardSpread() {
             <div className={styles.chartPlaceholder}>
               <div className={styles.chartTitle}>
                 {isOisst
-                  ? "MEAN SST ⊓ 1981→2026"
-                  : `${active.label.toUpperCase()} ⊓ DATA COVERAGE`}
+                  ? "MEAN SST · 1981→2026"
+                  : `${active.label.toUpperCase()} · DATA COVERAGE`}
               </div>
               <div className={styles.chartBody}>
                 <ChartErrorBoundary key={activeIdx}>

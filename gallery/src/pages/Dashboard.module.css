@@ -40,20 +40,18 @@
   color: var(--intent-teal);
 }
 
-.topbarPath {
+.topbarLabel {
   font-size: 12px;
   color: var(--text-secondary);
 }
 
-.topbarMuted {
-  color: var(--text-muted);
-}
-
-.topbarTime {
+.topbarChip {
   margin-left: auto;
   font-size: 10px;
-  color: var(--text-muted);
-  font-family: monospace;
+  padding: 4px 12px;
+  background: var(--elevated);
+  border-radius: 3px;
+  color: var(--text-secondary);
 }
 
 .body {

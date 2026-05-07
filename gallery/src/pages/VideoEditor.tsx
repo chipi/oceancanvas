@@ -415,6 +415,7 @@ export function VideoEditor() {
           <a href="/" className={styles.wordmark}>
             OCEANCANVAS
           </a>
+          <span className={styles.topbarLabel}>/TIMELAPSE EDITOR</span>
         </header>
         <div className={styles.empty}>
           {recipe ? `No renders for "${recipe}"` : "Select a recipe"}
@@ -430,9 +431,8 @@ export function VideoEditor() {
         <a href="/" className={styles.wordmark}>
           OCEANCANVAS
         </a>
-        <span className={styles.topbarPath}>
-          /timelapse editor / {entry?.title || recipe}
-        </span>
+        <span className={styles.topbarLabel}>/TIMELAPSE EDITOR</span>
+        <span className={styles.topbarChip}>{entry?.title || recipe}</span>
         <div className={styles.topbarActions}>
           <a href="/" className={styles.topbarLink}>
             ← gallery

@@ -247,9 +247,9 @@ export function RecipeEditor() {
         <a href="/" className={styles.wordmark}>
           OCEANCANVAS
         </a>
-        <span className={styles.topbarRecipe}>{recipeName}</span>
-        <span className={styles.topbarMeta}>
-          {renderType} · {technical.colormap} · {processedData?.date || ""}
+        <span className={styles.topbarLabel}>/RECIPE EDITOR</span>
+        <span className={styles.topbarChip}>
+          {recipeName} · {renderType}
         </span>
         <div className={styles.topbarNav}>
           <a href="/" className={styles.navLink}>

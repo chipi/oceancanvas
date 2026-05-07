@@ -24,9 +24,9 @@ interface ManifestRecipe {
 
 // Dashboard sources — each maps to a recipe in the manifest
 const SOURCES = [
-  { id: "north-atlantic-sst", label: "SST", sub: "sea surface temp" },
-  { id: "argo-global", label: "Argo", sub: "float profiles" },
-  { id: "whale-shark-on-sst", label: "Whale shark", sub: "biologging" },
+  { id: "north-atlantic-sst", label: "SST", source: "oisst", sub: "NOAA OISST" },
+  { id: "argo-global", label: "Argo", source: "argo", sub: "ifremer GDAC" },
+  { id: "whale-shark-on-sst", label: "Whale shark", source: "obis-whale-shark", sub: "OBIS" },
 ];
 
 export function Dashboard() {
@@ -118,11 +118,11 @@ export function Dashboard() {
         <a href="/" className={styles.wordmark}>
           OCEANCANVAS
         </a>
-        <span className={styles.topbarPath}>
-          /{SOURCES.find((s) => s.id === activeSource)?.label || activeSource}
-          <span className={styles.topbarMuted}> ⊓ {entry?.source || ""}</span>
+        <span className={styles.topbarLabel}>/DASHBOARD</span>
+        <span className={styles.topbarChip}>
+          {(SOURCES.find((s) => s.id === activeSource)?.label ?? activeSource)} ·{" "}
+          {SOURCES.find((s) => s.id === activeSource)?.sub ?? ""}
         </span>
-        <span className={styles.topbarTime}>{selectedDate || ""}</span>
         <nav className={styles.topbarNav}>
           <a href="/" className={styles.topbarLink}>
             ← gallery
