@@ -34,6 +34,13 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 | [RFC-009](RFC-009.md) | Pipeline CLI interface | Decided | [ADR-022](../adr/ADR-022-cli-entry-point.md) | components/pipeline |
 | [RFC-010](RFC-010-generative-audio-composition.md) | Generative audio composition | Decided | [ADR-027](../adr/ADR-027-generative-audio-composition.md) (supersedes ADR-026) | components/render-system |
 | [RFC-011](RFC-011-tension-arc.md) | Tension arc as shared primitive | Decided | [ADR-028](../adr/ADR-028-tension-arc-shared-curve.md) | components/render-system · contracts/recipe-yaml · contracts/render-payload |
+| [RFC-012](RFC-012-atmospheric-audio.md) | Atmospheric audio: from data-sonification to ambient backdrop | Draft v0.1 | ADR-029 + ADR-030 (pending) | components/render-system · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-013](RFC-013-editor-knobs.md) | Editor controls: circular knobs + envelope-aware indicators | Draft v0.1 | ADR-031 (pending) | components/web-frontend · contracts/recipe-yaml |
+| [RFC-014](RFC-014-modulation-graph.md) | Modulation graph: per-parameter breakpoint envelopes + embedded LFOs | Draft v0.1 | ADR-032 + ADR-033 (pending); supersedes ADR-028 | components/render-system · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-015](RFC-015-bloom.md) | Bloom: generative recipe + audio variant generator | Draft v0.1 | ADR-034 + ADR-035 (pending) | components/pipeline · components/web-frontend · contracts/recipe-yaml · constraints |
+| [RFC-016](RFC-016-motion-clocks.md) | Per-layer motion clocks: data-derived modulation sources | Draft v0.1 | ADR-036 + ADR-037 (pending) | components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-017](RFC-017-recipe-macros.md) | Recipe-level macros: one knob, many parameters | Draft v0.1 | ADR-038 (pending) | components/render-system · components/web-frontend · contracts/recipe-yaml · constraints |
+| [RFC-018](RFC-018-recipe-morphing.md) | Recipe morphing: continuous interpolation between recipes | Draft v0.1 | ADR-039 + ADR-040 (pending) | components/render-system · components/pipeline · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints |
 
 ## State map
 
