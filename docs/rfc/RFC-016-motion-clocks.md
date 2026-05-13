@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-010 Generative audio composition · RFC-012 Atmospheric audio · RFC-014 Modulation graph · RFC-015 Bloom
-> **Closes into** · ADR-036 (Clock primitive: data-derived modulation sources), ADR-037 (Data features registry)
+> **Closes into** · ADR-039 (Clock primitive: data-derived modulation sources), ADR-040 (Data features registry)
 > **Why this is an RFC** · Motion clocks are the most speculative of the five-RFC arc derived from the Absynth + Moments analyses. The aesthetic claim — that giving each audio layer its own clock derived from a different data feature produces *polyrhythmic, data-revealing* motion that nothing else in the stack can produce — is real but unproven in this codebase. The cost is also real: a new primitive in the recipe schema, a data-features registry that the project has to maintain, cross-validation surface, and a small but non-zero conceptual burden on authors. Whether the clock primitive justifies its existence as a separate concept (versus extending RFC-014's envelope LFO to accept data sources) is the central architectural question. Several sub-questions follow — data-features registry scope, polyrhythm sync semantics, editor surface, the relationship between clocks and envelopes at the runtime layer.
 
 ---
@@ -257,8 +257,8 @@ Rejected. That is exactly RFC-014's per-breakpoint embedded LFO with a single br
 
 ## How this closes
 
-- **ADR-036 — Clock primitive: data-derived modulation sources.** Locks the `clocks:` schema, the clock evaluation algorithm, the integration with RFC-014 envelope modulation, the polyrhythm semantics, and the payload field.
-- **ADR-037 — Data features registry.** Locks the v1 feature set (`annual_cycle`, `monthly_delta`, `enso_index`, `record_proximity`), the per-feature metadata schema, the extension protocol (project-shipped only at v1), and the cross-validation fixture set.
+- **ADR-039 — Clock primitive: data-derived modulation sources.** Locks the `clocks:` schema, the clock evaluation algorithm, the integration with RFC-014 envelope modulation, the polyrhythm semantics, and the payload field.
+- **ADR-040 — Data features registry.** Locks the v1 feature set (`annual_cycle`, `monthly_delta`, `enso_index`, `record_proximity`), the per-feature metadata schema, the extension protocol (project-shipped only at v1), and the cross-validation fixture set.
 
 Closure trigger: Phase 1 implementation forces the schema decision once the pipeline, the browser, and the cross-validation fixture set all produce identical clock arrays end-to-end, *and* at least one ambient-identity recipe demonstrably uses a clock to drive a vocal or atmosphere envelope. The second condition is the honest test — if no recipe wants clocks, the RFC stays at Draft v0.1 and is candidate for retirement rather than closure.
 
@@ -267,4 +267,4 @@ Closure trigger: Phase 1 implementation forces the schema decision once the pipe
 - **Source** — Moments Vocal Clouds *per-voice motion engines* property · Absynth *macro stability + micro motion* philosophy
 - **TA** — components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-010 Generative audio composition · RFC-012 Atmospheric audio · RFC-014 Modulation graph · RFC-015 Bloom
-- **Related ADRs** — ADR-027 · ADR-029 · ADR-030 · ADR-032 · ADR-033 · ADR-034 · ADR-035
+- **Related ADRs** — ADR-027 · ADR-032 · ADR-033 · ADR-035 · ADR-036 · ADR-037 · ADR-038

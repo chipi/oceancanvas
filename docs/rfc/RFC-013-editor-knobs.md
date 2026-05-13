@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/web-frontend · contracts/recipe-yaml
 > **Related** · RFC-004 Live preview architecture · RFC-011 Tension arc · RFC-012 Atmospheric audio (paired) · RFC-014 Modulation graph (deferred, forward-compat target)
-> **Closes into** · ADR-031 (Knob component contract + interaction model)
+> **Closes into** · ADR-034 (Knob component contract + interaction model)
 > **Why this is an RFC** · Replacing the editor's `<input type="range">` sliders with a circular knob component is straightforward in isolation, but lands on top of two genuinely open questions: which drag-interaction model fits a Web-based editor that emulates a desktop plugin (rotary vs. vertical drag, modifier-key fine-tune, double-click reset), and how the component is shaped *now* so that RFC-014's modulation graph can plug in *later* without a second migration. There is also a scope question — every slider in the editor, or only the audio-side controls landed by RFC-012? Each choice has real consequences for accessibility, bundle size, and the cost of the migration.
 
 ---
@@ -203,7 +203,7 @@ Rejected. Shaping the API to add a single prop later is essentially free; retrof
 
 ## How this closes
 
-- **ADR-031 — Knob component contract + interaction model.** Locks the component API (props, modulation shape), the interaction model (vertical drag, modifier keys, keyboard), the size scale (sm/md/lg), the accessibility contract (`role="slider"`, ARIA attributes), and the replacement scope (audio controls in; linear/2D controls out).
+- **ADR-034 — Knob component contract + interaction model.** Locks the component API (props, modulation shape), the interaction model (vertical drag, modifier keys, keyboard), the size scale (sm/md/lg), the accessibility contract (`role="slider"`, ARIA attributes), and the replacement scope (audio controls in; linear/2D controls out).
 
 Closure trigger: Phase 1 implementation forces the API decision once the Video Editor uses the component for all RFC-012 audio parameters end-to-end.
 

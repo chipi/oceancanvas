@@ -184,6 +184,8 @@ The live state board. Open RFCs are under deliberation. Decided RFCs have closed
 | [ADR-027](ADR-027-generative-audio-composition.md) | Generative audio composition | Accepted |
 | [ADR-028](ADR-028-tension-arc-shared-curve.md) | Tension arc as shared primitive | Accepted |
 | [ADR-029](ADR-029-compose-sidecar-services.md) | Compose sidecars for recipe save and video export | Accepted |
+| [ADR-030](ADR-030-recipe-aggregate-directive.md) | Recipe `aggregate` directive for point-source binning | Accepted |
+| [ADR-031](ADR-031-recipe-source-mode-directive.md) | Recipe `source_mode` directive for particles render type | Accepted |
 
 ---
 

@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-010 Generative audio composition · RFC-011 Tension arc · RFC-012 Atmospheric audio · RFC-013 Editor controls · ADR-027 · ADR-028 (superseded by this RFC's closure)
-> **Closes into** · ADR-032 (Modulation graph: envelope primitive + evaluation), ADR-033 (LFO embedding semantics + cross-validation)
+> **Closes into** · ADR-035 (Modulation graph: envelope primitive + evaluation), ADR-036 (LFO embedding semantics + cross-validation)
 > **Why this is an RFC** · RFC-011 locked a single shared curve — the tension arc — as the project's modulation primitive. RFC-012 just landed a five-layer audio system whose `atmosphere`, `vocal.presence`, `drone.presence`, and bus-level parameters all want to *breathe* over time in ways the four preset arc shapes cannot express. The technical question is whether to generalise the tension arc into a full per-parameter envelope primitive *now* (one RFC, one migration, one supersession) or to keep adding bespoke per-parameter curves alongside it. Once generalisation is chosen, real architectural questions remain — schema representation (named vs. inline envelopes), LFO embedding math (continuous vs. stepped depth), evaluation strategy (precomputed per-frame arrays vs. real-time evaluation), cross-validation fixture growth, and how tension_arc keeps its name in recipe YAML for editor clarity while becoming a special case underneath.
 
 ---
@@ -273,7 +273,7 @@ Rejected for v1. The audio identity work in RFC-012 does not yet have a use case
 
 - **Recipe schema grows substantially.** The `envelopes:` block and the per-param polymorphism (scalar | envelope-ref | envelope-inline) widen the YAML surface. Acceptable, but each new affordance is a new authoring concept to learn.
 - **Cross-validation fixture explodes.** Envelope evaluation has more inputs (breakpoint count, interpolation type, LFO presence) than the four-shape tension arc. Initial fixture target ~50 cases; manageable but real.
-- **ADR-028 superseded.** RFC-011's settled decision is replaced; ADR-029/030/031 from RFC-012/013 are not affected. The supersession is clean but it is the first time the project has retired an ADR.
+- **ADR-028 superseded.** RFC-011's settled decision is replaced; ADR-032/030/031 from RFC-012/013 are not affected. The supersession is clean but it is the first time the project has retired an ADR.
 - **Editor complexity.** A new envelope editor view is a substantial UI artefact. Smaller than the Video Editor itself, but larger than any current sub-panel.
 - **Payload v3.** Backward compat handled per ADR-019 norms (v2 consumers reject; pipeline and browser ship together). Acceptable.
 - **The `<Knob>` modulation prop now does work.** RFC-013 specified the prop as forward-compat; RFC-014 lights it up. Any RFC-013 bugs in the dual indicator surface here. Acceptable — that is exactly what paired shipping intended.
@@ -293,16 +293,16 @@ Rejected for v1. The audio identity work in RFC-012 does not yet have a use case
 
 ## How this closes
 
-- **ADR-032 — Modulation graph: envelope primitive + evaluation.** Locks the polymorphic parameter shape (scalar | preset | envelope), the named + inline envelope schema, the precomputed-array distribution model, the payload v3 contract, and the engine consumption interface.
-- **ADR-033 — LFO embedding semantics + cross-validation.** Locks the per-breakpoint `lfo_depth` / `lfo_hz` math (linear interpolation between breakpoints, deterministic phase from envelope start, sine waveform at v1), the built-in template registry (the four tension-arc presets), and the cross-validation fixture set.
+- **ADR-035 — Modulation graph: envelope primitive + evaluation.** Locks the polymorphic parameter shape (scalar | preset | envelope), the named + inline envelope schema, the precomputed-array distribution model, the payload v3 contract, and the engine consumption interface.
+- **ADR-036 — LFO embedding semantics + cross-validation.** Locks the per-breakpoint `lfo_depth` / `lfo_hz` math (linear interpolation between breakpoints, deterministic phase from envelope start, sine waveform at v1), the built-in template registry (the four tension-arc presets), and the cross-validation fixture set.
 
 Closure trigger: Phase 1 implementation forces the schema decision once the editor, the pipeline, and the cross-validation fixture set all read and emit envelope arrays end-to-end for at least three RFC-012 audio parameters and one visual filter parameter.
 
-Supersession: ADR-028 (RFC-011's closure) is marked superseded by ADR-032 on closure. The tension arc keeps its name in YAML and in the editor; under the hood it is a built-in template over the new envelope primitive.
+Supersession: ADR-028 (RFC-011's closure) is marked superseded by ADR-035 on closure. The tension arc keeps its name in YAML and in the editor; under the hood it is a built-in template over the new envelope primitive.
 
 ## Links
 
 - **Source** — PRD-006 *The piece* · RFC-012 *Atmospheric audio*'s motivation for per-param time-varying control
 - **TA** — components/render-system · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-010 Generative audio composition · RFC-011 Tension arc · RFC-012 Atmospheric audio · RFC-013 Editor controls
-- **Related ADRs** — ADR-027 · ADR-028 (superseded on closure) · ADR-029 · ADR-030 · ADR-031
+- **Related ADRs** — ADR-027 · ADR-028 (superseded on closure) · ADR-032 · ADR-033 · ADR-034

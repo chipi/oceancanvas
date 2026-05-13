@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/web-frontend · contracts/recipe-yaml · constraints
 > **Related** · RFC-012 Atmospheric audio · RFC-013 Editor controls · RFC-014 Modulation graph · RFC-015 Bloom
-> **Closes into** · ADR-038 (Macro primitive: schema, evaluation, broadcast semantics)
+> **Closes into** · ADR-041 (Macro primitive: schema, evaluation, broadcast semantics)
 > **Why this is an RFC** · After RFC-012 (audio identity), RFC-013 (knob UI), and RFC-014 (envelopes), the recipe surface has the right *low-level* primitives but is missing the *high-level* user surface Moments built its entire identity on — a handful of macros that each broadcast a single value to many parameters with weighted distribution. The technical question is whether macros warrant a new primitive or are already expressible as RFC-014 named envelopes referenced from multiple parameters. They are *almost* the same thing, but not quite: a named envelope is a curve, a macro is a scalar; multiple consumers of a named envelope receive the same value, multiple consumers of a macro receive *weighted* values. The architectural distinction looks small and is in fact the difference between "automation" and "performance control." Resolving this matters for the editor UX, the Bloom sampling spec, and how authors think about their recipes.
 
 ---
@@ -221,7 +221,7 @@ Considered. Counter-argument: macros are the most distinctive feature of Moments
 
 ## How this closes
 
-- **ADR-038 — Macro primitive: schema, evaluation, broadcast semantics.** Locks the `macros:` block schema, the `macro:` parameter form, the broadcast evaluation pipeline (value × weight + offset, clamped per-target), the composition rule with envelopes (`macro` then `envelope_add` then clamp), the payload field, and the cross-validation fixture protocol.
+- **ADR-041 — Macro primitive: schema, evaluation, broadcast semantics.** Locks the `macros:` block schema, the `macro:` parameter form, the broadcast evaluation pipeline (value × weight + offset, clamped per-target), the composition rule with envelopes (`macro` then `envelope_add` then clamp), the payload field, and the cross-validation fixture protocol.
 
 Closure trigger: Phase 1 implementation forces the schema decision once the editor leads with a macro panel and at least one ambient-identity recipe demonstrably uses a macro with three or more targets including a time-varying macro value.
 
@@ -230,4 +230,4 @@ Closure trigger: Phase 1 implementation forces the schema decision once the edit
 - **Source** — Moments "1 knob, many parameters" macro philosophy · Absynth Mutator's preset-DNA observation (a single move re-coordinates many params)
 - **TA** — components/render-system · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-012 Atmospheric audio · RFC-013 Editor controls · RFC-014 Modulation graph · RFC-015 Bloom · RFC-016 Motion clocks
-- **Related ADRs** — ADR-029 · ADR-030 · ADR-031 · ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-036 · ADR-037
+- **Related ADRs** — ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-036 · ADR-037 · ADR-038 · ADR-039 · ADR-040

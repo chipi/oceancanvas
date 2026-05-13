@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-012 Atmospheric audio (audio counterpart for layer architecture) · RFC-014 Modulation graph · RFC-016 Motion clocks · RFC-019 Visual identity + post-FX (paired companion)
-> **Closes into** · ADR-043 (Layer compositing primitive), ADR-044 (Feedback layer + accumulator semantics)
+> **Closes into** · ADR-046 (Layer compositing primitive), ADR-047 (Feedback layer + accumulator semantics)
 > **Why this is an RFC** · The current renderer produces one sketch's output per frame. Multi-source compositions — SST gradient *with* particle field *with* tracks scatter *with* a coastline outline *with* accumulated motion trails — are not expressible. The audio side has had five parallel layers since RFC-012; the visual side has had one. The aesthetic research on Ikeda / Viola / Akten surfaced the same primitive from three different angles — a **feedback buffer with parameterised fade** is what makes Akten's accumulated trails feel like Akten, what makes Ikeda's hard-cut grids feel like Ikeda (fade = 0 = no accumulation), and what gives every long-form ambient piece visual breath. The architectural questions are real: how layer order maps to compositing semantics, how feedback layers interact with deterministic rendering when they depend on prior frames, what the schema looks like when blend modes + transforms + envelopes all apply per-layer, and where the renderer's existing single-sketch path fits into the multi-layer model. This RFC is paired with RFC-019 (visual identity + post-FX) — the post-FX bus operates over the composited frame, and the visual identity broadcasts coherent layer defaults.
 
 ---
@@ -320,8 +320,8 @@ Deferred to a future revision. The schema allows it (the source_layer field just
 
 ## How this closes
 
-- **ADR-043 — Layer compositing primitive.** Locks the `layers:` schema (four layer types: sketch / feedback / texture / motion_graphics), the per-layer parameter polymorphism, the blend mode catalogue, the z-order semantics, the legacy single-sketch fallback path, and the compositing pipeline order.
-- **ADR-044 — Feedback layer + accumulator semantics.** Locks the feedback layer's evaluation (`buffer[t] = fade * transform(buffer[t-1]) + source[t]`), the source_layer reference rules, the transform_per_step semantics, the determinism contract (pipeline sequential, browser pre-computed cache), and the cross-validation fixture set for feedback.
+- **ADR-046 — Layer compositing primitive.** Locks the `layers:` schema (four layer types: sketch / feedback / texture / motion_graphics), the per-layer parameter polymorphism, the blend mode catalogue, the z-order semantics, the legacy single-sketch fallback path, and the compositing pipeline order.
+- **ADR-047 — Feedback layer + accumulator semantics.** Locks the feedback layer's evaluation (`buffer[t] = fade * transform(buffer[t-1]) + source[t]`), the source_layer reference rules, the transform_per_step semantics, the determinism contract (pipeline sequential, browser pre-computed cache), and the cross-validation fixture set for feedback.
 
 Closure trigger: Phase 1 implementation forces the schema decisions once the pipeline + browser composite a four-layer recipe with at least one feedback layer end-to-end, and the RFC-019 post-FX chain runs over the composited output for each of the five identities.
 
@@ -330,4 +330,4 @@ Closure trigger: Phase 1 implementation forces the schema decisions once the pip
 - **Source** — RFC-012 *Atmospheric audio* (five-layer audio architecture; visual analogue) · Ikeda / Viola / Akten aesthetic research surfacing the feedback primitive · TouchDesigner feedback loops + Notch node-graph compositing as reference architectures
 - **TA** — components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-012 Atmospheric audio · RFC-014 Modulation graph · RFC-016 Motion clocks · RFC-017 Recipe macros · RFC-019 Visual identity + post-FX (paired)
-- **Related ADRs** — ADR-027 · ADR-029 · ADR-031 · ADR-032 · ADR-033 · ADR-041 · ADR-042
+- **Related ADRs** — ADR-027 · ADR-032 · ADR-034 · ADR-035 · ADR-036 · ADR-044 · ADR-045

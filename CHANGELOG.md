@@ -6,13 +6,60 @@ For prose-formatted release notes with full context, see [GitHub releases](https
 
 ## [Unreleased]
 
+_Nothing yet — implementation of v0.6.0's RFC arc (RFC-012 through RFC-021) begins here._
+
+## [0.6.0] — 2026-05-14 — Editorial expansion + sidecar services + RFC horizon
+
 ### Added
-- Audio "drop to drone only" gesture at the held moment — pipeline `_inject_hold` returns a `hold_mask`; pulse + accent skip new firings during hold; texture mutes; drone holds full. PRD-006's lede gesture now lands. Browser engines apply the same mask for the equivalent span during preview.
+
+**Editorial surface**
+- **Composite render type** (`render: composite`) — field underneath, scatter on top, with foreground tracks variant for biologging. Tone-shaping levers (saturation, vignette, scatter density) authorable per-recipe.
+- **Zoomed regional whale-shark-tracks variants** — three regional viewports (Indian Ocean, Eastern Pacific, GBR) alongside the global cluster.
+- **Whale-shark cluster recipe family** — 5 new cluster recipes + jitter/colour tweaks on the existing set; visual identity differentiated per cluster.
+- **Story tab in Recipe Editor** — editorial title + description as first-class recipe fields (not metadata).
+- **7 spike recipes** promoted to active state; biologging surface narrowed to whale-shark for v0.6.0 cycle.
+
+**Recipe directives**
+- **`aggregate: density` directive** for point sources (ADR-030) — binning into density grids, processed at pipeline stage.
+- **`source_mode: tracks` directive** for particles render (ADR-031) — particle systems consuming track-style observation data.
+
+**Audio gesture refinement**
+- **"Drop to drone only" hold gesture** — pipeline `_inject_hold` returns a `hold_mask`; pulse + accent skip new firings during hold; texture mutes; drone holds full. PRD-006's lede gesture now lands. Browser engines apply the same mask for the equivalent span during preview.
+
+**Infrastructure**
+- **Compose sidecar services** (ADR-029) — Node sidecars for recipe YAML save (port 3001) and video export (port 3002), with Caddy reverse-proxying narrow `/api/*` paths. Six-service stack: postgres, prefect-server, pipeline, gallery, recipe-server, export-server.
+- **Compose layout consolidation** — Compose files moved into `compose/` folder; `.env` adopted as single source of truth across services.
+
+**Design horizon — 10 new RFCs drafted (Draft v0.1)**
+- **RFC-012** Atmospheric audio — five-layer ambient identity, atmosphere bus, vocal sample stack
+- **RFC-013** Editor controls — circular Knob component + envelope-aware indicators
+- **RFC-014** Modulation graph — per-parameter envelopes + embedded LFOs + loop modes (supersedes ADR-028 on closure)
+- **RFC-015** Bloom — generative recipe + audio variant generator
+- **RFC-016** Motion clocks — data-derived modulation sources (speculative)
+- **RFC-017** Recipe macros — one knob, many parameters
+- **RFC-018** Recipe morphing — continuous interpolation between recipes
+- **RFC-019** Visual identity + post-process bus — five identities grounded in Akten / Ikeda / Viola / painterly / technical
+- **RFC-020** Multi-source layer compositing — sketch / feedback / texture / motion-graphics layer types with parameterised-fade keystone primitive
+- **RFC-021** Granular frame processing — `frame_hold` + `interp_factor` (speculative; ships with retirement contingency)
+
+The seven audio-side RFCs (012–018) trace from Native Instruments Absynth + Moments analyses; the three visual-side RFCs (019–021) trace from a parallel research pass on Ryoji Ikeda, Bill Viola, and Memo Akten. Together they reserve ADR-032 through ADR-048 for closure. Implementation tracked via GitHub issues #105–#112.
 
 ### Changed
-- Cross-validation parity for `creativeToAudio` ↔ `creative_to_audio` — added shared fixture (13 cases) so the audio mapping has the same regression harness the visual mapping has had since v0.3.
-- Recipe schema (`recipe-schema.json`) now validates `audio:` and `tension_arc:` blocks with enum + bounds; previously unknown keys were silently accepted.
-- `ADR-019` (render payload schema) annotated with the v2 additions (`recipe.audio`, `recipe.tension_arc`).
+- **Cross-validation parity for `creativeToAudio` ↔ `creative_to_audio`** — added shared fixture (13 cases) so the audio mapping has the same regression harness the visual mapping has had since v0.3.
+- **Recipe schema** (`recipe-schema.json`) now validates `audio:` and `tension_arc:` blocks with enum + bounds; previously unknown keys were silently accepted.
+- **ADR-019** (render payload schema) annotated with the v2 additions (`recipe.audio`, `recipe.tension_arc`).
+- **Gallery header pattern** aligned across all customer-facing surfaces; rhythmic masonry tiering on the gallery index; clearer "all sources" filter.
+- **Video Editor** — full sidebar → export sync (#94 closed); export popup gains audio toggle + "will export" state preview.
+- **AGENTS.md / CLAUDE.md split** — canonical AI-agent instructions now live in portable `AGENTS.md`; `CLAUDE.md` is a Claude-specific overlay pointer.
+- **`OceanPayload`** continues at v2 from v0.5.0; v3 reserved for RFC-014 envelopes + RFC-016 clocks + RFC-017 macros.
+
+### Quality
+- CI hardening across the cycle: 15-minute job timeout, Prefect test-mode bypass for unit tests, `.env` seeding before compose validation, pipeline dev-extras installation, e2e stack stabilisation, smoke coverage across all app routes.
+- MkDocs strict build restored for GitHub Pages deploy.
+- 280+ pipeline tests collected, 2 deselected (xfail), all green at tag time.
+
+### Removed
+- Bathymetry context dropped from global biologging recipes (no longer adds editorial value at global scale).
 
 ## [0.5.0] — 2026-05-04 — The piece (tension arc as shared primitive)
 

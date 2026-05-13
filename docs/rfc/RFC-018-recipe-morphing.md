@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/pipeline · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-012 Atmospheric audio · RFC-014 Modulation graph · RFC-015 Bloom · RFC-017 Recipe-level macros
-> **Closes into** · ADR-039 (Recipe morphing: schedule + interpolation), ADR-040 (Per-parameter morph rules + sample crossfade)
+> **Closes into** · ADR-042 (Recipe morphing: schedule + interpolation), ADR-043 (Per-parameter morph rules + sample crossfade)
 > **Why this is an RFC** · Absynth's distinctive wavetable morphing — smooth continuous interpolation between source waveforms over time — has no direct analogue in the current OceanCanvas stack. RFC-015 Bloom generates *discrete* variants; RFC-014 envelopes morph *parameters within one recipe* over time. Neither addresses the gesture "morph from this whole recipe at the start to that whole recipe at the end across the video duration." The technical question is what *recipe morphing* means concretely: numeric parameters interpolate naturally, but enum parameters (palettes, accent styles), sample-bank references (vocal stack entries), and envelope shapes (whose breakpoint topologies may differ between source recipes) each require an explicit rule. The aesthetic payoff is real — long-form recipes that drift through compositional space rather than holding a single state — but the cost in render performance, schema complexity, and cross-validation surface is non-trivial. Multiple plausible architectures exist for the morph schedule (binary blend, multi-stop interpolation, envelope-driven blend curve), each with different trade-offs.
 
 ---
@@ -231,8 +231,8 @@ Rejected. The labor cost of authoring twenty parallel envelopes for what is conc
 
 ## How this closes
 
-- **ADR-039 — Recipe morphing: schedule + interpolation.** Locks the `morph:` schema (sources + schedule), the polymorphic schedule weight, the payload distribution model (both source payloads + morphed result arrays), and the cross-validation contract.
-- **ADR-040 — Per-parameter morph rules + sample crossfade.** Locks the per-parameter morph rule table (numeric / enum / envelope / clock / macro / sample), the enum default (snap at midpoint, crossfade opt-in), the output-array envelope morph approach, the audio crossfade implementation (parallel engines mixed by weight), and the editor's per-parameter override surface.
+- **ADR-042 — Recipe morphing: schedule + interpolation.** Locks the `morph:` schema (sources + schedule), the polymorphic schedule weight, the payload distribution model (both source payloads + morphed result arrays), and the cross-validation contract.
+- **ADR-043 — Per-parameter morph rules + sample crossfade.** Locks the per-parameter morph rule table (numeric / enum / envelope / clock / macro / sample), the enum default (snap at midpoint, crossfade opt-in), the output-array envelope morph approach, the audio crossfade implementation (parallel engines mixed by weight), and the editor's per-parameter override surface.
 
 Closure trigger: Phase 1 implementation forces the schema decision once two ambient-identity recipes morph end-to-end with audible crossfade and visual interpolation, cross-validated TS ↔ Py.
 
@@ -241,4 +241,4 @@ Closure trigger: Phase 1 implementation forces the schema decision once two ambi
 - **Source** — Absynth wavetable morphing concept applied at the recipe level · Moments morphing transitions ("intimate vulnerability to expansive cinematic bloom") observation
 - **TA** — components/render-system · components/pipeline · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-012 Atmospheric audio · RFC-014 Modulation graph · RFC-015 Bloom · RFC-017 Recipe-level macros
-- **Related ADRs** — ADR-029 · ADR-030 · ADR-031 · ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-038
+- **Related ADRs** — ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-036 · ADR-037 · ADR-038 · ADR-041

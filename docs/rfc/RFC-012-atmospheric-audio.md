@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-13
 > **TA anchor** · components/render-system · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · PRD-006 The piece · RFC-006 Audio system · RFC-010 Generative audio composition · RFC-011 Tension arc · ADR-027 · ADR-028 · RFC-013 Editor controls (paired companion)
-> **Closes into** · ADR-029 (audio identity + atmosphere bus), ADR-030 (vocal sample bank + provenance)
+> **Closes into** · ADR-032 (audio identity + atmosphere bus), ADR-033 (vocal sample bank + provenance)
 > **Why this is an RFC** · The current four-layer engine sonifies data successfully but produces percussive transients over a foreground drone — closer to minimalist electronica than to an ambient backdrop. Shifting the identity to atmospheric requires reordering the layer hierarchy, adding an FX bus whose granular component is non-deterministic by design, and introducing a vocal layer whose sample provenance has to clear license gates. Multiple plausible architectures exist, each with real trade-offs in determinism, sample-bank weight, and how the new atmosphere primitive relates to the existing tension arc.
 
 ---
@@ -246,8 +246,8 @@ Rejected by directive. There is no pre-release audience. The point of the RFC is
 
 ## How this closes
 
-- **ADR-029 — Atmospheric audio identity.** Locks the `identity` switch, the five-layer hierarchy, the atmosphere bus structure (reverb + granular), the seeded-RNG determinism strategy, and the demoted drone defaults.
-- **ADR-030 — Vocal sample bank + provenance.** Locks the `audio/vocal/<name>/metadata.yaml` convention, the `audio/ATTRIBUTION.md` BOM-generation convention, the license gate (CC0 / CC-BY / NOAA-PD only), and the vocal layer interface signature.
+- **ADR-032 — Atmospheric audio identity.** Locks the `identity` switch, the five-layer hierarchy, the atmosphere bus structure (reverb + granular), the seeded-RNG determinism strategy, and the demoted drone defaults.
+- **ADR-033 — Vocal sample bank + provenance.** Locks the `audio/vocal/<name>/metadata.yaml` convention, the `audio/ATTRIBUTION.md` BOM-generation convention, the license gate (CC0 / CC-BY / NOAA-PD only), and the vocal layer interface signature.
 
 Closure trigger: Phase 1 implementation forces the schema decision once the editor, the pipeline, and the cross-validation fixture set all read the new fields end-to-end.
 

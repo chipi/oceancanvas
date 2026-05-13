@@ -52,6 +52,8 @@ If the decision needs deliberation first, write an [RFC](../rfc/index.md). If th
 | [ADR-027](ADR-027-generative-audio-composition.md) | Generative audio composition | Accepted | components/render-system · contracts/recipe-yaml |
 | [ADR-028](ADR-028-tension-arc-shared-curve.md) | Tension arc as shared primitive | Accepted | components/render-system · contracts/recipe-yaml · contracts/render-payload |
 | [ADR-029](ADR-029-compose-sidecar-services.md) | Compose sidecars for recipe save and video export | Accepted | components/service-layer · components/web-frontend · stack |
+| [ADR-030](ADR-030-recipe-aggregate-directive.md) | Recipe `aggregate` directive for point-source binning | Accepted | contracts/recipe-schema · components/process-pipeline |
+| [ADR-031](ADR-031-recipe-source-mode-directive.md) | Recipe `source_mode` directive for particles render type | Accepted | contracts/recipe-schema · components/render-system |
 
 ## State map
 

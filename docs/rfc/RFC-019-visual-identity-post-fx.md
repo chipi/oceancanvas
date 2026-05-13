@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-012 Atmospheric audio (audio counterpart) · RFC-013 Editor controls · RFC-014 Modulation graph · RFC-017 Recipe macros · RFC-018 Recipe morphing · RFC-020 Layer compositing (paired companion)
-> **Closes into** · ADR-041 (Visual identity + post-FX chain), ADR-042 (LUT bank + provenance)
+> **Closes into** · ADR-044 (Visual identity + post-FX chain), ADR-045 (LUT bank + provenance)
 > **Why this is an RFC** · The seven-RFC arc that landed in commit `dd755a4` rebuilt the audio side from a single-tone-on-pulses identity into a five-layer ambient bed with atmospheric processing and a vocal anchor. The visual side never received the same treatment. The renderer today produces a sketch's frames and applies a small set of ffmpeg filters (eq, vignette) before encoding — closer to a screen-recording than to the cinematic / painterly / minimalist visual identities the new audio identity wants alongside. Adopting NI's design philosophy on the visual side requires a *visual identity* switch (parallel to `audio.identity`), a *post-FX bus* (parallel to the atmosphere bus), and a *Cloud-Filter-style always-on subtle drift* on visual parameters. The architectural questions are real: where post-FX runs (ffmpeg vs. browser shaders vs. both), how to keep TS ↔ Py parity under floating-point divergence, what the LUT/color-grade primitive looks like, and how the camera (currently static-per-recipe) becomes a first-class envelope-able primitive. This RFC is paired with RFC-020 (layer compositing) — the post-FX bus operates over composited frames, and the identity switch only fully expresses itself when the layer stack supports it.
 
 ---
@@ -351,8 +351,8 @@ Rejected. Cross-modal coupling is occasionally desirable but more often constrai
 
 ## How this closes
 
-- **ADR-041 — Visual identity + post-FX chain.** Locks the identity switch (four named identities), the post-FX chain schema, the initial effect catalogue, the always-on drift convention, the camera-as-parameter primitive, the pipeline-canonical / browser-preview architecture, the perceptual-tolerance cross-validation contract.
-- **ADR-042 — LUT bank + provenance.** Locks the `visual/luts/<name>/metadata.yaml` convention, the license gate (open licenses only), the BOM regeneration model, and the LUT lifecycle policy (versioning, deprecation, CI cross-reference).
+- **ADR-044 — Visual identity + post-FX chain.** Locks the identity switch (four named identities), the post-FX chain schema, the initial effect catalogue, the always-on drift convention, the camera-as-parameter primitive, the pipeline-canonical / browser-preview architecture, the perceptual-tolerance cross-validation contract.
+- **ADR-045 — LUT bank + provenance.** Locks the `visual/luts/<name>/metadata.yaml` convention, the license gate (open licenses only), the BOM regeneration model, and the LUT lifecycle policy (versioning, deprecation, CI cross-reference).
 
 Closure trigger: Phase 1 implementation forces the schema decision once the pipeline, the browser, and the cross-validation fixture set all produce identity-consistent post-FX'd output end-to-end for at least one recipe per identity.
 
@@ -361,4 +361,4 @@ Closure trigger: Phase 1 implementation forces the schema decision once the pipe
 - **Source** — RFC-012 *Atmospheric audio* (audio counterpart) · Native Instruments / TouchDesigner / Notch / Resolume design analyses motivating the visual identity gap closure
 - **TA** — components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-012 Atmospheric audio · RFC-013 Editor controls · RFC-014 Modulation graph · RFC-017 Recipe macros · RFC-018 Recipe morphing · RFC-020 Layer compositing (paired)
-- **Related ADRs** — ADR-027 · ADR-029 · ADR-030 · ADR-031 · ADR-032 · ADR-033
+- **Related ADRs** — ADR-027 · ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-036

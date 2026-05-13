@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 > **Related** · RFC-012 Atmospheric audio (Aetherizer audio counterpart) · RFC-019 Visual identity + post-FX · RFC-020 Layer compositing
-> **Closes into** · ADR-045 (Granular frame primitive: frame_hold + interp_factor + pixel-level transforms)
+> **Closes into** · ADR-048 (Granular frame primitive: frame_hold + interp_factor + pixel-level transforms)
 > **Why this is an RFC** · The aesthetic research surfaced two operations that don't fit the per-frame post-FX model in RFC-019 or the per-layer compositing model in RFC-020 — they operate on the *time domain* of the render itself. Ikeda's stroboscopic cadence is `frame_hold: 1–3` (repeat each render output for 1–3 frames at output fps, producing a sub-100ms full-frame change rhythm). Viola's extreme time dilation is `interp_factor: 10–40×` (synthesise 9–39 intermediate frames between each rendered frame using optical-flow interpolation). Both are *granular* in the same sense Aetherizer is granular for audio — they chop the temporal stream into grains and reassemble. The architectural questions are real: how does this interact with the existing fps contract, with audio sync, with deterministic rendering, with the render-payload model? This is the most speculative of the visual-side RFCs — the aesthetic payoff is large but the implementation cost is real, especially for optical-flow interpolation. Ships as Draft v0.1 with a deliberately small v1; honest retirement if no recipe adopts it.
 
 ---
@@ -241,7 +241,7 @@ Considered seriously. Counter-argument: the aesthetic research explicitly named 
 
 ## How this closes
 
-- **ADR-045 — Granular frame primitive: `frame_hold` + `interp_factor` + temporal operations.** Locks the `granular:` schema, the frame_hold semantics, the interp_factor algorithm (classical Farnebäck via OpenCV at v1; RIFE as opt-in extension), the audio sync modes, the speculative effects schema reservation, and the determinism contract (OpenCV version pinned, neural engine version-pinned).
+- **ADR-048 — Granular frame primitive: `frame_hold` + `interp_factor` + temporal operations.** Locks the `granular:` schema, the frame_hold semantics, the interp_factor algorithm (classical Farnebäck via OpenCV at v1; RIFE as opt-in extension), the audio sync modes, the speculative effects schema reservation, and the determinism contract (OpenCV version pinned, neural engine version-pinned).
 
 Closure trigger: Phase 1 implementation forces the schema decisions once at least one `minimalist`-identity recipe demonstrably uses `frame_hold ≥ 1` and at least one `meditative`-identity recipe demonstrably uses `interp_factor ≥ 4` with classical engine. If neither condition is met within six months of landing, retire the RFC honestly — the schema reservation is removed and the granular: block is dropped from the parser.
 
@@ -250,4 +250,4 @@ Closure trigger: Phase 1 implementation forces the schema decisions once at leas
 - **Source** — Ikeda's stroboscopic cadence and Viola's extreme time dilation as identified in the aesthetic research · Absynth Aetherizer as the audio analogue (chop temporal stream into grains, reassemble) · RIFE optical-flow paper for the opt-in neural extension
 - **TA** — components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints
 - **Related RFCs** — RFC-012 Atmospheric audio (Aetherizer audio counterpart) · RFC-019 Visual identity + post-FX · RFC-020 Layer compositing
-- **Related ADRs** — ADR-027 · ADR-041 · ADR-042 · ADR-043 · ADR-044
+- **Related ADRs** — ADR-027 · ADR-044 · ADR-045 · ADR-046 · ADR-047

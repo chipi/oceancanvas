@@ -3,7 +3,7 @@
 > **Status** · Draft v0.1 · 2026-05-14
 > **TA anchor** · components/pipeline · components/web-frontend · contracts/recipe-yaml · constraints
 > **Related** · RFC-001 Recipe YAML schema · RFC-012 Atmospheric audio · RFC-013 Editor controls · RFC-014 Modulation graph
-> **Closes into** · ADR-034 (Bloom: seed format + sampling strategy), ADR-035 (Coherence rules + archetype library)
+> **Closes into** · ADR-037 (Bloom: seed format + sampling strategy), ADR-038 (Coherence rules + archetype library)
 > **Why this is an RFC** · Authoring a recipe today is deep YAML editing — twenty-plus parameters across data sourcing, rendering, audio identity, and (after RFC-014) envelope authoring. The new five-layer audio identity and the envelope primitive widen that surface further. Bloom — a generator that takes a minimal seed and produces N fully-formed recipe variants — collapses that authoring cost, but the technical question of *how* it generates is genuinely open. Multiple plausible variation strategies exist (uniform random, anchored sampling, preset breeding, LLM-assisted), each with real trade-offs in determinism, output quality, and the self-hostable constraint. The seed format itself is open (YAML stub, reference recipe, natural-language prompt), as are persistence (materialise to disk vs. ephemeral preview), variety guarantees (independent samples vs. diversity rejection), and whether audio + visual should be sampled coherently or independently.
 
 ---
@@ -269,8 +269,8 @@ Rejected. The most jarring mismatches (cool palette on a thermal data source, vo
 
 ## How this closes
 
-- **ADR-034 — Bloom: seed format + sampling strategy.** Locks the seed YAML schema (required fields, pins block, sampling hints), the sampling pipeline (per-parameter distribution selection, diversity rejection, attempt budget), the deterministic seeding scheme, the output directory layout, the CLI surface, and the cross-validation fixture protocol.
-- **ADR-035 — Coherence rules + envelope archetype library.** Locks the coherence lookup table schema, the archetype library schema and initial entries, the precedence rules (pins win over coherence rules win over default sampling), and the maintenance protocol for adding new data sources / palettes / archetypes.
+- **ADR-037 — Bloom: seed format + sampling strategy.** Locks the seed YAML schema (required fields, pins block, sampling hints), the sampling pipeline (per-parameter distribution selection, diversity rejection, attempt budget), the deterministic seeding scheme, the output directory layout, the CLI surface, and the cross-validation fixture protocol.
+- **ADR-038 — Coherence rules + envelope archetype library.** Locks the coherence lookup table schema, the archetype library schema and initial entries, the precedence rules (pins win over coherence rules win over default sampling), and the maintenance protocol for adding new data sources / palettes / archetypes.
 
 Closure trigger: Phase 1 implementation forces the schema decisions once the CLI, the UI Bloom button, and the cross-validation fixture set all produce identical blooms end-to-end for the initial RFC-012 ambient-identity recipe family.
 
@@ -279,4 +279,4 @@ Closure trigger: Phase 1 implementation forces the schema decisions once the CLI
 - **Source** — RFC-012 *Atmospheric audio* and RFC-014 *Modulation graph* establish the parameter space Bloom samples over · the Absynth Mutator and Moments intelligent-randomization analyses motivate the gesture
 - **TA** — components/pipeline · components/web-frontend · contracts/recipe-yaml · constraints
 - **Related RFCs** — RFC-001 Recipe YAML schema · RFC-012 Atmospheric audio · RFC-013 Editor controls · RFC-014 Modulation graph
-- **Related ADRs** — ADR-018 Recipe YAML schema · ADR-027 · ADR-029 · ADR-030 · ADR-031 · ADR-032 · ADR-033
+- **Related ADRs** — ADR-018 Recipe YAML schema · ADR-027 · ADR-032 · ADR-033 · ADR-034 · ADR-035 · ADR-036
