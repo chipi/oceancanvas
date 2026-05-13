@@ -25,7 +25,7 @@ What's *not* welcome at this phase:
 
 1. **Read** [`README.md`](README.md) and [`docs/concept/`](docs/concept/) (six short documents — about 90 minutes total). They establish the *why*.
 2. **Skim** [`OC_TA.md`](docs/adr/OC_TA.md) (**Constraints**) — there are seven non-negotiables. Code that violates one is broken even if it works.
-3. **Skim** [`CLAUDE.md`](CLAUDE.md) — the project's working conventions. Stack, code style, doc rules. Written for AI-assisted work but reads cleanly for humans.
+3. **Skim** [`AGENTS.md`](AGENTS.md) — the project's working conventions. Stack, code style, doc rules. Portable across AI agents; reads cleanly for humans. (`CLAUDE.md` is a slim overlay that defers here.)
 
 If you're unsure whether your change fits, open an issue describing what you want to do *before* writing code. The maintainer reads them.
 
@@ -43,7 +43,7 @@ OceanCanvas has a tiered documentation system that mirrors how decisions actuall
 - **RFCs** (`docs/rfc/`) — open technical questions with alternatives and trade-offs.
 - **ADRs** (`docs/adr/`) — locked technical decisions. Append-only — superseded by new ADRs, never edited in place.
 
-When code requires a doc update, the rule is firm: **update both in the same commit if at all possible.** When an RFC closes into an ADR, six places update together (per [CLAUDE.md  Cross-doc consistency rule](CLAUDE.md)). Forget any of them and silent drift starts.
+When code requires a doc update, the rule is firm: **update both in the same commit if at all possible.** When an RFC closes into an ADR, six places update together (per [AGENTS.md  Cross-doc consistency rule](AGENTS.md)). Forget any of them and silent drift starts.
 
 | If your change is… | …it needs… |
 |---|---|
@@ -60,7 +60,7 @@ Templates live in each folder (`PRD_TEMPLATE.md`, `UXS_TEMPLATE.md`, `RFC_TEMPLA
 
 ## Code conventions
 
-Quick reference. Full details in [`CLAUDE.md`](CLAUDE.md).
+Quick reference. Full details in [`AGENTS.md`](AGENTS.md).
 
 ### Python (pipeline)
 
@@ -103,7 +103,7 @@ Conventional commits:
 
 ## Testing
 
-Three tiers, each validating different boundaries (per [CLAUDE.md  Testing strategy](CLAUDE.md)):
+Three tiers, each validating different boundaries (per [AGENTS.md  Testing strategy](AGENTS.md)):
 
 ```bash
 # Unit

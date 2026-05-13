@@ -41,7 +41,7 @@ The thinnest end-to-end slice that produces a daily-updating public artefact. Th
 
 GEBCO bathymetry is one-time static data, fetched once and reused — not a daily integration.
 
-*Slice 1 validated two daily-integrated sources (OISST, Argo). Additional no-auth sources wired in Phase 1 are listed in `CLAUDE.md`; the same six-task pipeline shape applies.*
+*Slice 1 validated two daily-integrated sources (OISST, Argo). Additional no-auth sources wired in Phase 1 are listed in `AGENTS.md`; the same six-task pipeline shape applies.*
 
 **The full pipeline.** All six tasks: `discover` → `fetch` → `process` → `build_payload` → `render` → `index`. Runs daily at 06:00 UTC. Outputs:
 
@@ -255,7 +255,7 @@ The second commit starts Slice 1.
 
 ## References
 
-- **CLAUDE.md** — project conventions for AI-assisted code work
+- **AGENTS.md** — project conventions for AI-assisted code work (portable across coding agents; `CLAUDE.md` is a Claude-specific overlay that defers here)
 - **`docs/adr/OC_TA.md`** — components, contracts, constraints, stack, state board
 - **`docs/prd/OC_PA.md`** — audiences, promises, principles
 - **`docs/uxs/OC_IA.md`** — surfaces, navigation, shared tokens

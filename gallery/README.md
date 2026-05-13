@@ -61,13 +61,13 @@ Tests live alongside source: `src/lib/foo.ts` ↔ `src/lib/foo.test.ts`. Cross-v
 
 | Topic | Where it lives |
 |---|---|
-| State management | Local component state + URL state (React Router). No Redux, no Zustand in Phase 1 (per CLAUDE.md). |
+| State management | Local component state + URL state (React Router). No Redux, no Zustand in Phase 1 (per AGENTS.md). |
 | Styling | CSS modules. Design tokens from `src/tokens.css`. Per-component CSS file alongside the `.tsx`. |
 | Naming | PascalCase files for components; kebab-case routes. |
 | Sketch payload | `window.OCEAN_PAYLOAD` per [ADR-008](../docs/adr/ADR-008-shared-payload-format.md) and [ADR-019](../docs/adr/ADR-019-render-payload-schema.md). Same shape pipeline produces. |
 | Audio | Web Audio API directly; no Tone.js. Two engines (`SynthEngine`, `AmbientEngine`) implement `AudioEngineInterface`. See [ADR-027](../docs/adr/ADR-027-generative-audio-composition.md). |
 
-For full code conventions including TypeScript style, testing strategy, commit format, and the doc-system rules — read [`CLAUDE.md`](../CLAUDE.md).
+For full code conventions including TypeScript style, testing strategy, commit format, and the doc-system rules — read [`AGENTS.md`](../AGENTS.md).
 
 ---
 

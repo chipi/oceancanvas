@@ -29,7 +29,7 @@ Open `http://localhost:8080`. Need help? → [`docs/quickstart.md`](docs/quickst
 
 **🎨 Want to author a piece.** Recipes are the authored unit — a YAML file describing region, source, render character, audio. The Recipe Editor at `/recipes/new` is the visual front door; the YAML schema is the durable form. → [`recipes/README.md`](recipes/README.md) is the field-by-field author guide with the render-type taxonomy and audio-block reference.
 
-**🛠️ Want to contribute or hack.** The project's conventions live in two documents at the root: [`CLAUDE.md`](CLAUDE.md) (firm orientation — stack, constraints, code style) and [`IMPLEMENTATION.md`](IMPLEMENTATION.md) (the Phase 1 build guide). The doc system itself is what most of the value lives in — see "How to read this repository" below.
+**🛠️ Want to contribute or hack.** The project's conventions live in two documents at the root: [`AGENTS.md`](AGENTS.md) (firm orientation — stack, constraints, code style; portable across AI agents) and [`IMPLEMENTATION.md`](IMPLEMENTATION.md) (the Phase 1 build guide). The doc system itself is what most of the value lives in — see "How to read this repository" below. ([`CLAUDE.md`](CLAUDE.md) is a thin Claude-specific overlay that defers to AGENTS.md.)
 
 ---
 
@@ -125,7 +125,8 @@ Read what you need when you need it. Reference docs (PA / IA / TA) are linked in
 
 | Document | When to read |
 |---|---|
-| [`CLAUDE.md`](CLAUDE.md) | Always, before working on the codebase. Stack, constraints, code style, doc rules, voice. Written for AI-assisted work; reads cleanly for humans. |
+| [`AGENTS.md`](AGENTS.md) | Always, before working on the codebase. Stack, constraints, code style, doc rules, voice. Portable across AI agents; reads cleanly for humans. |
+| [`CLAUDE.md`](CLAUDE.md) | Auto-loaded by Claude Code at session start. Slim overlay that defers to `AGENTS.md`. |
 | [`IMPLEMENTATION.md`](IMPLEMENTATION.md) | Phase 1 build guide — slices, gates, scope. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | When proposing a change. Values + checklist. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history at a glance. |
