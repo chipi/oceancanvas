@@ -41,6 +41,9 @@ If the answer is mostly known going in, skip the RFC and write an [ADR](../adr/i
 | [RFC-016](RFC-016-motion-clocks.md) | Per-layer motion clocks: data-derived modulation sources | Draft v0.1 | ADR-036 + ADR-037 (pending) | components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints |
 | [RFC-017](RFC-017-recipe-macros.md) | Recipe-level macros: one knob, many parameters | Draft v0.1 | ADR-038 (pending) | components/render-system · components/web-frontend · contracts/recipe-yaml · constraints |
 | [RFC-018](RFC-018-recipe-morphing.md) | Recipe morphing: continuous interpolation between recipes | Draft v0.1 | ADR-039 + ADR-040 (pending) | components/render-system · components/pipeline · components/web-frontend · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-019](RFC-019-visual-identity-post-fx.md) | Visual identity + post-process bus | Draft v0.1 | ADR-041 + ADR-042 (pending) | components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-020](RFC-020-layer-compositing.md) | Multi-source layer compositing | Draft v0.1 | ADR-043 + ADR-044 (pending) | components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints |
+| [RFC-021](RFC-021-granular-frame-processing.md) | Granular frame processing: Aetherizer for video | Draft v0.1 | ADR-045 (pending) | components/render-system · components/pipeline · contracts/recipe-yaml · contracts/render-payload · constraints |
 
 ## State map
 
