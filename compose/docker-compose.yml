@@ -13,6 +13,14 @@
 #
 # To run: `docker compose -f compose/docker-compose.yml up`. To trigger a pipeline run now:
 # `make pipeline-run`. Troubleshooting: docs/get-started.md (Troubleshooting).
+#
+# Project name and host ports: the defaults below (project `oceancanvas`,
+# ports 8080 / 4200 / 3001 / 3002) apply to a plain clone and CI. A Model-B
+# checkout gets its own via the generated, git-ignored compose/.env, which
+# Compose reads automatically (.config/workspace/README.md). Services talk to
+# each other by service name; only these host ports are workspace-specific.
+
+name: oceancanvas
 
 services:
   # ── Prefect's state DB ──────────────────────────────────────────────────
@@ -39,7 +47,7 @@ services:
     image: prefecthq/prefect:3-python3.12
     command: prefect server start --host 0.0.0.0
     ports:
-      - "4200:4200"
+      - "${OC_PREFECT_PORT:-4200}:4200"
     environment:
       PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
     depends_on:
@@ -87,7 +95,7 @@ services:
   gallery:
     build: ../gallery
     ports:
-      - "8080:8080"
+      - "${OC_GALLERY_PORT:-8080}:8080"
     environment:
       RECIPE_SERVER: recipe-server:3001
     volumes:
@@ -121,7 +129,7 @@ services:
       - ../gallery/server:/app/server:ro
       - ../recipes:/recipes
     ports:
-      - "3001:3001"
+      - "${OC_RECIPE_PORT:-3001}:3001"
     healthcheck:
       test: ["CMD-SHELL", "node -e \"const http=require('http');http.get('http://localhost:3001/',r=>{process.exit(r.statusCode===404?0:1)}).on('error',()=>process.exit(1))\""]
       interval: 10s
@@ -145,7 +153,7 @@ services:
       - ../renders:/renders
       - ../audio:/audio:ro
     ports:
-      - "3002:3002"
+      - "${OC_EXPORT_PORT:-3002}:3002"
 
 volumes:
   pgdata:

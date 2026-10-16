@@ -1,3 +1,12 @@
+# Synthetic-data e2e stack (ADR-014). Shares the project name with
+# docker-compose.yml (CI builds once and runs with --no-build). A Model-B
+# checkout overrides the name via the generated compose/.env.
+#
+# Nothing here is published to the host: the e2e container reaches the gallery
+# over the Compose network (http://gallery:8080), so two checkouts can run
+# `make e2e` at the same time.
+name: oceancanvas
+
 services:
   pipeline:
     build:
@@ -28,8 +37,6 @@ services:
 
   gallery:
     build: ../gallery
-    ports:
-      - "8080:8080"
     environment:
       RECIPE_SERVER: recipe-server:3001
     volumes:

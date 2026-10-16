@@ -6,7 +6,15 @@ For prose-formatted release notes with full context, see [GitHub releases](https
 
 ## [Unreleased]
 
-_Nothing yet — implementation of v0.6.0's RFC arc (RFC-012 through RFC-021) begins here._
+### Added
+
+- **Model-B workspace adapter** (`.config/workspace/`) — per-checkout Compose project name and collision-checked host ports for the primary and parallel worktrees, generated into a git-ignored `compose/.env`; scoped teardown; tracked `mise.toml` pinning Node 20.
+
+### Changed
+
+- Compose host ports are parameterised (`OC_GALLERY_PORT`, `OC_PREFECT_PORT`, `OC_RECIPE_PORT`, `OC_EXPORT_PORT`; defaults unchanged) and the default project name is explicit (`oceancanvas` instead of the directory-derived `compose`).
+- The e2e stack no longer publishes the gallery on host port 8080 (Playwright uses the Compose network).
+- Vite reads the workspace ports (`OC_VITE_PORT`, strict when set; proxy targets from the same file).
 
 ## [0.6.0] — 2026-05-14 — Editorial expansion + sidecar services + RFC horizon
 

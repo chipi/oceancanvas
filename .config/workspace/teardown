@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# OceanCanvas workspace teardown. Run through `wb-workspace teardown`: by the
+# Worktrunk pre-remove hook while the worktree still exists, or by hand. A
+# non-zero exit STOPS `wt remove`, so this fails only when removing the
+# worktree would be unsafe. Contract: README.md here.
+#
+# Every Docker operation is one Compose command scoped by `-p $COMPOSE_PROJECT_NAME`;
+# this script builds no Docker selector (label filter, name pattern, ID list)
+# of its own, so it can't widen beyond Compose's project scoping.
+#   every checkout:  docker compose -p <name> down --remove-orphans
+#   side stream:     then refuse if files written as root by containers would
+#                    block removing the worktree; otherwise
+#                    docker compose -p <name> down --remove-orphans --volumes
+#                    (all OceanCanvas volumes are disposable: Prefect
+#                    bookkeeping and e2e outputs).
+#   primary:         volumes kept.
+# Images are never removed here (README.md, "Images").
+# Never a prune, never another project, never a chown. Idempotent.
+set -euo pipefail
+
+die()  { echo "oceancanvas teardown: $*" >&2; exit 1; }
+note() { echo "oceancanvas teardown: $*" >&2; }
+
+for v in WORKSPACE_STREAM WORKSPACE_PATH COMPOSE_PROJECT_NAME; do
+  [ -n "${!v:-}" ] || die "$v is not set; run this through 'wb-workspace teardown'"
+done
+[ $# -eq 0 ] || die "unexpected argument '$1' (usage: wb-workspace teardown)"
+NAME=$COMPOSE_PROJECT_NAME
+[[ $NAME =~ ^[a-z0-9][a-z0-9_-]*$ ]] || die "unusable Compose project name '$NAME'"
+cd "$WORKSPACE_PATH"
+side=1; [ "$WORKSPACE_STREAM" = main ] && side=0
+
+# Checkout-local paths that containers write as root (bind mounts, see
+# compose/*.yml). Deleting an entry needs write permission on its parent, so a
+# root-owned directory with contents makes the worktree removal fail partway.
+residue() {
+  local d p blocking=0
+  for d in data renders recipes pipeline/tests/fixtures; do
+    [ -e "$d" ] || continue
+    while IFS= read -r -d '' p; do
+      if [ -w "$(dirname "$p")" ]; then
+        echo "  not yours (removable)  $p"
+      else
+        echo "  not yours (BLOCKING)   $p"
+        blocking=1
+      fi
+    done < <(find "$d" ! -user "$(id -u)" -print0 2>/dev/null)
+  done
+  return "$blocking"
+}
+
+docker_ok=1
+if ! command -v docker >/dev/null 2>&1; then
+  note "docker not installed; nothing to stop"; docker_ok=0
+elif ! docker info >/dev/null 2>&1; then
+  note "docker daemon unreachable; nothing of $NAME can be running"; docker_ok=0
+fi
+
+if [ "$docker_ok" = 1 ]; then
+  docker compose -p "$NAME" down --remove-orphans \
+    || die "could not stop Compose project $NAME; not removing the worktree"
+  echo "  stopped   Compose project $NAME (containers, network)"
+fi
+
+if [ "$side" = 0 ]; then
+  echo "  volumes and images kept (primary checkout)"
+  exit 0
+fi
+
+if ! out=$(residue); then
+  echo "$out" >&2
+  die "files written as root by containers would make the worktree removal fail
+  partway (deleting an entry needs write permission on its parent directory).
+  Nothing else was removed and the worktree is kept. Recover by hand, e.g. delete
+  the paths as root from a container:
+    docker run --rm -v \"$WORKSPACE_PATH:/w\" -w /w node:20-slim rm -rf <path>...
+  then rerun 'wb-workspace teardown' (or the wt remove that ran it)."
+fi
+[ -z "$out" ] || { echo "$out"; echo "  (files above belong to another user, e.g. root, but are removable; not blocking)"; }
+
+if [ "$docker_ok" = 1 ]; then
+  docker compose -p "$NAME" down --remove-orphans --volumes \
+    || die "could not remove the volumes of Compose project $NAME; not removing the worktree"
+  echo "  removed   volumes of Compose project $NAME"
+fi
+echo "  images    kept (remove by name if needed: docker image ls --filter label=com.docker.compose.project=$NAME)"
+exit 0

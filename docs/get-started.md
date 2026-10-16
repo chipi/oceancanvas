@@ -17,6 +17,8 @@ Six services start: Postgres (Prefect state), Prefect Server, the pipeline worke
 | Recipe save server | `localhost:3001` |
 | Video export server | `localhost:3002` |
 
+These are the defaults. A checkout set up for parallel work (`wb-workspace setup`, see `.config/workspace/README.md`) gets its own Compose project and ports, listed in its git-ignored `compose/.env`.
+
 The pipeline runs daily at 06:00 UTC. Manual runs trigger via the Prefect UI or:
 
 ```bash
@@ -110,7 +112,7 @@ The most common things that go wrong on first run, and how to unstick them.
 
 - **Docker Desktop not running.** On macOS / Windows, the Docker daemon has to be started before any compose command. Open Docker Desktop, wait for it to say "Docker is running."
 - **Permission denied on `/var/run/docker.sock` (Linux).** Add your user to the `docker` group: `sudo usermod -aG docker $USER`, then log out and back in.
-- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `GALLERY_PORT=8090 docker compose -f compose/docker-compose.yml up`. Same for 4200 (Prefect UI), 3001 (recipe save), and 3002 (video export).
+- **Port 8080 already in use.** Another process is bound to the gallery port. Stop it (`lsof -i :8080` to find), or override: `OC_GALLERY_PORT=8090 docker compose -f compose/docker-compose.yml up`. Same for 4200 (`OC_PREFECT_PORT`), 3001 (`OC_RECIPE_PORT`), and 3002 (`OC_EXPORT_PORT`).
 
 ### Pipeline never runs / renders never appear
 

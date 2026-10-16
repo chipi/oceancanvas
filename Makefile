@@ -9,6 +9,17 @@
 COMPOSE_PROD := compose/docker-compose.yml
 COMPOSE_TEST := compose/docker-compose.test.yml
 
+# Model-B workspace values from the generated, git-ignored compose/.env
+# (.config/workspace/README.md). Compose reads that file itself; this exports
+# the same values to native targets (gallery-dev, screenshots, pytest). A value
+# already set in the environment wins. Without the file, repository defaults.
+WORKSPACE_ENV := compose/.env
+WORKSPACE_VARS := OC_GALLERY_PORT OC_PREFECT_PORT OC_RECIPE_PORT OC_EXPORT_PORT OC_VITE_PORT PREFECT_HOME
+ifneq ($(wildcard $(WORKSPACE_ENV)),)
+$(foreach v,$(WORKSPACE_VARS),$(eval $(v) ?= $(shell sed -n 's/^$(v)=//p' $(WORKSPACE_ENV))))
+export $(WORKSPACE_VARS)
+endif
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -68,8 +79,8 @@ gallery-test: ## Run gallery tests
 	cd gallery && npx vitest run
 
 gallery-dev: ## Start Vite dev server + save server + export server
-	RECIPES_DIR=$$PWD/recipes node gallery/server/save-recipe.mjs & \
-	RENDERS_DIR=$$PWD/renders RECIPES_DIR=$$PWD/recipes DATA_DIR=$$PWD/data EXPORT_PORT=3002 PIPELINE_DIR=$$PWD/pipeline node gallery/server/export-video.mjs & \
+	RECIPES_DIR=$$PWD/recipes SAVE_PORT=$${OC_RECIPE_PORT:-3001} node gallery/server/save-recipe.mjs & \
+	RENDERS_DIR=$$PWD/renders RECIPES_DIR=$$PWD/recipes DATA_DIR=$$PWD/data EXPORT_PORT=$${OC_EXPORT_PORT:-3002} PIPELINE_DIR=$$PWD/pipeline node gallery/server/export-video.mjs & \
 	cd gallery && npx vite
 
 gallery-build: ## Build gallery for production
@@ -105,7 +116,7 @@ e2e: ## Run end-to-end tests via Docker Compose
 
 screenshots: ## Regenerate docs/concept/images/*.png from the running stack
 	@echo "Regenerating screenshots — make sure 'docker compose up' is running with rendered data"
-	cd e2e && BASE_URL=http://localhost:8080 npm run screenshots
+	cd e2e && BASE_URL=http://localhost:$${OC_GALLERY_PORT:-8080} npm run screenshots
 	@echo "Screenshots written to docs/concept/images/. Inspect, then commit."
 
 # ── Docs (MkDocs) ────────────────────────────────
