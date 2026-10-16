@@ -120,7 +120,7 @@ nothing to stop. Never a prune, never another project.
 ### Images
 
 Teardown never removes images. A side stream leaves its built images behind
-(about 6.6 GB: e2e 3.8 GB, pipeline 2.7 GB, gallery 0.1 GB); list them with
+(about 6.0 GB: e2e 3.2 GB, pipeline 2.7 GB, gallery 0.1 GB); list them with
 `docker image ls --filter label=com.docker.compose.project=<project>` and
 remove them by name if needed. Image maintenance belongs to the workstation's
 later storage/maintenance phase. Image removal was taken out of teardown after

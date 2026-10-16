@@ -120,6 +120,7 @@ services:
   # container so the gallery's Caddy stays purely static.
   recipe-server:
     image: node:20-slim
+    init: true  # node as PID 1 ignores SIGTERM; without an init, stop waits 10 s then SIGKILLs
     working_dir: /app
     command: node server/save-recipe.mjs
     environment:
@@ -143,6 +144,7 @@ services:
   # writes the MP4 alongside the PNGs.
   export-server:
     image: node:20-slim
+    init: true  # see recipe-server
     working_dir: /app
     command: node server/export-video.mjs
     environment:

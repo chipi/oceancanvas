@@ -159,7 +159,7 @@ test('detail view — Esc returns to gallery', async ({ page }) => {
 
 test('dashboard loads with SST view', async ({ page }) => {
   await page.goto('/dashboard');
-  await expect(page.locator('body')).toContainText('sea surface temp');
+  await expect(page.locator('header')).toContainText('SST · NOAA OISST');
 });
 
 test('dashboard shows source rail', async ({ page }) => {
