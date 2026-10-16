@@ -1,7 +1,8 @@
-FROM mcr.microsoft.com/playwright:v1.42.0-jammy
+# The tag must match @playwright/test in package-lock.json: the image ships the
+# browsers for exactly that version, so no `playwright install` step is needed.
+FROM mcr.microsoft.com/playwright:v1.59.1-jammy
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci 2>/dev/null || npm install
-RUN npx playwright install chromium
 COPY . .
 CMD ["npx", "playwright", "test"]

@@ -15,10 +15,13 @@ For prose-formatted release notes with full context, see [GitHub releases](https
 - Compose host ports are parameterised (`OC_GALLERY_PORT`, `OC_PREFECT_PORT`, `OC_RECIPE_PORT`, `OC_EXPORT_PORT`; defaults unchanged) and the default project name is explicit (`oceancanvas` instead of the directory-derived `compose`).
 - The e2e stack no longer publishes the gallery on host port 8080 (Playwright uses the Compose network).
 - Vite reads the workspace ports (`OC_VITE_PORT`, strict when set; proxy targets from the same file).
+- The e2e image is based on `mcr.microsoft.com/playwright:v1.59.1-jammy`, matching the locked `@playwright/test` 1.59.1 (was v1.42.0 plus a second browser install); about 0.5 GB smaller.
 
 ### Fixed
 
 - Native pipeline runs (`uv run oceancanvas …`, `python -m oceancanvas.flow`, backfill) default to the checkout's own `data/`, `recipes/`, `renders/` instead of `/data`, `/recipes`, `/renders`; `DATA_DIR` / `RECIPES_DIR` / `RENDERS_DIR` still win, and the Docker image keeps the mount-point defaults (`pipeline/src/oceancanvas/paths.py`).
+- The e2e test "dashboard loads with SST view" asserts the current header chip (`SST · NOAA OISST`) instead of the pre-header-alignment rail label.
+- The Node sidecars (`recipe-server`, `export-server`) run with `init: true`, so `docker compose stop`/`down` ends them with SIGTERM at once instead of a 10-second wait and SIGKILL (exit 137).
 
 ## [0.6.0] — 2026-05-14 — Editorial expansion + sidecar services + RFC horizon
 
