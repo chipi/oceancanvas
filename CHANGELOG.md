@@ -16,6 +16,10 @@ For prose-formatted release notes with full context, see [GitHub releases](https
 - The e2e stack no longer publishes the gallery on host port 8080 (Playwright uses the Compose network).
 - Vite reads the workspace ports (`OC_VITE_PORT`, strict when set; proxy targets from the same file).
 
+### Fixed
+
+- Native pipeline runs (`uv run oceancanvas …`, `python -m oceancanvas.flow`, backfill) default to the checkout's own `data/`, `recipes/`, `renders/` instead of `/data`, `/recipes`, `/renders`; `DATA_DIR` / `RECIPES_DIR` / `RENDERS_DIR` still win, and the Docker image keeps the mount-point defaults (`pipeline/src/oceancanvas/paths.py`).
+
 ## [0.6.0] — 2026-05-14 — Editorial expansion + sidecar services + RFC horizon
 
 ### Added
