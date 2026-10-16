@@ -207,19 +207,43 @@ class TestProcessObisTracks:
             {
                 "2020": [
                     # Tight Mafia cluster — within max_gap_degrees, no splits
-                    {"decimalLatitude": -7.5, "decimalLongitude": 39.5,
-                     "datasetName": "Mafia Island Survey", "eventDate": "2020-03-01"},
-                    {"decimalLatitude": -7.6, "decimalLongitude": 39.6,
-                     "datasetName": "Mafia Island Survey", "eventDate": "2020-03-15"},
-                    {"decimalLatitude": -7.7, "decimalLongitude": 39.7,
-                     "datasetName": "Mafia Island Survey", "eventDate": "2020-04-01"},
-                    {"decimalLatitude": -7.8, "decimalLongitude": 39.8,
-                     "datasetName": "Mafia Island Survey", "eventDate": "2020-05-01"},
-                    {"decimalLatitude": -7.9, "decimalLongitude": 39.9,
-                     "datasetName": "Mafia Island Survey", "eventDate": "2020-06-01"},
+                    {
+                        "decimalLatitude": -7.5,
+                        "decimalLongitude": 39.5,
+                        "datasetName": "Mafia Island Survey",
+                        "eventDate": "2020-03-01",
+                    },
+                    {
+                        "decimalLatitude": -7.6,
+                        "decimalLongitude": 39.6,
+                        "datasetName": "Mafia Island Survey",
+                        "eventDate": "2020-03-15",
+                    },
+                    {
+                        "decimalLatitude": -7.7,
+                        "decimalLongitude": 39.7,
+                        "datasetName": "Mafia Island Survey",
+                        "eventDate": "2020-04-01",
+                    },
+                    {
+                        "decimalLatitude": -7.8,
+                        "decimalLongitude": 39.8,
+                        "datasetName": "Mafia Island Survey",
+                        "eventDate": "2020-05-01",
+                    },
+                    {
+                        "decimalLatitude": -7.9,
+                        "decimalLongitude": 39.9,
+                        "datasetName": "Mafia Island Survey",
+                        "eventDate": "2020-06-01",
+                    },
                     # Single Ningaloo point — dropped by min_track_length
-                    {"decimalLatitude": -22.0, "decimalLongitude": 113.0,
-                     "datasetName": "Ningaloo Reef Watch", "eventDate": "2020-04-15"},
+                    {
+                        "decimalLatitude": -22.0,
+                        "decimalLongitude": 113.0,
+                        "datasetName": "Ningaloo Reef Watch",
+                        "eventDate": "2020-04-15",
+                    },
                 ],
             },
         )
@@ -240,26 +264,53 @@ class TestProcessObisTracks:
             {
                 "2020": [
                     # Cluster A: Mafia Island
-                    {"decimalLatitude": -7.5, "decimalLongitude": 39.5,
-                     "datasetName": "Global Programme", "eventDate": "2020-01-01"},
-                    {"decimalLatitude": -7.6, "decimalLongitude": 39.6,
-                     "datasetName": "Global Programme", "eventDate": "2020-01-15"},
-                    {"decimalLatitude": -7.7, "decimalLongitude": 39.7,
-                     "datasetName": "Global Programme", "eventDate": "2020-02-01"},
+                    {
+                        "decimalLatitude": -7.5,
+                        "decimalLongitude": 39.5,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-01-01",
+                    },
+                    {
+                        "decimalLatitude": -7.6,
+                        "decimalLongitude": 39.6,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-01-15",
+                    },
+                    {
+                        "decimalLatitude": -7.7,
+                        "decimalLongitude": 39.7,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-02-01",
+                    },
                     # Cluster B: Galápagos (lon jump >5°)
-                    {"decimalLatitude": -0.7, "decimalLongitude": -90.5,
-                     "datasetName": "Global Programme", "eventDate": "2020-03-01"},
-                    {"decimalLatitude": -0.8, "decimalLongitude": -90.6,
-                     "datasetName": "Global Programme", "eventDate": "2020-03-15"},
-                    {"decimalLatitude": -0.9, "decimalLongitude": -90.7,
-                     "datasetName": "Global Programme", "eventDate": "2020-04-01"},
+                    {
+                        "decimalLatitude": -0.7,
+                        "decimalLongitude": -90.5,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-03-01",
+                    },
+                    {
+                        "decimalLatitude": -0.8,
+                        "decimalLongitude": -90.6,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-03-15",
+                    },
+                    {
+                        "decimalLatitude": -0.9,
+                        "decimalLongitude": -90.7,
+                        "datasetName": "Global Programme",
+                        "eventDate": "2020-04-01",
+                    },
                 ],
             },
         )
         processed_dir = tmp_path / "processed"
         result = process_obis_tracks(
-            sources_dir, processed_dir, "whale-shark",
-            min_track_length=2, max_gap_degrees=5.0,
+            sources_dir,
+            processed_dir,
+            "whale-shark",
+            min_track_length=2,
+            max_gap_degrees=5.0,
         )
         data = json.loads(result.read_text())
         assert data["shape"] == [2]
@@ -271,18 +322,42 @@ class TestProcessObisTracks:
             tmp_path,
             {
                 "2020": [
-                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
-                     "datasetName": "Big", "eventDate": "2020-01-01"},
-                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
-                     "datasetName": "Big", "eventDate": "2020-02-01"},
-                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
-                     "datasetName": "Big", "eventDate": "2020-03-01"},
-                    {"decimalLatitude": 1.5, "decimalLongitude": 1.5,
-                     "datasetName": "Big", "eventDate": "2020-04-01"},
-                    {"decimalLatitude": 2.0, "decimalLongitude": 2.0,
-                     "datasetName": "Big", "eventDate": "2020-05-01"},
-                    {"decimalLatitude": 10.0, "decimalLongitude": 10.0,
-                     "datasetName": "Tiny", "eventDate": "2020-01-01"},
+                    {
+                        "decimalLatitude": 0.0,
+                        "decimalLongitude": 0.0,
+                        "datasetName": "Big",
+                        "eventDate": "2020-01-01",
+                    },
+                    {
+                        "decimalLatitude": 0.5,
+                        "decimalLongitude": 0.5,
+                        "datasetName": "Big",
+                        "eventDate": "2020-02-01",
+                    },
+                    {
+                        "decimalLatitude": 1.0,
+                        "decimalLongitude": 1.0,
+                        "datasetName": "Big",
+                        "eventDate": "2020-03-01",
+                    },
+                    {
+                        "decimalLatitude": 1.5,
+                        "decimalLongitude": 1.5,
+                        "datasetName": "Big",
+                        "eventDate": "2020-04-01",
+                    },
+                    {
+                        "decimalLatitude": 2.0,
+                        "decimalLongitude": 2.0,
+                        "datasetName": "Big",
+                        "eventDate": "2020-05-01",
+                    },
+                    {
+                        "decimalLatitude": 10.0,
+                        "decimalLongitude": 10.0,
+                        "datasetName": "Tiny",
+                        "eventDate": "2020-01-01",
+                    },
                 ],
             },
         )
@@ -297,12 +372,24 @@ class TestProcessObisTracks:
             tmp_path,
             {
                 "2020": [
-                    {"decimalLatitude": 0.0, "decimalLongitude": 0.0,
-                     "datasetName": "Test", "eventDate": "2020-06-01"},
-                    {"decimalLatitude": 0.5, "decimalLongitude": 0.5,
-                     "datasetName": "Test", "eventDate": "2020-01-01"},
-                    {"decimalLatitude": 1.0, "decimalLongitude": 1.0,
-                     "datasetName": "Test", "eventDate": "2020-03-01"},
+                    {
+                        "decimalLatitude": 0.0,
+                        "decimalLongitude": 0.0,
+                        "datasetName": "Test",
+                        "eventDate": "2020-06-01",
+                    },
+                    {
+                        "decimalLatitude": 0.5,
+                        "decimalLongitude": 0.5,
+                        "datasetName": "Test",
+                        "eventDate": "2020-01-01",
+                    },
+                    {
+                        "decimalLatitude": 1.0,
+                        "decimalLongitude": 1.0,
+                        "datasetName": "Test",
+                        "eventDate": "2020-03-01",
+                    },
                 ],
             },
         )
@@ -318,8 +405,11 @@ class TestProcessObisTracks:
             tmp_path,
             {
                 "2020": [
-                    {"decimalLatitude": float(i), "decimalLongitude": float(i),
-                     "eventDate": f"2020-{i + 1:02d}-01"}
+                    {
+                        "decimalLatitude": float(i),
+                        "decimalLongitude": float(i),
+                        "eventDate": f"2020-{i + 1:02d}-01",
+                    }
                     for i in range(5)
                 ],
             },
