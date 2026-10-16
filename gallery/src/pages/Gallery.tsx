@@ -25,9 +25,7 @@ function renderUrl(recipe: string, date: string): string {
  *
  *  Hash is keyed on index/blockStart, so the same recipe at the same
  *  position always lands the same tier (no flicker on filter changes). */
-function buildTiers(
-  total: number,
-): Array<"large" | "medium" | "standard"> {
+function buildTiers(total: number): Array<"large" | "medium" | "standard"> {
   const largePos = new Set<number>([0]);
   for (let blockStart = 6; blockStart < total; blockStart += 10) {
     const blockEnd = Math.min(blockStart + 9, total - 1);

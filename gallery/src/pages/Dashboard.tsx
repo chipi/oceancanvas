@@ -24,9 +24,19 @@ interface ManifestRecipe {
 
 // Dashboard sources — each maps to a recipe in the manifest
 const SOURCES = [
-  { id: "north-atlantic-sst", label: "SST", source: "oisst", sub: "NOAA OISST" },
+  {
+    id: "north-atlantic-sst",
+    label: "SST",
+    source: "oisst",
+    sub: "NOAA OISST",
+  },
   { id: "argo-global", label: "Argo", source: "argo", sub: "ifremer GDAC" },
-  { id: "whale-shark-on-sst", label: "Whale shark", source: "obis-whale-shark", sub: "OBIS" },
+  {
+    id: "whale-shark-on-sst",
+    label: "Whale shark",
+    source: "obis-whale-shark",
+    sub: "OBIS",
+  },
 ];
 
 export function Dashboard() {
@@ -120,7 +130,7 @@ export function Dashboard() {
         </a>
         <span className={styles.topbarLabel}>/DASHBOARD</span>
         <span className={styles.topbarChip}>
-          {(SOURCES.find((s) => s.id === activeSource)?.label ?? activeSource)} ·{" "}
+          {SOURCES.find((s) => s.id === activeSource)?.label ?? activeSource} ·{" "}
           {SOURCES.find((s) => s.id === activeSource)?.sub ?? ""}
         </span>
         <nav className={styles.topbarNav}>
