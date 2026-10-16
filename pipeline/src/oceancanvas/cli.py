@@ -18,16 +18,18 @@ import yaml
 from rich.console import Console
 from rich.table import Table
 
+from oceancanvas import paths
+
 app = typer.Typer(name="oceancanvas", help="OceanCanvas pipeline CLI", no_args_is_help=True)
 recipes_app = typer.Typer(help="Recipe management")
 app.add_typer(recipes_app, name="recipes")
 
 console = Console()
 
-# Directory resolution — same env vars as flow.py
-DATA_DIR = Path(os.environ.get("DATA_DIR", "/data"))
-RECIPES_DIR = Path(os.environ.get("RECIPES_DIR", "/recipes"))
-RENDERS_DIR = Path(os.environ.get("RENDERS_DIR", "/renders"))
+# Directory resolution — shared with flow.py and backfill.py (see paths.py)
+DATA_DIR = paths.data_dir()
+RECIPES_DIR = paths.recipes_dir()
+RENDERS_DIR = paths.renders_dir()
 
 
 def _load_manifest() -> dict | None:
