@@ -80,7 +80,8 @@ def _crop_to_region(processed: dict, lat_range: list[float], lon_range: list[flo
                 for tr in flat:
                     pts = tr.get("points", [])
                     in_region = [
-                        p for p in pts
+                        p
+                        for p in pts
                         if lat_range[0] <= p.get("lat", 0) <= lat_range[1]
                         and lon_range[0] <= p.get("lon", 0) <= lon_range[1]
                     ]

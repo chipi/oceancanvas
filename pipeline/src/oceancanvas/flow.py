@@ -7,13 +7,13 @@ Run via serve (deploy.py), CLI (oceancanvas run), or directly: python -m oceanca
 
 import fcntl
 import logging
-import os
 import sys
 from pathlib import Path
 
 from prefect import flow
 from prefect.task_runners import ConcurrentTaskRunner
 
+from oceancanvas import paths
 from oceancanvas.log import get_logger
 from oceancanvas.tasks.build_payload import build_one_payload, build_payload
 from oceancanvas.tasks.discover import discover
@@ -51,9 +51,9 @@ def daily_ocean_pipeline(test_mode: bool = False) -> None:
     In test mode: runs sequentially using legacy wrapper tasks.
     """
     logger = get_logger()
-    data_dir = Path(os.environ.get("DATA_DIR", "/data"))
-    recipes_dir = Path(os.environ.get("RECIPES_DIR", "/recipes"))
-    renders_dir = Path(os.environ.get("RENDERS_DIR", "/renders"))
+    data_dir = paths.data_dir()
+    recipes_dir = paths.recipes_dir()
+    renders_dir = paths.renders_dir()
     _run_pipeline_core(
         data_dir=data_dir,
         recipes_dir=recipes_dir,
@@ -166,9 +166,9 @@ if __name__ == "__main__":
         # Keep e2e test-mode deterministic and quiet by avoiding Prefect runtime services.
         logger = get_logger()
         _run_pipeline_core(
-            data_dir=Path(os.environ.get("DATA_DIR", "/data")),
-            recipes_dir=Path(os.environ.get("RECIPES_DIR", "/recipes")),
-            renders_dir=Path(os.environ.get("RENDERS_DIR", "/renders")),
+            data_dir=paths.data_dir(),
+            recipes_dir=paths.recipes_dir(),
+            renders_dir=paths.renders_dir(),
             test_mode=True,
             logger=logger,
             use_prefect_tasks=False,

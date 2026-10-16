@@ -8,7 +8,6 @@ Implements RFC-008 backfill use case.
 
 from __future__ import annotations
 
-import os
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -16,6 +15,7 @@ import yaml
 from prefect import flow
 from prefect.task_runners import ConcurrentTaskRunner
 
+from oceancanvas import paths
 from oceancanvas.log import get_logger
 from oceancanvas.tasks.build_payload import build_one_payload
 from oceancanvas.tasks.index import index
@@ -131,9 +131,9 @@ def backfill_flow(
     Skips already-rendered dates. Fails fast if processed data is missing.
     """
     logger = get_logger()
-    data_dir = Path(os.environ.get("DATA_DIR", "/data"))
-    recipes_dir = Path(os.environ.get("RECIPES_DIR", "/recipes"))
-    renders_dir = Path(os.environ.get("RENDERS_DIR", "/renders"))
+    data_dir = paths.data_dir()
+    recipes_dir = paths.recipes_dir()
+    renders_dir = paths.renders_dir()
 
     dates = _generate_dates(start_date, end_date, cadence)
     logger.info(

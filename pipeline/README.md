@@ -59,7 +59,13 @@ uv run oceancanvas run     # full daily flow
 uv run oceancanvas status  # see what's been rendered
 ```
 
-CLI commands assume `DATA_DIR`, `RECIPES_DIR`, `RENDERS_DIR` env vars (see `cli.py` for defaults — they fall back to `/data`, `/recipes`, `/renders` for Docker, or the project-relative paths for local dev). `oceancanvas --help` lists all commands.
+The CLI and the flows (`flow.py`, `backfill.py`) resolve each of their three directories the same way (`paths.py`), first match wins:
+
+1. `DATA_DIR`, `RECIPES_DIR`, `RENDERS_DIR` when set and non-empty;
+2. the checkout the package is imported from — `uv sync` installs it editable, so `<checkout>/data`, `<checkout>/recipes`, `<checkout>/renders`, whatever the working directory. Each worktree resolves to its own directories;
+3. `/data`, `/recipes`, `/renders` — the Docker image installs the package non-editable (no checkout) and Compose mounts the repo directories there.
+
+The renderer's sketches are not covered by this: a native render still needs `SKETCHES_DIR` (see [Get started](../docs/get-started.md#run-the-pipeline-manually)). `oceancanvas --help` lists all commands.
 
 ---
 

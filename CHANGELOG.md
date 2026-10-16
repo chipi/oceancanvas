@@ -22,6 +22,10 @@ For prose-formatted release notes with full context, see [GitHub releases](https
 - The e2e test "dashboard loads with SST view" asserts the current header chip (`SST · NOAA OISST`) instead of the pre-header-alignment rail label.
 - The Node sidecars (`recipe-server`, `export-server`) run with `init: true`, so `docker compose stop`/`down` ends them with SIGTERM at once instead of a 10-second wait and SIGKILL (exit 137).
 
+### Fixed
+
+- Native pipeline runs (`uv run oceancanvas …`, `python -m oceancanvas.flow`, backfill) default to the checkout's own `data/`, `recipes/`, `renders/` instead of `/data`, `/recipes`, `/renders`; `DATA_DIR` / `RECIPES_DIR` / `RENDERS_DIR` still win, and the Docker image keeps the mount-point defaults (`pipeline/src/oceancanvas/paths.py`).
+
 ## [0.6.0] — 2026-05-14 — Editorial expansion + sidecar services + RFC horizon
 
 ### Added
